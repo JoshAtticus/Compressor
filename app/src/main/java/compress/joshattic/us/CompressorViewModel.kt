@@ -1,0 +1,366 @@
+package compress.joshattic.us
+
+import android.content.ContentValues
+import android.content.Context
+import android.net.Uri
+import android.os.Build
+import android.os.Environment
+import android.provider.MediaStore
+import androidx.annotation.OptIn
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.media3.common.MediaItem
+import androidx.media3.common.MimeTypes
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.effect.Presentation
+import androidx.media3.effect.FrameDropEffect
+import androidx.media3.transformer.Composition
+import androidx.media3.transformer.DefaultEncoderFactory
+import androidx.media3.transformer.EditedMediaItem
+import androidx.media3.transformer.EditedMediaItemSequence
+import androidx.media3.transformer.Effects
+import androidx.media3.transformer.ExportException
+import androidx.media3.transformer.ExportResult
+import androidx.media3.transformer.TransformationRequest
+import androidx.media3.transformer.Transformer
+import androidx.media3.transformer.VideoEncoderSettings
+import androidx.media3.common.Effect
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.io.File
+import java.util.UUID
+
+enum class QualityPreset {
+    HIGH, MEDIUM, LOW, CUSTOM
+}
+
+data class CompressorUiState(
+    val selectedUri: Uri? = null,
+    val originalSize: Long = 0L,
+    val originalWidth: Int = 0,
+    val originalHeight: Int = 0,
+    val originalBitrate: Int = 0,
+    val originalFps: Float = 30f, // Default fallback
+    
+    val isCompressing: Boolean = false,
+    val progress: Float = 0f,
+    val compressedUri: Uri? = null,
+    val compressedSize: Long = 0L,
+    val error: String? = null,
+    val saveSuccess: Boolean = false,
+    
+    // Configuration
+    val activePreset: QualityPreset = QualityPreset.HIGH,
+    val targetSizeMb: Float = 10f,
+    val useH265: Boolean = true,
+    val targetResolutionHeight: Int = 0, // 0 means original
+    val targetFps: Int = 0 // 0 means original
+) {
+    val estimatedSize: String
+        get() = String.format("%.1f MB", targetSizeMb)
+    
+    val formattedOriginalSize: String
+        get() = formatFileSize(originalSize)
+        
+    val formattedCompressedSize: String
+        get() = formatFileSize(compressedSize)
+        
+    val videoDurationMs: Long 
+        get() = if (originalBitrate > 0) (originalSize * 8 * 1000) / originalBitrate else 0L
+}
+
+fun formatFileSize(size: Long): String {
+    if (size <= 0) return "0 MB"
+    val mb = size / (1024.0 * 1024.0)
+    return String.format("%.1f MB", mb)
+}
+
+@OptIn(UnstableApi::class)
+class CompressorViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow(CompressorUiState())
+    val uiState = _uiState.asStateFlow()
+    
+    private var compressionJob: Job? = null
+    private var activeTransformer: Transformer? = null
+
+    fun updateSelectedUri(context: Context, uri: Uri) {
+        var size = 0L
+        var width = 0
+        var height = 0
+        var bitrate = 0
+        var fps = 30f
+        
+        try {
+            context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                size = it.statSize
+            }
+            val retriever = android.media.MediaMetadataRetriever()
+            retriever.setDataSource(context, uri)
+            
+            width = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH)?.toIntOrNull() ?: 0
+            height = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)?.toIntOrNull() ?: 0
+            bitrate = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_BITRATE)?.toIntOrNull() ?: 0
+            
+            // FPS extraction is flaky, sometimes in CAPTURE_FRAMERATE or needs calculation
+            val fpsStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE) 
+            fps = fpsStr?.toFloatOrNull() ?: 30f
+            
+            retriever.release()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        // Calculate a reasonable default target (e.g., 70% of original)
+        val defaultTargetMb = if (size > 0) (size / (1024.0 * 1024.0) * 0.7).toFloat() else 10f
+
+        // Reset state
+        _uiState.value = CompressorUiState(
+            selectedUri = uri,
+            originalSize = size,
+            originalWidth = width,
+            originalHeight = height,
+            originalBitrate = bitrate,
+            originalFps = fps,
+            targetSizeMb = defaultTargetMb,
+            targetResolutionHeight = height, // Default to original
+            activePreset = QualityPreset.HIGH
+        )
+    }
+    
+    fun applyPreset(preset: QualityPreset) {
+        if (preset == QualityPreset.CUSTOM) {
+             _uiState.update { it.copy(activePreset = QualityPreset.CUSTOM) }
+             return
+        }
+        
+        val current = _uiState.value
+        
+        when(preset) {
+            QualityPreset.HIGH -> {
+                // High Quality: Optimized Bitrate, Original Res, Original FPS
+                 _uiState.update { 
+                     it.copy(
+                         activePreset = QualityPreset.HIGH,
+                         targetResolutionHeight = current.originalHeight,
+                         targetFps = 0,
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(1f)
+                     ) 
+                 }
+            }
+            QualityPreset.MEDIUM -> {
+                // Medium: 1080p, 30fps
+                 _uiState.update { 
+                     it.copy(
+                         activePreset = QualityPreset.MEDIUM,
+                         targetResolutionHeight = 1080,
+                         targetFps = 30, // Force 30
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f)
+                     ) 
+                 }
+            }
+            QualityPreset.LOW -> {
+                // Low: 720p, 30fps
+                  _uiState.update { 
+                     it.copy(
+                         activePreset = QualityPreset.LOW,
+                         targetResolutionHeight = 720,
+                         targetFps = 30,
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f)
+                     ) 
+                 }
+            }
+            else -> {}
+        }
+    }
+
+    fun setTargetSize(mb: Float) {
+        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
+    }
+
+    fun setUseH265(enable: Boolean) {
+        _uiState.update { it.copy(useH265 = enable, activePreset = QualityPreset.CUSTOM) }
+    }
+    
+    fun setResolution(height: Int) {
+        _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
+    }
+    
+    fun cancelCompression() {
+        activeTransformer?.cancel()
+        compressionJob?.cancel()
+        _uiState.update { it.copy(isCompressing = false, progress = 0f) }
+    }
+    
+    fun resetSaveSuccess() {
+        _uiState.update { it.copy(saveSuccess = false) }
+    }
+
+    fun startCompression(context: Context) {
+        val currentState = _uiState.value
+        val inputUri = currentState.selectedUri ?: return
+
+        _uiState.update { it.copy(isCompressing = true, progress = 0f, error = null, compressedUri = null, saveSuccess = false) }
+
+        val outputDir = File(context.cacheDir, "compressed_videos")
+        outputDir.mkdirs()
+        val outputFile = File(outputDir, "compress_${UUID.randomUUID()}.mp4")
+        val outputPath = outputFile.absolutePath
+
+        // 1. Calculate Bitrate
+        // Duration can be estimated from size/bitrate if needed, or fetched properly
+        // We'll use the bitrate formula: Size / Duration
+        // Let's re-measure duration accurately via MediaMetadataRetriever just in case
+        var durationSec = 0.0
+        try {
+             val valRetriever = android.media.MediaMetadataRetriever()
+             valRetriever.setDataSource(context, inputUri)
+             val d = valRetriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DURATION)?.toLongOrNull() ?: 0L
+             durationSec = d / 1000.0
+             valRetriever.release()
+        } catch(e: Exception) {}
+
+        val targetBitrate = if (durationSec > 0) {
+            val targetBits = currentState.targetSizeMb * 8 * 1024 * 1024
+            (targetBits / durationSec).toLong()
+        } else {
+            2_000_000 // Fallback
+        }
+
+        // 500kbps floor
+        val finalBitrate = targetBitrate.coerceAtLeast(500_000)
+
+        // 2. Encoder setup
+        val videoMimeType = if (currentState.useH265) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
+
+        val encoderFactory = DefaultEncoderFactory.Builder(context)
+            .setRequestedVideoEncoderSettings(
+                VideoEncoderSettings.Builder()
+                    .setBitrate(finalBitrate.toInt())
+                    .build()
+            )
+            .build()
+        
+        val transformer = Transformer.Builder(context)
+            .setVideoMimeType(videoMimeType)
+            .setEncoderFactory(encoderFactory)
+            .addListener(object : Transformer.Listener {
+                override fun onCompleted(composition: Composition, exportResult: ExportResult) {
+                     val finalSize = outputFile.length()
+                     _uiState.update { 
+                         it.copy(
+                             isCompressing = false, 
+                             progress = 1f, 
+                             compressedUri = Uri.fromFile(outputFile),
+                             compressedSize = finalSize
+                         ) 
+                     }
+                }
+
+                override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
+                    _uiState.update { 
+                        it.copy(
+                            isCompressing = false, 
+                            error = exportException.localizedMessage ?: "Unknown error"
+                        ) 
+                    }
+                }
+            })
+            .build()
+        
+        activeTransformer = transformer
+            
+        // 3. Effects (Resolution & FPS)
+        val effectsList = mutableListOf<Effect>()
+        
+        // Resolution
+        if (currentState.targetResolutionHeight > 0 && currentState.targetResolutionHeight != currentState.originalHeight) {
+             effectsList.add(Presentation.createForHeight(currentState.targetResolutionHeight))
+        }
+        
+        // FPS
+        if (currentState.activePreset != QualityPreset.HIGH && currentState.targetFps > 0) {
+            // Only apply framerate change if not High Quality (keeps original) and target is set
+             effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, currentState.targetFps.toFloat()))
+        }
+        
+        val mediaItem = MediaItem.fromUri(inputUri)
+        val editedMediaItem = EditedMediaItem.Builder(mediaItem)
+            .setEffects(Effects(emptyList(), effectsList))
+            .build()
+
+        val composition = Composition.Builder(
+            listOf(EditedMediaItemSequence(editedMediaItem))
+        ).build()
+
+        transformer.start(composition, outputPath)
+        
+        compressionJob = viewModelScope.launch {
+            while (_uiState.value.isCompressing) {
+                val progressHolder = androidx.media3.transformer.ProgressHolder()
+                val state = transformer.getProgress(progressHolder)
+                if (state != Transformer.PROGRESS_STATE_NOT_STARTED) {
+                    _uiState.update { it.copy(progress = progressHolder.progress / 100f) }
+                }
+                kotlinx.coroutines.delay(200)
+            }
+        }
+    }
+    
+    fun saveToGallery(context: Context) {
+        val currentState = _uiState.value
+        val compressedUri = currentState.compressedUri ?: return
+        
+        viewModelScope.launch {
+            try {
+                val file = File(compressedUri.path!!)
+                if (!file.exists()) {
+                    _uiState.update { it.copy(error = "File lost") }
+                    return@launch
+                }
+
+                val values = ContentValues().apply {
+                    put(MediaStore.Video.Media.DISPLAY_NAME, "Compressed_${System.currentTimeMillis()}.mp4")
+                    put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
+                    // Add date metadata
+                    put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        put(MediaStore.Video.Media.IS_PENDING, 1)
+                        put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES + "/Compressor")
+                    }
+                }
+
+                val collection = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    MediaStore.Video.Media.getContentUri(MediaStore.VOLUME_EXTERNAL_PRIMARY)
+                } else {
+                    MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                }
+
+                val itemUri = context.contentResolver.insert(collection, values)
+                
+                if (itemUri != null) {
+                    context.contentResolver.openOutputStream(itemUri).use { out ->
+                        file.inputStream().use { input ->
+                            input.copyTo(out!!)
+                        }
+                    }
+                    
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        values.clear()
+                        values.put(MediaStore.Video.Media.IS_PENDING, 0)
+                        context.contentResolver.update(itemUri, values, null, null)
+                    }
+                    
+                    _uiState.update { it.copy(saveSuccess = true) }
+                } else {
+                     _uiState.update { it.copy(error = "Could not create gallery entry") }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(error = "Save failed: ${e.message}") }
+            }
+        }
+    }
+}
