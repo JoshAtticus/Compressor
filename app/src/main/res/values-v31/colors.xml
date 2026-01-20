@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- On Android 12+, use the System Accent Color -->
+    <!-- system_accent1_100 is usually a light pastel version of the wallpaper color -->
+    <color name="ic_launcher_background">@android:color/system_accent1_600</color>
+</resources>
