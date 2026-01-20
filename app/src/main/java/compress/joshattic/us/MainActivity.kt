@@ -5,7 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.OpenableColumns
 import android.widget.Toast
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -14,20 +16,28 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
+import androidx.compose.animation.expandVertically
+import androidx.compose.animation.shrinkVertically
+import androidx.compose.animation.togetherWith
+import androidx.compose.animation.core.*
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
-import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.interaction.collectIsPressedAsState
-import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.composed
-import androidx.compose.animation.core.*
-import androidx.compose.animation.slideInVertically
-import androidx.compose.animation.togetherWith
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -53,6 +63,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.FileProvider
@@ -86,21 +97,36 @@ class MainActivity : ComponentActivity() {
 fun CompressorApp(viewModel: CompressorViewModel) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val window = (context as? ComponentActivity)?.window
     
-    // Pick Media Launcher
+    // KEEP SCREEN ON
+    DisposableEffect(Unit) {
+        window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        onDispose {
+            window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    // BACK HANDLER
+    BackHandler(enabled = state.selectedUri != null) {
+        if (state.isCompressing) {
+            viewModel.cancelCompression()
+        } else {
+            viewModel.reset()
+        }
+    }
+
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             viewModel.updateSelectedUri(context, uri)
         }
     }
     
-    // Share Helper
     fun shareVideo(uri: Uri?) {
         if (uri == null) return
         try {
             val file = File(uri.path!!)
             val contentUri = FileProvider.getUriForFile(context, context.packageName + ".provider", file)
-            
             val shareIntent = Intent(Intent.ACTION_SEND).apply {
                 type = "video/mp4"
                 putExtra(Intent.EXTRA_STREAM, contentUri)
@@ -112,310 +138,418 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
 
-    if (state.isCompressing) {
-        CompressingScreen(state = state, onCancel = { viewModel.cancelCompression() })
-    } else {
-        Scaffold(
-            topBar = {
-                CenterAlignedTopAppBar(
-                    title = { 
-                        Text(
-                            "Compressor", 
-                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                            ) 
-                    },
-                    colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.background
-                    )
-                )
-            }
-        ) { innerPadding ->
-            
-            if (state.selectedUri == null) {
-                // EMPTY STATE
-                Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                        FilledTonalIconButton(
-                            onClick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) },
-                            modifier = Modifier.size(96.dp)
-                        ) {
-                            Icon(Icons.Default.Add, contentDescription = "Add Video", modifier = Modifier.size(48.dp))
-                        }
-                        Spacer(modifier = Modifier.height(24.dp))
-                        Text(
-                            "Select a video to compress",
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        )
-                    }
-                }
-            } else if (state.compressedUri != null) {
-                // RESULT STATE
-                 Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(24.dp),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Icon(
-                        Icons.Outlined.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(120.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(24.dp))
-                    Text(
-                        "Compression Complete!",
-                        style = MaterialTheme.typography.headlineMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(8.dp))
-                    Text(
-                        "${state.formattedOriginalSize} → ${state.formattedCompressedSize}",
-                        style = MaterialTheme.typography.titleMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    
-                    Spacer(modifier = Modifier.height(48.dp))
-                    
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
-                        Button(
-                            onClick = { shareVideo(state.compressedUri) },
-                            modifier = Modifier.weight(1f).height(56.dp)
-                        ) {
-                            Icon(Icons.Default.Share, contentDescription = null)
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text("Share")
-                        }
-                        
-                        FilledTonalButton(
-                            onClick = { viewModel.saveToGallery(context) },
-                            modifier = Modifier.weight(1f).height(56.dp),
-                            enabled = !state.saveSuccess
-                        ) {
-                            if (state.saveSuccess) {
-                                Icon(Icons.Default.Check, contentDescription = null)
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text("Saved")
-                            } else {
-                                Text("Save to Photos")
-                            }
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(16.dp))
-                    
-                    TextButton(
-                        onClick = { 
-                            viewModel.updateSelectedUri(context, state.selectedUri!!) // Reset state essentially or re-pick
-                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                        }
-                    ) {
-                        Text("Compress Another Video")
-                    }
-                }
-            
+    AnimatedContent(
+        targetState = state.isCompressing,
+        transitionSpec = {
+            if (targetState) {
+                slideInVertically { h -> h } + fadeIn() togetherWith fadeOut()
             } else {
-                // CONFIG STATE
-                Column(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .verticalScroll(rememberScrollState())
-                        .padding(horizontal = 24.dp, vertical = 16.dp)
-                ) {
-                    // Info Card
-                    ElevatedCard(
-                        modifier = Modifier.fillMaxWidth(),
-                        shape = RoundedCornerShape(24.dp),
-                        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-                    ) {
-                        Row(
-                            modifier = Modifier.padding(20.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    "Original",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                                )
-                                Text(
-                                    state.formattedOriginalSize,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold
-                                )
-                                Spacer(modifier = Modifier.height(4.dp))
-                                Text(
-                                    "${state.originalWidth}x${state.originalHeight} • ${state.originalFps.toInt()}fps",
-                                    style = MaterialTheme.typography.bodySmall,
-                                    color = MaterialTheme.colorScheme.outline
-                                )
-                            }
-                            
-                            // VerticalDivider (Custom implementation or check if it exists in M3)
-                            // Since Grep showed it existed before, assume it's okay or replace with Box
-                            Box(
-                                modifier = Modifier
-                                    .height(40.dp)
-                                    .width(1.dp)
-                                    .background(MaterialTheme.colorScheme.outlineVariant)
-                            )
-                            
-                            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                                 Text(
-                                    "Estimated",
-                                    style = MaterialTheme.typography.labelMedium,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                                Text(
-                                    state.estimatedSize,
-                                    style = MaterialTheme.typography.titleLarge,
-                                    fontWeight = FontWeight.SemiBold,
-                                    color = MaterialTheme.colorScheme.primary
-                                )
-                            }
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(32.dp))
-                    
-                    Text(
-                        "Quality Preset",
-                        style = MaterialTheme.typography.titleMedium,
-                        modifier = Modifier.padding(bottom = 12.dp)
-                    )
-
-                    // Presets
-                    val presets = listOf(
-                        Triple(QualityPreset.HIGH, "High", "Optimized bitrate only"),
-                        Triple(QualityPreset.MEDIUM, "Medium", "1080p • 30fps"),
-                        Triple(QualityPreset.LOW, "Low", "720p • 30fps")
-                    )
-                    
-                    presets.forEach { (preset, title, sub) ->
-                        val selected = state.activePreset == preset
-                        OutlinedCard(
-                            onClick = { viewModel.applyPreset(preset) },
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(vertical = 4.dp),
-                            colors = if (selected) CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer) else CardDefaults.outlinedCardColors(),
-                            border = if (selected) BorderStroke(0.dp, Color.Transparent) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
-                        ) {
-                            Row(
-                                modifier = Modifier.padding(16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
-                                    Text(sub, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                                }
-                                if (selected) {
-                                    Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
-                                }
-                            }
-                        }
-                    }
-                    
-                    Spacer(modifier = Modifier.height(24.dp))
-                    
-                    // Advanced Toggle
-                    var advancedExpanded by remember { mutableStateOf(false) }
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .clickable { advancedExpanded = !advancedExpanded }
-                            .padding(vertical = 12.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Text("Advanced Options", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
-                        Icon(
-                            if (advancedExpanded) Icons.Default.Close else Icons.Default.Add, 
-                            contentDescription = null,
-                            modifier = Modifier.size(16.dp),
-                            tint = MaterialTheme.colorScheme.primary
+                fadeIn() togetherWith slideOutVertically { h -> h }
+            }
+        },
+        label = "MainContent"
+    ) { isCompressing ->
+        if (isCompressing) {
+            CompressingScreen(state = state, onCancel = { viewModel.cancelCompression() })
+        } else {
+            Scaffold(
+                topBar = {
+                    CenterAlignedTopAppBar(
+                        title = { 
+                            Text(
+                                "Compressor", 
+                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                            ) 
+                        },
+                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                            containerColor = MaterialTheme.colorScheme.background
                         )
-                    }
-
-                    AnimatedVisibility(visible = advancedExpanded) {
-                        Column(modifier = Modifier.padding(top = 8.dp)) {
-                            Text("Target Size", style = MaterialTheme.typography.labelLarge)
-                             Slider(
-                                value = state.targetSizeMb,
-                                onValueChange = { viewModel.setTargetSize(it) },
-                                valueRange = 1f..maxOf(10f, (state.originalSize / (1024f*1024f))), // Max is original size
-                                steps = 0
+                    )
+                }
+            ) { innerPadding ->
+                Box(modifier = Modifier.padding(innerPadding)) {
+                    AnimatedContent(
+                        targetState = when {
+                            state.selectedUri == null -> 0
+                            state.compressedUri != null -> 2
+                            else -> 1
+                        },
+                        transitionSpec = {
+                            if (targetState > initialState) {
+                                slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
+                            } else {
+                                slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
+                            }
+                        },
+                        label = "FlowContent"
+                    ) { index ->
+                        when(index) {
+                            0 -> EmptyScreen(
+                                onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
                             )
-                            
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            Text("Encoding", style = MaterialTheme.typography.labelLarge)
-                            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                FilterChip(
-                                    selected = state.useH265,
-                                    onClick = { viewModel.setUseH265(true) },
-                                    label = { Text("H.265 (Efficient)") }
-                                )
-                                FilterChip(
-                                    selected = !state.useH265,
-                                    onClick = { viewModel.setUseH265(false) },
-                                    label = { Text("H.264 (Compat)") }
-                                )
-                            }
-                             
-                            Spacer(modifier = Modifier.height(16.dp))
-                            
-                            Text("Resolution", style = MaterialTheme.typography.labelLarge)
-                            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                FilterChip(selected = state.targetResolutionHeight == 1080, onClick = { viewModel.setResolution(1080) }, label = { Text("1080p") })
-                                FilterChip(selected = state.targetResolutionHeight == 720, onClick = { viewModel.setResolution(720) }, label = { Text("720p") })
-                                FilterChip(
-                                    selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
-                                    onClick = { viewModel.setResolution(state.originalHeight) }, 
-                                    label = { Text("Original") }
-                                )
-                            }
+                            2 -> ResultScreen(
+                                state = state,
+                                onShare = { shareVideo(state.compressedUri) },
+                                onSave = { viewModel.saveToGallery(context) },
+                                onCompressAnother = { viewModel.reset() },
+                                onBack = { viewModel.reset() }
+                            )
+                            else -> ConfigScreen(state, viewModel, context)
                         }
                     }
-
-                    Spacer(modifier = Modifier.height(32.dp))
-
-                    // Start Button
-                    Button(
-                        onClick = { viewModel.startCompression(context) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(56.dp),
-                        shape = RoundedCornerShape(16.dp)
-                    ) {
-                        Text("Start Compression", fontSize = 16.sp)
-                    }
-
-                    if (state.error != null) {
-                        Spacer(modifier = Modifier.height(16.dp))
-                        Text(
-                            "Error: ${state.error}",
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall,
-                            modifier = Modifier.fillMaxWidth(),
-                            textAlign = TextAlign.Center
-                        )
-                    }
-                    
-                    Spacer(modifier = Modifier.height(48.dp))
                 }
             }
         }
+    }
+}
+
+@Composable
+fun EmptyScreen(onPick: () -> Unit) {
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+            FilledTonalIconButton(
+                onClick = onPick,
+                modifier = Modifier.size(96.dp).scaleOnPress(onPick)
+            ) {
+                Icon(Icons.Default.Add, contentDescription = "Add Video", modifier = Modifier.size(48.dp))
+            }
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                "Select a video to compress",
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+@Composable
+fun ResultScreen(
+    state: CompressorUiState, 
+    onShare: () -> Unit,
+    onSave: () -> Unit,
+    onCompressAnother: () -> Unit,
+    onBack: () -> Unit
+) {
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        var visible by remember { mutableStateOf(false) }
+        LaunchedEffect(Unit) { visible = true }
+        
+        AnimatedVisibility(
+            visible = visible,
+            enter = scaleIn(initialScale = 0.5f, animationSpec = spring<Float>(dampingRatio = 0.6f)) + fadeIn()
+        ) {
+            Icon(
+                Icons.Outlined.CheckCircle,
+                contentDescription = null,
+                modifier = Modifier.size(120.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        Text(
+            "Compression Complete!",
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            "${state.formattedOriginalSize} → ${state.formattedCompressedSize}",
+            style = MaterialTheme.typography.titleMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        
+        Spacer(modifier = Modifier.height(48.dp))
+        
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+            Button(
+                onClick = onShare,
+                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onShare)
+            ) {
+                Icon(Icons.Default.Share, contentDescription = null)
+                Spacer(modifier = Modifier.width(8.dp))
+                Text("Share")
+            }
+            
+            FilledTonalButton(
+                onClick = onSave,
+                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onSave),
+                enabled = !state.saveSuccess
+            ) {
+                if (state.saveSuccess) {
+                    Icon(Icons.Default.Check, contentDescription = null)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Saved")
+                } else {
+                    Text("Save to Photos")
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(16.dp))
+        
+        TextButton(onClick = onCompressAnother) {
+            Text("Compress Another Video")
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        TextButton(
+            onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
+        ) {
+             Text(
+                "☕ Happy with Compressor? Buy me a coffee!",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.tertiary
+            )
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ConfigScreen(
+    state: CompressorUiState,
+    viewModel: CompressorViewModel,
+    context: android.content.Context
+) {
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(rememberScrollState())
+            .padding(horizontal = 24.dp, vertical = 16.dp)
+    ) {
+        ElevatedCard(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(24.dp),
+            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+        ) {
+            Row(
+                modifier = Modifier.padding(20.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        "Original",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        state.formattedOriginalSize,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        "${state.originalWidth}x${state.originalHeight} • ${state.originalFps.toInt()}fps",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+                
+                Box(modifier = Modifier.height(40.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
+                
+                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                     Text(
+                        "Estimated",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        state.estimatedSize,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Text("Quality Preset", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+
+        val presets = listOf(
+            Triple(QualityPreset.HIGH, "High", "Optimized bitrate only"),
+            Triple(QualityPreset.MEDIUM, "Medium", "1080p • 30fps"),
+            Triple(QualityPreset.LOW, "Low", "720p • 30fps")
+        )
+        
+        presets.forEach { (preset, title, sub) ->
+            val selected = state.activePreset == preset
+            val scale by animateFloatAsState(if (selected) 1.02f else 1f, animationSpec = ExpressiveSpatialSpring)
+            
+            OutlinedCard(
+                onClick = { viewModel.applyPreset(preset) },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 4.dp)
+                    .graphicsLayer { scaleX = scale; scaleY = scale },
+                colors = if (selected) CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer) else CardDefaults.outlinedCardColors(),
+                border = if (selected) BorderStroke(0.dp, Color.Transparent) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(title, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Medium)
+                        Text(sub, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    }
+                    if (selected) {
+                        Icon(Icons.Default.Check, contentDescription = null, tint = MaterialTheme.colorScheme.onSecondaryContainer)
+                    }
+                }
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
+        
+        var advancedExpanded by remember { mutableStateOf(false) }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .clickable { advancedExpanded = !advancedExpanded }
+                .padding(vertical = 12.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("Advanced Options", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+            Icon(
+                if (advancedExpanded) Icons.Default.Close else Icons.Default.Add, 
+                contentDescription = null,
+                modifier = Modifier.size(16.dp),
+                tint = MaterialTheme.colorScheme.primary
+            )
+        }
+
+        AnimatedVisibility(
+            visible = advancedExpanded,
+            enter = expandVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f)) + fadeIn(),
+            exit = shrinkVertically() + fadeOut()
+        ) {
+            Column(modifier = Modifier.padding(top = 8.dp)) {
+                Text("Target Size", style = MaterialTheme.typography.labelLarge)
+                 Slider(
+                    value = state.targetSizeMb,
+                    onValueChange = { viewModel.setTargetSize(it) },
+                    valueRange = 1f..maxOf(10f, (state.originalSize / (1024f*1024f))),
+                    steps = 0
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text("Encoding", style = MaterialTheme.typography.labelLarge)
+                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FilterChip(
+                        selected = state.useH265,
+                        onClick = { viewModel.setUseH265(true) },
+                        label = { Text("H.265 (Efficient)") }
+                    )
+                    FilterChip(
+                        selected = !state.useH265,
+                        onClick = { viewModel.setUseH265(false) },
+                        label = { Text("H.264 (Compat)") }
+                    )
+                }
+                 
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text("Resolution", style = MaterialTheme.typography.labelLarge)
+                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val allRes = listOf(4320 to "8K", 2160 to "4K", 1440 to "2K", 1080 to "1080p", 720 to "720p", 480 to "480p")
+                    androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                         FilterChip(
+                            selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
+                            onClick = { viewModel.setResolution(state.originalHeight) }, 
+                            label = { Text("Original") },
+                            modifier = Modifier.padding(end = 8.dp)
+                        )
+                        allRes.filter { it.first <= state.originalHeight }.forEach { (res, label) ->
+                             FilterChip(
+                                selected = state.targetResolutionHeight == res, 
+                                onClick = { viewModel.setResolution(res) }, 
+                                label = { Text(label) },
+                                modifier = Modifier.padding(end = 8.dp)
+                            )
+                        }
+                    }
+                }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Text("Framerate", style = MaterialTheme.typography.labelLarge)
+                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                     FilterChip(
+                        selected = state.targetFps == 0,
+                        onClick = { viewModel.setFps(0) },
+                        label = { Text("Original") }
+                    )
+                    FilterChip(
+                        selected = state.targetFps == 60,
+                        onClick = { viewModel.setFps(60) },
+                        label = { Text("60fps") }
+                    )
+                    FilterChip(
+                        selected = state.targetFps == 30,
+                        onClick = { viewModel.setFps(30) },
+                        label = { Text("30fps") }
+                    )
+                }
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        Button(
+            onClick = { viewModel.startCompression(context) },
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp)
+                .scaleOnPress { viewModel.startCompression(context) },
+            shape = RoundedCornerShape(16.dp)
+        ) {
+            Text("Start Compression", fontSize = 16.sp)
+        }
+        
+        if (state.error != null) {
+            Spacer(modifier = Modifier.height(16.dp))
+            Text(
+                "Error: ${state.error}",
+                color = MaterialTheme.colorScheme.error,
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.fillMaxWidth(),
+                textAlign = TextAlign.Center
+            )
+        }
+        
+        Spacer(modifier = Modifier.height(32.dp))
+        
+        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+             TextButton(
+                onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
+            ) {
+                 Text(
+                    "☕ Happy with Compressor? Buy me a coffee!",
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.tertiary
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(48.dp))
     }
 }
 
@@ -443,12 +577,8 @@ fun CompressingScreen(
         }
     }
     
-    // Calculate Size Countdown
-    val targetBytes = (state.targetSizeMb * 1024 * 1024).toLong()
-    val diff = state.originalSize - targetBytes
-    val safeDiff = diff.coerceAtLeast(0) 
-    val currentBytes = (state.originalSize - (safeDiff * state.progress)).toLong()
-    val formattedSize = android.text.format.Formatter.formatFileSize(context, currentBytes)
+    // Use Real-time size
+    val formattedSize = state.formattedCurrentOutputSize
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -552,4 +682,44 @@ fun CompressingScreen(
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
+}
+
+
+// Motion System - M3 Expressive
+// Spatial (Movements, Transforms)
+val ExpressiveSpatialSpring = spring<Float>(
+    dampingRatio = 0.8f,
+    stiffness = 350f
+)
+// Effects (Color, Alpha)
+val ExpressiveEffectsSpring = spring<Float>(
+    dampingRatio = 1f,
+    stiffness = 300f
+)
+
+fun Modifier.scaleOnPress(
+    onClick: () -> Unit
+) = composed {
+    val interactionSource = remember { MutableInteractionSource() }
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = ExpressiveSpatialSpring,
+        label = "scale"
+    )
+    val haptics = LocalHapticFeedback.current
+    
+    this
+        .graphicsLayer {
+            scaleX = scale
+            scaleY = scale
+        }
+        .clickable(
+            interactionSource = interactionSource,
+            indication = null, // Disable default ripple if using scale, or keep it.
+            onClick = {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                onClick()
+            }
+        )
 }

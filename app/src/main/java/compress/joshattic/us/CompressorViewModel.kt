@@ -49,6 +49,7 @@ data class CompressorUiState(
     val progress: Float = 0f,
     val compressedUri: Uri? = null,
     val compressedSize: Long = 0L,
+    val currentOutputSize: Long = 0L,
     val error: String? = null,
     val saveSuccess: Boolean = false,
     
@@ -68,6 +69,9 @@ data class CompressorUiState(
     val formattedCompressedSize: String
         get() = formatFileSize(compressedSize)
         
+    val formattedCurrentOutputSize: String
+        get() = formatFileSize(currentOutputSize)
+
     val videoDurationMs: Long 
         get() = if (originalBitrate > 0) (originalSize * 8 * 1000) / originalBitrate else 0L
 }
@@ -187,6 +191,10 @@ class CompressorViewModel : ViewModel() {
     fun setResolution(height: Int) {
         _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
     }
+
+    fun setFps(fps: Int) {
+        _uiState.update { it.copy(targetFps = fps, activePreset = QualityPreset.CUSTOM) }
+    }
     
     fun cancelCompression() {
         activeTransformer?.cancel()
@@ -197,12 +205,16 @@ class CompressorViewModel : ViewModel() {
     fun resetSaveSuccess() {
         _uiState.update { it.copy(saveSuccess = false) }
     }
+    
+    fun reset() {
+        _uiState.value = CompressorUiState()
+    }
 
     fun startCompression(context: Context) {
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return
 
-        _uiState.update { it.copy(isCompressing = true, progress = 0f, error = null, compressedUri = null, saveSuccess = false) }
+        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, compressedUri = null, saveSuccess = false) }
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
@@ -302,7 +314,8 @@ class CompressorViewModel : ViewModel() {
                 val progressHolder = androidx.media3.transformer.ProgressHolder()
                 val state = transformer.getProgress(progressHolder)
                 if (state != Transformer.PROGRESS_STATE_NOT_STARTED) {
-                    _uiState.update { it.copy(progress = progressHolder.progress / 100f) }
+                    val currentSize = if(outputFile.exists()) outputFile.length() else 0L
+                    _uiState.update { it.copy(progress = progressHolder.progress / 100f, currentOutputSize = currentSize) }
                 }
                 kotlinx.coroutines.delay(200)
             }
