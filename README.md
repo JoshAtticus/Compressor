@@ -1,5 +1,5 @@
 # Compressor
-Ad free, completely native, super lightweight video compressor for Android (inspired by the AMAZING Kompresso app for iOS).
+Lightning fast, ad free, super lightweight native video compressor for Android (inspired by the AMAZING Kompresso app for iOS).
 
 <img src="assets/Screenshot_20260120-155624.png" alt="Screenshot 3" width="200"/><img src="assets/Screenshot_20260120-155611.png" alt="Screenshot 2" width="200"/><img src="assets/Screenshot_20260120-155601.png" alt="Screenshot 1" width="200"/>
 
