@@ -1,13 +1,15 @@
 package compress.joshattic.us
 
+import android.app.Application
 import android.content.ContentValues
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
 import androidx.annotation.OptIn
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
@@ -30,6 +32,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
 import java.io.File
 import java.util.UUID
 
@@ -58,11 +61,16 @@ data class CompressorUiState(
     val targetSizeMb: Float = 10f,
     val useH265: Boolean = true,
     val targetResolutionHeight: Int = 0, // 0 means original
-    val targetFps: Int = 0 // 0 means original
+    val targetFps: Int = 0, // 0 means original
+    
+    val totalSavedBytes: Long = 0L
 ) {
     val estimatedSize: String
         get() = String.format("%.1f MB", targetSizeMb)
     
+    val formattedTotalSaved: String
+        get() = formatFileSize(totalSavedBytes)
+
     val formattedOriginalSize: String
         get() = formatFileSize(originalSize)
         
@@ -83,9 +91,18 @@ fun formatFileSize(size: Long): String {
 }
 
 @OptIn(UnstableApi::class)
-class CompressorViewModel : ViewModel() {
+class CompressorViewModel(application: Application) : AndroidViewModel(application) {
     private val _uiState = MutableStateFlow(CompressorUiState())
     val uiState = _uiState.asStateFlow()
+    
+    private val prefs: SharedPreferences by lazy {
+        getApplication<Application>().getSharedPreferences("compressor_prefs", Context.MODE_PRIVATE)
+    }
+
+    init {
+        val saved = prefs.getLong("total_saved_bytes", 0L)
+        _uiState.update { it.copy(totalSavedBytes = saved) }
+    }
     
     private var compressionJob: Job? = null
     private var activeTransformer: Transformer? = null
@@ -235,7 +252,10 @@ class CompressorViewModel : ViewModel() {
         } catch(e: Exception) {}
 
         val targetBitrate = if (durationSec > 0) {
-            val targetBits = currentState.targetSizeMb * 8 * 1024 * 1024
+            // Apply safety margin to prevent overshoot
+            // "Target 2-3MB smaller" -> Subtract 2.5MB, but ensure we don't go below 80% for small files
+            val safetyMarginMb = (currentState.targetSizeMb - 2.5f).coerceAtLeast(currentState.targetSizeMb * 0.8f)
+            val targetBits = safetyMarginMb * 8 * 1024 * 1024
             (targetBits / durationSec).toLong()
         } else {
             2_000_000 // Fallback
@@ -261,12 +281,21 @@ class CompressorViewModel : ViewModel() {
             .addListener(object : Transformer.Listener {
                 override fun onCompleted(composition: Composition, exportResult: ExportResult) {
                      val finalSize = outputFile.length()
+                     val savedBytes = currentState.originalSize - finalSize
+                     var newTotal = _uiState.value.totalSavedBytes
+                     
+                     if (savedBytes > 0) {
+                         newTotal += savedBytes
+                         prefs.edit().putLong("total_saved_bytes", newTotal).apply()
+                     }
+
                      _uiState.update { 
                          it.copy(
                              isCompressing = false, 
                              progress = 1f, 
                              compressedUri = Uri.fromFile(outputFile),
-                             compressedSize = finalSize
+                             compressedSize = finalSize,
+                             totalSavedBytes = newTotal
                          ) 
                      }
                 }
@@ -321,7 +350,32 @@ class CompressorViewModel : ViewModel() {
             }
         }
     }
-    
+
+    fun saveToUri(context: Context, targetUri: Uri) {
+        val currentState = _uiState.value
+        val compressedUri = currentState.compressedUri ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val file = File(compressedUri.path!!)
+                if (!file.exists()) {
+                    _uiState.update { it.copy(error = "File lost") }
+                    return@launch
+                }
+                
+                context.contentResolver.openOutputStream(targetUri)?.use { out ->
+                    file.inputStream().use { input ->
+                        input.copyTo(out)
+                    }
+                }
+                 _uiState.update { it.copy(saveSuccess = true) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update { it.copy(error = "Save failed: ${e.message}") }
+            }
+        }
+    }
+
     fun saveToGallery(context: Context) {
         val currentState = _uiState.value
         val compressedUri = currentState.compressedUri ?: return

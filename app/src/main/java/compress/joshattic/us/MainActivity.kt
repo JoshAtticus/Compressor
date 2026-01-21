@@ -78,6 +78,21 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        // Handle incoming share intent
+        if (intent?.action == Intent.ACTION_SEND && intent.type?.startsWith("video/") == true) {
+            val uri = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+            } else {
+                @Suppress("DEPRECATION")
+                intent.getParcelableExtra(Intent.EXTRA_STREAM)
+            }
+            
+            if (uri != null) {
+                viewModel.updateSelectedUri(this, uri)
+            }
+        }
+
         setContent {
             CompressorTheme {
                 // Using Surface to ensure correct M3 background handling
@@ -119,6 +134,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             viewModel.updateSelectedUri(context, uri)
+        }
+    }
+
+    val createDocumentLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("video/mp4")) { uri ->
+        if (uri != null) {
+            viewModel.saveToUri(context, uri)
         }
     }
     
@@ -185,12 +206,19 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                     ) { index ->
                         when(index) {
                             0 -> EmptyScreen(
+                                totalSaved = state.formattedTotalSaved,
                                 onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
                             )
                             2 -> ResultScreen(
                                 state = state,
                                 onShare = { shareVideo(state.compressedUri) },
-                                onSave = { viewModel.saveToGallery(context) },
+                                onSave = { 
+                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                                        viewModel.saveToGallery(context)
+                                    } else {
+                                        createDocumentLauncher.launch("CompressedVideo.mp4")
+                                    }
+                                },
                                 onCompressAnother = { viewModel.reset() },
                                 onBack = { viewModel.reset() }
                             )
@@ -204,7 +232,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
 }
 
 @Composable
-fun EmptyScreen(onPick: () -> Unit) {
+fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -221,6 +249,17 @@ fun EmptyScreen(onPick: () -> Unit) {
                 "Select a video to compress",
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        if (totalSaved != "0.0 MB" && totalSaved != "0 MB") {
+             Text(
+                text = "You've saved $totalSaved of storage with Compressor",
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 32.dp)
             )
         }
     }
@@ -416,6 +455,48 @@ fun ConfigScreen(
         }
         
         Spacer(modifier = Modifier.height(24.dp))
+
+        Text("Target Size Limits", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+        
+        val sizePresets = listOf(
+            10f to "Discord • GitHub",
+            25f to "Email",
+            50f to "Stories • Nitro Basic",
+            100f to "Messenger • BlueSky",
+            500f to "Nitro • Reels",
+            512f to "Twitter/X",
+            2048f to "WhatsApp • Telegram",
+            4096f to "TG Premium • Feed",
+            8192f to "X Premium"
+        )
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .horizontalScroll(rememberScrollState())
+                .padding(bottom = 8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            sizePresets.forEach { (size, label) ->
+                FilterChip(
+                    selected = state.targetSizeMb == size,
+                    onClick = { viewModel.setTargetSize(size) },
+                    label = { 
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                if (size >= 1024) "${(size/1024).toInt()} GB" else "${size.toInt()} MB", 
+                                style = MaterialTheme.typography.labelLarge,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(label, style = MaterialTheme.typography.labelSmall)
+                        }
+                    },
+                    modifier = Modifier.heightIn(min = 48.dp)
+                )
+            }
+        }
+        
+        Spacer(modifier = Modifier.height(24.dp))
         
         var advancedExpanded by remember { mutableStateOf(false) }
         Row(
@@ -446,7 +527,7 @@ fun ConfigScreen(
                  Slider(
                     value = state.targetSizeMb,
                     onValueChange = { viewModel.setTargetSize(it) },
-                    valueRange = 1f..maxOf(10f, (state.originalSize / (1024f*1024f))),
+                    valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
                     steps = 0
                 )
                 
