@@ -39,6 +39,10 @@ android {
     buildFeatures {
         compose = true
     }
+    dependenciesInfo {
+        includeInBundle = false
+        includeInApk = false
+    }
 }
 
 dependencies {
@@ -62,9 +66,4 @@ dependencies {
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
-}
-
-dependenciesInfo {
-    includeInBundle = false
-    includeInApk = false
 }
