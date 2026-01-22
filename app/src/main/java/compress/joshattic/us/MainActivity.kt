@@ -582,7 +582,8 @@ fun ConfigScreen(
                     FilterChip(
                         selected = state.targetFps == 60,
                         onClick = { viewModel.setFps(60) },
-                        label = { Text("60fps") }
+                        label = { Text("60fps") },
+                        enabled = state.originalFps >= 50f
                     )
                     FilterChip(
                         selected = state.targetFps == 30,
