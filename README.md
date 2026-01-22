@@ -17,7 +17,7 @@ Do you like Compressor? Consider supporting development by [buying me a coffee](
 - No third party libraries
 - No invasive permissions (no storage, no internet etc)
 - Ad free
-- Super lightweight (< 10MB)
+- Super lightweight (< 10MB APK size)
 - Completely native Kotlin (no React Native slop here)
 - Simple, clean UI
 - Works on Android 7.0 and up
