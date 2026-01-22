@@ -25,12 +25,12 @@ assignees: JoshAtticus
 <!-- All fields marked with an asterisk (*) are required, the rest are optional but strongly recommended -->
 
 Device Manufacturer* (e.g. Samsung): 
-Device Model* (e.g. Galaxy S10): 
-Android Version* (e.g. 12):
-Compressor Version* (e.g. 1.1.0):
-Where did you get Compressor from?* (GitHub Releases, IzzyOnDroid/F-Droid, Google Play Store):
-Device Chipset (e.g. Exynos 9820):
-Device Model Number (e.g. SM-G973F):
+- Device Model* (e.g. Galaxy S10): 
+- Android Version* (e.g. 12):
+- Compressor Version* (e.g. 1.1.0):
+- Where did you get Compressor from?* (GitHub Releases, IzzyOnDroid/F-Droid, Google Play Store):
+- Device Chipset (e.g. Exynos 9820):
+- Device Model Number (e.g. SM-G973F):
 
 ## Screenshots (required)
 <!-- Screenshots are required except for when the app does not open -->
