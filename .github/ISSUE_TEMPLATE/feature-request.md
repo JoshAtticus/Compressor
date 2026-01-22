@@ -15,7 +15,7 @@ assignees: JoshAtticus
 
 ## Device Info
 <!-- Please fill out the required fields (marked with an asterisk *) -->
-Device Model* (e.g. Galaxy S10): 
-Android Version* (e.g. 12):
-Device Chipset (e.g. Exynos 9820):
-Device Model Number (e.g. SM-G973F):
+- Device Model* (e.g. Galaxy S10): 
+- Android Version* (e.g. 12):
+- Device Chipset (e.g. Exynos 9820):
+- Device Model Number (e.g. SM-G973F):
