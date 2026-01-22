@@ -5,6 +5,9 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 
 <img src="assets/select.png" alt="Screenshot 3" width="24%"/><img src="assets/settings.png" alt="Screenshot 1" width="24%"/><img src="assets/compressing.png" alt="Screenshot 2" width="24%"><img src="assets/done.png" alt="Screenshot 4" width="24%"/>
 
+[![RB Status](https://shields.rbtlog.dev/simple/compress.joshattic.us?style=for-the-badge)](https://shields.rbtlog.dev/compress.joshattic.us) ![IzzyOnDroid Version](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/compress.joshattic.us&label=IzzyOnDroid%20Version&style=for-the-badge)
+
+
 Do you like Compressor? Consider supporting development by [buying me a coffee](https://www.buymeacoffee.com/joshatticus) ☕️
 
 ## Features
@@ -18,6 +21,7 @@ Do you like Compressor? Consider supporting development by [buying me a coffee](
 - Completely native Kotlin (no React Native slop here)
 - Simple, clean UI
 - Works on Android 7.0 and up
+- Reproducible Builds
 
 ## Performance
 How does Compressor run on different devices? All tests are completed with a 25 second, 200MB 4K video compressed using the Medium preset in Compressor.
