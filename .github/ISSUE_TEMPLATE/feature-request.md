@@ -14,7 +14,7 @@ assignees: JoshAtticus
 <!-- If applicable, describe what currently happens in Compressor -->
 
 ## Device Info
-<!-- Please fill out the required fields (marked with an asterisk *) -->
+<!-- Please fill out the required fields (marked with an asterisk *), this will help us determine whether this is a feature needed because of your device or a feature that should be added to Compressor -->
 - Device Model* (e.g. Galaxy S10): 
 - Android Version* (e.g. 12):
 - Device Chipset (e.g. Exynos 9820):
