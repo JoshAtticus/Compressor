@@ -4,6 +4,7 @@ Unlike other apps that use slow, bulky, old versions of FFmpeg with software enc
 
 
 <b>Features:</b>
+
 - Faster than every single compression app on the Play Store. Period.
 - Uses native Media3 library, not another slow, bulky FFMpeg wrapper
 - No third party libraries
@@ -14,33 +15,15 @@ Unlike other apps that use slow, bulky, old versions of FFmpeg with software enc
 - Simple, clean UI
 - Works on Android 7.0 and up (Galaxy S6, Pixel 1, Nexus 5X, Moto G4 etc).
 
+
 <b>Why does this exist?</b>
+
 Most compressors are wrappers around old software filled with ads. Compressor is written in 100% Kotlin, designed to be the cleanest, fastest tool for the job.
 
 <b>Benchmarks (200MB 4K video with Medium Preset)</b>
-<table>
-    <tr>
-        <td>Device</td>
-        <td>Speed</td>
-    </tr>
-    <tr>
-        <td>Google Pixel 8 Pro</td>
-        <td>11s 61ms</td>
-    </tr>
-    <tr>
-        <td>Samsung Galaxy S25</td>
-        <td>7s 99ms</td>
-    </tr>
-    <tr>
-        <td>Samsung Galaxy S10 (Exynos)</td>
-        <td>11s 27ms</td>
-    </tr>
-    <tr>
-        <td>Samsung Galaxy S8+ (Exynos)</td>
-        <td>20s 79ms</td>
-    </tr>
-    <tr>
-        <td>Samsung Galaxy S7 (Exynos)</td>
-        <td>25s 35ms</td>
-    </tr>
-</table>
+
+- Pixel 8 Pro: 11s 61ms
+- Galaxy S25: 7s 99ms
+- Galaxy S10 (Exynos): 11s 27ms
+- Galaxy S8+ (Exynos): 20s 79ms
+- Galaxy S7 (Exynos): 25s 35ms
