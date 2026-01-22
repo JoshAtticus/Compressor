@@ -46,4 +46,4 @@ Compressor wouldn't be possible without these amazing people
 
 [@BusyBird15](https://github.com/BusyBird15) - Provided funding to get Compressor on Google Play
 
-[@sirtoaks](https://github.com/sirtoaks) - Provided funding for get Compressor on Google Play
+[@sirtoaks](https://github.com/sirtoaks) - Provided funding to get Compressor on Google Play
