@@ -7,7 +7,6 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 
 [![RB Status](https://shields.rbtlog.dev/simple/compress.joshattic.us?style=for-the-badge)](https://shields.rbtlog.dev/compress.joshattic.us) ![IzzyOnDroid Version](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/compress.joshattic.us&label=IzzyOnDroid%20Version&style=for-the-badge)
 
-
 Do you like Compressor? Consider supporting development by [buying me a coffee](https://www.buymeacoffee.com/joshatticus) ☕️
 
 ## Features
@@ -41,3 +40,9 @@ And what about Compressor vs Panda Video Compressor, a highly rated video compre
 | Google Pixel 8 Pro | 11s 61ms   |  21m 40s 49ms          |
 
 I ran out of time waiting for my 21 minute video compression so I only ran it on my main phone, my Pixel 8 Pro. Hopefully this gives you an idea of how much faster Compressor is compared to an outdated ffmpeg wrapper using software encoding. To be precise, it's 117x faster.
+
+## Credits
+Compressor wouldn't be possible without these amazing people
+
+[https://github.com/BusyBird15](@BusyBird15) - Provided funding to get Compressor on Google Play
+[https://github.com/sirtoaks](@sirtoaks) - Provided funding for get Compressor on Google Play
