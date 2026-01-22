@@ -1,0 +1,148 @@
+name: Build PR Debug APK
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'fastlane/**'
+
+# We need permission to write comments on the PR
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  build-and-comment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      # 1. FIND OR CREATE THE INITIAL COMMENT
+      - name: Post "Building" Comment
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const marker = '<!-- bot-pr-build-comment -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            
+            // Find existing comment
+            const comments = await github.rest.issues.listComments({
+              owner, repo, issue_number
+            });
+            const botComment = comments.data.find(c => c.body.includes(marker));
+            
+            const body = `${marker}
+            ### 🔨 Building Debug APK...
+            _Compiling latest changes... please wait._
+            
+            <details>
+            <summary>Current Status</summary>
+            Building on GitHub Actions...
+            </details>`;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: botComment.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number, body
+              });
+            }
+
+      # 2. RUN THE BUILD (And capture logs)
+      # We pipe output to a file (build.log) AND to console (tee) so we can read it later
+      - name: Build Debug APK
+        id: build_apk
+        run: |
+          ./gradlew assembleDebug --stacktrace | tee build.log
+
+      # 3. UPLOAD THE APK ARTIFACT
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compressor-debug-pr-${{ github.event.number }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 5
+
+      # 4. READ LOGS (Truncate to last 100 lines to fit in comment)
+      - name: Process Logs
+        if: always() # Run even if build failed
+        id: process_logs
+        run: |
+          # Get the last 150 lines of the log to avoid comment size limits
+          tail -n 150 build.log > trimmed_log.txt
+          # Read file into variable
+          echo "LOG_CONTENT<<EOF" >> $GITHUB_OUTPUT
+          cat trimmed_log.txt >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      # 5. UPDATE COMMENT WITH RESULT (Success or Failure)
+      - name: Update Comment with Result
+        if: always()
+        uses: actions/github-script@v7
+        env:
+          LOGS: ${{ steps.process_logs.outputs.LOG_CONTENT }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          STATUS: ${{ job.status }}
+        with:
+          script: |
+            const marker = '<!-- bot-pr-build-comment -->';
+            const { owner, repo } = context.repo;
+            const issue_number = context.issue.number;
+            const logs = process.env.LOGS;
+            const runUrl = process.env.RUN_URL;
+            const status = process.env.STATUS;
+            
+            // Find existing comment again
+            const comments = await github.rest.issues.listComments({
+              owner, repo, issue_number
+            });
+            const botComment = comments.data.find(c => c.body.includes(marker));
+            
+            let title = status === 'success' ? '✅ Build Successful' : '❌ Build Failed';
+            let downloadSection = status === 'success' 
+              ? `### 📥 [Download Debug APK](${runUrl})
+                 **⚠️ WARNING:** This is a **DEBUG** build. It is signed with a debug key.
+                 - Do not install this unless you are testing this PR.
+                 - You will need to uninstall Release version first.
+                 - To download: Click the link above, scroll down to **Artifacts**.
+                ` 
+              : `### ⛔ Build Failed
+                 The compiler encountered errors. See logs below.`;
+
+            const body = `${marker}
+            ${title}
+            
+            ${downloadSection}
+            
+            <details>
+            <summary>📝 Build Logs (Last 150 lines)</summary>
+            
+            \`\`\`text
+            ${logs}
+            \`\`\`
+            </details>
+            
+            _Updated: ${new Date().toISOString()}_
+            `;
+
+            if (botComment) {
+              await github.rest.issues.updateComment({
+                owner, repo, comment_id: botComment.id, body
+              });
+            }
