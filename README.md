@@ -44,5 +44,6 @@ I ran out of time waiting for my 21 minute video compression so I only ran it on
 ## Credits
 Compressor wouldn't be possible without these amazing people
 
-[https://github.com/BusyBird15](@BusyBird15) - Provided funding to get Compressor on Google Play
-[https://github.com/sirtoaks](@sirtoaks) - Provided funding for get Compressor on Google Play
+[@BusyBird15](https://github.com/BusyBird15) - Provided funding to get Compressor on Google Play
+
+[@sirtoaks](https://github.com/sirtoaks) - Provided funding for get Compressor on Google Play
