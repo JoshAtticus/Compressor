@@ -1,0 +1,3 @@
+Compressor 1.1.3 is a bug fix release:
+
+- 繁體中文 (Traditional Chinese) is now applied correctly
