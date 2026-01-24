@@ -1,0 +1,32 @@
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="share">分享</string>
+    <string name="saved">已儲存</string>
+    <string name="save_to_photos">儲存至相簿</string>
+    <string name="compress_another_video">壓縮另一個影片</string>
+    <string name="buy_coffee">☕ 對 Compressor 滿意嗎？請我喝杯咖啡吧！</string>
+    <string name="share_video_title">分享壓縮後的影片</string>
+    <string name="share_error">無法分享：%1$s</string>
+    <string name="original">原始大小</string>
+    <string name="estimated">預計大小</string>
+    <string name="preset_high">高畫質</string>
+    <string name="preset_high_desc">僅優化位元率</string>
+    <string name="preset_medium">中畫質</string>
+    <string name="preset_low">低畫質</string>
+    <string name="quality_preset">畫質預設</string>
+    <string name="target_size_limits">目標大小限制</string>
+    <string name="advanced_options">進階選項</string>
+    <string name="target_size">目標大小</string>
+    <string name="encoding">編碼格式</string>
+    <string name="h265_efficient">H.265 (高效)</string>
+    <string name="h264_compat">H.264 (相容)</string>
+    <string name="resolution">解析度</string>
+    <string name="framerate">幀率</string>
+    <string name="start_compression">開始壓縮</string>
+    <string name="error_prefix">錯誤：%1$s</string>
+    <string name="select_video">選擇要壓縮的影片</string>
+    <string name="total_saved">您已使用 Compressor 節省了 %1$s 的儲存空間</string>
+    <string name="compression_complete">壓縮完成！</string>
+    <string name="compressing_video_label">正在壓縮影片</string>
+    <string name="cancel">取消</string>
+</resources>

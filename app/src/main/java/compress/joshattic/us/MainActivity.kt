@@ -61,6 +61,7 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
@@ -114,7 +115,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val context = LocalContext.current
     val window = (context as? ComponentActivity)?.window
     
-    // KEEP SCREEN ON
+    // Keep the screen on when compressing
     DisposableEffect(Unit) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
@@ -122,7 +123,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
 
-    // BACK HANDLER
+    // Handle back button/gesture
     BackHandler(enabled = state.selectedUri != null) {
         if (state.isCompressing) {
             viewModel.cancelCompression()
@@ -153,9 +154,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 putExtra(Intent.EXTRA_STREAM, contentUri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            context.startActivity(Intent.createChooser(shareIntent, "Share Compressed Video"))
+            context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_video_title)))
         } catch (e: Exception) {
-            Toast.makeText(context, "Cannot share: ${e.message}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, context.getString(R.string.share_error, e.message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -178,7 +179,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                     CenterAlignedTopAppBar(
                         title = { 
                             Text(
-                                "Compressor", 
+                                stringResource(R.string.title_compressor), 
                                 style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                             ) 
                         },
@@ -242,11 +243,11 @@ fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
                 onClick = onPick,
                 modifier = Modifier.size(96.dp).scaleOnPress(onPick)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add Video", modifier = Modifier.size(48.dp))
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_video_desc), modifier = Modifier.size(48.dp))
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                "Select a video to compress",
+                stringResource(R.string.select_video),
                 style = MaterialTheme.typography.bodyLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
@@ -254,7 +255,7 @@ fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
 
         if (totalSaved != "0.0 MB" && totalSaved != "0 MB") {
              Text(
-                text = "You've saved $totalSaved of storage with Compressor",
+                text = stringResource(R.string.total_saved, totalSaved),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
                 modifier = Modifier
@@ -298,7 +299,7 @@ fun ResultScreen(
         
         Spacer(modifier = Modifier.height(24.dp))
         Text(
-            "Compression Complete!",
+            stringResource(R.string.compression_complete),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold
         )
@@ -318,7 +319,7 @@ fun ResultScreen(
             ) {
                 Icon(Icons.Default.Share, contentDescription = null)
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("Share")
+                Text(stringResource(R.string.share))
             }
             
             FilledTonalButton(
@@ -329,9 +330,9 @@ fun ResultScreen(
                 if (state.saveSuccess) {
                     Icon(Icons.Default.Check, contentDescription = null)
                     Spacer(modifier = Modifier.width(8.dp))
-                    Text("Saved")
+                    Text(stringResource(R.string.saved))
                 } else {
-                    Text("Save to Photos")
+                    Text(stringResource(R.string.save_to_photos))
                 }
             }
         }
@@ -339,7 +340,7 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(16.dp))
         
         TextButton(onClick = onCompressAnother) {
-            Text("Compress Another Video")
+            Text(stringResource(R.string.compress_another_video))
         }
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -348,7 +349,7 @@ fun ResultScreen(
             onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
         ) {
              Text(
-                "☕ Happy with Compressor? Buy me a coffee!",
+                stringResource(R.string.buy_coffee),
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.tertiary
             )
@@ -381,7 +382,7 @@ fun ConfigScreen(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        "Original",
+                        stringResource(R.string.original),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -402,7 +403,7 @@ fun ConfigScreen(
                 
                 Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
                      Text(
-                        "Estimated",
+                        stringResource(R.string.estimated),
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.primary
                     )
@@ -418,12 +419,12 @@ fun ConfigScreen(
         
         Spacer(modifier = Modifier.height(32.dp))
         
-        Text("Quality Preset", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+        Text(stringResource(R.string.quality_preset), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
 
         val presets = listOf(
-            Triple(QualityPreset.HIGH, "High", "Optimized bitrate only"),
-            Triple(QualityPreset.MEDIUM, "Medium", "1080p • 30fps"),
-            Triple(QualityPreset.LOW, "Low", "720p • 30fps")
+            Triple(QualityPreset.HIGH, stringResource(R.string.preset_high), stringResource(R.string.preset_high_desc)),
+            Triple(QualityPreset.MEDIUM, stringResource(R.string.preset_medium), stringResource(R.string.preset_medium_desc)),
+            Triple(QualityPreset.LOW, stringResource(R.string.preset_low), stringResource(R.string.preset_low_desc))
         )
         
         presets.forEach { (preset, title, sub) ->
@@ -456,18 +457,18 @@ fun ConfigScreen(
         
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text("Target Size Limits", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+        Text(stringResource(R.string.target_size_limits), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
         
         val sizePresets = listOf(
-            10f to "Discord • GitHub",
-            25f to "Email",
-            50f to "Stories • Nitro Basic",
-            100f to "Messenger • BlueSky",
-            500f to "Nitro • Reels",
-            512f to "Twitter/X",
-            2048f to "WhatsApp • Telegram",
-            4096f to "TG Premium • Feed",
-            8192f to "X Premium"
+            10f to stringResource(R.string.size_discord),
+            25f to stringResource(R.string.size_email),
+            50f to stringResource(R.string.size_stories),
+            100f to stringResource(R.string.size_messenger),
+            500f to stringResource(R.string.size_nitro),
+            512f to stringResource(R.string.size_twitter),
+            2048f to stringResource(R.string.size_whatsapp),
+            4096f to stringResource(R.string.size_tg_premium),
+            8192f to stringResource(R.string.size_x_premium)
         )
 
         Row(
@@ -483,8 +484,10 @@ fun ConfigScreen(
                     onClick = { viewModel.setTargetSize(size) },
                     label = { 
                         Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            val unitGb = stringResource(R.string.unit_gb)
+                            val unitMb = stringResource(R.string.unit_mb)
                             Text(
-                                if (size >= 1024) "${(size/1024).toInt()} GB" else "${size.toInt()} MB", 
+                                if (size >= 1024) "${(size/1024).toInt()} $unitGb" else "${size.toInt()} $unitMb", 
                                 style = MaterialTheme.typography.labelLarge,
                                 fontWeight = FontWeight.Bold
                             )
@@ -508,7 +511,7 @@ fun ConfigScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text("Advanced Options", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
+            Text(stringResource(R.string.advanced_options), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
             Icon(
                 if (advancedExpanded) Icons.Default.Close else Icons.Default.Add, 
                 contentDescription = null,
@@ -523,7 +526,7 @@ fun ConfigScreen(
             exit = shrinkVertically() + fadeOut()
         ) {
             Column(modifier = Modifier.padding(top = 8.dp)) {
-                Text("Target Size", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
                  Slider(
                     value = state.targetSizeMb,
                     onValueChange = { viewModel.setTargetSize(it) },
@@ -533,30 +536,38 @@ fun ConfigScreen(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                Text("Encoding", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
                 Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     FilterChip(
                         selected = state.useH265,
                         onClick = { viewModel.setUseH265(true) },
-                        label = { Text("H.265 (Efficient)") }
+                        label = { Text(stringResource(R.string.h265_efficient)) }
                     )
                     FilterChip(
                         selected = !state.useH265,
                         onClick = { viewModel.setUseH265(false) },
-                        label = { Text("H.264 (Compat)") }
+                        label = { Text(stringResource(R.string.h264_compat)) }
                     )
                 }
                  
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                Text("Resolution", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.resolution), style = MaterialTheme.typography.labelLarge)
                 Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    val allRes = listOf(4320 to "8K", 2160 to "4K", 1440 to "2K", 1080 to "1080p", 720 to "720p", 480 to "480p")
+                    // Predefined resolution labels
+                    val res4320 = stringResource(R.string.res_8k)
+                    val res2160 = stringResource(R.string.res_4k)
+                    val res1440 = stringResource(R.string.res_2k)
+                    val res1080 = stringResource(R.string.res_1080p)
+                    val res720 = stringResource(R.string.res_720p)
+                    val res480 = stringResource(R.string.res_480p)
+
+                    val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 480 to res480)
                     androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                          FilterChip(
                             selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
                             onClick = { viewModel.setResolution(state.originalHeight) }, 
-                            label = { Text("Original") },
+                            label = { Text(stringResource(R.string.original)) },
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         allRes.filter { it.first <= state.originalHeight }.forEach { (res, label) ->
@@ -572,23 +583,23 @@ fun ConfigScreen(
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
-                Text("Framerate", style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.framerate), style = MaterialTheme.typography.labelLarge)
                 Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                      FilterChip(
                         selected = state.targetFps == 0,
                         onClick = { viewModel.setFps(0) },
-                        label = { Text("Original") }
+                        label = { Text(stringResource(R.string.original)) }
                     )
                     FilterChip(
                         selected = state.targetFps == 60,
                         onClick = { viewModel.setFps(60) },
-                        label = { Text("60fps") },
+                        label = { Text(stringResource(R.string.fps_60)) },
                         enabled = state.originalFps >= 50f
                     )
                     FilterChip(
                         selected = state.targetFps == 30,
                         onClick = { viewModel.setFps(30) },
-                        label = { Text("30fps") }
+                        label = { Text(stringResource(R.string.fps_30)) }
                     )
                 }
             }
@@ -604,13 +615,13 @@ fun ConfigScreen(
                 .scaleOnPress { viewModel.startCompression(context) },
             shape = RoundedCornerShape(16.dp)
         ) {
-            Text("Start Compression", fontSize = 16.sp)
+            Text(stringResource(R.string.start_compression), fontSize = 16.sp)
         }
         
         if (state.error != null) {
             Spacer(modifier = Modifier.height(16.dp))
             Text(
-                "Error: ${state.error}",
+                stringResource(R.string.error_prefix, state.error!!),
                 color = MaterialTheme.colorScheme.error,
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier.fillMaxWidth(),
@@ -625,7 +636,7 @@ fun ConfigScreen(
                 onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
             ) {
                  Text(
-                    "☕ Happy with Compressor? Buy me a coffee!",
+                    stringResource(R.string.buy_coffee),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.tertiary
                 )
@@ -727,7 +738,7 @@ fun CompressingScreen(
                     horizontalAlignment = Alignment.Start
                 ) {
                     Text(
-                        "COMPRESSING VIDEO",
+                        stringResource(R.string.compressing_video_label),
                         style = MaterialTheme.typography.labelLarge,
                         color = Color.Gray,
                         fontWeight = FontWeight.Bold
@@ -754,7 +765,7 @@ fun CompressingScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF0000))
             ) {
                 Text(
-                    "Cancel",
+                    stringResource(R.string.cancel),
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Medium,
                     color = Color.White
@@ -767,7 +778,7 @@ fun CompressingScreen(
 }
 
 
-// Motion System - M3 Expressive
+// Motion System - M3 Expressive - Currently unused, couldn't figure it out without getting 9 jillion errors, feel free to open a PR to fix it
 // Spatial (Movements, Transforms)
 val ExpressiveSpatialSpring = spring<Float>(
     dampingRatio = 0.8f,
@@ -798,7 +809,7 @@ fun Modifier.scaleOnPress(
         }
         .clickable(
             interactionSource = interactionSource,
-            indication = null, // Disable default ripple if using scale, or keep it.
+            indication = null,
             onClick = {
                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                 onClick()

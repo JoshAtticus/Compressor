@@ -18,3 +18,7 @@ app-debug.apk
 output-metadata.json
 .kotlin/*
 .idea/*
+/app/release/*
+*.dm
+*.apk
+*.log

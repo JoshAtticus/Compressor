@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
+    <string name="share">Compartir</string>
+    <string name="saved">Guardado</string>
+    <string name="save_to_photos">Guardar en Fotos</string>
+    <string name="compress_another_video">Comprimir otro video</string>
+    <string name="buy_coffee">☕ ¿Te gusta Compressor? ¡Invítame a un café!</string>
+    <string name="share_video_title">Compartir video comprimido</string>
+    <string name="share_error">No se puede compartir: %1$s</string>
+    <string name="original">Original</string>
+    <string name="estimated">Estimado</string>
+    <string name="preset_high">Alta</string>
+    <string name="preset_high_desc">Solo tasa de bits optimizada</string>
+    <string name="preset_medium">Media</string>
+    <string name="preset_low">Baja</string>
+    <string name="quality_preset">Ajuste de calidad</string>
+    <string name="target_size_limits">Límite de tamaño</string>
+    <string name="advanced_options">Opciones avanzadas</string>
+    <string name="target_size">Tamaño objetivo</string>
+    <string name="encoding">Codificación</string>
+    <string name="h265_efficient">H.265 (Eficiente)</string>
+    <string name="h264_compat">H.264 (Compatible)</string>
+    <string name="resolution">Resolución</string>
+    <string name="framerate">Fotogramas</string>
+    <string name="start_compression">Iniciar compresión</string>
+    <string name="error_prefix">Error: %1$s</string>
+    <string name="select_video">Selecciona un video para comprimir</string>
+    <string name="total_saved">Has ahorrado %1$s de almacenamiento con Compressor</string>
+    <string name="compression_complete">¡Compresión completada!</string>
+    <string name="compressing_video_label">COMPRIMIENDO VIDEO</string>
+    <string name="cancel">Cancelar</string>
+    <string name="error_file_lost">Archivo perdido</string>
+</resources>

@@ -48,6 +48,8 @@ Compressor wouldn't be possible without these amazing people
 
 [@sirtoaks](https://github.com/sirtoaks) - Provided funding to get Compressor on Google Play
 
+I would like to acknowledge that Compressor has used AI language models to assist in translation. Should you find any issues in translation, please open a bug report or a pull request so they can be fixed.
+
 ## Star History
 
 [![Star History Chart](https://api.star-history.com/svg?repos=JoshAtticus/Compressor&type=Date)](https://star-history.com/#JoshAtticus/Compressor&Date)

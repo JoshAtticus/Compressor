@@ -184,7 +184,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             originalFps = fps,
             durationMs = duration,
             targetSizeMb = defaultTargetMb,
-            targetResolutionHeight = height, // Default to original
+            targetResolutionHeight = height,
             activePreset = QualityPreset.HIGH,
             totalSavedBytes = currentSavedBytes
         )
@@ -311,9 +311,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         // Use smart min bitrate logic
         val minBitrate = try {
-            // Reflection hack to access private property or just duplicate logical for now?
-            // Actually let's just use the logic directly here since we are inside the class
-             
             val h = if (currentState.targetResolutionHeight > 0) currentState.targetResolutionHeight else currentState.originalHeight
             var base = when {
                 h >= 2160 -> 4_000_000L
@@ -332,7 +329,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             500_000L
         }
 
-        val finalBitrate = targetBitrate.coerceAtLeast(minBitrate)
+        // Cap at original bitrate to prevent inflating size
+        val originalBitrateLong = if (currentState.originalBitrate > 0) currentState.originalBitrate.toLong() else Long.MAX_VALUE
+        val finalBitrate = targetBitrate.coerceAtLeast(minBitrate).coerceAtMost(originalBitrateLong)
 
         // 2. Encoder setup
         val videoMimeType = if (currentState.useH265) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
@@ -372,9 +371,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                 override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
                     _uiState.update { 
+                        val unknownMsg = getApplication<Application>().getString(R.string.error_unknown)
                         it.copy(
                             isCompressing = false, 
-                            error = exportException.localizedMessage ?: "Unknown error"
+                            error = exportException.localizedMessage ?: unknownMsg
                         ) 
                     }
                 }
@@ -429,7 +429,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             try {
                 val file = File(compressedUri.path!!)
                 if (!file.exists()) {
-                    _uiState.update { it.copy(error = "File lost") }
+                    _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_file_lost)) }
                     return@launch
                 }
                 
@@ -441,7 +441,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  _uiState.update { it.copy(saveSuccess = true) }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _uiState.update { it.copy(error = "Save failed: ${e.message}") }
+                _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
             }
         }
     }
@@ -454,7 +454,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             try {
                 val file = File(compressedUri.path!!)
                 if (!file.exists()) {
-                    _uiState.update { it.copy(error = "File lost") }
+                    _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_file_lost)) }
                     return@launch
                 }
 
@@ -492,11 +492,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     
                     _uiState.update { it.copy(saveSuccess = true) }
                 } else {
-                     _uiState.update { it.copy(error = "Could not create gallery entry") }
+                     _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_gallery_entry)) }
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
-                _uiState.update { it.copy(error = "Save failed: ${e.message}") }
+                _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
             }
         }
     }
