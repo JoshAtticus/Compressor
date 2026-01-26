@@ -467,8 +467,6 @@ fun ConfigScreen(
         
         Spacer(modifier = Modifier.height(24.dp))
 
-        Text(stringResource(R.string.target_size_limits), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
-        
         val sizePresets = listOf(
             10f to stringResource(R.string.size_discord),
             25f to stringResource(R.string.size_email),
@@ -479,37 +477,43 @@ fun ConfigScreen(
             2048f to stringResource(R.string.size_whatsapp),
             4096f to stringResource(R.string.size_tg_premium),
             8192f to stringResource(R.string.size_x_premium)
-        )
-
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .horizontalScroll(rememberScrollState())
-                .padding(bottom = 8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            sizePresets.forEach { (size, label) ->
-                FilterChip(
-                    selected = state.targetSizeMb == size,
-                    onClick = { viewModel.setTargetSize(size) },
-                    label = { 
-                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                            val unitGb = stringResource(R.string.unit_gb)
-                            val unitMb = stringResource(R.string.unit_mb)
-                            Text(
-                                if (size >= 1024) "${(size/1024).toInt()} $unitGb" else "${size.toInt()} $unitMb", 
-                                style = MaterialTheme.typography.labelLarge,
-                                fontWeight = FontWeight.Bold
-                            )
-                            Text(label, style = MaterialTheme.typography.labelSmall)
-                        }
-                    },
-                    modifier = Modifier.heightIn(min = 48.dp)
-                )
-            }
+        ).filter { (size, _) -> 
+            size < (state.originalSize.toFloat() / (1024f * 1024f))
         }
-        
-        Spacer(modifier = Modifier.height(24.dp))
+
+        if (sizePresets.isNotEmpty()) {
+            Text(stringResource(R.string.target_size_limits), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .horizontalScroll(rememberScrollState())
+                    .padding(bottom = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                sizePresets.forEach { (size, label) ->
+                    FilterChip(
+                        selected = state.targetSizeMb == size,
+                        onClick = { viewModel.setTargetSize(size) },
+                        label = { 
+                            Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                                val unitGb = stringResource(R.string.unit_gb)
+                                val unitMb = stringResource(R.string.unit_mb)
+                                Text(
+                                    if (size >= 1024) "${(size/1024).toInt()} $unitGb" else "${size.toInt()} $unitMb", 
+                                    style = MaterialTheme.typography.labelLarge,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(label, style = MaterialTheme.typography.labelSmall)
+                            }
+                        },
+                        modifier = Modifier.heightIn(min = 48.dp)
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+        }
         
         var advancedExpanded by remember { mutableStateOf(false) }
         Row(

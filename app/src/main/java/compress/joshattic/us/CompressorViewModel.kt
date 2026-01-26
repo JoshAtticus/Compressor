@@ -211,23 +211,23 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  }
             }
             QualityPreset.MEDIUM -> {
-                // Medium: 1080p, 30fps
+                // Medium: 1080p, 30fps (unless original is lower)
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.MEDIUM,
-                         targetResolutionHeight = 1080,
-                         targetFps = 30, // Force 30
+                         targetResolutionHeight = minOf(1080, current.originalHeight),
+                         targetFps = if (current.originalFps < 30) 0 else 30,
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f)
                      ) 
                  }
             }
             QualityPreset.LOW -> {
-                // Low: 720p, 30fps
+                // Low: 720p, 30fps (unless original is lower)
                   _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.LOW,
-                         targetResolutionHeight = 720,
-                         targetFps = 30,
+                         targetResolutionHeight = minOf(720, current.originalHeight),
+                         targetFps = if (current.originalFps < 30) 0 else 30,
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f)
                      ) 
                  }
