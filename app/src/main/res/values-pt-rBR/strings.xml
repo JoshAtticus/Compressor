@@ -24,6 +24,7 @@
     <string name="framerate">Taxa de quadros</string>
     <string name="start_compression">Iniciar compressão</string>
     <string name="error_prefix">Erro: %1$s</string>
+    <string name="error_codec_unsupported">Este codec de vídeo não é suportado pelo hardware do seu dispositivo.</string>
     <string name="select_video">Selecione um vídeo para comprimir</string>
     <string name="total_saved">Você economizou %1$s de espaço com o Compressor</string>
     <string name="compression_complete">Compressão concluída!</string>

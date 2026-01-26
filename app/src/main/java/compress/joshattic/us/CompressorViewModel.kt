@@ -370,11 +370,20 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 }
 
                 override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
+                    val app = getApplication<Application>()
                     _uiState.update { 
-                        val unknownMsg = getApplication<Application>().getString(R.string.error_unknown)
+                        val isCodecError = exportException.errorCode == ExportException.ERROR_CODE_DECODER_INIT_FAILED ||
+                                           exportException.errorCode == ExportException.ERROR_CODE_ENCODER_INIT_FAILED
+
+                        val errorMsg = if (isCodecError) {
+                            app.getString(R.string.error_codec_unsupported)
+                        } else {
+                            exportException.localizedMessage ?: app.getString(R.string.error_unknown)
+                        }
+
                         it.copy(
                             isCompressing = false, 
-                            error = exportException.localizedMessage ?: unknownMsg
+                            error = errorMsg
                         ) 
                     }
                 }

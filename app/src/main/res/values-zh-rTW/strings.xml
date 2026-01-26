@@ -24,6 +24,7 @@
     <string name="framerate">幀率</string>
     <string name="start_compression">開始壓縮</string>
     <string name="error_prefix">錯誤：%1$s</string>
+    <string name="error_codec_unsupported">此影片編碼格式不被您的裝置硬體支援。</string>
     <string name="select_video">選擇要壓縮的影片</string>
     <string name="total_saved">您已使用 Compressor 節省了 %1$s 的儲存空間</string>
     <string name="compression_complete">壓縮完成！</string>

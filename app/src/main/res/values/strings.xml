@@ -45,6 +45,7 @@
     <string name="error_save_failed">Save failed: %1$s</string>
     <string name="error_gallery_entry">Could not create gallery entry</string>
     <string name="error_unknown">Unknown error</string>
+    <string name="error_codec_unsupported">This video codec is not supported by your device hardware.</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

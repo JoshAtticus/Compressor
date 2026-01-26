@@ -114,6 +114,11 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val state by viewModel.uiState.collectAsState()
     val context = LocalContext.current
     val window = (context as? ComponentActivity)?.window
+
+    val shareVideoTitle = stringResource(R.string.share_video_title)
+    // We fetch the raw template string here to use in the non-composable callback callback below
+    // Note: R.string.share_error is expected to have a format placeholder (e.g. %s)
+    val shareErrorTemplate = stringResource(R.string.share_error)
     
     // Keep the screen on when compressing
     DisposableEffect(Unit) {
@@ -154,9 +159,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 putExtra(Intent.EXTRA_STREAM, contentUri)
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
-            context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_video_title)))
+            context.startActivity(Intent.createChooser(shareIntent,shareVideoTitle))
         } catch (e: Exception) {
-            Toast.makeText(context, context.getString(R.string.share_error, e.message), Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, shareErrorTemplate.format(e.message), Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -365,13 +370,18 @@ fun ConfigScreen(
     context: android.content.Context
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(rememberScrollState())
-            .padding(horizontal = 24.dp, vertical = 16.dp)
+    Box(
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
-        ElevatedCard(
+        Column(
+            modifier = Modifier
+                .widthIn(max = 600.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .padding(horizontal = 24.dp, vertical = 16.dp)
+        ) {
+            ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(24.dp),
             colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
@@ -643,6 +653,7 @@ fun ConfigScreen(
             }
         }
         Spacer(modifier = Modifier.height(48.dp))
+        }
     }
 }
 
@@ -677,13 +688,18 @@ fun CompressingScreen(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFF101010)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            Spacer(modifier = Modifier.height(60.dp))
+            Column(
+                modifier = Modifier
+                    .widthIn(max = 600.dp)
+                    .fillMaxSize()
+                    .padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+            Spacer(modifier = Modifier.height(32.dp))
             
             // Thumbnail with Size Overlay
             Box(
@@ -773,6 +789,7 @@ fun CompressingScreen(
             }
             
             Spacer(modifier = Modifier.height(24.dp))
+        }
         }
     }
 }

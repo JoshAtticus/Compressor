@@ -31,4 +31,5 @@
     <string name="compressing_video_label">COMPRIMIENDO VIDEO</string>
     <string name="cancel">Cancelar</string>
     <string name="error_file_lost">Archivo perdido</string>
+    <string name="error_codec_unsupported">Este códec de video no es compatible con el hardware de tu dispositivo.</string>
 </resources>
