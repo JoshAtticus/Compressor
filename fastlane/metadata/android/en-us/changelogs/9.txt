@@ -1,0 +1,7 @@
+Compressor 1.2.0 adds new features:
+
+- New dedicated tablet UI for enhanced usability in landscape mode
+- Target size presets higher than the original video size are now hidden
+- Quality presets no longer upscale videos (resulting in a larger than needed file with worse quality)
+- Incompatible video codecs are now handled gracefully
+- Removed `ACCESSS_NETWORK_STATE` permission added by a library
