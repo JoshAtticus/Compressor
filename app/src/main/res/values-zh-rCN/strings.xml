@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
+    <string name="share">分享</string>
+    <string name="saved">已保存</string>
+    <string name="save_to_photos">保存到相册</string>
+    <string name="compress_another_video">压缩另一个视频</string>
+    <string name="buy_coffee">☕ 喜欢 Compressor 吗？请我喝杯咖啡！</string>
+    <string name="share_video_title">分享已压缩视频</string>
+    <string name="share_error">无法分享：%1$s</string>
+    <string name="original">原始大小</string>
+    <string name="estimated">预计大小</string>
+
+    <!-- Presets -->
+    <string name="preset_high">高</string>
+    <string name="preset_high_desc">仅优化码率</string>
+    <string name="preset_medium">中</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_low">低</string>
+    <string name="preset_low_desc">720p • 30fps</string>
+
+    <string name="quality_preset">质量预设</string>
+    <string name="target_size_limits">目标大小限制</string>
+    <string name="advanced_options">高级选项</string>
+    <string name="target_size">目标大小</string>
+    <string name="encoding">编码格式</string>
+    <string name="h265_efficient">H.265 (高效)</string>
+    <string name="h264_compat">H.264 (兼容)</string>
+    <string name="resolution">分辨率</string>
+    <string name="framerate">帧率</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
+    <string name="start_compression">开始压缩</string>
+    <string name="error_prefix">错误：%1$s</string>
+    <string name="select_video">选择要压缩的视频</string>
+    <string name="add_video_desc">添加视频</string>
+    <string name="total_saved">您已使用 Compressor 节省了 %1$s 的存储空间</string>
+    <string name="compression_complete">压缩完成！</string>
+    <string name="compressing_video_label">正在压缩视频</string>
+    <string name="cancel">取消</string>
+
+    <!-- Errors -->
+    <string name="error_file_lost">文件丢失</string>
+    <string name="error_export_failed">导出失败：%1$s</string>
+    <string name="error_save_failed">保存失败：%1$s</string>
+    <string name="error_gallery_entry">无法创建相册条目</string>
+    <string name="error_unknown">未知错误</string>
+    <string name="error_codec_unsupported">您的设备硬件不支持此视频编解码器。</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">电子邮件</string>
+    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_messenger">Messenger • BlueSky</string>
+    <string name="size_nitro">Nitro • Reels</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • 动态</string>
+    <string name="size_x_premium">X Premium</string>
+
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_480p">480p</string>
+</resources>

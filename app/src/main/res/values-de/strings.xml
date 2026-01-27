@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
+    <string name="share">Teilen</string>
+    <string name="saved">Gespeichert</string>
+    <string name="save_to_photos">In Fotos speichern</string>
+    <string name="compress_another_video">Weiteres Video komprimieren</string>
+    <string name="buy_coffee">☕ Gefällt dir Compressor? Spendier mir einen Kaffee!</string>
+    <string name="share_video_title">Komprimiertes Video teilen</string>
+    <string name="share_error">Teilen nicht möglich: %1$s</string>
+    <string name="original">Original</string>
+    <string name="estimated">Geschätzt</string>
+
+    <!-- Presets -->
+    <string name="preset_high">Hoch</string>
+    <string name="preset_high_desc">Nur Bitrate optimiert</string>
+    <string name="preset_medium">Mittel</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_low">Niedrig</string>
+    <string name="preset_low_desc">720p • 30fps</string>
+
+    <string name="quality_preset">Qualität</string>
+    <string name="target_size_limits">Größenbeschränkung</string>
+    <string name="advanced_options">Erweiterte Optionen</string>
+    <string name="target_size">Zielgröße</string>
+    <string name="encoding">Kodierung</string>
+    <string name="h265_efficient">H.265 (Effizient)</string>
+    <string name="h264_compat">H.264 (Kompatibel)</string>
+    <string name="resolution">Auflösung</string>
+    <string name="framerate">Bildrate</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
+    <string name="start_compression">Komprimierung starten</string>
+    <string name="error_prefix">Fehler: %1$s</string>
+    <string name="select_video">Video auswählen</string>
+    <string name="add_video_desc">Video hinzufügen</string>
+    <string name="total_saved">Du hast %1$s Speicherplatz mit Compressor gespart</string>
+    <string name="compression_complete">Komprimierung abgeschlossen!</string>
+    <string name="compressing_video_label">KOMPRIMIERE VIDEO</string>
+    <string name="cancel">Abbrechen</string>
+
+    <!-- Errors -->
+    <string name="error_file_lost">Datei verloren</string>
+    <string name="error_export_failed">Export fehlgeschlagen: %1$s</string>
+    <string name="error_save_failed">Speichern fehlgeschlagen: %1$s</string>
+    <string name="error_gallery_entry">Galerie-Eintrag konnte nicht erstellt werden</string>
+    <string name="error_unknown">Unbekannter Fehler</string>
+    <string name="error_codec_unsupported">Dieser Video-Codec wird von deinem Gerät nicht unterstützt.</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">E-Mail</string>
+    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_messenger">Messenger • BlueSky</string>
+    <string name="size_nitro">Nitro • Reels</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • Feed</string>
+    <string name="size_x_premium">X Premium</string>
+
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_480p">480p</string>
+</resources>

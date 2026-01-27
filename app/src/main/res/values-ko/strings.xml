@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
+    <string name="share">공유</string>
+    <string name="saved">저장됨</string>
+    <string name="save_to_photos">갤러리에 저장</string>
+    <string name="compress_another_video">다른 동영상 압축</string>
+    <string name="buy_coffee">☕ Compressor가 마음에 드시나요? 커피 한 잔 사주세요!</string>
+    <string name="share_video_title">압축된 동영상 공유</string>
+    <string name="share_error">공유할 수 없음: %1$s</string>
+    <string name="original">원본</string>
+    <string name="estimated">예상 크기</string>
+
+    <!-- Presets -->
+    <string name="preset_high">높음</string>
+    <string name="preset_high_desc">비트레이트만 최적화</string>
+    <string name="preset_medium">중간</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_low">낮음</string>
+    <string name="preset_low_desc">720p • 30fps</string>
+
+    <string name="quality_preset">품질 사전 설정</string>
+    <string name="target_size_limits">목표 크기 제한</string>
+    <string name="advanced_options">고급 옵션</string>
+    <string name="target_size">목표 크기</string>
+    <string name="encoding">인코딩</string>
+    <string name="h265_efficient">H.265 (효율적)</string>
+    <string name="h264_compat">H.264 (호환성)</string>
+    <string name="resolution">해상도</string>
+    <string name="framerate">프레임 속도</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
+    <string name="start_compression">압축 시작</string>
+    <string name="error_prefix">오류: %1$s</string>
+    <string name="select_video">압축할 동영상 선택</string>
+    <string name="add_video_desc">동영상 추가</string>
+    <string name="total_saved">Compressor로 %1$s의 용량을 절약했습니다</string>
+    <string name="compression_complete">압축 완료!</string>
+    <string name="compressing_video_label">동영상 압축 중</string>
+    <string name="cancel">취소</string>
+
+    <!-- Errors -->
+    <string name="error_file_lost">파일을 찾을 수 없음</string>
+    <string name="error_export_failed">내보내기 실패: %1$s</string>
+    <string name="error_save_failed">저장 실패: %1$s</string>
+    <string name="error_gallery_entry">갤러리 항목을 생성할 수 없습니다</string>
+    <string name="error_unknown">알 수 없는 오류</string>
+    <string name="error_codec_unsupported">이 기기의 하드웨어에서 이 코덱을 지원하지 않습니다.</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">이메일</string>
+    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_messenger">Messenger • BlueSky</string>
+    <string name="size_nitro">Nitro • Reels</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • 피드</string>
+    <string name="size_x_premium">X Premium</string>
+
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_480p">480p</string>
+</resources>
