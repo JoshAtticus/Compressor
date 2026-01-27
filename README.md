@@ -4,7 +4,7 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" height="40" alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/compress.joshattic.us)
 
 ### Help get Compressor on Google Play!
-Compressor is almost available on Google Play, but to do so, Google requires that we have at least 12 testers for 14 days. If you want to see Compressor on Google Play and are willing to keep it installed for at least 14 days (and try and use it at least once every 1/2 days), head to https://groups.google.com/g/compressor-beta-testing to join the testing group and install!
+Compressor is almost available on Google Play, but to do so, Google requires that we have at least 12 testers for 14 days. If you want to see Compressor on Google Play, head to https://groups.google.com/g/compressor-beta-testing to join the testing group and install!
 
 <img src="assets/select.png" alt="Screenshot 3" width="24%"/><img src="assets/settings.png" alt="Screenshot 1" width="24%"/><img src="assets/compressing.png" alt="Screenshot 2" width="24%"><img src="assets/done.png" alt="Screenshot 4" width="24%"/>
 
