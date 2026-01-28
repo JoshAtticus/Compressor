@@ -266,7 +266,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                        "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
                                        "Supported Encoders: ${state.supportedCodecs.joinToString()}"
                             clipboardManager.setText(AnnotatedString(text))
-                        }
+                        },
+                        onToggleShowBitrate = { viewModel.toggleShowBitrate() },
+                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() }
                     )
                 }
             }
@@ -443,7 +445,9 @@ fun ResultScreen(
 fun InfoDialog(
     state: CompressorUiState,
     onDismiss: () -> Unit,
-    onCopy: () -> Unit
+    onCopy: () -> Unit,
+    onToggleShowBitrate: () -> Unit,
+    onToggleBitrateUnit: () -> Unit
 ) {
     var copied by remember { mutableStateOf(false) }
     
@@ -459,7 +463,45 @@ fun InfoDialog(
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
                 InfoRow("Device", "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
                 InfoRow("Android", android.os.Build.VERSION.RELEASE)
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.show_bitrate), style = MaterialTheme.typography.bodyMedium)
+                    Switch(
+                        checked = state.showBitrate, 
+                        onCheckedChange = { onToggleShowBitrate() }
+                    )
+                }
+                
+                AnimatedVisibility(visible = state.showBitrate) {
+                     Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            stringResource(R.string.bitrate_unit_mbps), 
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(start = 16.dp)
+                        )
+                        Switch(
+                            checked = state.useMbps, 
+                            onCheckedChange = { onToggleBitrateUnit() }
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
                 Spacer(modifier = Modifier.height(8.dp))
+                
                 InfoRow("Supported Codecs", "")
                 state.supportedCodecs.forEach { codec ->
                      Text(

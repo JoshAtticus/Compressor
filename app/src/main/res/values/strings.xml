@@ -36,6 +36,8 @@
     <string name="info_title">Device &amp; App Info</string>
     <string name="info_copy_clipboard">Copy to Clipboard</string>
     <string name="info_copied">Copied to clipboard</string>
+    <string name="show_bitrate">Show Bitrate</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
     
     <string name="resolution">Resolution</string>
     <string name="framerate">Framerate</string>

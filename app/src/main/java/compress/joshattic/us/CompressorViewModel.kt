@@ -71,7 +71,9 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.3.0"
+    val appInfoVersion: String = "1.3.0",
+    val showBitrate: Boolean = false,
+    val useMbps: Boolean = false
 ) {
     private val minBitrate: Long
         get() {
@@ -129,10 +131,25 @@ data class CompressorUiState(
         }
 
     val formattedBitrate: String
-        get() = "${targetBitrate / 1000} kbps"
+        get() {
+            if (!showBitrate) return ""
+            return if (useMbps) {
+                String.format("%.1f Mbps", targetBitrate / 1_000_000f)
+            } else {
+                "${targetBitrate / 1000} kbps"
+            }
+        }
 
     val formattedOriginalBitrate: String
-        get() = if (originalBitrate > 0) "${originalBitrate / 1000} kbps" else "N/A"
+        get() {
+            if (!showBitrate) return ""
+            if (originalBitrate <= 0) return ""
+            return if (useMbps) {
+                String.format("%.1f Mbps", originalBitrate / 1_000_000f)
+            } else {
+                "${originalBitrate / 1000} kbps"
+            }
+        }
         
     val formattedTotalSaved: String
         get() = formatFileSize(totalSavedBytes)
@@ -196,7 +213,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val list = MediaCodecList(MediaCodecList.ALL_CODECS)
             for (info in list.codecInfos) {
                 if (!info.isEncoder) continue
-                return info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }
+                if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
+                    return true
+                }
             }
         } catch(e: Exception) {
             e.printStackTrace()
@@ -239,8 +258,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         // Calculate a reasonable default target (e.g., 70% of original)
         val defaultTargetMb = if (size > 0) (size / (1024.0 * 1024.0) * 0.7).toFloat() else 10f
 
-        // Keep current saved bytes
+        // Keep current saved bytes and preferences
         val currentSavedBytes = _uiState.value.totalSavedBytes
+        val showBitrate = _uiState.value.showBitrate
+        val useMbps = _uiState.value.useMbps
 
         // Reset state
         _uiState.value = CompressorUiState(
@@ -254,7 +275,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             targetSizeMb = defaultTargetMb,
             targetResolutionHeight = height,
             activePreset = QualityPreset.HIGH,
-            totalSavedBytes = currentSavedBytes
+            totalSavedBytes = currentSavedBytes,
+            showBitrate = showBitrate,
+            useMbps = useMbps
         )
     }
     
@@ -323,7 +346,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             ) 
         }
     }
-    
+    fun toggleShowBitrate() {
+        _uiState.update { it.copy(showBitrate = !it.showBitrate) }
+    }
+
+    fun toggleBitrateUnit() {
+        _uiState.update { it.copy(useMbps = !it.useMbps) }
+    }    
     fun setResolution(height: Int) {
         _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
     }
