@@ -147,14 +147,6 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
     
-    val deleteLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
-        if (result.resultCode == android.app.Activity.RESULT_OK) {
-             Toast.makeText(context, deleteSuccessMsg, Toast.LENGTH_SHORT).show()
-        } else {
-             Toast.makeText(context, deleteFailedMsg, Toast.LENGTH_SHORT).show()
-        }
-    }
-
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             viewModel.updateSelectedUri(context, uri)
@@ -240,7 +232,10 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             )
                             2 -> ResultScreen(
                                 state = state,
-                                onShare = { shareVideo(state.compressedUri) },
+                                onShare = { 
+                                    shareVideo(state.compressedUri) 
+                                    viewModel.markAsShared()
+                                },
                                 onSave = { 
                                     if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                                         viewModel.saveToGallery(context)
@@ -248,7 +243,6 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                         createDocumentLauncher.launch("CompressedVideo.mp4")
                                     }
                                 },
-                                onDeleteOriginal = { viewModel.deleteOriginal(context, deleteLauncher) },
                                 onCompressAnother = { viewModel.reset() },
                                 onBack = { viewModel.reset() }
                             )
@@ -315,33 +309,10 @@ fun ResultScreen(
     state: CompressorUiState, 
     onShare: () -> Unit,
     onSave: () -> Unit,
-    onDeleteOriginal: () -> Unit,
     onCompressAnother: () -> Unit,
     onBack: () -> Unit
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
-    var showDeleteConfirm by remember { mutableStateOf(false) }
-
-    if (showDeleteConfirm) {
-        AlertDialog(
-            onDismissRequest = { showDeleteConfirm = false },
-            title = { Text(stringResource(R.string.delete_confirm_title)) },
-            text = { Text(stringResource(R.string.delete_original)) },
-            confirmButton = {
-                TextButton(onClick = { 
-                    onDeleteOriginal()
-                    showDeleteConfirm = false 
-                }) {
-                    Text("Delete", color = MaterialTheme.colorScheme.error)
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = { showDeleteConfirm = false }) {
-                    Text(stringResource(R.string.cancel))
-                }
-            }
-        )
-    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(
@@ -409,18 +380,6 @@ fun ResultScreen(
         }
         
         Spacer(modifier = Modifier.height(16.dp))
-        
-        if (state.selectedUri != null) {
-            OutlinedButton(
-                onClick = { showDeleteConfirm = true },
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
-                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
-            ) {
-                Text(stringResource(R.string.delete_original))
-            }
-             Spacer(modifier = Modifier.height(16.dp))
-        }
 
         TextButton(onClick = onCompressAnother) {
             Text(stringResource(R.string.compress_another_video))
@@ -585,11 +544,13 @@ fun ConfigScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline
                     )
-                     Text(
-                        state.formattedOriginalBitrate,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.outline
-                    )
+                    if (state.showBitrate) {
+                        Text(
+                            state.formattedOriginalBitrate,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.outline
+                        )
+                    }
                 }
                 
                 Box(modifier = Modifier.height(40.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
@@ -606,12 +567,14 @@ fun ConfigScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        state.formattedBitrate,
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
+                    if (state.showBitrate) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            state.formattedBitrate,
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                        )
+                    }
                 }
             }
         }
@@ -740,7 +703,12 @@ fun ConfigScreen(
                 Spacer(modifier = Modifier.height(16.dp))
                 
                 Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
-                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    modifier = Modifier
+                        .padding(top = 8.dp)
+                        .horizontalScroll(rememberScrollState()),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     val supported = state.supportedCodecs
                     
                     if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {

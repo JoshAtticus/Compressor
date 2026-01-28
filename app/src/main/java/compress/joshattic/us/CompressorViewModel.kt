@@ -73,7 +73,8 @@ data class CompressorUiState(
     val supportedCodecs: List<String> = emptyList(),
     val appInfoVersion: String = "1.3.0",
     val showBitrate: Boolean = false,
-    val useMbps: Boolean = false
+    val useMbps: Boolean = false,
+    val hasShared: Boolean = false
 ) {
     private val minBitrate: Long
         get() {
@@ -262,6 +263,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentSavedBytes = _uiState.value.totalSavedBytes
         val showBitrate = _uiState.value.showBitrate
         val useMbps = _uiState.value.useMbps
+        val supportedCodecs = _uiState.value.supportedCodecs
 
         // Reset state
         _uiState.value = CompressorUiState(
@@ -277,8 +279,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             activePreset = QualityPreset.HIGH,
             totalSavedBytes = currentSavedBytes,
             showBitrate = showBitrate,
-            useMbps = useMbps
+            useMbps = useMbps,
+            supportedCodecs = supportedCodecs
         )
+    }
+    
+    fun markAsShared() {
+        _uiState.update { it.copy(hasShared = true) }
     }
     
     fun applyPreset(preset: QualityPreset) {
@@ -386,12 +393,23 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun reset() {
-        // Keep the saved bytes count
-        val savedBytes = _uiState.value.totalSavedBytes
+        // Keep persistent data
+        val current = _uiState.value
+        val savedBytes = current.totalSavedBytes
+        val supportedCodecs = current.supportedCodecs
+        val showBitrate = current.showBitrate
+        val useMbps = current.useMbps
+        
         // Clear previous temp files to free up space
         clearCache()
-        // Reset state but keep total saved bytes
-        _uiState.value = CompressorUiState(totalSavedBytes = savedBytes)
+        
+        // Reset state but keep preserved values
+        _uiState.value = CompressorUiState(
+            totalSavedBytes = savedBytes,
+            supportedCodecs = supportedCodecs,
+            showBitrate = showBitrate,
+            useMbps = useMbps
+        )
     }
 
     fun startCompression(context: Context) {
@@ -604,10 +622,16 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  if (recoverableSecurityException != null) {
                      val intentSenderRequest = androidx.activity.result.IntentSenderRequest.Builder(recoverableSecurityException.userAction.actionIntent.intentSender).build()
                      launcher.launch(intentSenderRequest)
+                     return
                  }
              }
+             _uiState.update { it.copy(error = "Cannot delete: Permission denied") }
+        } catch (e: IllegalArgumentException) {
+            e.printStackTrace()
+             _uiState.update { it.copy(error = "Cannot delete: Invalid file type (Photo Picker)") }
         } catch (e: Exception) {
             e.printStackTrace()
+            _uiState.update { it.copy(error = "Delete failed: ${e.localizedMessage}") }
         }
     }
 }
