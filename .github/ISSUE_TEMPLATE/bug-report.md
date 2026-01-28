@@ -11,6 +11,7 @@ assignees: JoshAtticus
 <!-- Please remove the space and put an X between the brackets to mark the checkbox! -->
 - [ ] I have checked that there are no open issues that are the same or very similar to mine, and I understand that my issue will be closed if it is a duplicate
 - [ ] I have filled in all required fields to the best of my ability, and I understand that my issue will be closed if they are not
+- [ ] I have copied the device & app info to my clipboard and pasted it into the device info section where indicated, and I understand that my issue will be closed if it is not
 - [ ] I have uploaded appropriate screenshots and log files, and I understand that my issue may be closed or remain unresolved if not
 - [ ] My issue is written in English, and I understand that my issue will be closed if it is not
 - [ ] I understand that my issue will be closed if all 5 of these checkboxes are not checked
@@ -31,6 +32,11 @@ Device Manufacturer* (e.g. Samsung):
 - Where did you get Compressor from?* (GitHub Releases, IzzyOnDroid/F-Droid, Google Play Store):
 - Device Chipset (e.g. Exynos 9820):
 - Device Model Number (e.g. SM-G973F):
+
+<!-- Now, please open Compressor, tap the info icon in the top right corner of the screen, tap Copy to Clipboard and paste the output here -->
+<!-- If you do not see it, you are using an old version of Compressor. Please update to 1.3.0 or later -->
+
+
 
 ## Screenshots (required)
 <!-- Screenshots are required except for when the app does not open -->
