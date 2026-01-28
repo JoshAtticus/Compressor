@@ -2,11 +2,9 @@ package compress.joshattic.us
 
 import android.app.Application
 import android.content.ContentValues
-import android.content.Intent
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaCodecList
-import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -26,7 +24,6 @@ import androidx.media3.transformer.EditedMediaItemSequence
 import androidx.media3.transformer.Effects
 import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
-import androidx.media3.transformer.TransformationRequest
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
 import androidx.media3.common.Effect
@@ -338,12 +335,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
     }
 
-    // Deprecated but kept for compatibility calls if any exist
-    fun setUseH265(enable: Boolean) {
-        val codec = if (enable) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
-        setVideoCodec(codec)
-    }
-
     fun setVideoCodec(codec: String) {
         _uiState.update { 
             it.copy(
@@ -603,35 +594,4 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun deleteOriginal(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<androidx.activity.result.IntentSenderRequest>) {
-        val uri = _uiState.value.selectedUri ?: return
-
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-                 val pi = MediaStore.createDeleteRequest(context.contentResolver, listOf(uri))
-                 val intentSenderRequest = androidx.activity.result.IntentSenderRequest.Builder(pi.intentSender).build()
-                 launcher.launch(intentSenderRequest)
-            } else {
-                context.contentResolver.delete(uri, null, null)
-                // If successful we assume it's gone. The Activity listener will actually reset logic on success, 
-                // but here we can optimistically say it worked if no exception
-            }
-        } catch (e: SecurityException) {
-             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                 val recoverableSecurityException = e as? android.app.RecoverableSecurityException
-                 if (recoverableSecurityException != null) {
-                     val intentSenderRequest = androidx.activity.result.IntentSenderRequest.Builder(recoverableSecurityException.userAction.actionIntent.intentSender).build()
-                     launcher.launch(intentSenderRequest)
-                     return
-                 }
-             }
-             _uiState.update { it.copy(error = "Cannot delete: Permission denied") }
-        } catch (e: IllegalArgumentException) {
-            e.printStackTrace()
-             _uiState.update { it.copy(error = "Cannot delete: Invalid file type (Photo Picker)") }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            _uiState.update { it.copy(error = "Delete failed: ${e.localizedMessage}") }
-        }
-    }
 }
