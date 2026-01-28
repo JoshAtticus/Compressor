@@ -2,8 +2,11 @@ package compress.joshattic.us
 
 import android.app.Application
 import android.content.ContentValues
+import android.content.Intent
 import android.content.Context
 import android.content.SharedPreferences
+import android.media.MediaCodecList
+import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -60,11 +63,15 @@ data class CompressorUiState(
     // Configuration
     val activePreset: QualityPreset = QualityPreset.HIGH,
     val targetSizeMb: Float = 10f,
-    val useH265: Boolean = true,
+    val useH265: Boolean = true, // Legacy, use videoCodec instead if possible, but keeping for compatibility if referenced elsewhere used as bool
+    val videoCodec: String = MimeTypes.VIDEO_H265,
     val targetResolutionHeight: Int = 0, // 0 means original
     val targetFps: Int = 0, // 0 means original
     
-    val totalSavedBytes: Long = 0L
+    val totalSavedBytes: Long = 0L,
+    
+    val supportedCodecs: List<String> = emptyList(),
+    val appInfoVersion: String = "1.1.0"
 ) {
     private val minBitrate: Long
         get() {
@@ -76,9 +83,12 @@ data class CompressorUiState(
                 h >= 720 -> 1_000_000L
                 else -> 500_000L
             }
-            // Adjust for H265 efficiency (approx 30-50% better)
-            if (useH265) {
+            
+            // Adjust for Codec efficiency
+            if (videoCodec == MimeTypes.VIDEO_H265) {
                 base = (base * 0.7).toLong()
+            } else if (videoCodec == MimeTypes.VIDEO_AV1) {
+                base = (base * 0.6).toLong()
             }
             
             val fpsVal = if (targetFps > 0) targetFps.toFloat() else originalFps
@@ -102,8 +112,31 @@ data class CompressorUiState(
             return String.format("%.1f MB", actualTarget)
         }
     
+    val targetBitrate: Int
+        get() {
+             val durationSec = if (durationMs > 0) durationMs / 1000.0 else 0.0
+             if (durationSec <= 0) return 2_000_000
+             
+             // Same logic as startCompression
+             val safetyMarginMb = (targetSizeMb - 2.5f).coerceAtLeast(targetSizeMb * 0.8f)
+             val targetBits = safetyMarginMb * 8 * 1024 * 1024
+             val calculated = (targetBits / durationSec).toLong()
+             
+             // Apply min/max guardrails
+             val original = if (originalBitrate > 0) originalBitrate.toLong() else Long.MAX_VALUE
+             val final = calculated.coerceAtLeast(minBitrate).coerceAtMost(original)
+             return final.toInt()
+        }
+
+    val formattedBitrate: String
+        get() = "${targetBitrate / 1000} kbps"
+
+    val formattedOriginalBitrate: String
+        get() = if (originalBitrate > 0) "${originalBitrate / 1000} kbps" else "N/A"
+        
     val formattedTotalSaved: String
         get() = formatFileSize(totalSavedBytes)
+
 
     val formattedOriginalSize: String
         get() = formatFileSize(originalSize)
@@ -133,9 +166,44 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     init {
         val saved = prefs.getLong("total_saved_bytes", 0L)
         _uiState.update { it.copy(totalSavedBytes = saved) }
+        checkSupportedCodecs()
         clearCache()
     }
     
+    private fun checkSupportedCodecs() {
+        val supported = mutableListOf<String>()
+        supported.add(MimeTypes.VIDEO_H264) // Always supported on Android 5.0+ 
+
+        if (hasEncoder(MimeTypes.VIDEO_H265)) {
+            supported.add(MimeTypes.VIDEO_H265)
+        }
+        if (hasEncoder(MimeTypes.VIDEO_AV1)) {
+            supported.add(MimeTypes.VIDEO_AV1)
+        }
+        
+        _uiState.update { 
+            var newCodec = it.videoCodec
+            // Fallback if H265 not supported but was default
+            if (newCodec == MimeTypes.VIDEO_H265 && !supported.contains(MimeTypes.VIDEO_H265)) {
+                newCodec = MimeTypes.VIDEO_H264
+            }
+            it.copy(supportedCodecs = supported, videoCodec = newCodec, useH265 = newCodec == MimeTypes.VIDEO_H265) 
+        }
+    }
+
+    private fun hasEncoder(mimeType: String): Boolean {
+        try {
+            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
+            for (info in list.codecInfos) {
+                if (!info.isEncoder) continue
+                return info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
+        return false
+    }
+
     private var compressionJob: Job? = null
     private var activeTransformer: Transformer? = null
 
@@ -240,8 +308,20 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
     }
 
+    // Deprecated but kept for compatibility calls if any exist
     fun setUseH265(enable: Boolean) {
-        _uiState.update { it.copy(useH265 = enable, activePreset = QualityPreset.CUSTOM) }
+        val codec = if (enable) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
+        setVideoCodec(codec)
+    }
+
+    fun setVideoCodec(codec: String) {
+        _uiState.update { 
+            it.copy(
+                videoCodec = codec, 
+                useH265 = codec == MimeTypes.VIDEO_H265, 
+                activePreset = QualityPreset.CUSTOM
+            ) 
+        }
     }
     
     fun setResolution(height: Int) {
@@ -297,49 +377,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val outputPath = outputFile.absolutePath
 
         // 1. Calculate Bitrate
-        val durationSec = if (currentState.durationMs > 0) currentState.durationMs / 1000.0 else 0.0
-
-        val targetBitrate = if (durationSec > 0) {
-            // Apply safety margin to prevent overshoot
-            // "Target 2-3MB smaller" -> Subtract 2.5MB, but ensure we don't go below 80% for small files
-            val safetyMarginMb = (currentState.targetSizeMb - 2.5f).coerceAtLeast(currentState.targetSizeMb * 0.8f)
-            val targetBits = safetyMarginMb * 8 * 1024 * 1024
-            (targetBits / durationSec).toLong()
-        } else {
-            2_000_000 // Fallback
-        }
-
-        // Use smart min bitrate logic
-        val minBitrate = try {
-            val h = if (currentState.targetResolutionHeight > 0) currentState.targetResolutionHeight else currentState.originalHeight
-            var base = when {
-                h >= 2160 -> 4_000_000L
-                h >= 1440 -> 2_500_000L
-                h >= 1080 -> 1_500_000L
-                h >= 720 -> 1_000_000L
-                else -> 500_000L
-            }
-             if (currentState.useH265) {
-                base = (base * 0.7).toLong()
-            }
-            val fpsVal = if (currentState.targetFps > 0) currentState.targetFps.toFloat() else currentState.originalFps
-            val multiplier = if (fpsVal > 45) 1.5f else 1.0f
-            (base * multiplier).toLong()
-        } catch(e: Exception) {
-            500_000L
-        }
-
-        // Cap at original bitrate to prevent inflating size
-        val originalBitrateLong = if (currentState.originalBitrate > 0) currentState.originalBitrate.toLong() else Long.MAX_VALUE
-        val finalBitrate = targetBitrate.coerceAtLeast(minBitrate).coerceAtMost(originalBitrateLong)
+        val targetBitrate = currentState.targetBitrate.toLong() // Use the one calculated in UI state with guardrails
 
         // 2. Encoder setup
-        val videoMimeType = if (currentState.useH265) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
+        val videoMimeType = currentState.videoCodec
 
         val encoderFactory = DefaultEncoderFactory.Builder(context)
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
-                    .setBitrate(finalBitrate.toInt())
+                    .setBitrate(targetBitrate.toInt())
                     .build()
             )
             .build()
@@ -507,6 +553,32 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 e.printStackTrace()
                 _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
             }
+        }
+    }
+
+    fun deleteOriginal(context: Context, launcher: androidx.activity.result.ActivityResultLauncher<androidx.activity.result.IntentSenderRequest>) {
+        val uri = _uiState.value.selectedUri ?: return
+
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                 val pi = MediaStore.createDeleteRequest(context.contentResolver, listOf(uri))
+                 val intentSenderRequest = androidx.activity.result.IntentSenderRequest.Builder(pi.intentSender).build()
+                 launcher.launch(intentSenderRequest)
+            } else {
+                context.contentResolver.delete(uri, null, null)
+                // If successful we assume it's gone. The Activity listener will actually reset logic on success, 
+                // but here we can optimistically say it worked if no exception
+            }
+        } catch (e: SecurityException) {
+             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                 val recoverableSecurityException = e as? android.app.RecoverableSecurityException
+                 if (recoverableSecurityException != null) {
+                     val intentSenderRequest = androidx.activity.result.IntentSenderRequest.Builder(recoverableSecurityException.userAction.actionIntent.intentSender).build()
+                     launcher.launch(intentSenderRequest)
+                 }
+             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
 }

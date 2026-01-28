@@ -73,6 +73,11 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
 
+import androidx.compose.material.icons.outlined.Info
+import androidx.compose.ui.platform.ClipboardManager
+import androidx.compose.ui.platform.LocalClipboardManager
+import androidx.compose.ui.text.AnnotatedString
+
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<CompressorViewModel>()
 
@@ -115,10 +120,15 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val context = LocalContext.current
     val window = (context as? ComponentActivity)?.window
 
+    val clipboardManager = LocalClipboardManager.current
+    var showInfoDialog by remember { mutableStateOf(false) }
+
     val shareVideoTitle = stringResource(R.string.share_video_title)
     // We fetch the raw template string here to use in the non-composable callback callback below
     // Note: R.string.share_error is expected to have a format placeholder (e.g. %s)
     val shareErrorTemplate = stringResource(R.string.share_error)
+    val deleteSuccessMsg = stringResource(R.string.delete_original_success)
+    val deleteFailedMsg = stringResource(R.string.delete_original_failed)
     
     // Keep the screen on when compressing
     DisposableEffect(Unit) {
@@ -134,6 +144,14 @@ fun CompressorApp(viewModel: CompressorViewModel) {
             viewModel.cancelCompression()
         } else {
             viewModel.reset()
+        }
+    }
+    
+    val deleteLauncher = rememberLauncherForActivityResult(ActivityResultContracts.StartIntentSenderForResult()) { result ->
+        if (result.resultCode == android.app.Activity.RESULT_OK) {
+             Toast.makeText(context, deleteSuccessMsg, Toast.LENGTH_SHORT).show()
+        } else {
+             Toast.makeText(context, deleteFailedMsg, Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -190,7 +208,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                         },
                         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
                             containerColor = MaterialTheme.colorScheme.background
-                        )
+                        ),
+                        actions = {
+                            IconButton(onClick = { showInfoDialog = true }) {
+                                Icon(Icons.Outlined.Info, contentDescription = "Info", tint = MaterialTheme.colorScheme.onSurface)
+                            }
+                        }
                     )
                 }
             ) { innerPadding ->
@@ -225,12 +248,26 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                         createDocumentLauncher.launch("CompressedVideo.mp4")
                                     }
                                 },
+                                onDeleteOriginal = { viewModel.deleteOriginal(context, deleteLauncher) },
                                 onCompressAnother = { viewModel.reset() },
                                 onBack = { viewModel.reset() }
                             )
                             else -> ConfigScreen(state, viewModel, context)
                         }
                     }
+                }
+                
+                if (showInfoDialog) {
+                    InfoDialog(
+                        state = state,
+                        onDismiss = { showInfoDialog = false },
+                        onCopy = { 
+                            val text = "App Version: ${state.appInfoVersion}\n" +
+                                       "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
+                                       "Supported Encoders: ${state.supportedCodecs.joinToString()}"
+                            clipboardManager.setText(AnnotatedString(text))
+                        }
+                    )
                 }
             }
         }
@@ -276,14 +313,41 @@ fun ResultScreen(
     state: CompressorUiState, 
     onShare: () -> Unit,
     onSave: () -> Unit,
+    onDeleteOriginal: () -> Unit,
     onCompressAnother: () -> Unit,
     onBack: () -> Unit
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    var showDeleteConfirm by remember { mutableStateOf(false) }
+
+    if (showDeleteConfirm) {
+        AlertDialog(
+            onDismissRequest = { showDeleteConfirm = false },
+            title = { Text(stringResource(R.string.delete_confirm_title)) },
+            text = { Text(stringResource(R.string.delete_original)) },
+            confirmButton = {
+                TextButton(onClick = { 
+                    onDeleteOriginal()
+                    showDeleteConfirm = false 
+                }) {
+                    Text("Delete", color = MaterialTheme.colorScheme.error)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDeleteConfirm = false }) {
+                    Text(stringResource(R.string.cancel))
+                }
+            }
+        )
+    }
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(
         modifier = Modifier
+            .widthIn(max = 600.dp)
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(24.dp)
+            .verticalScroll(rememberScrollState()), // Added scroll for smaller screens/landscape
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -344,6 +408,18 @@ fun ResultScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
         
+        if (state.selectedUri != null) {
+            OutlinedButton(
+                onClick = { showDeleteConfirm = true },
+                modifier = Modifier.fillMaxWidth().height(56.dp),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error.copy(alpha = 0.5f)),
+                colors = ButtonDefaults.outlinedButtonColors(contentColor = MaterialTheme.colorScheme.error)
+            ) {
+                Text(stringResource(R.string.delete_original))
+            }
+             Spacer(modifier = Modifier.height(16.dp))
+        }
+
         TextButton(onClick = onCompressAnother) {
             Text(stringResource(R.string.compress_another_video))
         }
@@ -358,6 +434,66 @@ fun ResultScreen(
                 style = MaterialTheme.typography.labelMedium,
                 color = MaterialTheme.colorScheme.tertiary
             )
+        }
+    }
+    }
+}
+
+@Composable
+fun InfoDialog(
+    state: CompressorUiState,
+    onDismiss: () -> Unit,
+    onCopy: () -> Unit
+) {
+    var copied by remember { mutableStateOf(false) }
+    
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        title = {
+            Column {
+                 Text(stringResource(R.string.info_title), style = MaterialTheme.typography.titleLarge)
+                 Text("Compressor v${state.appInfoVersion}", style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+        },
+        text = {
+            Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                InfoRow("Device", "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+                InfoRow("Android", android.os.Build.VERSION.RELEASE)
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoRow("Supported Codecs", "")
+                state.supportedCodecs.forEach { codec ->
+                     Text(
+                        "• ${codec.substringAfter("/")}", 
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+            }
+        },
+        confirmButton = {
+            TextButton(
+                onClick = { 
+                    onCopy()
+                    copied = true 
+                }
+            ) {
+                Text(if (copied) stringResource(R.string.info_copied) else stringResource(R.string.info_copy_clipboard))
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) {
+                Text(stringResource(R.string.cancel))
+            }
+        }
+    )
+}
+
+@Composable
+fun InfoRow(label: String, value: String) {
+    Column(modifier = Modifier.padding(vertical = 4.dp)) {
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.primary)
+        if (value.isNotEmpty()) {
+            Text(value, style = MaterialTheme.typography.bodyMedium)
         }
     }
 }
@@ -407,6 +543,11 @@ fun ConfigScreen(
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.outline
                     )
+                     Text(
+                        state.formattedOriginalBitrate,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
                 }
                 
                 Box(modifier = Modifier.height(40.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
@@ -422,6 +563,12 @@ fun ConfigScreen(
                         style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        state.formattedBitrate,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                     )
                 }
             }
@@ -552,14 +699,25 @@ fun ConfigScreen(
                 
                 Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
                 Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    val supported = state.supportedCodecs
+                    
+                    if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {
+                        FilterChip(
+                            selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_AV1,
+                            onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) },
+                            label = { Text(stringResource(R.string.av1_high_efficiency)) }
+                        )
+                    }
+                    if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_H265)) {
+                        FilterChip(
+                            selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H265,
+                            onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) },
+                            label = { Text(stringResource(R.string.h265_efficient)) }
+                        )
+                    }
                     FilterChip(
-                        selected = state.useH265,
-                        onClick = { viewModel.setUseH265(true) },
-                        label = { Text(stringResource(R.string.h265_efficient)) }
-                    )
-                    FilterChip(
-                        selected = !state.useH265,
-                        onClick = { viewModel.setUseH265(false) },
+                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H264,
+                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) },
                         label = { Text(stringResource(R.string.h264_compat)) }
                     )
                 }
@@ -690,7 +848,7 @@ fun CompressingScreen(
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFF101010)
+        color = MaterialTheme.colorScheme.background
     ) {
         Box(
             modifier = Modifier.fillMaxSize(),
@@ -751,7 +909,7 @@ fun CompressingScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1E))
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Column(
                     modifier = Modifier.padding(24.dp),
@@ -760,15 +918,13 @@ fun CompressingScreen(
                     Text(
                         stringResource(R.string.compressing_video_label),
                         style = MaterialTheme.typography.labelLarge,
-                        color = Color.Gray,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
                     LinearProgressIndicator(
                         progress = { state.progress },
                         modifier = Modifier.fillMaxWidth().height(6.dp),
-                        color = Color.White,
-                        trackColor = Color(0xFF333333),
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )
                 }
@@ -782,13 +938,15 @@ fun CompressingScreen(
                     .fillMaxWidth()
                     .height(56.dp),
                 shape = RoundedCornerShape(28.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF0000))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.errorContainer,
+                    contentColor = MaterialTheme.colorScheme.onErrorContainer
+                )
             ) {
                 Text(
                     stringResource(R.string.cancel),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = Color.White
+                    fontWeight = FontWeight.Medium
                 )
             }
             

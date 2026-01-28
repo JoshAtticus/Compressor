@@ -24,8 +24,19 @@
     <string name="advanced_options">Advanced Options</string>
     <string name="target_size">Target Size</string>
     <string name="encoding">Encoding</string>
+    <string name="av1_high_efficiency">AV1 (Fast • Efficient)</string>
     <string name="h265_efficient">H.265 (Efficient)</string>
     <string name="h264_compat">H.264 (Compat)</string>
+    
+    <string name="delete_original">Delete Original Video</string>
+    <string name="delete_original_success">Video deleted successfully</string>
+    <string name="delete_original_failed">Failed to delete video</string>
+    <string name="delete_confirm_title">Delete Original?</string>
+    
+    <string name="info_title">Device &amp; App Info</string>
+    <string name="info_copy_clipboard">Copy to Clipboard</string>
+    <string name="info_copied">Copied to clipboard</string>
+    
     <string name="resolution">Resolution</string>
     <string name="framerate">Framerate</string>
     <string name="fps_60">60fps</string>
