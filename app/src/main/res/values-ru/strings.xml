@@ -24,6 +24,7 @@
     <string name="advanced_options">Расширенные настройки</string>
     <string name="target_size">Целевой размер</string>
     <string name="encoding">Кодирование</string>
+    <string name="av1_high_efficiency">AV1 (Быстро • Эффективно)</string>
     <string name="h265_efficient">H.265 (Эффективный)</string>
     <string name="h264_compat">H.264 (Совместимый)</string>
     <string name="resolution">Разрешение</string>
@@ -46,7 +47,11 @@
     <string name="error_gallery_entry">Не удалось создать запись в галерее</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="error_codec_unsupported">Этот кодек не поддерживается вашим устройством.</string>
-
+    <string name="info_title">Инфо о устройстве и приложении</string>
+    <string name="info_copy_clipboard">Скопировать в буфер</string>
+    <string name="info_copied">Скопировано в буфер</string>
+    <string name="show_bitrate">Показать битрейт</string>
+    <string name="bitrate_unit_mbps">Мбит/с</string>
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">Email</string>

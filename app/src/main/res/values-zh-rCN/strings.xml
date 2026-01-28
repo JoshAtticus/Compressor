@@ -24,6 +24,7 @@
     <string name="advanced_options">高级选项</string>
     <string name="target_size">目标大小</string>
     <string name="encoding">编码格式</string>
+    <string name="av1_high_efficiency">AV1 (快速 • 高效)</string>
     <string name="h265_efficient">H.265 (高效)</string>
     <string name="h264_compat">H.264 (兼容)</string>
     <string name="resolution">分辨率</string>
@@ -46,6 +47,12 @@
     <string name="error_gallery_entry">无法创建相册条目</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_codec_unsupported">您的设备硬件不支持此视频编解码器。</string>
+
+    <string name="info_title">设备与应用信息</string>
+    <string name="info_copy_clipboard">复制到剪贴板</string>
+    <string name="info_copied">已复制到剪贴板</string>
+    <string name="show_bitrate">显示码率</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

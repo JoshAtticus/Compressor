@@ -18,6 +18,7 @@
     <string name="advanced_options">Opções avançadas</string>
     <string name="target_size">Tamanho final</string>
     <string name="encoding">Codificação</string>
+    <string name="av1_high_efficiency">AV1 (Rápido • Eficiente)</string>
     <string name="h265_efficient">H.265 (Eficiente)</string>
     <string name="h264_compat">H.264 (Compatível)</string>
     <string name="resolution">Resolução</string>
@@ -30,4 +31,32 @@
     <string name="compression_complete">Compressão concluída!</string>
     <string name="compressing_video_label">COMPRIMINDO VÍDEO</string>
     <string name="cancel">Cancelar</string>
+
+    <string name="info_title">Info do Dispositivo e App</string>
+    <string name="info_copy_clipboard">Copiar para área de transferência</string>
+    <string name="info_copied">Copiado para área de transferência</string>
+    <string name="show_bitrate">Mostrar taxa de bits</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">E-mail</string>
+    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_messenger">Messenger • BlueSky</string>
+    <string name="size_nitro">Nitro • Reels</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • Feed</string>
+    <string name="size_x_premium">X Premium</string>
+    
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_480p">480p</string>
 </resources>

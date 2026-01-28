@@ -18,6 +18,7 @@
     <string name="advanced_options">進階選項</string>
     <string name="target_size">目標大小</string>
     <string name="encoding">編碼格式</string>
+    <string name="av1_high_efficiency">AV1 (快速 • 高效)</string>
     <string name="h265_efficient">H.265 (高效)</string>
     <string name="h264_compat">H.264 (相容)</string>
     <string name="resolution">解析度</string>
@@ -30,4 +31,32 @@
     <string name="compression_complete">壓縮完成！</string>
     <string name="compressing_video_label">正在壓縮影片</string>
     <string name="cancel">取消</string>
+
+    <string name="info_title">裝置與應用程式資訊</string>
+    <string name="info_copy_clipboard">複製到剪貼簿</string>
+    <string name="info_copied">已複製到剪貼簿</string>
+    <string name="show_bitrate">顯示位元率</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">電子郵件</string>
+    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_messenger">Messenger • BlueSky</string>
+    <string name="size_nitro">Nitro • Reels</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • 動態</string>
+    <string name="size_x_premium">X Premium</string>
+    
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_480p">480p</string>
 </resources>

@@ -24,6 +24,7 @@
     <string name="advanced_options">Erweiterte Optionen</string>
     <string name="target_size">Zielgröße</string>
     <string name="encoding">Kodierung</string>
+    <string name="av1_high_efficiency">AV1 (Schnell • Effizient)</string>
     <string name="h265_efficient">H.265 (Effizient)</string>
     <string name="h264_compat">H.264 (Kompatibel)</string>
     <string name="resolution">Auflösung</string>
@@ -46,6 +47,12 @@
     <string name="error_gallery_entry">Galerie-Eintrag konnte nicht erstellt werden</string>
     <string name="error_unknown">Unbekannter Fehler</string>
     <string name="error_codec_unsupported">Dieser Video-Codec wird von deinem Gerät nicht unterstützt.</string>
+
+    <string name="info_title">Geräte- &amp; App-Info</string>
+    <string name="info_copy_clipboard">In die Zwischenablage kopieren</string>
+    <string name="info_copied">In die Zwischenablage kopiert</string>
+    <string name="show_bitrate">Bitrate anzeigen</string>
+    <string name="bitrate_unit_mbps">Mbit/s</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
