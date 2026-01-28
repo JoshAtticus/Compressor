@@ -22,3 +22,5 @@ output-metadata.json
 *.dm
 *.apk
 *.log
+app/release/baselineProfiles/0/app-release.dm
+app/release/baselineProfiles/0/app-release.dm
