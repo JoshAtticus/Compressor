@@ -252,14 +252,24 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 }
                 
                 if (showInfoDialog) {
+                    val infoText = "App Version: ${state.appInfoVersion}\n" +
+                                   "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
+                                   "Supported Encoders: ${state.supportedCodecs.joinToString()}"
+                                   
                     InfoDialog(
                         state = state,
                         onDismiss = { showInfoDialog = false },
                         onCopy = { 
-                            val text = "App Version: ${state.appInfoVersion}\n" +
-                                       "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
-                                       "Supported Encoders: ${state.supportedCodecs.joinToString()}"
-                            clipboardManager.setText(AnnotatedString(text))
+                            clipboardManager.setText(AnnotatedString(infoText))
+                        },
+                        onShare = {
+                             val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, infoText)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            context.startActivity(shareIntent)
                         },
                         onToggleShowBitrate = { viewModel.toggleShowBitrate() },
                         onToggleBitrateUnit = { viewModel.toggleBitrateUnit() }
@@ -405,6 +415,7 @@ fun InfoDialog(
     state: CompressorUiState,
     onDismiss: () -> Unit,
     onCopy: () -> Unit,
+    onShare: () -> Unit,
     onToggleShowBitrate: () -> Unit,
     onToggleBitrateUnit: () -> Unit
 ) {
@@ -472,13 +483,18 @@ fun InfoDialog(
             }
         },
         confirmButton = {
-            TextButton(
-                onClick = { 
-                    onCopy()
-                    copied = true 
+            Row {
+                TextButton(onClick = onShare) {
+                    Text(stringResource(R.string.share))
                 }
-            ) {
-                Text(if (copied) stringResource(R.string.info_copied) else stringResource(R.string.info_copy_clipboard))
+                TextButton(
+                    onClick = { 
+                        onCopy()
+                        copied = true 
+                    }
+                ) {
+                    Text(if (copied) stringResource(R.string.info_copied) else stringResource(R.string.info_copy_clipboard))
+                }
             }
         },
         dismissButton = {
