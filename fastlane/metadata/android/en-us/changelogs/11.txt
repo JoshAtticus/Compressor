@@ -1,8 +1,8 @@
 Compressor 1.3.1 adds new features:
 
-- Added an option to remove audio from videos when compressing (solves https://github.com/JoshAtticus/Compressor/issues/18)
-- Added 3/4, 1/2, 1/4 and 540p resolution options (solves https://github.com/JoshAtticus/Compressor/issues/20)
-- Added a share button to the info modal (solves https://github.com/JoshAtticus/Compressor/issues/24)
+- Added an option to remove audio from videos when compressing
+- Added 3/4, 1/2, 1/4 and 540p resolution options
+- Added a share button to the info modal
 
 Bug Fixes:
 
