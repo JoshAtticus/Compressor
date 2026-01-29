@@ -784,6 +784,22 @@ fun ConfigScreen(
                         label = { Text(stringResource(R.string.fps_30)) }
                     )
                 }
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(16.dp))
+                
+                Row(
+                    modifier = Modifier.fillMaxWidth().clickable { viewModel.toggleRemoveAudio() },
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.remove_audio), style = MaterialTheme.typography.bodyMedium)
+                    Switch(
+                        checked = state.removeAudio,
+                        onCheckedChange = { viewModel.toggleRemoveAudio() }
+                    )
+                }
             }
         }
 

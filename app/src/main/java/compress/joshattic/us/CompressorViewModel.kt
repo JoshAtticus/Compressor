@@ -71,7 +71,8 @@ data class CompressorUiState(
     val appInfoVersion: String = "1.3.0",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
-    val hasShared: Boolean = false
+    val hasShared: Boolean = false,
+    val removeAudio: Boolean = false
 ) {
     private val minBitrate: Long
         get() {
@@ -350,7 +351,12 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     fun toggleBitrateUnit() {
         _uiState.update { it.copy(useMbps = !it.useMbps) }
-    }    
+    }
+
+    fun toggleRemoveAudio() {
+        _uiState.update { it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM) }
+    }
+
     fun setResolution(height: Int) {
         _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
     }
@@ -493,6 +499,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val mediaItem = MediaItem.fromUri(inputUri)
         val editedMediaItem = EditedMediaItem.Builder(mediaItem)
             .setEffects(Effects(emptyList(), effectsList))
+            .setRemoveAudio(currentState.removeAudio)
             .build()
 
         val composition = Composition.Builder(

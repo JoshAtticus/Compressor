@@ -28,6 +28,7 @@
     <string name="h265_efficient">H.265 (Эффективный)</string>
     <string name="h264_compat">H.264 (Совместимый)</string>
     <string name="resolution">Разрешение</string>
+    <string name="remove_audio">Удалить звук</string>
     <string name="framerate">Кадровая частота</string>
     <string name="fps_60">60 к/с</string>
     <string name="fps_30">30 к/с</string>

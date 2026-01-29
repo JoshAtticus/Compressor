@@ -22,6 +22,7 @@
     <string name="h265_efficient">H.265 (Eficiente)</string>
     <string name="h264_compat">H.264 (Compatível)</string>
     <string name="resolution">Resolução</string>
+    <string name="remove_audio">Remover áudio</string>
     <string name="framerate">Taxa de quadros</string>
     <string name="start_compression">Iniciar compressão</string>
     <string name="error_prefix">Erro: %1$s</string>

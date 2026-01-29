@@ -22,6 +22,7 @@
     <string name="h265_efficient">H.265 (高效)</string>
     <string name="h264_compat">H.264 (相容)</string>
     <string name="resolution">解析度</string>
+    <string name="remove_audio">移除音訊</string>
     <string name="framerate">幀率</string>
     <string name="start_compression">開始壓縮</string>
     <string name="error_prefix">錯誤：%1$s</string>

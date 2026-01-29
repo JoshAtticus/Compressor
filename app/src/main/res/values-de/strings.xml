@@ -28,6 +28,7 @@
     <string name="h265_efficient">H.265 (Effizient)</string>
     <string name="h264_compat">H.264 (Kompatibel)</string>
     <string name="resolution">Auflösung</string>
+    <string name="remove_audio">Audio entfernen</string>
     <string name="framerate">Bildrate</string>
     <string name="fps_60">60fps</string>
     <string name="fps_30">30fps</string>
