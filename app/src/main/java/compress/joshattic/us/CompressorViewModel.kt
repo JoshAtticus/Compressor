@@ -293,6 +293,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
         
         val current = _uiState.value
+        val isVertical = current.originalHeight > current.originalWidth
+        
+        fun getTargetHeight(targetShortSide: Int): Int {
+            if (current.originalWidth <= 0 || current.originalHeight <= 0) return current.originalHeight
+            
+            if (isVertical) {
+                // For vertical video, standard resolutions (1080p, 720p) refer to weight
+                // Calculate target Width first, clamped to original width
+                val targetWidth = minOf(targetShortSide, current.originalWidth)
+                // Calculate height to maintain aspect ratio: H = W * (OrigH / OrigW)
+                return (targetWidth.toDouble() * current.originalHeight / current.originalWidth).toInt()
+            } else {
+                // For horizontal, Resolution refers to height
+                return minOf(targetShortSide, current.originalHeight)
+            }
+        }
         
         when(preset) {
             QualityPreset.HIGH -> {
@@ -311,7 +327,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.MEDIUM,
-                         targetResolutionHeight = minOf(1080, current.originalHeight),
+                         targetResolutionHeight = getTargetHeight(1080),
                          targetFps = if (current.originalFps < 30) 0 else 30,
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f)
                      ) 
@@ -322,7 +338,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                   _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.LOW,
-                         targetResolutionHeight = minOf(720, current.originalHeight),
+                         targetResolutionHeight = getTargetHeight(720),
                          targetFps = if (current.originalFps < 30) 0 else 30,
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f)
                      ) 
