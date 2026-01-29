@@ -742,9 +742,28 @@ fun ConfigScreen(
                     val res1440 = stringResource(R.string.res_2k)
                     val res1080 = stringResource(R.string.res_1080p)
                     val res720 = stringResource(R.string.res_720p)
+                    val res540 = stringResource(R.string.res_540p)
                     val res480 = stringResource(R.string.res_480p)
 
-                    val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 480 to res480)
+                    val resThreeQuarters = stringResource(R.string.res_three_quarters)
+                    val resHalf = stringResource(R.string.res_half)
+                    val resQuarter = stringResource(R.string.res_quarter)
+
+                    val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 540 to res540, 480 to res480)
+                    
+                    val options = remember(state.originalHeight) {
+                        val standard = allRes.filter { it.first <= state.originalHeight }
+                        val fractions = listOf(
+                            (state.originalHeight * 0.75).toInt() to resThreeQuarters,
+                            (state.originalHeight * 0.5).toInt() to resHalf,
+                            (state.originalHeight * 0.25).toInt() to resQuarter
+                        )
+                        // Standard resolutions take precedence if values are equal
+                        (standard + fractions)
+                            .filter { it.first > 0 }
+                            .sortedByDescending { it.first }
+                    }
+
                     androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                          FilterChip(
                             selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
@@ -752,7 +771,7 @@ fun ConfigScreen(
                             label = { Text(stringResource(R.string.original)) },
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        allRes.filter { it.first <= state.originalHeight }.forEach { (res, label) ->
+                        options.forEach { (res, label) ->
                              FilterChip(
                                 selected = state.targetResolutionHeight == res, 
                                 onClick = { viewModel.setResolution(res) }, 
