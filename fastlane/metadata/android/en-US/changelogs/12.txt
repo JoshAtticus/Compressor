@@ -1,0 +1,6 @@
+Compressor 1.3.2 is a bug fix release:
+
+- H.265 and AV1 Software encoders pretending to be hardware encoders are now correctly hidden
+- Fixed splash screen being in light mode when using dark mode
+- Fixed themed icon for non-Pixel devices
+- Total space saved is now correctly shown in GB once 1000 MB is reached
