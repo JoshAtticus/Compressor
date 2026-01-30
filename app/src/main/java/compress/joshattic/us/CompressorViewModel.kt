@@ -68,7 +68,7 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.3.2",
+    val appInfoVersion: String = "1.3.3",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
@@ -216,11 +216,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             for (info in list.codecInfos) {
                 if (!info.isEncoder) continue
 
-                val name = info.name.lowercase()
-                if (name.startsWith("c2.android") || 
-                    name.startsWith("c2.google") || 
-                    name.startsWith("omx.google")) {
-                    continue
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (info.isSoftwareOnly) {
+                        continue
+                    }
+                } else {
+                    val name = info.name.lowercase()
+                    if (name.startsWith("c2.android")) {
+                        continue
+                    }
                 }
 
                 if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
