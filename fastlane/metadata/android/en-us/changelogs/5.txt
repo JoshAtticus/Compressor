@@ -1,4 +1,0 @@
-- Added Share Sheet support
-- Added Target Size presets
-- Added a Total Space Saved counter on the main activity
-- Fixed Saving to Photos not working on Android 9 and earlier

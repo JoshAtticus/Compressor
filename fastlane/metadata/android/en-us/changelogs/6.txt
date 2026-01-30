@@ -1,7 +1,0 @@
-Compressor 1.1.1 is a bug fix release:
-
-- Prevent original videos from being indefinitely stored in cache by clearing cache once finished compressing
-- Fix storage saved counter not updating until app is restarted
-- Fix storage saved counter only showing storage saved from last compressed video
-- 60fps can no longer be selected as a framerate for videos with less than 60fps original framerate
-- Estimated final storage is now calculated more accurately

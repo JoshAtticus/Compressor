@@ -1,4 +1,0 @@
-Compressor 1.1.2 adds new features:
-
-- Translation support with translations for Español (Spanish), Português - Brasil (Portuguese - Brazil) and 繁體中文 (Traditional Chinese)
-- Compressed video bitrate can no longer exceed original, creating a larger video than original

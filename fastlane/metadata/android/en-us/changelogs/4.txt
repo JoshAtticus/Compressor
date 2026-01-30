@@ -1,1 +1,0 @@
-Initial release for IzzyOnDroid, Google Dependencies Info block removed
