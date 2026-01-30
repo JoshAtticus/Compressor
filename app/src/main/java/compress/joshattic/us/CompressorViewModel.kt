@@ -212,6 +212,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val list = MediaCodecList(MediaCodecList.ALL_CODECS)
             for (info in list.codecInfos) {
                 if (!info.isEncoder) continue
+
+                val name = info.name.lowercase()
+                if (name.startsWith("c2.android") || 
+                    name.startsWith("c2.google") || 
+                    name.startsWith("omx.google")) {
+                    continue
+                }
+
                 if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
                     return true
                 }
