@@ -26,6 +26,11 @@ import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
+import androidx.media3.transformer.DefaultAssetLoaderFactory
+import androidx.media3.transformer.DefaultDecoderFactory
+import androidx.media3.exoplayer.mediacodec.MediaCodecSelector
+import androidx.media3.exoplayer.mediacodec.MediaCodecUtil
+import androidx.media3.common.util.Clock
 import androidx.media3.common.Effect
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -68,7 +73,7 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.3.3",
+    val appInfoVersion: String = "1.3.3 Huawei Android 10 Fix Test",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
@@ -464,10 +469,23 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     .build()
             )
             .build()
+
+        // Force software decoder to be safe against driver bugs (e.g. Huawei DynamicANWBuffer crash)
+        val softwareDecoderSelector = MediaCodecSelector { mimeType, requiresSecureDecoder, requiresTunnelingDecoder ->
+            MediaCodecUtil.getDecoderInfos(mimeType, requiresSecureDecoder, requiresTunnelingDecoder)
+                .filter { !it.hardwareAccelerated }
+        }
+
+        val assetLoaderFactory = DefaultAssetLoaderFactory(
+            context,
+            DefaultDecoderFactory(context, softwareDecoderSelector),
+            Clock.DEFAULT
+        )
         
         val transformer = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
             .setEncoderFactory(encoderFactory)
+            .setAssetLoaderFactory(assetLoaderFactory)
             .addListener(object : Transformer.Listener {
                 override fun onCompleted(composition: Composition, exportResult: ExportResult) {
                      val finalSize = outputFile.length()
