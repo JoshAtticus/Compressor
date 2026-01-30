@@ -1,0 +1,11 @@
+Compressor 1.3.1 adds new features:
+
+- Added an option to remove audio from videos when compressing
+- Added 3/4, 1/2, 1/4 and 540p resolution options
+- Added a share button to the info modal
+
+Bug Fixes:
+
+- Fixed vertical video resolution being calculated incorrectly
+
+Compressor is almost available on Google Play, but to do so, Google requires that we have at least 12 testers for 14 days. If you want to see Compressor on Google Play, head to https://groups.google.com/g/compressor-beta-testing to join the testing group and install!
