@@ -1,1 +1,1 @@
-Compressor 1.3.3 is a single patch release to fix AV1 decoders not appearing on supported Google Pixel devices after installing 1.3.2.
+Compressor 1.3.3 is a single patch release to fix AV1 encoders not appearing on supported Google Pixel devices after installing 1.3.2.
