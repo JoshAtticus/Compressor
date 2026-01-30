@@ -17,7 +17,7 @@ You can also donate with crypto
 - Bitcoin: bc1q8hkcv5xejcg4n4vf5839pqytp87v92rtgyyccr
 - Ethereum: 0xC5Ae73a73F83CF48ed1Cb832ccb9Ca5ff1776EC9
 - Litecoin: ltc1qmf9s65cwk65rlepjme4auqhw7t2wz98f00n3t4
-- Solana: HSkCeCd8BzabeVJTzrqcFYvsRmSGLrrDdtZ61oYBgNoD
+- Solana Mainnet: HSkCeCd8BzabeVJTzrqcFYvsRmSGLrrDdtZ61oYBgNoD
   
 </details>
 
