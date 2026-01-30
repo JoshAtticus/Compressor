@@ -478,7 +478,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val assetLoaderFactory = DefaultAssetLoaderFactory(
             context,
-            DefaultDecoderFactory(context, softwareDecoderSelector),
+            DefaultDecoderFactory.Builder(context).setMediaCodecSelector(softwareDecoderSelector).build(),
             Clock.DEFAULT
         )
         
