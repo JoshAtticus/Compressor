@@ -824,8 +824,13 @@ fun ConfigScreen(
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(16.dp))
                 
+                Text(stringResource(R.string.audio_options), style = MaterialTheme.typography.labelLarge)
+                
                 Row(
-                    modifier = Modifier.fillMaxWidth().clickable { viewModel.toggleRemoveAudio() },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 8.dp)
+                        .clickable { viewModel.toggleRemoveAudio() },
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -834,6 +839,48 @@ fun ConfigScreen(
                         checked = state.removeAudio,
                         onCheckedChange = { viewModel.toggleRemoveAudio() }
                     )
+                }
+
+                AnimatedVisibility(visible = !state.removeAudio) {
+                    Column(modifier = Modifier.padding(top = 16.dp)) {
+                         Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelMedium)
+                         
+                         Row(
+                             modifier = Modifier
+                                .horizontalScroll(rememberScrollState())
+                                .padding(top = 8.dp),
+                             horizontalArrangement = Arrangement.spacedBy(8.dp)
+                         ) {
+                             val bitrates = listOf(96000, 128000, 160000, 192000, 256000, 320000)
+                             bitrates.forEach { rate ->
+                                 FilterChip(
+                                     selected = state.audioBitrate == rate,
+                                     onClick = { viewModel.setAudioBitrate(rate) },
+                                     label = { Text("${rate / 1000}k") }
+                                 )
+                             }
+                         }
+
+                         /* Volume control pending implementation
+                         Spacer(modifier = Modifier.height(16.dp))
+                         
+                         Text(stringResource(R.string.volume), style = MaterialTheme.typography.labelMedium)
+                         Row(verticalAlignment = Alignment.CenterVertically) {
+                             Slider(
+                                 value = state.audioVolume,
+                                 onValueChange = { viewModel.setAudioVolume(it) },
+                                 valueRange = 0f..2f,
+                                 steps = 19,
+                                 modifier = Modifier.weight(1f)
+                             )
+                             Text(
+                                 text = String.format("%.1fx", state.audioVolume),
+                                 modifier = Modifier.padding(start = 8.dp),
+                                 style = MaterialTheme.typography.labelMedium
+                             )
+                         }
+                         */
+                    }
                 }
             }
         }

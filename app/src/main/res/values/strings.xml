@@ -40,6 +40,9 @@
     <string name="bitrate_unit_mbps">Mbps</string>
     
     <string name="resolution">Resolution</string>
+    <string name="audio_options">Audio Options</string>
+    <string name="audio_bitrate">Audio Bitrate</string>
+    <string name="volume">Volume</string>
     <string name="remove_audio">Remove Audio</string>
     <string name="framerate">Framerate</string>
     <string name="fps_60">60fps</string>

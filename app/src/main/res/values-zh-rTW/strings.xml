@@ -60,4 +60,7 @@
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
     <string name="res_480p">480p</string>
+    <string name="audio_options">音訊選項</string>
+    <string name="audio_bitrate">音訊位元率</string>
+    <string name="volume">音量</string>
 </resources>

@@ -26,6 +26,7 @@ import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
+import androidx.media3.transformer.AudioEncoderSettings
 import androidx.media3.common.Effect
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,7 +73,9 @@ data class CompressorUiState(
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
-    val removeAudio: Boolean = false
+    val removeAudio: Boolean = false,
+    val audioBitrate: Int = 128_000,
+    val audioVolume: Float = 1.0f
 ) {
     private val minBitrate: Long
         get() {
@@ -388,6 +391,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM) }
     }
 
+    fun setAudioBitrate(bitrate: Int) {
+        _uiState.update { it.copy(audioBitrate = bitrate, activePreset = QualityPreset.CUSTOM) }
+    }
+
+    fun setAudioVolume(volume: Float) {
+        _uiState.update { it.copy(audioVolume = volume, activePreset = QualityPreset.CUSTOM) }
+    }
+
     fun setResolution(height: Int) {
         _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
     }
@@ -461,6 +472,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
                     .setBitrate(targetBitrate.toInt())
+                    .build()
+            )
+            .setRequestedAudioEncoderSettings(
+                AudioEncoderSettings.Builder()
+                    .setBitrate(currentState.audioBitrate)
                     .build()
             )
             .build()

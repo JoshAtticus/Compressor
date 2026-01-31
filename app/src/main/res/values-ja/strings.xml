@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
+    <string name="share">共有</string>
+    <string name="saved">保存しました</string>
+    <string name="save_to_photos">写真に保存</string>
+    <string name="compress_another_video">別のビデオを圧縮</string>
+    <string name="buy_coffee">☕ Compressorが気に入りましたか？コーヒーを一杯奢ってください！</string>
+    <string name="share_video_title">圧縮されたビデオを共有</string>
+    <string name="share_error">共有できません： %1$s</string>
+    <string name="original">オリジナル</string>
+    <string name="estimated">推定</string>
+    
+    <!-- Presets -->
+    <string name="preset_high">高</string>
+    <string name="preset_high_desc">ビットレートのみ最適化</string>
+    <string name="preset_medium">中</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_low">低</string>
+    <string name="preset_low_desc">720p • 30fps</string>
+    
+    <string name="quality_preset">品質プリセット</string>
+    <string name="target_size_limits">目標サイズ制限</string>
+    <string name="advanced_options">詳細オプション</string>
+    <string name="target_size">目標サイズ</string>
+    <string name="encoding">エンコード</string>
+    <string name="av1_high_efficiency">AV1 (高速 • 効率的)</string>
+    <string name="h265_efficient">H.265 (効率的)</string>
+    <string name="h264_compat">H.264 (互換性)</string>
+    
+    <string name="delete_original">元のビデオを削除</string>
+    <string name="delete_original_success">ビデオを削除しました</string>
+    <string name="delete_original_failed">ビデオの削除に失敗しました</string>
+    <string name="delete_confirm_title">元のビデオを削除しますか？</string>
+    
+    <string name="info_title">デバイスとアプリ情報</string>
+    <string name="info_copy_clipboard">クリップボードにコピー</string>
+    <string name="info_copied">クリップボードにコピーしました</string>
+    <string name="show_bitrate">ビットレートを表示</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
+    
+    <string name="resolution">解像度</string>
+    <string name="audio_options">音声オプション</string>
+    <string name="audio_bitrate">音声ビットレート</string>
+    <string name="volume">音量</string>
+    <string name="remove_audio">音声を削除</string>
+    <string name="framerate">フレームレート</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
+    <string name="start_compression">圧縮を開始</string>
+    <string name="error_prefix">エラー: %1$s</string>
+    <string name="select_video">圧縮するビデオを選択</string>
+    <string name="add_video_desc">ビデオを追加</string>
+    <string name="total_saved">Compressorでこれまでに %1$s 節約しました</string>
+    <string name="compression_complete">圧縮完了！</string>
+    <string name="compressing_video_label">ビデオを圧縮中</string>
+    <string name="cancel">キャンセル</string>
+    
+    <!-- Errors -->
+    <string name="error_file_lost">ファイルが見つかりません</string>
+    <string name="error_export_failed">エクスポート失敗: %1$s</string>
+    <string name="error_save_failed">保存失敗: %1$s</string>
+    <string name="error_gallery_entry">ギャラリーエントリを作成できませんでした</string>
+    <string name="error_unknown">不明なエラー</string>
+    <string name="error_codec_unsupported">このビデオコーデックはお使いのデバイスのハードウェアでサポートされていません。</string>
+
+    <!-- Size Presets -->
+    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_email">メール</string>
+    <string name="size_stories">ストーリーズ • Nitro Basic</string>
+    <string name="size_messenger">メッセンジャー • BlueSky</string>
+    <string name="size_nitro">Nitro • リール</string>
+    <string name="size_twitter">Twitter/X</string>
+    <string name="size_whatsapp">WhatsApp • Telegram</string>
+    <string name="size_tg_premium">TG Premium • フィード</string>
+    <string name="size_x_premium">X Premium</string>
+    
+    <string name="unit_gb">GB</string>
+    <string name="unit_mb">MB</string>
+
+    <!-- Resolutions -->
+    <string name="res_8k">8K</string>
+    <string name="res_4k">4K</string>
+    <string name="res_2k">2K</string>
+    <string name="res_1080p">1080p</string>
+    <string name="res_720p">720p</string>
+    <string name="res_540p">540p</string>
+    <string name="res_480p">480p</string>
+    <string name="res_three_quarters">¾</string>
+    <string name="res_half">½</string>
+    <string name="res_quarter">¼</string>
+</resources>

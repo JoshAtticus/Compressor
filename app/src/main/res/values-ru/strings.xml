@@ -74,4 +74,7 @@
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
     <string name="res_480p">480p</string>
+    <string name="audio_options">Параметры звука</string>
+    <string name="audio_bitrate">Битрейт звука</string>
+    <string name="volume">Громкость</string>
 </resources>

@@ -60,4 +60,7 @@
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
     <string name="res_480p">480p</string>
+    <string name="audio_options">Opções de áudio</string>
+    <string name="audio_bitrate">Taxa de bits de áudio</string>
+    <string name="volume">Volume</string>
 </resources>

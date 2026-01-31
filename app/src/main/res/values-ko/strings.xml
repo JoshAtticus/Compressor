@@ -76,4 +76,7 @@
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
     <string name="res_480p">480p</string>
+    <string name="audio_options">오디오 옵션</string>
+    <string name="audio_bitrate">오디오 비트레이트</string>
+    <string name="volume">볼륨</string>
 </resources>
