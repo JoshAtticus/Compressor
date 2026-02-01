@@ -879,7 +879,7 @@ fun ConfigScreen(
 
                 AnimatedVisibility(visible = !state.removeAudio) {
                     Column(modifier = Modifier.padding(top = 16.dp)) {
-                         Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelMedium)
+                         Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelLarge)
                          
                          Row(
                              modifier = Modifier
