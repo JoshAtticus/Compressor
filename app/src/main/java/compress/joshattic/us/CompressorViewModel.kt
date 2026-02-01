@@ -43,12 +43,14 @@ enum class QualityPreset {
     HIGH, MEDIUM, LOW, CUSTOM
 }
 
+// All sorted so nicely :D
 data class CompressorUiState(
     val selectedUri: Uri? = null,
     val originalSize: Long = 0L,
     val originalWidth: Int = 0,
     val originalHeight: Int = 0,
     val originalBitrate: Int = 0,
+    val originalAudioBitrate: Int = 0,
     val originalFps: Float = 30f,
     val durationMs: Long = 0L,
     
@@ -63,7 +65,7 @@ data class CompressorUiState(
     // Configuration
     val activePreset: QualityPreset = QualityPreset.HIGH,
     val targetSizeMb: Float = 10f,
-    val useH265: Boolean = true, // Legacy, use videoCodec instead if possible, but keeping for compatibility if referenced elsewhere used as bool
+    val useH265: Boolean = true,
     val videoCodec: String = MimeTypes.VIDEO_H265,
     val targetResolutionHeight: Int = 0, // 0 means original
     val targetFps: Int = 0, // 0 means original
@@ -83,14 +85,13 @@ data class CompressorUiState(
         get() {
             val h = if (targetResolutionHeight > 0) targetResolutionHeight else originalHeight
             var base = when {
-                h >= 2160 -> 4_000_000L // 4K needs reliable bitrate
+                h >= 2160 -> 4_000_000L
                 h >= 1440 -> 2_500_000L
                 h >= 1080 -> 1_500_000L
                 h >= 720 -> 1_000_000L
                 else -> 500_000L
             }
             
-            // Adjust for Codec efficiency
             if (videoCodec == MimeTypes.VIDEO_H265) {
                 base = (base * 0.7).toLong()
             } else if (videoCodec == MimeTypes.VIDEO_AV1) {
@@ -106,17 +107,11 @@ data class CompressorUiState(
         get() {
             if (durationMs <= 0) return 0.1f
             val seconds = durationMs / 1000f
-            
-            // Audio size
             val audioBits = if (removeAudio) 0f else {
                 val rate = if (audioBitrate == 0) 256_000f else audioBitrate.toFloat()
                 rate * seconds
             }
-            
-            // Video size
             val minBits = minBitrate * seconds
-            
-            // Total + overhead
             val totalBits = minBits + audioBits
             val minMb = (totalBits / 8f) / (1024f * 1024f)
             return minMb
@@ -133,27 +128,21 @@ data class CompressorUiState(
              val durationSec = if (durationMs > 0) durationMs / 1000.0 else 0.0
              if (durationSec <= 0) return 2_000_000
              
-             // Total available bits from target size
              val targetBits = targetSizeMb * 8 * 1024 * 1024
              
-             // Calculate Audio usage
              val audioBits = if (removeAudio) 0.0 else {
                  val rate = if (audioBitrate == 0) 256_000.0 else audioBitrate.toDouble()
                  rate * durationSec
              }
              
-             // Container overhead (approx 2% + 50KB)
              val overheadBits = (targetBits * 0.02) + (50 * 1024 * 8)
              
-             // Remaining for video
              var availableVideoBits = targetBits - audioBits - overheadBits
              
-             // Safety floor for video calculation (don't go negative)
              availableVideoBits = availableVideoBits.coerceAtLeast(targetBits * 0.1) 
              
              val calculated = (availableVideoBits / durationSec).toLong()
              
-             // Apply min/max guardrails
              val original = if (originalBitrate > 0) originalBitrate.toLong() else Long.MAX_VALUE
              val final = calculated.coerceAtLeast(minBitrate).coerceAtMost(original)
              return final.toInt()
@@ -221,7 +210,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     
     private fun checkSupportedCodecs() {
         val supported = mutableListOf<String>()
-        supported.add(MimeTypes.VIDEO_H264) // Always supported on Android 5.0+ 
+        supported.add(MimeTypes.VIDEO_H264) // I mean this is supported on like everything ever, if not then skill issue ig?
 
         if (hasEncoder(MimeTypes.VIDEO_H265)) {
             supported.add(MimeTypes.VIDEO_H265)
@@ -232,7 +221,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         _uiState.update { 
             var newCodec = it.videoCodec
-            // Fallback if H265 not supported but was default
+            // Fallback if H265 not supported but was default because I can't be assed to properly fix it
             if (newCodec == MimeTypes.VIDEO_H265 && !supported.contains(MimeTypes.VIDEO_H265)) {
                 newCodec = MimeTypes.VIDEO_H264
             }
@@ -275,10 +264,12 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         var width = 0
         var height = 0
         var bitrate = 0
+        var audioBitrate = 0
         var fps = 30f
         var duration = 0L
         
         try {
+            audioBitrate = getAudioBitrate(context, uri)
             context.contentResolver.openFileDescriptor(uri, "r")?.use {
                 size = it.statSize
             }
@@ -299,22 +290,20 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             e.printStackTrace()
         }
 
-        // Calculate a reasonable default target (e.g., 70% of original)
         val defaultTargetMb = if (size > 0) (size / (1024.0 * 1024.0) * 0.7).toFloat() else 10f
 
-        // Keep current saved bytes and preferences
         val currentSavedBytes = _uiState.value.totalSavedBytes
         val showBitrate = _uiState.value.showBitrate
         val useMbps = _uiState.value.useMbps
         val supportedCodecs = _uiState.value.supportedCodecs
 
-        // Reset state
         _uiState.value = CompressorUiState(
             selectedUri = uri,
             originalSize = size,
             originalWidth = width,
             originalHeight = height,
             originalBitrate = bitrate,
+            originalAudioBitrate = audioBitrate,
             originalFps = fps,
             durationMs = duration,
             targetSizeMb = defaultTargetMb,
@@ -344,20 +333,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             if (current.originalWidth <= 0 || current.originalHeight <= 0) return current.originalHeight
             
             if (isVertical) {
-                // For vertical video, standard resolutions (1080p, 720p) refer to weight
-                // Calculate target Width first, clamped to original width
                 val targetWidth = minOf(targetShortSide, current.originalWidth)
-                // Calculate height to maintain aspect ratio: H = W * (OrigH / OrigW)
                 return (targetWidth.toDouble() * current.originalHeight / current.originalWidth).toInt()
             } else {
-                // For horizontal, Resolution refers to height
                 return minOf(targetShortSide, current.originalHeight)
             }
         }
         
         when(preset) {
             QualityPreset.HIGH -> {
-                // High Quality: Optimized Bitrate, Original Res, Original FPS, High Audio
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.HIGH,
@@ -370,7 +354,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  }
             }
             QualityPreset.MEDIUM -> {
-                // Medium: 1080p, 30fps, Medium Audio
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.MEDIUM,
@@ -383,7 +366,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                  }
             }
             QualityPreset.LOW -> {
-                // Low: 720p, 30fps, Low Audio
                   _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.LOW,
@@ -465,17 +447,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun reset() {
-        // Keep persistent data
         val current = _uiState.value
         val savedBytes = current.totalSavedBytes
         val supportedCodecs = current.supportedCodecs
         val showBitrate = current.showBitrate
         val useMbps = current.useMbps
         
-        // Clear previous temp files to free up space
+        // Clear previous temp files otherwise it indefinitely duplicates compressed videos in cache
         clearCache()
         
-        // Reset state but keep preserved values
         _uiState.value = CompressorUiState(
             totalSavedBytes = savedBytes,
             supportedCodecs = supportedCodecs,
@@ -495,8 +475,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val outputFile = File(outputDir, "compress_${UUID.randomUUID()}.mp4")
         val outputPath = outputFile.absolutePath
 
-        // 1. Calculate Bitrate
-        val targetBitrate = currentState.targetBitrate.toLong() // Use the one calculated in UI state with guardrails
+        val targetBitrate = currentState.targetBitrate.toLong()
 
         val audioBitrateToUse = if (currentState.audioBitrate == 0) {
             val original = getAudioBitrate(context, inputUri)
@@ -505,7 +484,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              currentState.audioBitrate
         }
 
-        // 2. Encoder setup
         val videoMimeType = currentState.videoCodec
 
         val encoderFactory = DefaultEncoderFactory.Builder(context)
@@ -569,17 +547,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         activeTransformer = transformer
             
-        // 3. Effects (Resolution & FPS)
         val effectsList = mutableListOf<Effect>()
         
-        // Resolution
         if (currentState.targetResolutionHeight > 0 && currentState.targetResolutionHeight != currentState.originalHeight) {
              effectsList.add(Presentation.createForHeight(currentState.targetResolutionHeight))
         }
         
-        // FPS
         if (currentState.activePreset != QualityPreset.HIGH && currentState.targetFps > 0) {
-            // Only apply framerate change if not High Quality (keeps original) and target is set
              effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, currentState.targetFps.toFloat()))
         }
         
@@ -669,7 +643,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, "Compressed_${System.currentTimeMillis()}.mp4")
                     put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-                    // Add date metadata
                     put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         put(MediaStore.Video.Media.IS_PENDING, 1)

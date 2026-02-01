@@ -90,4 +90,7 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
+    <string name="slider_less_space">容量節約</string>
+    <string name="slider_balanced">バランス</string>
+    <string name="slider_high_quality">高品質</string>
 </resources>

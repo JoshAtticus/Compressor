@@ -77,4 +77,7 @@
     <string name="audio_options">Параметры звука</string>
     <string name="audio_bitrate">Битрейт звука</string>
     <string name="volume">Громкость</string>
+    <string name="slider_less_space">Меньше места</string>
+    <string name="slider_balanced">Баланс</string>
+    <string name="slider_high_quality">Выше качество</string>
 </resources>

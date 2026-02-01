@@ -52,6 +52,11 @@
     <string name="select_video">Select a video to compress</string>
     <string name="add_video_desc">Add Video</string>
     <string name="total_saved">You\'ve saved %1$s of storage with Compressor</string>
+
+    <string name="slider_less_space">Less Space</string>
+    <string name="slider_balanced">Balanced</string>
+    <string name="slider_high_quality">Higher Quality</string>
+    
     <string name="compression_complete">Compression Complete!</string>
     <string name="compressing_video_label">COMPRESSING VIDEO</string>
     <string name="cancel">Cancel</string>

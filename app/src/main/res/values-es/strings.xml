@@ -65,4 +65,7 @@
     <string name="audio_options">Opciones de audio</string>
     <string name="audio_bitrate">Tasa de bits de audio</string>
     <string name="volume">Volumen</string>
+    <string name="slider_less_space">Menos espacio</string>
+    <string name="slider_balanced">Equilibrado</string>
+    <string name="slider_high_quality">Mayor calidad</string>
 </resources>

@@ -79,4 +79,7 @@
     <string name="audio_options">오디오 옵션</string>
     <string name="audio_bitrate">오디오 비트레이트</string>
     <string name="volume">볼륨</string>
+    <string name="slider_less_space">공간 절약</string>
+    <string name="slider_balanced">균형</string>
+    <string name="slider_high_quality">고품질</string>
 </resources>

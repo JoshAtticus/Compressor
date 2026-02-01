@@ -63,4 +63,7 @@
     <string name="audio_options">音訊選項</string>
     <string name="audio_bitrate">音訊位元率</string>
     <string name="volume">音量</string>
+    <string name="slider_less_space">更小體積</string>
+    <string name="slider_balanced">平衡</string>
+    <string name="slider_high_quality">更高畫質</string>
 </resources>

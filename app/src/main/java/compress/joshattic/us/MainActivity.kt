@@ -515,7 +515,6 @@ fun InfoRow(label: String, value: String) {
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ConfigScreen(
     state: CompressorUiState,
@@ -524,8 +523,7 @@ fun ConfigScreen(
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+        modifier = Modifier.fillMaxSize()
     ) {
         Column(
             modifier = Modifier
@@ -533,6 +531,7 @@ fun ConfigScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp, vertical = 16.dp)
+                .padding(bottom = 80.dp) // Extra padding for the floating button
         ) {
             ElevatedCard(
             modifier = Modifier.fillMaxWidth(),
@@ -583,11 +582,22 @@ fun ConfigScreen(
                         fontWeight = FontWeight.SemiBold,
                         color = MaterialTheme.colorScheme.primary
                     )
+                    
+                    val targetRes = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
+                    val targetW = if (state.originalHeight > 0) (state.originalWidth.toFloat() / state.originalHeight * targetRes).toInt() else 0
+                    val targetFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
+                    
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        "${targetW}x${targetRes} • ${targetFps}fps",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    )
+
                     if (state.showBitrate) {
-                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             state.formattedBitrate,
-                            style = MaterialTheme.typography.bodySmall,
+                            style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                         )
                     }
@@ -603,7 +613,13 @@ fun ConfigScreen(
             Triple(QualityPreset.HIGH, stringResource(R.string.preset_high), stringResource(R.string.preset_high_desc)),
             Triple(QualityPreset.MEDIUM, stringResource(R.string.preset_medium), stringResource(R.string.preset_medium_desc)),
             Triple(QualityPreset.LOW, stringResource(R.string.preset_low), stringResource(R.string.preset_low_desc))
-        )
+        ).filter { (preset, _, _) ->
+            when(preset) {
+                QualityPreset.MEDIUM -> state.originalHeight >= 1080 
+                QualityPreset.LOW -> state.originalHeight >= 720
+                else -> true
+            }
+        }
         
         presets.forEach { (preset, title, sub) ->
             val selected = state.activePreset == preset
@@ -708,13 +724,33 @@ fun ConfigScreen(
             exit = shrinkVertically() + fadeOut()
         ) {
             Column(modifier = Modifier.padding(top = 8.dp)) {
-                Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        String.format("%.1f MB", state.targetSizeMb), 
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+                
                  Slider(
                     value = state.targetSizeMb,
                     onValueChange = { viewModel.setTargetSize(it) },
                     valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
                     steps = 0
                 )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.slider_less_space), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                    Text(stringResource(R.string.slider_balanced), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                    Text(stringResource(R.string.slider_high_quality), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                }
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
@@ -784,7 +820,7 @@ fun ConfigScreen(
                          FilterChip(
                             selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
                             onClick = { viewModel.setResolution(state.originalHeight) }, 
-                            label = { Text(stringResource(R.string.original)) },
+                            label = { Text(stringResource(R.string.original) + " • ${state.originalHeight}p") },
                             modifier = Modifier.padding(end = 8.dp)
                         )
                         options.forEach { (res, label) ->
@@ -805,7 +841,7 @@ fun ConfigScreen(
                      FilterChip(
                         selected = state.targetFps == 0,
                         onClick = { viewModel.setFps(0) },
-                        label = { Text(stringResource(R.string.original)) }
+                        label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") }
                     )
                     FilterChip(
                         selected = state.targetFps == 60,
@@ -851,84 +887,61 @@ fun ConfigScreen(
                                 .padding(top = 8.dp),
                              horizontalArrangement = Arrangement.spacedBy(8.dp)
                          ) {
-                             val bitrates = listOf(0, 96000, 128000, 160000, 192000, 256000, 320000)
+                             val bitrates = listOf(0, 320000, 256000, 192000, 160000, 128000, 96000, 64000)
                              bitrates.forEach { rate ->
-                                 FilterChip(
-                                     selected = state.audioBitrate == rate,
-                                     onClick = { viewModel.setAudioBitrate(rate) },
-                                     label = { 
-                                         if (rate == 0) {
-                                             Text(stringResource(R.string.original))
-                                         } else {
-                                             Text("${rate / 1000}k") 
+                                 if (rate == 0 || (state.originalAudioBitrate > 0 && rate <= state.originalAudioBitrate)) {
+                                     val isSelected = state.audioBitrate == rate
+                                     val isOriginalSelected = (state.audioBitrate == 0) && (rate == state.originalAudioBitrate)
+                                     
+                                     FilterChip(
+                                         selected = isSelected || isOriginalSelected,
+                                         onClick = { viewModel.setAudioBitrate(rate) },
+                                         label = { 
+                                             if (rate == 0) {
+                                                 Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k")
+                                             } else {
+                                                 Text("${rate / 1000}k") 
+                                             }
                                          }
-                                     }
-                                 )
+                                     )
+                                 }
                              }
                          }
-
-                         /* Volume control pending implementation
-                         Spacer(modifier = Modifier.height(16.dp))
-                         
-                         Text(stringResource(R.string.volume), style = MaterialTheme.typography.labelMedium)
-                         Row(verticalAlignment = Alignment.CenterVertically) {
-                             Slider(
-                                 value = state.audioVolume,
-                                 onValueChange = { viewModel.setAudioVolume(it) },
-                                 valueRange = 0f..2f,
-                                 steps = 19,
-                                 modifier = Modifier.weight(1f)
-                             )
-                             Text(
-                                 text = String.format("%.1fx", state.audioVolume),
-                                 modifier = Modifier.padding(start = 8.dp),
-                                 style = MaterialTheme.typography.labelMedium
-                             )
-                         }
-                         */
                     }
                 }
             }
         }
+    }
 
-        Spacer(modifier = Modifier.height(32.dp))
-
-        Button(
-            onClick = { viewModel.startCompression(context) },
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp)
-                .scaleOnPress { viewModel.startCompression(context) },
-            shape = RoundedCornerShape(16.dp)
-        ) {
-            Text(stringResource(R.string.start_compression), fontSize = 16.sp)
-        }
-        
-        if (state.error != null) {
-            Spacer(modifier = Modifier.height(16.dp))
-            Text(
-                stringResource(R.string.error_prefix, state.error!!),
-                color = MaterialTheme.colorScheme.error,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.fillMaxWidth(),
-                textAlign = TextAlign.Center
-            )
-        }
-        
-        Spacer(modifier = Modifier.height(32.dp))
-        
-        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
-             TextButton(
-                onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
-            ) {
-                 Text(
-                    stringResource(R.string.buy_coffee),
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.tertiary
+                .align(Alignment.BottomCenter)
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
+                        startY = 0f,
+                        endY = 100f
+                    )
                 )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                    .padding(24.dp)
+            ) {
+                 Button(
+                    onClick = { viewModel.startCompression(context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .scaleOnPress { viewModel.startCompression(context) },
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                }
             }
-        }
-        Spacer(modifier = Modifier.height(48.dp))
         }
     }
 }
@@ -957,7 +970,6 @@ fun CompressingScreen(
         }
     }
     
-    // Use Real-time size
     val formattedSize = state.formattedCurrentOutputSize
 
     Surface(
@@ -977,7 +989,6 @@ fun CompressingScreen(
             ) {
             Spacer(modifier = Modifier.height(32.dp))
             
-            // Thumbnail with Size Overlay
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -994,7 +1005,6 @@ fun CompressingScreen(
                     )
                 }
                 
-                // Size Overlay
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomCenter)
@@ -1019,7 +1029,6 @@ fun CompressingScreen(
             
             Spacer(modifier = Modifier.weight(1f))
             
-            // Progress Card
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
@@ -1071,7 +1080,7 @@ fun CompressingScreen(
 }
 
 
-// Motion System - M3 Expressive - Currently unused, couldn't figure it out without getting 9 jillion errors, feel free to open a PR to fix it
+// Motion System - M3 Expressive - Got it to work for 1.4.0, yippee!
 // Spatial (Movements, Transforms)
 val ExpressiveSpatialSpring = spring<Float>(
     dampingRatio = 0.8f,
