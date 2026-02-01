@@ -297,7 +297,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val useMbps = _uiState.value.useMbps
         val supportedCodecs = _uiState.value.supportedCodecs
 
-        val initialState = CompressorUiState(
+        _uiState.value = CompressorUiState(
             selectedUri = uri,
             originalSize = size,
             originalWidth = width,
@@ -314,8 +314,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             useMbps = useMbps,
             supportedCodecs = supportedCodecs
         )
-        
-        _uiState.value = applySmartAdjustment(initialState)
     }
     
     fun markAsShared() {
@@ -345,7 +343,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         when(preset) {
             QualityPreset.HIGH -> {
                  _uiState.update { 
-                     val base = it.copy(
+                     it.copy(
                          activePreset = QualityPreset.HIGH,
                          targetResolutionHeight = current.originalHeight,
                          targetFps = 0,
@@ -353,12 +351,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          audioBitrate = 320_000,
                          removeAudio = false
                      )
-                     applySmartAdjustment(base)
                  }
             }
             QualityPreset.MEDIUM -> {
                  _uiState.update { 
-                     val base = it.copy(
+                     it.copy(
                          activePreset = QualityPreset.MEDIUM,
                          targetResolutionHeight = getTargetHeight(1080),
                          targetFps = if (current.originalFps < 30) 0 else 30,
@@ -366,12 +363,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          audioBitrate = 192_000,
                          removeAudio = false
                      )
-                     applySmartAdjustment(base)
                  }
             }
             QualityPreset.LOW -> {
                   _uiState.update { 
-                     val base = it.copy(
+                     it.copy(
                          activePreset = QualityPreset.LOW,
                          targetResolutionHeight = getTargetHeight(720),
                          targetFps = if (current.originalFps < 30) 0 else 30,
@@ -379,80 +375,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          audioBitrate = 128_000,
                          removeAudio = false
                      )
-                     applySmartAdjustment(base)
                  }
             }
             else -> {}
         }
     }
 
-    private fun applySmartAdjustment(state: CompressorUiState): CompressorUiState {
-        var s = state
-        // Build list of available resolutions based on original height
-        // Includes standard resolutions and fractional sizes (3/4, 1/2, 1/4)
-        val standardRes = listOf(4320, 2160, 1440, 1080, 720, 540, 480)
-            .filter { it <= s.originalHeight }
-        val fractionalRes = listOf(
-            (s.originalHeight * 0.75).toInt(),
-            (s.originalHeight * 0.5).toInt(),
-            (s.originalHeight * 0.25).toInt()
-        )
-        val tiers = (standardRes + fractionalRes)
-            .filter { it > 0 }
-            .distinct()
-            .sortedDescending()
-
-        // Iteratively reduce quality until minimum size fits or we reach bottom
-        for (i in 0..10) {
-            // Check if current configuration is achievable
-            if (s.minimumSizeMb <= s.targetSizeMb) return s
-
-            val currentH = if (s.targetResolutionHeight > 0) s.targetResolutionHeight else s.originalHeight
-            val currentFps = if (s.targetFps > 0) s.targetFps.toFloat() else s.originalFps
-            
-            var changed = false
-            
-            // Priority 1: Reduce FPS to 30 if current is higher (e.g. 60fps)
-            // This significantly lowers bitrate requirements
-            if (currentFps > 30.1) {
-                if (s.targetFps == 0) {
-                     s = s.copy(targetFps = 30)
-                     changed = true
-                } else if (s.targetFps > 30) {
-                     s = s.copy(targetFps = 30)
-                     changed = true
-                }
-            } 
-            
-            // Priority 2: Reduce Resolution if FPS reduction wasn't enough or wasn't applicable
-            if (!changed) {
-                 val nextRes = tiers.firstOrNull { it < currentH }
-                 if (nextRes != null) {
-                     s = s.copy(targetResolutionHeight = nextRes)
-                     changed = true
-                 } else {
-                     // Reached minimum resolution, can't reduce further
-                     break
-                 }
-            }
-            
-            if (!changed) break
-        }
-        return s
-    }
-
     fun setTargetSize(mb: Float) {
-        _uiState.update { 
-            // Reset to original resolution and FPS first, then apply smart adjustment
-            // This ensures we always start from highest quality and work down
-            val base = it.copy(
-                targetSizeMb = mb, 
-                activePreset = QualityPreset.CUSTOM,
-                targetResolutionHeight = it.originalHeight,
-                targetFps = 0
-            )
-            applySmartAdjustment(base)
-        }
+        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
     }
 
     fun setVideoCodec(codec: String) {
