@@ -71,6 +71,7 @@ import androidx.core.content.FileProvider
 import compress.joshattic.us.ui.theme.CompressorTheme
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.launch
 import java.io.File
 
 import androidx.compose.material.icons.outlined.Info
@@ -522,6 +523,9 @@ fun ConfigScreen(
     context: android.content.Context
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    val scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
@@ -529,7 +533,7 @@ fun ConfigScreen(
             modifier = Modifier
                 .widthIn(max = 600.dp)
                 .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+                .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp, vertical = 16.dp)
                 .padding(bottom = 80.dp) // Extra padding for the floating button
         ) {
@@ -704,7 +708,18 @@ fun ConfigScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(12.dp))
-                .clickable { advancedExpanded = !advancedExpanded }
+                .clickable { 
+                    advancedExpanded = !advancedExpanded
+                    if (advancedExpanded) {
+                        coroutineScope.launch {
+                            kotlinx.coroutines.delay(100)
+                            scrollState.animateScrollTo(
+                                scrollState.value + 300,
+                                animationSpec = spring(dampingRatio = 0.8f, stiffness = 300f)
+                            )
+                        }
+                    }
+                }
                 .padding(vertical = 12.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
