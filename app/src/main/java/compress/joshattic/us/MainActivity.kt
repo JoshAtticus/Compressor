@@ -851,12 +851,18 @@ fun ConfigScreen(
                                 .padding(top = 8.dp),
                              horizontalArrangement = Arrangement.spacedBy(8.dp)
                          ) {
-                             val bitrates = listOf(96000, 128000, 160000, 192000, 256000, 320000)
+                             val bitrates = listOf(0, 96000, 128000, 160000, 192000, 256000, 320000)
                              bitrates.forEach { rate ->
                                  FilterChip(
                                      selected = state.audioBitrate == rate,
                                      onClick = { viewModel.setAudioBitrate(rate) },
-                                     label = { Text("${rate / 1000}k") }
+                                     label = { 
+                                         if (rate == 0) {
+                                             Text(stringResource(R.string.original))
+                                         } else {
+                                             Text("${rate / 1000}k") 
+                                         }
+                                     }
                                  )
                              }
                          }

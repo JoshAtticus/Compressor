@@ -5,6 +5,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.SharedPreferences
 import android.media.MediaCodecList
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
@@ -69,12 +71,12 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.3.3",
+    val appInfoVersion: String = "1.4.0",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
-    val audioBitrate: Int = 128_000,
+    val audioBitrate: Int = 256_000,
     val audioVolume: Float = 1.0f
 ) {
     private val minBitrate: Long
@@ -103,10 +105,20 @@ data class CompressorUiState(
     val minimumSizeMb: Float
         get() {
             if (durationMs <= 0) return 0.1f
-            // Duration * Bitrate / 8 bits / 1024 / 1024
             val seconds = durationMs / 1000f
+            
+            // Audio size
+            val audioBits = if (removeAudio) 0f else {
+                val rate = if (audioBitrate == 0) 256_000f else audioBitrate.toFloat()
+                rate * seconds
+            }
+            
+            // Video size
             val minBits = minBitrate * seconds
-            val minMb = (minBits / 8f) / (1024f * 1024f)
+            
+            // Total + overhead
+            val totalBits = minBits + audioBits
+            val minMb = (totalBits / 8f) / (1024f * 1024f)
             return minMb
         }
 
@@ -121,10 +133,25 @@ data class CompressorUiState(
              val durationSec = if (durationMs > 0) durationMs / 1000.0 else 0.0
              if (durationSec <= 0) return 2_000_000
              
-             // Same logic as startCompression
-             val safetyMarginMb = (targetSizeMb - 2.5f).coerceAtLeast(targetSizeMb * 0.8f)
-             val targetBits = safetyMarginMb * 8 * 1024 * 1024
-             val calculated = (targetBits / durationSec).toLong()
+             // Total available bits from target size
+             val targetBits = targetSizeMb * 8 * 1024 * 1024
+             
+             // Calculate Audio usage
+             val audioBits = if (removeAudio) 0.0 else {
+                 val rate = if (audioBitrate == 0) 256_000.0 else audioBitrate.toDouble()
+                 rate * durationSec
+             }
+             
+             // Container overhead (approx 2% + 50KB)
+             val overheadBits = (targetBits * 0.02) + (50 * 1024 * 8)
+             
+             // Remaining for video
+             var availableVideoBits = targetBits - audioBits - overheadBits
+             
+             // Safety floor for video calculation (don't go negative)
+             availableVideoBits = availableVideoBits.coerceAtLeast(targetBits * 0.1) 
+             
+             val calculated = (availableVideoBits / durationSec).toLong()
              
              // Apply min/max guardrails
              val original = if (originalBitrate > 0) originalBitrate.toLong() else Long.MAX_VALUE
@@ -330,35 +357,41 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         when(preset) {
             QualityPreset.HIGH -> {
-                // High Quality: Optimized Bitrate, Original Res, Original FPS
+                // High Quality: Optimized Bitrate, Original Res, Original FPS, High Audio
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.HIGH,
                          targetResolutionHeight = current.originalHeight,
                          targetFps = 0,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(1f)
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(1f),
+                         audioBitrate = 320_000,
+                         removeAudio = false
                      ) 
                  }
             }
             QualityPreset.MEDIUM -> {
-                // Medium: 1080p, 30fps (unless original is lower)
+                // Medium: 1080p, 30fps, Medium Audio
                  _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.MEDIUM,
                          targetResolutionHeight = getTargetHeight(1080),
                          targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f)
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f),
+                         audioBitrate = 192_000,
+                         removeAudio = false
                      ) 
                  }
             }
             QualityPreset.LOW -> {
-                // Low: 720p, 30fps (unless original is lower)
+                // Low: 720p, 30fps, Low Audio
                   _uiState.update { 
                      it.copy(
                          activePreset = QualityPreset.LOW,
                          targetResolutionHeight = getTargetHeight(720),
                          targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f)
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f),
+                         audioBitrate = 128_000,
+                         removeAudio = false
                      ) 
                  }
             }
@@ -465,6 +498,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         // 1. Calculate Bitrate
         val targetBitrate = currentState.targetBitrate.toLong() // Use the one calculated in UI state with guardrails
 
+        val audioBitrateToUse = if (currentState.audioBitrate == 0) {
+            val original = getAudioBitrate(context, inputUri)
+            if (original > 0) original else 256_000
+        } else {
+             currentState.audioBitrate
+        }
+
         // 2. Encoder setup
         val videoMimeType = currentState.videoCodec
 
@@ -476,7 +516,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             )
             .setRequestedAudioEncoderSettings(
                 AudioEncoderSettings.Builder()
-                    .setBitrate(currentState.audioBitrate)
+                    .setBitrate(audioBitrateToUse)
                     .build()
             )
             .build()
@@ -566,6 +606,27 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 kotlinx.coroutines.delay(200)
             }
         }
+    }
+
+    private fun getAudioBitrate(context: Context, uri: Uri): Int {
+        val extractor = MediaExtractor()
+        try {
+            extractor.setDataSource(context, uri, null)
+            for (i in 0 until extractor.trackCount) {
+                val format = extractor.getTrackFormat(i)
+                val mime = format.getString(MediaFormat.KEY_MIME)
+                if (mime?.startsWith("audio/") == true) {
+                    if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                        return format.getInteger(MediaFormat.KEY_BIT_RATE)
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            extractor.release()
+        }
+        return 0
     }
 
     fun saveToUri(context: Context, targetUri: Uri) {
