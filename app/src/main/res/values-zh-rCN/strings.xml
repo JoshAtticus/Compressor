@@ -39,7 +39,7 @@
     <string name="total_saved">您已使用 Compressor 节省了 %1$s 的存储空间</string>
     <string name="compression_complete">压缩完成！</string>
     <string name="compressing_video_label">正在压缩视频</string>
-    <string name="cancel">取消</string>
+    <string name="cancel">关闭</string>
 
     <!-- Errors -->
     <string name="error_file_lost">文件丢失</string>

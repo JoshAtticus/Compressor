@@ -39,7 +39,7 @@
     <string name="total_saved">Du hast %1$s Speicherplatz mit Compressor gespart</string>
     <string name="compression_complete">Komprimierung abgeschlossen!</string>
     <string name="compressing_video_label">KOMPRIMIERE VIDEO</string>
-    <string name="cancel">Abbrechen</string>
+    <string name="cancel">Schließen</string>
 
     <!-- Errors -->
     <string name="error_file_lost">Datei verloren</string>

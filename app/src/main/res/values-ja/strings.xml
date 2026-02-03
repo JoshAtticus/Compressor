@@ -55,7 +55,7 @@
     <string name="total_saved">Compressorでこれまでに %1$s 節約しました</string>
     <string name="compression_complete">圧縮完了！</string>
     <string name="compressing_video_label">ビデオを圧縮中</string>
-    <string name="cancel">キャンセル</string>
+    <string name="cancel">閉じる</string>
     
     <!-- Errors -->
     <string name="error_file_lost">ファイルが見つかりません</string>

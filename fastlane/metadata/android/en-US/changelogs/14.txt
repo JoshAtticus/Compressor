@@ -1,0 +1,7 @@
+Compressor 1.4.0 adds new features:
+- Audio compression and bitrate selector (solves https://github.com/JoshAtticus/Compressor/issues/32)
+- Japanese translation
+- Improved user interface, "Original" chips now display original value, final video resolution and frame rate now displayed underneath estimated size, Less Space/Balanced/Higher Quality markers on target size slider, target size now displayed above slider
+
+Bug Fixes:
+- "Show Bitrate" toggle is now persistent across restarts (solves https://github.com/JoshAtticus/Compressor/issues/34)
