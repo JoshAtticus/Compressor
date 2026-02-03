@@ -203,7 +203,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     init {
         val saved = prefs.getLong("total_saved_bytes", 0L)
-        _uiState.update { it.copy(totalSavedBytes = saved) }
+        val showBitrate = prefs.getBoolean("show_bitrate", false)
+        val useMbps = prefs.getBoolean("use_mbps", false)
+        _uiState.update { it.copy(totalSavedBytes = saved, showBitrate = showBitrate, useMbps = useMbps) }
         checkSupportedCodecs()
         clearCache()
     }
@@ -395,11 +397,19 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
     fun toggleShowBitrate() {
-        _uiState.update { it.copy(showBitrate = !it.showBitrate) }
+        _uiState.update { 
+            val newValue = !it.showBitrate
+            prefs.edit().putBoolean("show_bitrate", newValue).apply()
+            it.copy(showBitrate = newValue)
+        }
     }
 
     fun toggleBitrateUnit() {
-        _uiState.update { it.copy(useMbps = !it.useMbps) }
+        _uiState.update { 
+            val newValue = !it.useMbps
+            prefs.edit().putBoolean("use_mbps", newValue).apply()
+            it.copy(useMbps = newValue)
+        }
     }
 
     fun toggleRemoveAudio() {
