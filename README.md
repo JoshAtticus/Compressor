@@ -61,6 +61,8 @@ I ran out of time waiting for my 21 minute video compression so I only ran it on
 ## Credits
 Compressor wouldn't be possible without these amazing people
 
+[@rA9stuff](https://github.com/rA9stuff) - Inspiration to create Compressor & donated
+
 [@tgranz](https://github.com/tgranz) - Provided funding to get Compressor on Google Play
 
 [@sirtoaks](https://github.com/sirtoaks) - Provided funding to get Compressor on Google Play
