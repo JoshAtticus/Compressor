@@ -28,6 +28,7 @@ You can also donate with crypto
 ## Features
 - Faster than every single compression app on the Play Store. Period.
 - Uses native Media3 library, not another slow, bulky FFMpeg wrapper
+- H.265 and AV1 support for compatible devices
 - Share Sheet Support
 - No third party libraries
 - No invasive permissions (no storage, no internet etc)
