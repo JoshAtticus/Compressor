@@ -82,4 +82,14 @@
     <string name="slider_less_space">공간 절약</string>
     <string name="slider_balanced">균형</string>
     <string name="slider_high_quality">고품질</string>
+    <string name="compression_failed_title">압축 실패</string>
+    <string name="compression_larger_error">압축된 동영상이 원본보다 큽니다.\n동영상이 이미 고압축되었거나 비트레이트가 매우 낮을 수 있습니다.</string>
+    <string name="error_huawei_muxer">이 문제는 특정 장치로 인해 발생할 수 있습니다. 장치를 다시 시작해 보세요.</string>
+    <string name="try_again">다시 시도</string>
+    <string name="save_anyway">그래도 저장</string>
+
+    <string name="report_error">오류 보고</string>
+    <string name="error_details">오류 세부 정보</string>
+    <string name="copy_logs">로그 복사</string>
+    <string name="open_issue_tracker">이슈 트래커 열기</string>
 </resources>

@@ -94,4 +94,15 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
+
+    <string name="compression_failed_title">Compression Failed</string>
+    <string name="compression_larger_error">The compressed video is larger than the original.\nThe video may already be highly compressed or have a very low bitrate.</string>
+    <string name="error_huawei_muxer">This issue may be caused by your specific device. Please try restarting your device.</string>
+    <string name="try_again">Try Again</string>
+    <string name="save_anyway">Save anyway</string>
+    
+    <string name="report_error">Report Error</string>
+    <string name="error_details">Error Details</string>
+    <string name="copy_logs">Copy Logs</string>
+    <string name="open_issue_tracker">Open Issue Tracker</string>
 </resources>

@@ -82,4 +82,14 @@
     <string name="slider_less_space">Weniger Platz</string>
     <string name="slider_balanced">Ausgewogen</string>
     <string name="slider_high_quality">Höhere Qualität</string>
+    <string name="compression_failed_title">Komprimierung fehlgeschlagen</string>
+    <string name="compression_larger_error">Das komprimierte Video ist größer als das Original.\nDas Video ist möglicherweise bereits stark komprimiert oder hat eine sehr niedrige Bitrate.</string>
+    <string name="error_huawei_muxer">Dieses Problem wird möglicherweise durch Ihr spezielles Gerät verursacht. Bitte versuchen Sie, Ihr Gerät neu zu starten.</string>
+    <string name="try_again">Erneut versuchen</string>
+    <string name="save_anyway">Trotzdem speichern</string>
+
+    <string name="report_error">Fehler melden</string>
+    <string name="error_details">Fehlerdetails</string>
+    <string name="copy_logs">Protokolle kopieren</string>
+    <string name="open_issue_tracker">Issue Tracker öffnen</string>
 </resources>

@@ -80,4 +80,14 @@
     <string name="slider_less_space">Меньше места</string>
     <string name="slider_balanced">Баланс</string>
     <string name="slider_high_quality">Выше качество</string>
+    <string name="compression_failed_title">Ошибка сжатия</string>
+    <string name="compression_larger_error">Сжатое видео больше оригинала.\nВидео уже может быть сильно сжато или иметь очень низкий битрейт.</string>
+    <string name="error_huawei_muxer">Эта проблема может быть вызвана вашим конкретным устройством. Попробуйте перезагрузить устройство.</string>
+    <string name="try_again">Попробовать снова</string>
+    <string name="save_anyway">Сохранить всё равно</string>
+
+    <string name="report_error">Сообщить об ошибке</string>
+    <string name="error_details">Детали ошибки</string>
+    <string name="copy_logs">Копировать логи</string>
+    <string name="open_issue_tracker">Открыть трекер задач</string>
 </resources>

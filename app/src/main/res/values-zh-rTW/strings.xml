@@ -66,4 +66,14 @@
     <string name="slider_less_space">更小體積</string>
     <string name="slider_balanced">平衡</string>
     <string name="slider_high_quality">更高畫質</string>
+    <string name="compression_failed_title">壓縮失敗</string>
+    <string name="compression_larger_error">壓縮後的影片比原始影片大。\n影片可能已經被高度壓縮或位元速率非常低。</string>
+    <string name="error_huawei_muxer">此問題可能是由您的特定裝置與引起的。請嘗試重新啟動裝置。</string>
+    <string name="try_again">重試</string>
+    <string name="save_anyway">仍然儲存</string>
+
+    <string name="report_error">報告錯誤</string>
+    <string name="error_details">錯誤詳情</string>
+    <string name="copy_logs">複製日誌</string>
+    <string name="open_issue_tracker">打開問題追蹤器</string>
 </resources>

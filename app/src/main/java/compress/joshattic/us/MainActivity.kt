@@ -77,6 +77,7 @@ import kotlinx.coroutines.launch
 import java.io.File
 
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
@@ -125,6 +126,14 @@ fun CompressorApp(viewModel: CompressorViewModel) {
 
     val clipboardManager = LocalClipboardManager.current
     var showInfoDialog by remember { mutableStateOf(false) }
+    var forceShowResult by remember { mutableStateOf(false) }
+    
+    // Reset forceShowResult when we leave the result screen
+    LaunchedEffect(state.compressedUri) {
+        if (state.compressedUri == null) {
+            forceShowResult = false
+        }
+    }
 
     val shareVideoTitle = stringResource(R.string.share_video_title)
     // We fetch the raw template string here to use in the non-composable callback callback below
@@ -216,7 +225,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                     AnimatedContent(
                         targetState = when {
                             state.selectedUri == null -> 0
-                            state.compressedUri != null -> 2
+                            state.compressedUri != null || state.error != null -> 2
                             else -> 1
                         },
                         transitionSpec = {
@@ -233,22 +242,38 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                 totalSaved = state.formattedTotalSaved,
                                 onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
                             )
-                            2 -> ResultScreen(
-                                state = state,
-                                onShare = { 
-                                    shareVideo(state.compressedUri) 
-                                    viewModel.markAsShared()
-                                },
-                                onSave = { 
-                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                                        viewModel.saveToGallery(context)
-                                    } else {
-                                        createDocumentLauncher.launch("CompressedVideo.mp4")
-                                    }
-                                },
-                                onCompressAnother = { viewModel.reset() },
-                                onBack = { viewModel.reset() }
-                            )
+                            2 -> {
+                                if (state.error != null) {
+                                     CompressionFailedScreen(
+                                        state = state,
+                                        onBack = { viewModel.reset() },
+                                        onSaveAnyway = { /* No-op for actual errors */ }
+                                    )
+                                } else if (state.compressedSize > state.originalSize && !forceShowResult) {
+                                    CompressionFailedScreen(
+                                        state = state,
+                                        onBack = { viewModel.reset() },
+                                        onSaveAnyway = { forceShowResult = true }
+                                    )
+                                } else {
+                                    ResultScreen(
+                                        state = state,
+                                        onShare = { 
+                                            shareVideo(state.compressedUri) 
+                                            viewModel.markAsShared()
+                                        },
+                                        onSave = { 
+                                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                                                viewModel.saveToGallery(context)
+                                            } else {
+                                                createDocumentLauncher.launch("CompressedVideo.mp4")
+                                            }
+                                        },
+                                        onCompressAnother = { viewModel.reset() },
+                                        onBack = { viewModel.reset() }
+                                    )
+                                }
+                            }
                             else -> ConfigScreen(state, viewModel, context)
                         }
                     }
@@ -313,6 +338,164 @@ fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp)
             )
+        }
+    }
+}
+
+@Composable
+fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSaveAnyway: () -> Unit) {
+    var showReportDialog by remember { mutableStateOf(false) }
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+
+    if (showReportDialog) {
+        val errorLogs = remember(state) {
+            val sb = StringBuilder()
+            sb.append("Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}\n")
+            sb.append("Android Version: ${android.os.Build.VERSION.RELEASE} (SDK ${android.os.Build.VERSION.SDK_INT})\n")
+            sb.append("App Version: ${state.appInfoVersion}\n")
+            sb.append("Original: ${state.originalWidth}x${state.originalHeight} @ ${state.originalFps}fps\n")
+            sb.append("Target: ${state.targetResolutionHeight}p @ ${state.targetFps}fps\n")
+            sb.append("Codec: ${state.videoCodec}\n")
+            sb.append("Error: ${state.error ?: "File larger than original"}\n")
+            sb.toString()
+        }
+
+        AlertDialog(
+            onDismissRequest = { showReportDialog = false },
+            title = { Text(stringResource(R.string.error_details)) },
+            text = {
+                Column {
+                    Text(
+                        errorLogs,
+                        style = MaterialTheme.typography.bodySmall,
+                        modifier = Modifier
+                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                            .padding(8.dp)
+                            .fillMaxWidth()
+                    )
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween // Spread 'em out
+                    ) {
+                        TextButton(onClick = {
+                            clipboardManager.setText(AnnotatedString(errorLogs))
+                        }) {
+                            Text(stringResource(R.string.copy_logs))
+                        }
+                        
+                        TextButton(onClick = {
+                            val sendIntent = Intent().apply {
+                                action = Intent.ACTION_SEND
+                                putExtra(Intent.EXTRA_TEXT, errorLogs)
+                                type = "text/plain"
+                            }
+                            val shareIntent = Intent.createChooser(sendIntent, null)
+                            context.startActivity(shareIntent)
+                        }) {
+                            Text(stringResource(R.string.share))
+                        }
+                    }
+                    
+                    TextButton(
+                        onClick = {
+                            uriHandler.openUri("https://github.com/JoshAtticus/Compressor/issues")
+                        },
+                        modifier = Modifier.fillMaxWidth() // Centered full width for the long one
+                    ) {
+                        Text(stringResource(R.string.open_issue_tracker))
+                    }
+                }
+            },
+            confirmButton = {
+                TextButton(onClick = { showReportDialog = false }) {
+                    Text(stringResource(android.R.string.ok))
+                }
+            }
+        )
+    }
+
+    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+        Column(
+            modifier = Modifier
+                .widthIn(max = 600.dp)
+                .fillMaxSize()
+                .padding(24.dp)
+                .verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Icon(
+                Icons.Outlined.Warning,
+                contentDescription = null,
+                modifier = Modifier.size(120.dp),
+                tint = MaterialTheme.colorScheme.error
+            )
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            Text(
+                stringResource(R.string.compression_failed_title),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                textAlign = TextAlign.Center
+            )
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            val errorText = state.error ?: stringResource(R.string.compression_larger_error)
+            
+            Text(
+                errorText,
+                style = MaterialTheme.typography.bodyLarge,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                textAlign = TextAlign.Center
+            )
+            
+            // Only show size comparison if we actually have a compressed file (i.e. size > original case)
+            if (state.error == null) {
+                Spacer(modifier = Modifier.height(8.dp))
+                 Text(
+                    "${state.formattedOriginalSize} → ${state.formattedCompressedSize}",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Spacer(modifier = Modifier.height(48.dp))
+            
+            Button(
+                onClick = onBack,
+                modifier = Modifier.fillMaxWidth().height(56.dp).scaleOnPress(onBack)
+            ) {
+                Text(stringResource(R.string.try_again))
+            }
+            
+            if (state.error == null) {
+                Spacer(modifier = Modifier.height(12.dp))
+                
+                TextButton(
+                    onClick = onSaveAnyway,
+                    shape = RoundedCornerShape(28.dp),
+                ) {
+                    Text(
+                        stringResource(R.string.save_anyway), 
+                        color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)
+                    )
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(24.dp))
+            
+            TextButton(
+                onClick = { showReportDialog = true }
+            ) {
+                Icon(Icons.Outlined.Info, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(8.dp))
+                Text(stringResource(R.string.report_error))
+            }
         }
     }
 }
@@ -910,6 +1093,15 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     ) {
             Text(stringResource(R.string.advanced_options), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
 
+            var sliderValue by remember { mutableFloatStateOf(state.targetSizeMb) }
+            var isUserInteracting by remember { mutableStateOf(false) }
+            
+            LaunchedEffect(state.targetSizeMb) {
+                if (!isUserInteracting) {
+                    sliderValue = state.targetSizeMb
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -917,15 +1109,23 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             ) {
                 Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
                 Text(
-                    String.format("%.1f MB", state.targetSizeMb), 
+                    String.format("%.1f MB", sliderValue), 
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
             
              Slider(
-                value = state.targetSizeMb,
-                onValueChange = { viewModel.setTargetSize(it) },
+                value = sliderValue,
+                onValueChange = { 
+                    isUserInteracting = true
+                    sliderValue = it
+                    viewModel.setTargetSize(it)
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                },
+                onValueChangeFinished = {
+                    isUserInteracting = false
+                },
                 valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
                 steps = 0
             )
@@ -1241,13 +1441,33 @@ fun CompressingScreen(
                         ),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text(
-                        formattedSize,
-                        fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                    Row(
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier.padding(bottom = 16.dp)
-                    )
+                    ) {
+                        formattedSize.forEach { char ->
+                            AnimatedContent(
+                                targetState = char,
+                                transitionSpec = {
+                                    if (char.isDigit()) {
+                                        slideInVertically { height -> height } + fadeIn() togetherWith
+                                        slideOutVertically { height -> -height } + fadeOut()
+                                    } else {
+                                        fadeIn() togetherWith fadeOut()
+                                    }
+                                },
+                                label = "CharAnimation"
+                            ) { targetChar ->
+                                Text(
+                                    text = targetChar.toString(),
+                                    fontSize = 32.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
                 }
             }
             
@@ -1269,8 +1489,13 @@ fun CompressingScreen(
                         fontWeight = FontWeight.Bold
                     )
                     Spacer(modifier = Modifier.height(16.dp))
+                    val animatedProgress by animateFloatAsState(
+                        targetValue = state.progress,
+                        animationSpec = tween(durationMillis = 800, easing = FastOutSlowInEasing),
+                        label = "ProgressAnimation"
+                    )
                     LinearProgressIndicator(
-                        progress = { state.progress },
+                        progress = { animatedProgress },
                         modifier = Modifier.fillMaxWidth().height(6.dp),
                         strokeCap = androidx.compose.ui.graphics.StrokeCap.Round
                     )

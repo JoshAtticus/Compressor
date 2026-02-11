@@ -572,11 +572,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     _uiState.update { 
                         val isCodecError = exportException.errorCode == ExportException.ERROR_CODE_DECODER_INIT_FAILED ||
                                            exportException.errorCode == ExportException.ERROR_CODE_ENCODER_INIT_FAILED
+                        val isMuxerError = exportException.errorCode == ExportException.ERROR_CODE_MUXING_FAILED
+                        val isHuawei = android.os.Build.MANUFACTURER.equals("HUAWEI", ignoreCase = true)
 
-                        val errorMsg = if (isCodecError) {
-                            app.getString(R.string.error_codec_unsupported)
-                        } else {
-                            exportException.localizedMessage ?: app.getString(R.string.error_unknown)
+                        val errorMsg = when {
+                            isMuxerError && isHuawei -> app.getString(R.string.error_huawei_muxer)
+                            isCodecError -> app.getString(R.string.error_codec_unsupported)
+                            else -> exportException.localizedMessage ?: app.getString(R.string.error_unknown)
                         }
 
                         it.copy(
