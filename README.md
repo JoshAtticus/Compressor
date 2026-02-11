@@ -3,9 +3,6 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 
 [<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" height="40" alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/compress.joshattic.us)
 
-### Help get Compressor on Google Play!
-Compressor is almost available on Google Play, but to do so, Google requires that we have at least 12 testers for 14 days. If you want to see Compressor on Google Play, head to https://groups.google.com/g/compressor-beta-testing to join the testing group and install!
-
 <img src="assets/select.png" alt="Screenshot 3" width="24%"/><img src="assets/settings.png" alt="Screenshot 1" width="24%"/><img src="assets/compressing.png" alt="Screenshot 2" width="24%"><img src="assets/done.png" alt="Screenshot 4" width="24%"/>
 
 ### See the quality for yourself on YouTube
@@ -14,7 +11,6 @@ Compressor is almost available on Google Play, but to do so, Google requires tha
 
 [![RB Status](https://shields.rbtlog.dev/simple/compress.joshattic.us?style=for-the-badge)](https://shields.rbtlog.dev/compress.joshattic.us) ![IzzyOnDroid Version](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/compress.joshattic.us&label=IzzyOnDroid%20Version&style=for-the-badge) [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/JoshAtticus/Compressor/total?style=for-the-badge&label=GitHub%20Downloads&v=2)](https://github.com/JoshAtticus/Compressor/releases) ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![License](https://img.shields.io/github/license/JoshAtticus/Compressor?style=for-the-badge) ![Stars](https://img.shields.io/github/stars/JoshAtticus/Compressor?style=for-the-badge) ![Forks](https://img.shields.io/github/forks/JoshAtticus/Compressor?style=for-the-badge)
 
-
 Do you like Compressor? Consider supporting development by [buying me a coffee](https://www.buymeacoffee.com/joshatticus) ☕️
 
 You can also donate with crypto
@@ -22,8 +18,18 @@ You can also donate with crypto
 - Ethereum: 0xC5Ae73a73F83CF48ed1Cb832ccb9Ca5ff1776EC9
 - Litecoin: ltc1qmf9s65cwk65rlepjme4auqhw7t2wz98f00n3t4
 - Solana Mainnet: HSkCeCd8BzabeVJTzrqcFYvsRmSGLrrDdtZ61oYBgNoD
-  
-</details>
+
+## Warning about malicious sites
+It has come to my attention that malicious websites (specifically magiskmodule[.]gitlab[.]io and others) are writing fake articles about Compressor and linking to Ransomware/Malware instead of the real app.
+
+Please ONLY download Compressor from:
+
+- GitHub Releases (This repo)
+- Google Play Store (Early Access)
+- IzzyOnDroid
+- APKMirror
+
+If you see a "Secure Verify" or "Human Verification" page, CLOSE IT IMMEDIATELY. That is not me. Compressor is free and open source. I will never ask you to "Verify" to download.
 
 ## Features
 - Faster than every single compression app on the Play Store. Period.
