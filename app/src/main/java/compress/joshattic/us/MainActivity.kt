@@ -905,11 +905,13 @@ fun ConfigScreen(
                              val bitrates = listOf(0, 320000, 256000, 192000, 160000, 128000, 96000, 64000)
                              bitrates.forEach { rate ->
                                  if (rate == 0 || (state.originalAudioBitrate > 0 && rate <= state.originalAudioBitrate)) {
-                                     val isSelected = state.audioBitrate == rate
-                                     val isOriginalSelected = (state.audioBitrate == 0) && (rate == state.originalAudioBitrate)
+                                     val effectiveSelectedBitrate = if (state.audioBitrate == 0) state.originalAudioBitrate else state.audioBitrate
+                                     val chipRepresentsBitrate = if (rate == 0) state.originalAudioBitrate else rate
+                                     
+                                     val isSelected = effectiveSelectedBitrate == chipRepresentsBitrate
                                      
                                      FilterChip(
-                                         selected = isSelected || isOriginalSelected,
+                                         selected = isSelected,
                                          onClick = { viewModel.setAudioBitrate(rate) },
                                          label = { 
                                              if (rate == 0) {

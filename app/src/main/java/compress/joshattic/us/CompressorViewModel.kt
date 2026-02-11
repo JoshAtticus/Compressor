@@ -75,7 +75,7 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.4.1",
+    val appInfoVersion: String = "1.5.0",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
@@ -492,12 +492,17 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         // Clear previous temp files otherwise it indefinitely duplicates compressed videos in cache
         clearCache()
+
+        val defaultCodec = if (supportedCodecs.contains(MimeTypes.VIDEO_H265)) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
+        val useH265 = defaultCodec == MimeTypes.VIDEO_H265
         
         _uiState.value = CompressorUiState(
             totalSavedBytes = savedBytes,
             supportedCodecs = supportedCodecs,
             showBitrate = showBitrate,
-            useMbps = useMbps
+            useMbps = useMbps,
+            videoCodec = defaultCodec,
+            useH265 = useH265
         )
     }
 
@@ -524,6 +529,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val videoMimeType = currentState.videoCodec
 
         val encoderFactory = DefaultEncoderFactory.Builder(context)
+            .setEnableFallback(true)
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
                     .setBitrate(targetBitrate.toInt())
@@ -587,7 +593,17 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val effectsList = mutableListOf<Effect>()
         
         if (currentState.targetResolutionHeight > 0 && currentState.targetResolutionHeight != currentState.originalHeight) {
-             effectsList.add(Presentation.createForHeight(currentState.targetResolutionHeight))
+             val aspectRatio = if (currentState.originalHeight > 0) currentState.originalWidth.toFloat() / currentState.originalHeight else 16f/9f
+             var width = (currentState.targetResolutionHeight * aspectRatio).toInt()
+             var height = currentState.targetResolutionHeight
+             
+             // Ensure even dimensions for encoder compatibility
+             if (width % 2 != 0) width -= 1
+             if (height % 2 != 0) height -= 1
+             
+             if (width > 0 && height > 0) {
+                 effectsList.add(Presentation.createForWidthAndHeight(width, height, Presentation.LAYOUT_SCALE_TO_FIT))
+             }
         }
         
         if (currentState.activePreset != QualityPreset.HIGH && currentState.targetFps > 0) {
