@@ -53,6 +53,8 @@ data class CompressorUiState(
     val originalAudioBitrate: Int = 0,
     val originalFps: Float = 30f,
     val durationMs: Long = 0L,
+    val originalDate: Long? = null,
+    val originalLocation: String? = null,
     
     val isCompressing: Boolean = false,
     val progress: Float = 0f,
@@ -73,12 +75,12 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.4.0",
+    val appInfoVersion: String = "1.4.1",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
-    val audioBitrate: Int = 256_000,
+    val audioBitrate: Int = 128_000,
     val audioVolume: Float = 1.0f
 ) {
     private val minBitrate: Long
@@ -269,6 +271,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         var audioBitrate = 0
         var fps = 30f
         var duration = 0L
+        var originalDate: Long? = null
+        var originalLocation: String? = null
         
         try {
             audioBitrate = getAudioBitrate(context, uri)
@@ -287,6 +291,27 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val fpsStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE) 
             fps = fpsStr?.toFloatOrNull() ?: 30f
             
+            val dateStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DATE)
+            if (dateStr != null) {
+                val formats = listOf(
+                    "yyyyMMdd'T'HHmmss.SSS'Z'",
+                    "yyyyMMdd'T'HHmmss'Z'",
+                    "yyyy-MM-dd HH:mm:ss"
+                )
+                for (format in formats) {
+                    try {
+                        val sdf = java.text.SimpleDateFormat(format, java.util.Locale.US)
+                        sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
+                        originalDate = sdf.parse(dateStr)?.time
+                        if (originalDate != null) break
+                    } catch (e: Exception) {
+                        // ignore
+                    }
+                }
+            }
+
+            originalLocation = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_LOCATION)
+
             retriever.release()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -308,6 +333,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             originalAudioBitrate = audioBitrate,
             originalFps = fps,
             durationMs = duration,
+            originalDate = originalDate,
+            originalLocation = originalLocation,
             targetSizeMb = defaultTargetMb,
             targetResolutionHeight = height,
             activePreset = QualityPreset.HIGH,
@@ -654,6 +681,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     put(MediaStore.Video.Media.DISPLAY_NAME, "Compressed_${System.currentTimeMillis()}.mp4")
                     put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
                     put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                    if (currentState.originalDate != null) {
+                         put(MediaStore.Video.Media.DATE_TAKEN, currentState.originalDate)
+                    }
+                    
+                    if (currentState.originalLocation != null) {
+                         val matcher = java.util.regex.Pattern.compile("([+-]\\d+\\.\\d+)([+-]\\d+\\.\\d+)").matcher(currentState.originalLocation)
+                         if (matcher.find()) {
+                             val lat = matcher.group(1)?.toDoubleOrNull()
+                             val lon = matcher.group(2)?.toDoubleOrNull()
+                             if (lat != null && lon != null) {
+                                  put(MediaStore.Video.Media.LATITUDE, lat)
+                                  put(MediaStore.Video.Media.LONGITUDE, lon)
+                             }
+                         }
+                    }
+
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                         put(MediaStore.Video.Media.IS_PENDING, 1)
                         put(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES + "/Compressor")
