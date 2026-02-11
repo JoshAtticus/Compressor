@@ -62,11 +62,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.IntSize
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.TextStyle
 import androidx.core.content.FileProvider
 import compress.joshattic.us.ui.theme.CompressorTheme
 import kotlinx.coroutines.Dispatchers
@@ -324,6 +326,10 @@ fun ResultScreen(
     onBack: () -> Unit
 ) {
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
+    val haptics = LocalHapticFeedback.current
+    LaunchedEffect(Unit) {
+        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
     Column(
@@ -362,6 +368,16 @@ fun ResultScreen(
             style = MaterialTheme.typography.titleMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
+        
+        val reduction = if (state.originalSize > 0) ((state.originalSize - state.compressedSize).toFloat() / state.originalSize * 100).toInt() else 0
+        if (reduction > 0) {
+            Text(
+                "(-$reduction%)",
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold
+            )
+        }
         
         Spacer(modifier = Modifier.height(48.dp))
         
@@ -525,6 +541,12 @@ fun ConfigScreen(
     val scrollState = rememberScrollState()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
     val tabs = listOf("Presets", "Video", "Audio")
+    val haptics = LocalHapticFeedback.current
+
+    val originalMb = state.originalSize / (1024f * 1024f)
+    val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
+    // Avoid floating point issues with epsilon
+    val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
     
     Box(
         modifier = Modifier.fillMaxSize()
@@ -553,10 +575,28 @@ fun ConfigScreen(
             }
             
             Box(modifier = Modifier.weight(1f)) {
-                 when (selectedTabIndex) {
-                     0 -> PresetsTab(state, viewModel)
-                     1 -> VideoOptionsTab(state, viewModel)
-                     2 -> AudioOptionsTab(state, viewModel)
+                 AnimatedContent(
+                     targetState = selectedTabIndex,
+                     transitionSpec = {
+                         val springSpec = spring<IntOffset>(
+                             dampingRatio = 0.8f,
+                             stiffness = 350f
+                         )
+                         if (targetState > initialState) {
+                             slideInHorizontally(animationSpec = springSpec) { w -> w } + fadeIn() togetherWith
+                                     slideOutHorizontally(animationSpec = springSpec) { w -> -w } + fadeOut()
+                         } else {
+                             slideInHorizontally(animationSpec = springSpec) { w -> -w } + fadeIn() togetherWith
+                                     slideOutHorizontally(animationSpec = springSpec) { w -> w } + fadeOut()
+                         }
+                     },
+                     label = "TabContent"
+                 ) { index ->
+                     when (index) {
+                         0 -> PresetsTab(state, viewModel)
+                         1 -> VideoOptionsTab(state, viewModel)
+                         2 -> AudioOptionsTab(state, viewModel)
+                     }
                  }
             }
         }
@@ -579,12 +619,18 @@ fun ConfigScreen(
                     .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
                     .padding(24.dp)
             ) {
+                 val interactionSource = remember { MutableInteractionSource() }
                  Button(
-                    onClick = { viewModel.startCompression(context) },
+                    onClick = { 
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.startCompression(context) 
+                    },
+                    enabled = !isLarger,
+                    interactionSource = interactionSource,
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(56.dp)
-                        .scaleOnPress { viewModel.startCompression(context) },
+                        .expressiveScale(interactionSource),
                     shape = RoundedCornerShape(16.dp)
                 ) {
                     Text(stringResource(R.string.start_compression), fontSize = 16.sp)
@@ -639,13 +685,28 @@ fun InfoCard(state: CompressorUiState) {
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.primary
                 )
-                Text(
-                    state.estimatedSize,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold,
-                    color = MaterialTheme.colorScheme.primary
-                )
                 
+                // Reverted to simple text animation per user request
+                AnimatedContent(
+                    targetState = state.estimatedSize,
+                    transitionSpec = {
+                         slideInVertically { it / 2 } + fadeIn() togetherWith slideOutVertically { -it / 2 } + fadeOut()
+                    },
+                    label = "EstimateAnimation"
+                ) { text ->
+                    Text(
+                        text,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                val originalMb = state.originalSize / (1024f * 1024f)
+                val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
+                val pct = if (originalMb > 0) (1f - (actualEst / originalMb)) * 100f else 0f
+                val pctInt = pct.toInt()
+
                 val targetRes = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
                 val targetW = if (state.originalHeight > 0) (state.originalWidth.toFloat() / state.originalHeight * targetRes).toInt() else 0
                 val targetFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
@@ -656,13 +717,35 @@ fun InfoCard(state: CompressorUiState) {
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
                 )
+                
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    if (state.showBitrate) {
+                        Text(
+                            state.formattedBitrate,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                        )
+                    }
 
-                if (state.showBitrate) {
-                    Text(
-                        state.formattedBitrate,
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
+                    if (originalMb > 0) {
+                         if (state.showBitrate) {
+                             Text(
+                                 " • ", 
+                                 style = MaterialTheme.typography.labelSmall, 
+                                 color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                             )
+                         }
+                         
+                         val color = if (pctInt > 0) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error
+                         val text = if (pctInt > 0) "-$pctInt%" else "+${-pctInt}%"
+                         
+                         Text(
+                            text,
+                            style = MaterialTheme.typography.labelSmall,
+                            color = color,
+                            fontWeight = FontWeight.Bold
+                         )
+                    }
                 }
             }
         }
@@ -672,10 +755,12 @@ fun InfoCard(state: CompressorUiState) {
 @Composable
 fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     val scrollState = rememberScrollState()
+    val haptics = LocalHapticFeedback.current
     
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .padding(bottom = 80.dp)
@@ -697,14 +782,27 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
         
         presets.forEach { (preset, title, sub) ->
             val selected = state.activePreset == preset
-            val scale by animateFloatAsState(if (selected) 1.02f else 1f, animationSpec = ExpressiveSpatialSpring)
+            // Selection scale
+            val selectionScale by animateFloatAsState(if (selected) 1.02f else 1f, animationSpec = ExpressiveSpatialSpring)
+            
+            // Interaction scale
+            val interactionSource = remember { MutableInteractionSource() }
+            val isPressed by interactionSource.collectIsPressedAsState()
+            val pressScale by animateFloatAsState(if (isPressed) 0.96f else 1f, animationSpec = ExpressiveSpatialSpring)
             
             OutlinedCard(
-                onClick = { viewModel.applyPreset(preset) },
+                onClick = { 
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.applyPreset(preset) 
+                },
+                interactionSource = interactionSource,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
-                    .graphicsLayer { scaleX = scale; scaleY = scale },
+                    .graphicsLayer { 
+                        scaleX = selectionScale * pressScale
+                        scaleY = selectionScale * pressScale
+                    },
                 colors = if (selected) CardDefaults.outlinedCardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer) else CardDefaults.outlinedCardColors(),
                 border = if (selected) BorderStroke(0.dp, Color.Transparent) else BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
             ) {
@@ -750,9 +848,14 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 sizePresets.forEach { (size, label) ->
+                    val interactionSource = remember { MutableInteractionSource() }
                     FilterChip(
                         selected = state.targetSizeMb == size,
-                        onClick = { viewModel.setTargetSize(size) },
+                        onClick = { 
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.setTargetSize(size) 
+                        },
+                        interactionSource = interactionSource,
                         label = { 
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 val unitGb = stringResource(R.string.unit_gb)
@@ -765,7 +868,9 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                                 Text(label, style = MaterialTheme.typography.labelSmall)
                             }
                         },
-                        modifier = Modifier.heightIn(min = 48.dp)
+                        modifier = Modifier
+                            .heightIn(min = 48.dp)
+                            .expressiveScale(interactionSource)
                     )
                 }
             }
@@ -776,10 +881,12 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
 @Composable
 fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     val scrollState = rememberScrollState()
+    val haptics = LocalHapticFeedback.current
     
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .padding(bottom = 80.dp)
@@ -826,23 +933,41 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 val supported = state.supportedCodecs
                 
                 if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {
+                    val interactionSource = remember { MutableInteractionSource() }
                     FilterChip(
                         selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_AV1,
-                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) },
-                        label = { Text(stringResource(R.string.av1_high_efficiency)) }
+                        onClick = { 
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) 
+                        },
+                        interactionSource = interactionSource,
+                        label = { Text(stringResource(R.string.av1_high_efficiency)) },
+                        modifier = Modifier.expressiveScale(interactionSource)
                     )
                 }
                 if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_H265)) {
+                    val interactionSource = remember { MutableInteractionSource() }
                     FilterChip(
                         selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H265,
-                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) },
-                        label = { Text(stringResource(R.string.h265_efficient)) }
+                        onClick = { 
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) 
+                        },
+                        interactionSource = interactionSource,
+                        label = { Text(stringResource(R.string.h265_efficient)) },
+                        modifier = Modifier.expressiveScale(interactionSource)
                     )
                 }
+                val interactionSource = remember { MutableInteractionSource() }
                 FilterChip(
                     selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H264,
-                    onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) },
-                    label = { Text(stringResource(R.string.h264_compat)) }
+                    onClick = { 
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) 
+                    },
+                    interactionSource = interactionSource,
+                    label = { Text(stringResource(R.string.h264_compat)) },
+                    modifier = Modifier.expressiveScale(interactionSource)
                 )
             }
              
@@ -878,18 +1003,28 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 }
 
                 androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                     val interactionSource = remember { MutableInteractionSource() }
                      FilterChip(
                         selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
-                        onClick = { viewModel.setResolution(state.originalHeight) }, 
+                        onClick = { 
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.setResolution(state.originalHeight) 
+                        }, 
+                        interactionSource = interactionSource,
                         label = { Text(stringResource(R.string.original) + " • ${state.originalHeight}p") },
-                        modifier = Modifier.padding(end = 8.dp)
+                        modifier = Modifier.padding(end = 8.dp).expressiveScale(interactionSource)
                     )
                     options.forEach { (res, label) ->
+                         val itemInteractionSource = remember { MutableInteractionSource() }
                          FilterChip(
                             selected = state.targetResolutionHeight == res, 
-                            onClick = { viewModel.setResolution(res) }, 
+                            onClick = { 
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.setResolution(res) 
+                            }, 
+                            interactionSource = itemInteractionSource,
                             label = { Text(label) },
-                            modifier = Modifier.padding(end = 8.dp)
+                            modifier = Modifier.padding(end = 8.dp).expressiveScale(itemInteractionSource)
                         )
                     }
                 }
@@ -899,21 +1034,39 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             
             Text(stringResource(R.string.framerate), style = MaterialTheme.typography.labelLarge)
             Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                 val iSource1 = remember { MutableInteractionSource() }
                  FilterChip(
                     selected = state.targetFps == 0,
-                    onClick = { viewModel.setFps(0) },
-                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") }
+                    onClick = { 
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.setFps(0) 
+                    },
+                    interactionSource = iSource1,
+                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") },
+                    modifier = Modifier.expressiveScale(iSource1)
                 )
+                val iSource2 = remember { MutableInteractionSource() }
                 FilterChip(
                     selected = state.targetFps == 60,
-                    onClick = { viewModel.setFps(60) },
+                    onClick = { 
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.setFps(60) 
+                    },
+                    interactionSource = iSource2,
                     label = { Text(stringResource(R.string.fps_60)) },
-                    enabled = state.originalFps >= 50f
+                    enabled = state.originalFps >= 50f,
+                    modifier = Modifier.expressiveScale(iSource2)
                 )
+                val iSource3 = remember { MutableInteractionSource() }
                 FilterChip(
                     selected = state.targetFps == 30,
-                    onClick = { viewModel.setFps(30) },
-                    label = { Text(stringResource(R.string.fps_30)) }
+                    onClick = { 
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        viewModel.setFps(30) 
+                    },
+                    interactionSource = iSource3,
+                    label = { Text(stringResource(R.string.fps_30)) },
+                    modifier = Modifier.expressiveScale(iSource3)
                 )
             }
             
@@ -924,9 +1077,12 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
 @Composable
 fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     val scrollState = rememberScrollState()
+    val haptics = LocalHapticFeedback.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .padding(bottom = 80.dp)
@@ -937,14 +1093,20 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(top = 8.dp)
-                .clickable { viewModel.toggleRemoveAudio() },
+                .clickable { 
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.toggleRemoveAudio() 
+                },
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(stringResource(R.string.remove_audio), style = MaterialTheme.typography.bodyMedium)
             Switch(
                 checked = state.removeAudio,
-                onCheckedChange = { viewModel.toggleRemoveAudio() }
+                onCheckedChange = { 
+                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                    viewModel.toggleRemoveAudio() 
+                }
             )
         }
 
@@ -966,16 +1128,22 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                              
                              val isSelected = effectiveSelectedBitrate == chipRepresentsBitrate
                              
+                             val iSource = remember { MutableInteractionSource() }
                              FilterChip(
                                  selected = isSelected,
-                                 onClick = { viewModel.setAudioBitrate(rate) },
+                                 onClick = { 
+                                     haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                     viewModel.setAudioBitrate(rate) 
+                                 },
+                                 interactionSource = iSource,
                                  label = { 
                                      if (rate == 0) {
                                          Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k")
                                      } else {
                                          Text("${rate / 1000}k") 
                                      }
-                                 }
+                                 },
+                                 modifier = Modifier.expressiveScale(iSource)
                              )
                          }
                      }
@@ -1156,4 +1324,17 @@ fun Modifier.scaleOnPress(
                 onClick()
             }
         )
+}
+
+fun Modifier.expressiveScale(interactionSource: androidx.compose.foundation.interaction.InteractionSource): Modifier = composed {
+    val isPressed by interactionSource.collectIsPressedAsState()
+    val scale by animateFloatAsState(
+        targetValue = if (isPressed) 0.96f else 1f,
+        animationSpec = ExpressiveSpatialSpring,
+        label = "scale"
+    )
+    this.graphicsLayer {
+        scaleX = scale
+        scaleY = scale
+    }
 }
