@@ -522,9 +522,9 @@ fun ConfigScreen(
     viewModel: CompressorViewModel,
     context: android.content.Context
 ) {
-    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     val scrollState = rememberScrollState()
-    val coroutineScope = rememberCoroutineScope()
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val tabs = listOf("Presets", "Video", "Audio")
     
     Box(
         modifier = Modifier.fillMaxSize()
@@ -533,83 +533,153 @@ fun ConfigScreen(
             modifier = Modifier
                 .widthIn(max = 600.dp)
                 .fillMaxSize()
-                .verticalScroll(scrollState)
-                .padding(horizontal = 24.dp, vertical = 16.dp)
-                .padding(bottom = 80.dp) // Extra padding for the floating button
         ) {
-            ElevatedCard(
-            modifier = Modifier.fillMaxWidth(),
-            shape = RoundedCornerShape(24.dp),
-            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
-        ) {
-            Row(
-                modifier = Modifier.padding(20.dp),
-                verticalAlignment = Alignment.CenterVertically
+            Box(
+                modifier = Modifier
+                    .padding(horizontal = 24.dp)
+                    .padding(top = 24.dp, bottom = 12.dp)
             ) {
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        stringResource(R.string.original),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                InfoCard(state)
+            }
+            
+            TabRow(selectedTabIndex = selectedTabIndex) {
+                tabs.forEachIndexed { index, title ->
+                    Tab(
+                        selected = selectedTabIndex == index,
+                        onClick = { selectedTabIndex = index },
+                        text = { Text(title) }
                     )
-                    Text(
-                        state.formattedOriginalSize,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        "${state.originalWidth}x${state.originalHeight} • ${state.originalFps.toInt()}fps",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.outline
-                    )
-                    if (state.showBitrate) {
-                        Text(
-                            state.formattedOriginalBitrate,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.outline
-                        )
-                    }
                 }
-                
-                Box(modifier = Modifier.height(40.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
-                
-                Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
-                     Text(
-                        stringResource(R.string.estimated),
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    Text(
-                        state.estimatedSize,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                    
-                    val targetRes = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
-                    val targetW = if (state.originalHeight > 0) (state.originalWidth.toFloat() / state.originalHeight * targetRes).toInt() else 0
-                    val targetFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
-                    
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        "${targetW}x${targetRes} • ${targetFps}fps",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                    )
-
-                    if (state.showBitrate) {
-                        Text(
-                            state.formattedBitrate,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
-                        )
-                    }
-                }
+            }
+            
+            Box(modifier = Modifier.weight(1f)) {
+                 when (selectedTabIndex) {
+                     0 -> PresetsTab(state, viewModel)
+                     1 -> VideoOptionsTab(state, viewModel)
+                     2 -> AudioOptionsTab(state, viewModel)
+                 }
             }
         }
         
-        Spacer(modifier = Modifier.height(32.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .align(Alignment.BottomCenter)
+                .background(
+                    androidx.compose.ui.graphics.Brush.verticalGradient(
+                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
+                        startY = 0f,
+                        endY = 100f
+                    )
+                )
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                    .padding(24.dp)
+            ) {
+                 Button(
+                    onClick = { viewModel.startCompression(context) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(56.dp)
+                        .scaleOnPress { viewModel.startCompression(context) },
+                    shape = RoundedCornerShape(16.dp)
+                ) {
+                    Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun InfoCard(state: CompressorUiState) {
+    ElevatedCard(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(24.dp),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
+    ) {
+        Row(
+            modifier = Modifier.padding(20.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    stringResource(R.string.original),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    state.formattedOriginalSize,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold
+                )
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "${state.originalWidth}x${state.originalHeight} • ${state.originalFps.toInt()}fps",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.outline
+                )
+                if (state.showBitrate) {
+                    Text(
+                        state.formattedOriginalBitrate,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.outline
+                    )
+                }
+            }
+            
+            Box(modifier = Modifier.height(40.dp).width(1.dp).background(MaterialTheme.colorScheme.outlineVariant))
+            
+            Column(modifier = Modifier.weight(1f), horizontalAlignment = Alignment.End) {
+                 Text(
+                    stringResource(R.string.estimated),
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                Text(
+                    state.estimatedSize,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
+                
+                val targetRes = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
+                val targetW = if (state.originalHeight > 0) (state.originalWidth.toFloat() / state.originalHeight * targetRes).toInt() else 0
+                val targetFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
+                
+                Spacer(modifier = Modifier.height(4.dp))
+                Text(
+                    "${targetW}x${targetRes} • ${targetFps}fps",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                )
+
+                if (state.showBitrate) {
+                    Text(
+                        state.formattedBitrate,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary.copy(alpha = 0.8f)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
+    val scrollState = rememberScrollState()
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+            .padding(bottom = 80.dp)
+    ) {
         
         Text(stringResource(R.string.quality_preset), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
 
@@ -699,265 +769,217 @@ fun ConfigScreen(
                     )
                 }
             }
-            
-            Spacer(modifier = Modifier.height(24.dp))
         }
-        
-        var advancedExpanded by remember { mutableStateOf(false) }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .clickable { 
-                    advancedExpanded = !advancedExpanded
-                    if (advancedExpanded) {
-                        coroutineScope.launch {
-                            kotlinx.coroutines.delay(100)
-                            scrollState.animateScrollTo(
-                                scrollState.value + 300,
-                                animationSpec = spring(dampingRatio = 0.8f, stiffness = 300f)
-                            )
-                        }
-                    }
-                }
-                .padding(vertical = 12.dp),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(stringResource(R.string.advanced_options), style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
-            Icon(
-                if (advancedExpanded) Icons.Default.Close else Icons.Default.Add, 
-                contentDescription = null,
-                modifier = Modifier.size(16.dp),
-                tint = MaterialTheme.colorScheme.primary
-            )
-        }
+    }
+}
 
-        AnimatedVisibility(
-            visible = advancedExpanded,
-            enter = expandVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f)) + fadeIn(),
-            exit = shrinkVertically() + fadeOut()
-        ) {
-            Column(modifier = Modifier.padding(top = 8.dp)) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
-                    Text(
-                        String.format("%.1f MB", state.targetSizeMb), 
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.primary
-                    )
-                }
-                
-                 Slider(
-                    value = state.targetSizeMb,
-                    onValueChange = { viewModel.setTargetSize(it) },
-                    valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
-                    steps = 0
+@Composable
+fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
+    val scrollState = rememberScrollState()
+    
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+            .padding(bottom = 80.dp)
+    ) {
+            Text(stringResource(R.string.advanced_options), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
+                Text(
+                    String.format("%.1f MB", state.targetSizeMb), 
+                    style = MaterialTheme.typography.labelMedium,
+                    color = MaterialTheme.colorScheme.primary
                 )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.slider_less_space), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
-                    Text(stringResource(R.string.slider_balanced), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
-                    Text(stringResource(R.string.slider_high_quality), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
-                }
+            }
+            
+             Slider(
+                value = state.targetSizeMb,
+                onValueChange = { viewModel.setTargetSize(it) },
+                valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
+                steps = 0
+            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
+                Text(stringResource(R.string.slider_less_space), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.slider_balanced), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                Text(stringResource(R.string.slider_high_quality), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
+            Row(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                val supported = state.supportedCodecs
                 
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
-                Row(
-                    modifier = Modifier
-                        .padding(top = 8.dp)
-                        .horizontalScroll(rememberScrollState()),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    val supported = state.supportedCodecs
-                    
-                    if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {
-                        FilterChip(
-                            selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_AV1,
-                            onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) },
-                            label = { Text(stringResource(R.string.av1_high_efficiency)) }
-                        )
-                    }
-                    if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_H265)) {
-                        FilterChip(
-                            selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H265,
-                            onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) },
-                            label = { Text(stringResource(R.string.h265_efficient)) }
-                        )
-                    }
+                if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {
                     FilterChip(
-                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H264,
-                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) },
-                        label = { Text(stringResource(R.string.h264_compat)) }
+                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_AV1,
+                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) },
+                        label = { Text(stringResource(R.string.av1_high_efficiency)) }
                     )
                 }
-                 
-                Spacer(modifier = Modifier.height(16.dp))
+                if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_H265)) {
+                    FilterChip(
+                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H265,
+                        onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) },
+                        label = { Text(stringResource(R.string.h265_efficient)) }
+                    )
+                }
+                FilterChip(
+                    selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H264,
+                    onClick = { viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) },
+                    label = { Text(stringResource(R.string.h264_compat)) }
+                )
+            }
+             
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(stringResource(R.string.resolution), style = MaterialTheme.typography.labelLarge)
+            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 
-                Text(stringResource(R.string.resolution), style = MaterialTheme.typography.labelLarge)
-                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    // Predefined resolution labels
-                    val res4320 = stringResource(R.string.res_8k)
-                    val res2160 = stringResource(R.string.res_4k)
-                    val res1440 = stringResource(R.string.res_2k)
-                    val res1080 = stringResource(R.string.res_1080p)
-                    val res720 = stringResource(R.string.res_720p)
-                    val res540 = stringResource(R.string.res_540p)
-                    val res480 = stringResource(R.string.res_480p)
+                val res4320 = stringResource(R.string.res_8k)
+                val res2160 = stringResource(R.string.res_4k)
+                val res1440 = stringResource(R.string.res_2k)
+                val res1080 = stringResource(R.string.res_1080p)
+                val res720 = stringResource(R.string.res_720p)
+                val res540 = stringResource(R.string.res_540p)
+                val res480 = stringResource(R.string.res_480p)
 
-                    val resThreeQuarters = stringResource(R.string.res_three_quarters)
-                    val resHalf = stringResource(R.string.res_half)
-                    val resQuarter = stringResource(R.string.res_quarter)
+                val resThreeQuarters = stringResource(R.string.res_three_quarters)
+                val resHalf = stringResource(R.string.res_half)
+                val resQuarter = stringResource(R.string.res_quarter)
 
-                    val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 540 to res540, 480 to res480)
-                    
-                    val options = remember(state.originalHeight) {
-                        val standard = allRes.filter { it.first <= state.originalHeight }
-                        val fractions = listOf(
-                            (state.originalHeight * 0.75).toInt() to resThreeQuarters,
-                            (state.originalHeight * 0.5).toInt() to resHalf,
-                            (state.originalHeight * 0.25).toInt() to resQuarter
-                        )
-                        // Standard resolutions take precedence if values are equal
-                        (standard + fractions)
-                            .filter { it.first > 0 }
-                            .sortedByDescending { it.first }
-                    }
+                val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 540 to res540, 480 to res480)
+                
+                val options = remember(state.originalHeight) {
+                    val standard = allRes.filter { it.first <= state.originalHeight }
+                    val fractions = listOf(
+                        (state.originalHeight * 0.75).toInt() to resThreeQuarters,
+                        (state.originalHeight * 0.5).toInt() to resHalf,
+                        (state.originalHeight * 0.25).toInt() to resQuarter
+                    )
+                    (standard + fractions)
+                        .filter { it.first > 0 }
+                        .sortedByDescending { it.first }
+                }
 
-                    androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                     FilterChip(
+                        selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
+                        onClick = { viewModel.setResolution(state.originalHeight) }, 
+                        label = { Text(stringResource(R.string.original) + " • ${state.originalHeight}p") },
+                        modifier = Modifier.padding(end = 8.dp)
+                    )
+                    options.forEach { (res, label) ->
                          FilterChip(
-                            selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
-                            onClick = { viewModel.setResolution(state.originalHeight) }, 
-                            label = { Text(stringResource(R.string.original) + " • ${state.originalHeight}p") },
+                            selected = state.targetResolutionHeight == res, 
+                            onClick = { viewModel.setResolution(res) }, 
+                            label = { Text(label) },
                             modifier = Modifier.padding(end = 8.dp)
                         )
-                        options.forEach { (res, label) ->
-                             FilterChip(
-                                selected = state.targetResolutionHeight == res, 
-                                onClick = { viewModel.setResolution(res) }, 
-                                label = { Text(label) },
-                                modifier = Modifier.padding(end = 8.dp)
-                            )
-                        }
-                    }
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Text(stringResource(R.string.framerate), style = MaterialTheme.typography.labelLarge)
-                Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                     FilterChip(
-                        selected = state.targetFps == 0,
-                        onClick = { viewModel.setFps(0) },
-                        label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") }
-                    )
-                    FilterChip(
-                        selected = state.targetFps == 60,
-                        onClick = { viewModel.setFps(60) },
-                        label = { Text(stringResource(R.string.fps_60)) },
-                        enabled = state.originalFps >= 50f
-                    )
-                    FilterChip(
-                        selected = state.targetFps == 30,
-                        onClick = { viewModel.setFps(30) },
-                        label = { Text(stringResource(R.string.fps_30)) }
-                    )
-                }
-                
-                Spacer(modifier = Modifier.height(16.dp))
-                HorizontalDivider()
-                Spacer(modifier = Modifier.height(16.dp))
-                
-                Text(stringResource(R.string.audio_options), style = MaterialTheme.typography.labelLarge)
-                
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(top = 8.dp)
-                        .clickable { viewModel.toggleRemoveAudio() },
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.remove_audio), style = MaterialTheme.typography.bodyMedium)
-                    Switch(
-                        checked = state.removeAudio,
-                        onCheckedChange = { viewModel.toggleRemoveAudio() }
-                    )
-                }
-
-                AnimatedVisibility(visible = !state.removeAudio) {
-                    Column(modifier = Modifier.padding(top = 16.dp)) {
-                         Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelLarge)
-                         
-                         Row(
-                             modifier = Modifier
-                                .horizontalScroll(rememberScrollState())
-                                .padding(top = 8.dp),
-                             horizontalArrangement = Arrangement.spacedBy(8.dp)
-                         ) {
-                             val bitrates = listOf(0, 320000, 256000, 192000, 160000, 128000, 96000, 64000)
-                             bitrates.forEach { rate ->
-                                 if (rate == 0 || (state.originalAudioBitrate > 0 && rate <= state.originalAudioBitrate)) {
-                                     val effectiveSelectedBitrate = if (state.audioBitrate == 0) state.originalAudioBitrate else state.audioBitrate
-                                     val chipRepresentsBitrate = if (rate == 0) state.originalAudioBitrate else rate
-                                     
-                                     val isSelected = effectiveSelectedBitrate == chipRepresentsBitrate
-                                     
-                                     FilterChip(
-                                         selected = isSelected,
-                                         onClick = { viewModel.setAudioBitrate(rate) },
-                                         label = { 
-                                             if (rate == 0) {
-                                                 Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k")
-                                             } else {
-                                                 Text("${rate / 1000}k") 
-                                             }
-                                         }
-                                     )
-                                 }
-                             }
-                         }
                     }
                 }
             }
-        }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(stringResource(R.string.framerate), style = MaterialTheme.typography.labelLarge)
+            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                 FilterChip(
+                    selected = state.targetFps == 0,
+                    onClick = { viewModel.setFps(0) },
+                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") }
+                )
+                FilterChip(
+                    selected = state.targetFps == 60,
+                    onClick = { viewModel.setFps(60) },
+                    label = { Text(stringResource(R.string.fps_60)) },
+                    enabled = state.originalFps >= 50f
+                )
+                FilterChip(
+                    selected = state.targetFps == 30,
+                    onClick = { viewModel.setFps(30) },
+                    label = { Text(stringResource(R.string.fps_30)) }
+                )
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
     }
+}
 
-        Box(
+@Composable
+fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
+    val scrollState = rememberScrollState()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState)
+            .padding(horizontal = 24.dp, vertical = 24.dp)
+            .padding(bottom = 80.dp)
+    ) {
+         Text(stringResource(R.string.audio_options), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+         
+         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .background(
-                    androidx.compose.ui.graphics.Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
-                        startY = 0f,
-                        endY = 100f
-                    )
-                )
+                .padding(top = 8.dp)
+                .clickable { viewModel.toggleRemoveAudio() },
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                    .padding(24.dp)
-            ) {
-                 Button(
-                    onClick = { viewModel.startCompression(context) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .scaleOnPress { viewModel.startCompression(context) },
-                    shape = RoundedCornerShape(16.dp)
-                ) {
-                    Text(stringResource(R.string.start_compression), fontSize = 16.sp)
-                }
+            Text(stringResource(R.string.remove_audio), style = MaterialTheme.typography.bodyMedium)
+            Switch(
+                checked = state.removeAudio,
+                onCheckedChange = { viewModel.toggleRemoveAudio() }
+            )
+        }
+
+        AnimatedVisibility(visible = !state.removeAudio) {
+            Column(modifier = Modifier.padding(top = 16.dp)) {
+                 Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelLarge)
+                 
+                 Row(
+                     modifier = Modifier
+                        .horizontalScroll(rememberScrollState())
+                        .padding(top = 8.dp),
+                     horizontalArrangement = Arrangement.spacedBy(8.dp)
+                 ) {
+                     val bitrates = listOf(0, 320000, 256000, 192000, 160000, 128000, 96000, 64000)
+                     bitrates.forEach { rate ->
+                         if (rate == 0 || (state.originalAudioBitrate > 0 && rate <= state.originalAudioBitrate)) {
+                             val effectiveSelectedBitrate = if (state.audioBitrate == 0) state.originalAudioBitrate else state.audioBitrate
+                             val chipRepresentsBitrate = if (rate == 0) state.originalAudioBitrate else rate
+                             
+                             val isSelected = effectiveSelectedBitrate == chipRepresentsBitrate
+                             
+                             FilterChip(
+                                 selected = isSelected,
+                                 onClick = { viewModel.setAudioBitrate(rate) },
+                                 label = { 
+                                     if (rate == 0) {
+                                         Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k")
+                                     } else {
+                                         Text("${rate / 1000}k") 
+                                     }
+                                 }
+                             )
+                         }
+                     }
+                 }
             }
         }
     }

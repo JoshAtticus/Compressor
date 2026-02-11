@@ -19,8 +19,8 @@
     <string name="preset_low">Low</string>
     <string name="preset_low_desc">720p • 30fps</string>
     
-    <string name="quality_preset">Quality Preset</string>
-    <string name="target_size_limits">Target Size Limits</string>
+    <string name="quality_preset">Change Video Quality</string>
+    <string name="target_size_limits">Target Size Presets</string>
     <string name="advanced_options">Advanced Options</string>
     <string name="target_size">Target Size</string>
     <string name="encoding">Encoding</string>
