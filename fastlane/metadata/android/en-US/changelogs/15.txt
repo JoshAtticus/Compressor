@@ -1,0 +1,14 @@
+Compressor 1.5.0 adds new features:
+- EXIF data is now retained when compressing videos
+- Brand new, cleaner, tabbed UI for phones
+- Brand new, cleaner, 2-pane UI for tablets
+- More responsive overall UI, with haptics, animations and smoothing
+- Ability to adjust volume of the final video
+- Inapplicable presets are now greyed out rather than hidden
+- Added a new error screen to clearly detail errors when they occur
+- 'Report Bug' button
+- Compressed videos larger than original now count as failed, with an option to save anyways
+- Logs can now easily be copied to clipboard from the 'Report Bug' modal
+
+Bug Fixes:
+- Fixed Original Audio Bitrate chip consistency with other chips
