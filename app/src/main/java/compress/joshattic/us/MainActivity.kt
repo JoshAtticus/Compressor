@@ -1498,6 +1498,34 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                          }
                      }
                  }
+
+                 Spacer(modifier = Modifier.height(24.dp))
+
+                 Row(
+                     modifier = Modifier.fillMaxWidth(),
+                     horizontalArrangement = Arrangement.SpaceBetween,
+                     verticalAlignment = Alignment.CenterVertically
+                 ) {
+                     Text(stringResource(R.string.volume), style = MaterialTheme.typography.labelLarge)
+                     Text(
+                         "${(state.audioVolume * 100).toInt()}%", 
+                         style = MaterialTheme.typography.labelMedium,
+                         color = MaterialTheme.colorScheme.primary
+                     )
+                 }
+                 
+                 var sliderPosition by remember(state.audioVolume) { mutableFloatStateOf(state.audioVolume) }
+                 
+                 Slider(
+                    value = sliderPosition,
+                    onValueChange = { 
+                        sliderPosition = it
+                        viewModel.setAudioVolume(it)
+                        haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
+                    },
+                    valueRange = 0f..2f,
+                    steps = 19
+                )
             }
         }
     }
