@@ -62,6 +62,7 @@ data class CompressorUiState(
     val compressedSize: Long = 0L,
     val currentOutputSize: Long = 0L,
     val error: String? = null,
+    val errorLog: String? = null,
     val saveSuccess: Boolean = false,
     
     // Configuration
@@ -518,7 +519,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return
 
-        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, compressedUri = null, saveSuccess = false) }
+        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false) }
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
@@ -591,7 +592,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                         it.copy(
                             isCompressing = false, 
-                            error = errorMsg
+                            error = errorMsg,
+                            errorLog = exportException.stackTraceToString()
                         ) 
                     }
                 }

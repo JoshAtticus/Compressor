@@ -362,6 +362,9 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             sb.append("Target: ${state.targetResolutionHeight}p @ ${state.targetFps}fps\n")
             sb.append("Codec: ${state.videoCodec}\n")
             sb.append("Error: ${state.error ?: "File larger than original"}\n")
+            if (state.errorLog != null) {
+                sb.append("\nStack Trace:\n${state.errorLog}")
+            }
             sb.toString()
         }
 
