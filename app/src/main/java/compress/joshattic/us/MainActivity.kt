@@ -76,12 +76,19 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<CompressorViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        
+        val isTablet = resources.getBoolean(R.bool.is_tablet)
+        if (!isTablet) {
+            requestedOrientation = android.content.pm.ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        }
+        
         enableEdgeToEdge()
 
         // Handle incoming share intent
@@ -100,7 +107,6 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             CompressorTheme {
-                // Using Surface to ensure correct M3 background handling
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -151,7 +157,6 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 viewModel.reset()
             }
         } catch (e: Exception) {
-            // Gesture was cancelled
         }
     }
     
@@ -379,7 +384,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                     
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween // Spread 'em out
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextButton(onClick = {
                             clipboardManager.setText(AnnotatedString(errorLogs))
@@ -404,7 +409,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                         onClick = {
                             uriHandler.openUri("https://github.com/JoshAtticus/Compressor/issues")
                         },
-                        modifier = Modifier.fillMaxWidth() // Centered full width for the long one
+                        modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(stringResource(R.string.open_issue_tracker))
                     }
@@ -453,7 +458,6 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                 textAlign = TextAlign.Center
             )
             
-            // Only show size comparison if we actually have a compressed file (i.e. size > original case)
             if (state.error == null) {
                 Spacer(modifier = Modifier.height(8.dp))
                  Text(
@@ -519,7 +523,7 @@ fun ResultScreen(
             .widthIn(max = 600.dp)
             .fillMaxSize()
             .padding(24.dp)
-            .verticalScroll(rememberScrollState()), // Added scroll for smaller screens/landscape
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -785,16 +789,10 @@ fun ConfigScreen(
                         }
                         
                         Box(modifier = Modifier.weight(1f)) {
-                             // Use HorizontalPager here too for consistency, or keep AnimatedContent?
-                             // Swiping on tablet might be nice too. Let's use HorizontalPager.
                              HorizontalPager(
                                  state = pagerState,
                                  modifier = Modifier.fillMaxSize(),
-                                 userScrollEnabled = false // Let's disable swipe on tablet to keep it feeling like a desktop/tablet app with strict nav? 
-                                                          // Or enable it? "Can we allow swiping between tabs?" implies enabled.
-                                                          // Actually, standard tablet patterns usually rely on the rail. 
-                                                          // But if I enable it, it doesn't hurt.
-                                                          // Let's enable it. The user asked for swiping.
+                                 userScrollEnabled = false
                              ) { index ->
                                  when (index) {
                                      0 -> PresetsTab(state, viewModel)
@@ -804,7 +802,6 @@ fun ConfigScreen(
                              }
                         }
                         
-                        // Spacer for bottom button area
                         Spacer(modifier = Modifier.height(100.dp))
                     }
                     
@@ -975,7 +972,6 @@ fun InfoCard(state: CompressorUiState) {
                     color = MaterialTheme.colorScheme.primary
                 )
                 
-                // Reverted to simple text animation per user request
                 AnimatedContent(
                     targetState = state.estimatedSize,
                     transitionSpec = {
@@ -1071,10 +1067,7 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 else -> true
             }
 
-            // Selection scale
             val selectionScale by animateFloatAsState(if (selected) 1.02f else 1f, animationSpec = ExpressiveSpatialSpring)
-            
-            // Interaction scale
             val interactionSource = remember { MutableInteractionSource() }
             val isPressed by interactionSource.collectIsPressedAsState()
             val pressScale by animateFloatAsState(if (isPressed) 0.96f else 1f, animationSpec = ExpressiveSpatialSpring)
