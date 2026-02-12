@@ -12,3 +12,4 @@ Compressor 1.5.0 adds new features:
 
 Bug Fixes:
 - Fixed Original Audio Bitrate chip consistency with other chips
+- Orientation is now correctly locked to portrait on phones

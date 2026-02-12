@@ -147,16 +147,15 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
 
-    // Handle back button/gesture with predictive back support
     androidx.activity.compose.PredictiveBackHandler(enabled = state.selectedUri != null) { progress ->
         try {
             progress.collect()
+        } finally {
             if (state.isCompressing) {
                 viewModel.cancelCompression()
             } else {
                 viewModel.reset()
             }
-        } catch (e: Exception) {
         }
     }
     
