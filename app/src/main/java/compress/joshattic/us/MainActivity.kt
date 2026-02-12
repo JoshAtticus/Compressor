@@ -49,6 +49,9 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -731,95 +734,219 @@ fun ConfigScreen(
     // Avoid floating point issues with epsilon
     val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
     
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.TopCenter
+    BoxWithConstraints(
+        modifier = Modifier.fillMaxSize()
     ) {
-        Column(
-            modifier = Modifier
-                .widthIn(max = 600.dp)
-                .fillMaxSize()
-        ) {
-            Box(
-                modifier = Modifier
-                    .padding(horizontal = 24.dp)
-                    .padding(top = 24.dp, bottom = 12.dp)
-            ) {
-                InfoCard(state)
-            }
-            
-            TabRow(selectedTabIndex = selectedTabIndex) {
-                tabs.forEachIndexed { index, title ->
-                    Tab(
-                        selected = selectedTabIndex == index,
-                        onClick = { selectedTabIndex = index },
-                        text = { Text(title) }
+        val useSplitLayout = maxWidth >= 600.dp 
+        
+        if (useSplitLayout) {
+            Row(modifier = Modifier.fillMaxSize()) {
+                NavigationRail(
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    modifier = Modifier.padding(top = 24.dp)
+                ) {
+                    Spacer(Modifier.weight(1f))
+                    NavigationRailItem(
+                        selected = selectedTabIndex == 0,
+                        onClick = { selectedTabIndex = 0 },
+                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        label = { Text("Presets") }
                     )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedTabIndex == 1,
+                        onClick = { selectedTabIndex = 1 },
+                        icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
+                        label = { Text("Video") }
+                    )
+                    Spacer(Modifier.height(12.dp))
+                    NavigationRailItem(
+                        selected = selectedTabIndex == 2,
+                        onClick = { selectedTabIndex = 2 },
+                        icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                        label = { Text("Audio") }
+                    )
+                    Spacer(Modifier.weight(1f))
+                }
+                
+                VerticalDivider(
+                    modifier = Modifier.fillMaxHeight(),
+                    color = MaterialTheme.colorScheme.outlineVariant
+                )
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f)
+                ) {
+                    Column(modifier = Modifier.fillMaxSize()) {
+                        Box(
+                            modifier = Modifier
+                                .padding(horizontal = 24.dp)
+                                .padding(top = 24.dp, bottom = 12.dp)
+                        ) {
+                            InfoCard(state)
+                        }
+                        
+                        Box(modifier = Modifier.weight(1f)) {
+                             AnimatedContent(
+                                 targetState = selectedTabIndex,
+                                 transitionSpec = {
+                                     val springSpec = spring<IntOffset>(
+                                         dampingRatio = 0.8f,
+                                         stiffness = 350f
+                                     )
+                                     if (targetState > initialState) {
+                                         slideInVertically(animationSpec = springSpec) { h -> h } + fadeIn() togetherWith
+                                                 slideOutVertically(animationSpec = springSpec) { h -> -h } + fadeOut()
+                                     } else {
+                                         slideInVertically(animationSpec = springSpec) { h -> -h } + fadeIn() togetherWith
+                                                 slideOutVertically(animationSpec = springSpec) { h -> h } + fadeOut()
+                                     }
+                                 },
+                                 label = "TabContent"
+                             ) { index ->
+                                 when (index) {
+                                     0 -> PresetsTab(state, viewModel)
+                                     1 -> VideoOptionsTab(state, viewModel)
+                                     2 -> AudioOptionsTab(state, viewModel)
+                                 }
+                             }
+                        }
+                        
+                        // Spacer for bottom button area
+                        Spacer(modifier = Modifier.height(100.dp))
+                    }
+                    
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .align(Alignment.BottomCenter)
+                            .background(
+                                androidx.compose.ui.graphics.Brush.verticalGradient(
+                                    colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
+                                    startY = 0f,
+                                    endY = 100f
+                                )
+                            )
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                                .padding(24.dp)
+                        ) {
+                             val interactionSource = remember { MutableInteractionSource() }
+                             Button(
+                                onClick = { 
+                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    viewModel.startCompression(context) 
+                                },
+                                enabled = !isLarger,
+                                interactionSource = interactionSource,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .height(56.dp)
+                                    .expressiveScale(interactionSource),
+                                shape = RoundedCornerShape(16.dp)
+                            ) {
+                                Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                            }
+                        }
+                    }
                 }
             }
-            
-            Box(modifier = Modifier.weight(1f)) {
-                 AnimatedContent(
-                     targetState = selectedTabIndex,
-                     transitionSpec = {
-                         val springSpec = spring<IntOffset>(
-                             dampingRatio = 0.8f,
-                             stiffness = 350f
-                         )
-                         if (targetState > initialState) {
-                             slideInHorizontally(animationSpec = springSpec) { w -> w } + fadeIn() togetherWith
-                                     slideOutHorizontally(animationSpec = springSpec) { w -> -w } + fadeOut()
-                         } else {
-                             slideInHorizontally(animationSpec = springSpec) { w -> -w } + fadeIn() togetherWith
-                                     slideOutHorizontally(animationSpec = springSpec) { w -> w } + fadeOut()
-                         }
-                     },
-                     label = "TabContent"
-                 ) { index ->
-                     when (index) {
-                         0 -> PresetsTab(state, viewModel)
-                         1 -> VideoOptionsTab(state, viewModel)
-                         2 -> AudioOptionsTab(state, viewModel)
-                     }
-                 }
-            }
-        }
-        
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .background(
-                    androidx.compose.ui.graphics.Brush.verticalGradient(
-                        colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
-                        startY = 0f,
-                        endY = 100f
-                    )
-                )
-        ) {
+        } else {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                    .padding(24.dp),
-                contentAlignment = Alignment.Center
+                 modifier = Modifier.fillMaxSize(),
+                 contentAlignment = Alignment.TopCenter
             ) {
-                 val interactionSource = remember { MutableInteractionSource() }
-                 Button(
-                    onClick = { 
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.startCompression(context) 
-                    },
-                    enabled = !isLarger,
-                    interactionSource = interactionSource,
-                    modifier = Modifier
-                        .widthIn(max = 600.dp)
-                        .fillMaxWidth()
-                        .height(56.dp)
-                        .expressiveScale(interactionSource),
-                    shape = RoundedCornerShape(16.dp)
+                Column(
+                    modifier = Modifier.fillMaxSize()
                 ) {
-                    Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                    Box(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 24.dp, bottom = 12.dp)
+                    ) {
+                        InfoCard(state)
+                    }
+                    
+                    TabRow(selectedTabIndex = selectedTabIndex) {
+                        tabs.forEachIndexed { index, title ->
+                            Tab(
+                                selected = selectedTabIndex == index,
+                                onClick = { selectedTabIndex = index },
+                                text = { Text(title) }
+                            )
+                        }
+                    }
+                    
+                    Box(modifier = Modifier.weight(1f)) {
+                         AnimatedContent(
+                             targetState = selectedTabIndex,
+                             transitionSpec = {
+                                 val springSpec = spring<IntOffset>(
+                                     dampingRatio = 0.8f,
+                                     stiffness = 350f
+                                 )
+                                 if (targetState > initialState) {
+                                     slideInHorizontally(animationSpec = springSpec) { w -> w } + fadeIn() togetherWith
+                                             slideOutHorizontally(animationSpec = springSpec) { w -> -w } + fadeOut()
+                                 } else {
+                                     slideInHorizontally(animationSpec = springSpec) { w -> -w } + fadeIn() togetherWith
+                                             slideOutHorizontally(animationSpec = springSpec) { w -> w } + fadeOut()
+                                 }
+                             },
+                             label = "TabContent"
+                         ) { index ->
+                             when (index) {
+                                 0 -> PresetsTab(state, viewModel)
+                                 1 -> VideoOptionsTab(state, viewModel)
+                                 2 -> AudioOptionsTab(state, viewModel)
+                             }
+                         }
+                    }
+                }
+                
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.BottomCenter)
+                        .background(
+                            androidx.compose.ui.graphics.Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
+                                startY = 0f,
+                                endY = 100f
+                            )
+                        )
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                            .padding(24.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                         val interactionSource = remember { MutableInteractionSource() }
+                         Button(
+                            onClick = { 
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.startCompression(context) 
+                            },
+                            enabled = !isLarger,
+                            interactionSource = interactionSource,
+                            modifier = Modifier
+                                .widthIn(max = 600.dp)
+                                .fillMaxWidth()
+                                .height(56.dp)
+                                .expressiveScale(interactionSource),
+                            shape = RoundedCornerShape(16.dp)
+                        ) {
+                            Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                        }
+                    }
                 }
             }
         }
