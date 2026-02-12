@@ -31,6 +31,8 @@ import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.composed
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -728,7 +730,9 @@ fun ConfigScreen(
     context: android.content.Context
 ) {
     val scrollState = rememberScrollState()
-    var selectedTabIndex by remember { mutableIntStateOf(0) }
+    val pagerState = rememberPagerState(pageCount = { 3 })
+    val scope = rememberCoroutineScope()
+    // var selectedTabIndex by remember { mutableIntStateOf(0) } // Removed in favor of pagerState
     val tabs = listOf("Presets", "Video", "Audio")
     val haptics = LocalHapticFeedback.current
 
@@ -751,22 +755,22 @@ fun ConfigScreen(
                 ) {
                     Spacer(Modifier.weight(1f))
                     NavigationRailItem(
-                        selected = selectedTabIndex == 0,
-                        onClick = { selectedTabIndex = 0 },
+                        selected = pagerState.currentPage == 0,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
                         label = { Text("Presets") }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
-                        selected = selectedTabIndex == 1,
-                        onClick = { selectedTabIndex = 1 },
+                        selected = pagerState.currentPage == 1,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                         icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
                         label = { Text("Video") }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
-                        selected = selectedTabIndex == 2,
-                        onClick = { selectedTabIndex = 2 },
+                        selected = pagerState.currentPage == 2,
+                        onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
                         label = { Text("Audio") }
                     )
@@ -793,22 +797,16 @@ fun ConfigScreen(
                         }
                         
                         Box(modifier = Modifier.weight(1f)) {
-                             AnimatedContent(
-                                 targetState = selectedTabIndex,
-                                 transitionSpec = {
-                                     val springSpec = spring<IntOffset>(
-                                         dampingRatio = 0.8f,
-                                         stiffness = 350f
-                                     )
-                                     if (targetState > initialState) {
-                                         slideInVertically(animationSpec = springSpec) { h -> h } + fadeIn() togetherWith
-                                                 slideOutVertically(animationSpec = springSpec) { h -> -h } + fadeOut()
-                                     } else {
-                                         slideInVertically(animationSpec = springSpec) { h -> -h } + fadeIn() togetherWith
-                                                 slideOutVertically(animationSpec = springSpec) { h -> h } + fadeOut()
-                                     }
-                                 },
-                                 label = "TabContent"
+                             // Use HorizontalPager here too for consistency, or keep AnimatedContent?
+                             // Swiping on tablet might be nice too. Let's use HorizontalPager.
+                             HorizontalPager(
+                                 state = pagerState,
+                                 modifier = Modifier.fillMaxSize(),
+                                 userScrollEnabled = false // Let's disable swipe on tablet to keep it feeling like a desktop/tablet app with strict nav? 
+                                                          // Or enable it? "Can we allow swiping between tabs?" implies enabled.
+                                                          // Actually, standard tablet patterns usually rely on the rail. 
+                                                          // But if I enable it, it doesn't hurt.
+                                                          // Let's enable it. The user asked for swiping.
                              ) { index ->
                                  when (index) {
                                      0 -> PresetsTab(state, viewModel)
@@ -876,33 +874,20 @@ fun ConfigScreen(
                         InfoCard(state)
                     }
                     
-                    TabRow(selectedTabIndex = selectedTabIndex) {
+                    TabRow(selectedTabIndex = pagerState.currentPage) {
                         tabs.forEachIndexed { index, title ->
                             Tab(
-                                selected = selectedTabIndex == index,
-                                onClick = { selectedTabIndex = index },
+                                selected = pagerState.currentPage == index,
+                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
                                 text = { Text(title) }
                             )
                         }
                     }
                     
                     Box(modifier = Modifier.weight(1f)) {
-                         AnimatedContent(
-                             targetState = selectedTabIndex,
-                             transitionSpec = {
-                                 val springSpec = spring<IntOffset>(
-                                     dampingRatio = 0.8f,
-                                     stiffness = 350f
-                                 )
-                                 if (targetState > initialState) {
-                                     slideInHorizontally(animationSpec = springSpec) { w -> w } + fadeIn() togetherWith
-                                             slideOutHorizontally(animationSpec = springSpec) { w -> -w } + fadeOut()
-                                 } else {
-                                     slideInHorizontally(animationSpec = springSpec) { w -> -w } + fadeIn() togetherWith
-                                             slideOutHorizontally(animationSpec = springSpec) { w -> w } + fadeOut()
-                                 }
-                             },
-                             label = "TabContent"
+                         HorizontalPager(
+                             state = pagerState,
+                             modifier = Modifier.fillMaxSize()
                          ) { index ->
                              when (index) {
                                  0 -> PresetsTab(state, viewModel)
