@@ -1,9 +1,9 @@
 package compress.joshattic.us
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.widget.Toast
 import android.view.WindowManager
 import androidx.activity.ComponentActivity
@@ -23,8 +23,6 @@ import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
-import androidx.compose.animation.expandVertically
-import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.*
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
@@ -42,14 +40,11 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.PlayArrow
@@ -65,15 +60,11 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.TextStyle
 import androidx.core.content.FileProvider
 import compress.joshattic.us.ui.theme.CompressorTheme
 import kotlinx.coroutines.Dispatchers
@@ -83,7 +74,6 @@ import java.io.File
 
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
-import androidx.compose.ui.platform.ClipboardManager
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
 
@@ -141,13 +131,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     }
 
     val shareVideoTitle = stringResource(R.string.share_video_title)
-    // We fetch the raw template string here to use in the non-composable callback callback below
-    // Note: R.string.share_error is expected to have a format placeholder (e.g. %s)
     val shareErrorTemplate = stringResource(R.string.share_error)
-    val deleteSuccessMsg = stringResource(R.string.delete_original_success)
-    val deleteFailedMsg = stringResource(R.string.delete_original_failed)
+
     
-    // Keep the screen on when compressing
     DisposableEffect(Unit) {
         window?.addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
         onDispose {
@@ -155,12 +141,17 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
 
-    // Handle back button/gesture
-    BackHandler(enabled = state.selectedUri != null) {
-        if (state.isCompressing) {
-            viewModel.cancelCompression()
-        } else {
-            viewModel.reset()
+    // Handle back button/gesture with predictive back support
+    androidx.activity.compose.PredictiveBackHandler(enabled = state.selectedUri != null) { progress ->
+        try {
+            progress.collect()
+            if (state.isCompressing) {
+                viewModel.cancelCompression()
+            } else {
+                viewModel.reset()
+            }
+        } catch (e: Exception) {
+            // Gesture was cancelled
         }
     }
     
@@ -537,7 +528,7 @@ fun ResultScreen(
         
         AnimatedVisibility(
             visible = visible,
-            enter = scaleIn(initialScale = 0.5f, animationSpec = spring<Float>(dampingRatio = 0.6f)) + fadeIn()
+            enter = scaleIn(initialScale = 0.5f, animationSpec = spring(dampingRatio = 0.6f)) + fadeIn()
         ) {
             Icon(
                 Icons.Outlined.CheckCircle,
@@ -729,16 +720,13 @@ fun ConfigScreen(
     viewModel: CompressorViewModel,
     context: android.content.Context
 ) {
-    val scrollState = rememberScrollState()
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
-    // var selectedTabIndex by remember { mutableIntStateOf(0) } // Removed in favor of pagerState
     val tabs = listOf("Presets", "Video", "Audio")
     val haptics = LocalHapticFeedback.current
 
     val originalMb = state.originalSize / (1024f * 1024f)
     val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
-    // Avoid floating point issues with epsilon
     val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
     
     BoxWithConstraints(
@@ -1196,6 +1184,7 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
     val scrollState = rememberScrollState()
@@ -1680,11 +1669,6 @@ fun CompressingScreen(
 val ExpressiveSpatialSpring = spring<Float>(
     dampingRatio = 0.8f,
     stiffness = 350f
-)
-// Effects (Color, Alpha)
-val ExpressiveEffectsSpring = spring<Float>(
-    dampingRatio = 1f,
-    stiffness = 300f
 )
 
 fun Modifier.scaleOnPress(
