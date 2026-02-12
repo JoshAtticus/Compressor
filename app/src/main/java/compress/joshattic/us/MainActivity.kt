@@ -732,7 +732,8 @@ fun ConfigScreen(
     val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
     
     Box(
-        modifier = Modifier.fillMaxSize()
+        modifier = Modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter
     ) {
         Column(
             modifier = Modifier
@@ -800,7 +801,8 @@ fun ConfigScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                    .padding(24.dp)
+                    .padding(24.dp),
+                contentAlignment = Alignment.Center
             ) {
                  val interactionSource = remember { MutableInteractionSource() }
                  Button(
@@ -811,6 +813,7 @@ fun ConfigScreen(
                     enabled = !isLarger,
                     interactionSource = interactionSource,
                     modifier = Modifier
+                        .widthIn(max = 600.dp)
                         .fillMaxWidth()
                         .height(56.dp)
                         .expressiveScale(interactionSource),
