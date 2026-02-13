@@ -1,7 +1,9 @@
 # Compressor
 Lightning fast, ad free, super lightweight native video compressor for Android (inspired by the AMAZING Kompresso app for iOS).
 
-[<img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" height="40" alt="Get it at IzzyOnDroid">](https://apt.izzysoft.de/packages/compress.joshattic.us)
+<p align="left">
+  <a href="https://apt.izzysoft.de/packages/compress.joshattic.us"><img src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroidButtonGreyBorder_nofont.png" height="40" align="middle" alt="Get it at IzzyOnDroid"></a><a href="https://play.google.com/store/apps/details?id=compress.joshattic.us"><img src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" height="60" align="middle" alt="Get it on Google Play"></a>
+</p>
 
 <img src="assets/select.png" alt="Screenshot 3" width="24%"/><img src="assets/settings.png" alt="Screenshot 1" width="24%"/><img src="assets/compressing.png" alt="Screenshot 2" width="24%"><img src="assets/done.png" alt="Screenshot 4" width="24%"/>
 
