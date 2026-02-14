@@ -41,6 +41,7 @@ import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.selection.SelectionContainer
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -370,17 +371,22 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             title = { Text(stringResource(R.string.error_details)) },
             text = {
                 Column {
-                    Text(
-                        errorLogs,
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier
-                            .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
-                            .padding(8.dp)
-                            .fillMaxWidth()
-                    )
-                    
+                    SelectionContainer(
+                        modifier = Modifier.heightIn(max = 400.dp)
+                    ) {
+                        Text(
+                            text = errorLogs,
+                            style = MaterialTheme.typography.bodySmall,
+                            modifier = Modifier
+                                .verticalScroll(rememberScrollState())
+                                .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
+                                .padding(8.dp)
+                                .fillMaxWidth()
+                        )
+                    }
+
                     Spacer(modifier = Modifier.height(16.dp))
-                    
+
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.SpaceBetween
