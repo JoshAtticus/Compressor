@@ -76,4 +76,9 @@
     <string name="error_details">Detalhes do Erro</string>
     <string name="copy_logs">Copiar Logs</string>
     <string name="open_issue_tracker">Abrir Rastreador de Problemas</string>
+
+    <string name="warning_hdr_tone_mapped">O vídeo HDR foi convertido para SDR para evitar problemas de compatibilidade do codificador neste dispositivo. Use AV1 se precisar preservar o HDR.</string>
+    <string name="warning_details">Detalhes do aviso</string>
+    <string name="dismiss">Dispensar</string>
+
 </resources>

@@ -48,6 +48,10 @@
     <string name="fps_60">60fps</string>
     <string name="fps_30">30fps</string>
     <string name="start_compression">Start Compression</string>
+    <string name="warning_hdr_tone_mapped">HDR video was tone-mapped to SDR to avoid encoder compatibility issues on this device. Use AV1 if you need to preserve HDR.</string>
+    <string name="warning_details">Warning Details</string>
+    <string name="dismiss">Dismiss</string>
+
     <string name="error_prefix">Error: %1$s</string>
     <string name="select_video">Select a video to compress</string>
     <string name="add_video_desc">Add Video</string>

@@ -92,4 +92,9 @@
     <string name="error_details">오류 세부 정보</string>
     <string name="copy_logs">로그 복사</string>
     <string name="open_issue_tracker">이슈 트래커 열기</string>
+    
+    <string name="warning_hdr_tone_mapped">이 장치에서 인코더 호환성 문제를 방지하기 위해 HDR 비디오가 SDR로 톤 매핑되었습니다. HDR을 보존하려면 AV1을 사용하십시오.</string>
+    <string name="warning_details">경고 세부 정보</string>
+    <string name="dismiss">닫기</string>
+
 </resources>
