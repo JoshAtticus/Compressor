@@ -39,7 +39,7 @@
     <string name="total_saved">Compressor로 %1$s의 용량을 절약했습니다</string>
     <string name="compression_complete">압축 완료!</string>
     <string name="compressing_video_label">동영상 압축 중</string>
-    <string name="cancel">닫기</string>
+    <string name="cancel">취소</string>
 
     <!-- Errors -->
     <string name="error_file_lost">파일을 찾을 수 없음</string>

@@ -1231,7 +1231,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 onValueChangeFinished = {
                     isUserInteracting = false
                 },
-                valueRange = 1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
+                valueRange = 0.1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
                 steps = 0
             )
             Row(

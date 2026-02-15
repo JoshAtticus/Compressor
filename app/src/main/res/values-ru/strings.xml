@@ -39,7 +39,7 @@
     <string name="total_saved">Вы сэкономили %1$s памяти с Compressor</string>
     <string name="compression_complete">Сжатие завершено!</string>
     <string name="compressing_video_label">СЖАТИЕ ВИДЕО</string>
-    <string name="cancel">Закрыть</string>
+    <string name="cancel">Отмена</string>
 
     <!-- Errors -->
     <string name="error_file_lost">Файл потерян</string>

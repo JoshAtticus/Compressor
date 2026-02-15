@@ -31,7 +31,7 @@
     <string name="total_saved">Has ahorrado %1$s de almacenamiento con Compressor</string>
     <string name="compression_complete">¡Compresión completada!</string>
     <string name="compressing_video_label">COMPRIMIENDO VIDEO</string>
-    <string name="cancel">Cerrar</string>
+    <string name="cancel">Cancelar</string>
     <string name="error_file_lost">Archivo perdido</string>
     <string name="error_codec_unsupported">Este códec de video no es compatible con el hardware de tu dispositivo.</string>
 

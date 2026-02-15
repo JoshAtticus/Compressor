@@ -31,7 +31,7 @@
     <string name="total_saved">Você economizou %1$s de espaço com o Compressor</string>
     <string name="compression_complete">Compressão concluída!</string>
     <string name="compressing_video_label">COMPRIMINDO VÍDEO</string>
-    <string name="cancel">Fechar</string>
+    <string name="cancel">Cancelar</string>
 
     <string name="info_title">Info do Dispositivo e App</string>
     <string name="info_copy_clipboard">Copiar para área de transferência</string>

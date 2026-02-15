@@ -59,7 +59,7 @@
     
     <string name="compression_complete">Compression Complete!</string>
     <string name="compressing_video_label">COMPRESSING VIDEO</string>
-    <string name="cancel">Close</string>
+    <string name="cancel">Cancel</string>
     
     <!-- Errors -->
     <string name="error_file_lost">File lost</string>
