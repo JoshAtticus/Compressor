@@ -76,13 +76,14 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.5.1",
+    val appInfoVersion: String = "1.5.1 (Experimental, google-pixel-10-fix branch)",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
-    val audioVolume: Float = 1.0f
+    val audioVolume: Float = 1.0f,
+    val warnings: List<String> = emptyList()
 ) {
     private val minBitrate: Long
         get() {
@@ -92,7 +93,9 @@ data class CompressorUiState(
                 h >= 1440 -> 2_500_000L
                 h >= 1080 -> 1_500_000L
                 h >= 720 -> 1_000_000L
-                else -> 500_000L
+                h >= 480 -> 500_000L
+                h >= 360 -> 350_000L
+                else -> 200_000L
             }
             
             if (videoCodec == MimeTypes.VIDEO_H265) {
@@ -184,6 +187,129 @@ data class CompressorUiState(
         
     val formattedCurrentOutputSize: String
         get() = formatFileSize(currentOutputSize)
+
+    fun autoAdjust(targetMb: Float): CompressorUiState {
+        var state = this
+        var attempts = 0
+        val maxAttempts = 20
+
+        // Downward adjustment (Reduce quality to fit target)
+        while (state.minimumSizeMb > targetMb && attempts < maxAttempts) {
+            attempts++
+            
+            val effectiveFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
+
+            // 1. Reduce FPS to 30 if higher
+            if (effectiveFps > 30) {
+                state = state.copy(targetFps = 30)
+                continue
+            }
+            
+            // 2. Reduce Audio Bitrate to 128k
+            if (state.audioBitrate > 128_000) {
+                 state = state.copy(audioBitrate = 128_000)
+                 continue
+            }
+            
+            // 3. Reduce Audio Bitrate to 64k if really needed (big gap)
+            if (state.audioBitrate > 64_000 && state.minimumSizeMb > targetMb * 1.5) {
+                 state = state.copy(audioBitrate = 64_000)
+                 continue
+            }
+
+            // 4. Reduce Resolution
+            val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
+            val newH = when {
+                currentH > 2160 -> 2160
+                currentH > 1440 -> 1440
+                currentH > 1080 -> 1080
+                currentH > 720 -> 720
+                currentH > 480 -> 480
+                currentH > 360 -> 360
+                else -> 240
+            }
+            
+            if (newH < currentH) {
+                state = state.copy(targetResolutionHeight = newH)
+                continue
+            }
+            
+            // 5. Reduce FPS to 24
+            if (effectiveFps > 24) { 
+                 state = state.copy(targetFps = 24)
+                 continue
+            }
+             
+             break 
+        }
+
+        // Upward adjustment (Increase quality if we have headroom)
+        attempts = 0
+        while (attempts < maxAttempts) {
+            attempts++
+            var changed = false
+            
+            // 1. Try to increase Resolution 
+            val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
+            if (currentH < state.originalHeight) {
+                val nextH = when {
+                    currentH < 360 -> 360
+                    currentH < 480 -> 480
+                    currentH < 720 -> 720
+                    currentH < 1080 -> 1080
+                    currentH < 1440 -> 1440
+                    currentH < 2160 -> 2160
+                    else -> state.originalHeight
+                }.coerceAtMost(state.originalHeight)
+                
+                val useOriginal = nextH >= state.originalHeight
+                val testState = state.copy(targetResolutionHeight = if (useOriginal) 0 else nextH) 
+                
+                if (testState.minimumSizeMb <= targetMb) {
+                    state = testState
+                    changed = true
+                    continue
+                }
+            }
+            
+            // 2. Try to increase FPS
+            val currentFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
+            if (currentFps < state.originalFps.toInt()) {
+                 val nextFps = if (currentFps < 30) 30 else state.originalFps.toInt()
+                 val useOriginal = nextFps >= state.originalFps.toInt()
+                 val testState = state.copy(targetFps = if (useOriginal) 0 else nextFps)
+                 
+                 if (testState.minimumSizeMb <= targetMb) {
+                    state = testState
+                    changed = true
+                    continue
+                 }
+            }
+            
+             // 3. Try to increase Audio Bitrate
+             val maxAudio = if (state.originalAudioBitrate > 0) state.originalAudioBitrate else 320_000
+             if (state.audioBitrate < maxAudio) {
+                 val nextAudio = when {
+                     state.audioBitrate < 64_000 -> 64_000
+                     state.audioBitrate < 128_000 -> 128_000
+                     state.audioBitrate < 192_000 -> 192_000
+                     state.audioBitrate < 320_000 -> 320_000
+                     else -> maxAudio
+                 }.coerceAtMost(maxAudio)
+                 
+                 val testState = state.copy(audioBitrate = nextAudio)
+                 if (testState.minimumSizeMb <= targetMb) {
+                     state = testState
+                     changed = true
+                     continue
+                 }
+             }
+
+            if (!changed) break
+        }
+
+        return state
+    }
 }
 
 fun formatFileSize(size: Long): String {
@@ -351,7 +477,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             showBitrate = showBitrate,
             useMbps = useMbps,
             supportedCodecs = supportedCodecs
-        )
+        ).autoAdjust(defaultTargetMb)
     }
     
     fun markAsShared() {
@@ -385,10 +511,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          activePreset = QualityPreset.HIGH,
                          targetResolutionHeight = current.originalHeight,
                          targetFps = 0,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(1f),
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 320_000,
                          removeAudio = false
-                     )
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f))
                  }
             }
             QualityPreset.MEDIUM -> {
@@ -397,10 +523,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          activePreset = QualityPreset.MEDIUM,
                          targetResolutionHeight = getTargetHeight(1080),
                          targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(1f),
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 192_000,
                          removeAudio = false
-                     )
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f))
                  }
             }
             QualityPreset.LOW -> {
@@ -409,10 +535,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          activePreset = QualityPreset.LOW,
                          targetResolutionHeight = getTargetHeight(720),
                          targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(1f),
+                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 128_000,
                          removeAudio = false
-                     )
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f))
                  }
             }
             else -> {}
@@ -420,16 +546,17 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun setTargetSize(mb: Float) {
-        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM).autoAdjust(mb) }
     }
 
     fun setVideoCodec(codec: String) {
         _uiState.update { 
-            it.copy(
+            val temp = it.copy(
                 videoCodec = codec, 
                 useH265 = codec == MimeTypes.VIDEO_H265, 
                 activePreset = QualityPreset.CUSTOM
-            ) 
+            )
+            temp.autoAdjust(temp.targetSizeMb)
         }
     }
     fun toggleShowBitrate() {
@@ -449,11 +576,26 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun toggleRemoveAudio() {
-        _uiState.update { it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update { 
+            val temp = it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM)
+            if (temp.removeAudio) {
+                 // If removing audio, we free up space, maybe we can increase quality?
+                 // But removing audio usually lowers size, so minimumSizeMb drops.
+                 // So we don't need to force-adjust DOWN.
+                 temp
+            } else {
+                 // If adding audio back, minimumSizeMb increases. Might need adjustment if targetSizeMb is tight.
+                 temp.autoAdjust(temp.targetSizeMb)    
+            }
+        }
     }
 
     fun setAudioBitrate(bitrate: Int) {
-        _uiState.update { it.copy(audioBitrate = bitrate, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update { 
+            val temp = it.copy(audioBitrate = bitrate, activePreset = QualityPreset.CUSTOM)
+            // Increasing bitrate increases minimumSizeMb.
+            temp.autoAdjust(temp.targetSizeMb) 
+        }
     }
 
     fun setAudioVolume(volume: Float) {
@@ -519,7 +661,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return
 
-        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false) }
+        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false, warnings = emptyList()) }
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
@@ -551,7 +693,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             )
             .build()
         
-        val transformer = Transformer.Builder(context)
+        val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
             .setEncoderFactory(encoderFactory)
             .addListener(object : Transformer.Listener {
@@ -598,7 +740,21 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     }
                 }
             })
-            .build()
+
+        // this is certainly a workaround ever, a workaround so horrific, it would be enough to stop me from getting through the pearly gates
+        // also google's fault, womp womp, can google stop being absolute garbage at anything related to the gpus
+        // me, a pixel 8 pro user, laughing at pixel 10 users because the gpu on the tensor g5 is 56% slower than the g3 :skull:
+        if (Build.MANUFACTURER.equals("Google", ignoreCase = true) && Build.MODEL.contains("Pixel 10")) {
+             if (videoMimeType == MimeTypes.VIDEO_H265 || videoMimeType == MimeTypes.VIDEO_H264) {
+                 if (isHdr(context, inputUri)) {
+                      transformerBuilder.setHdrMode(Transformer.HDR_MODE_TONE_MAP_HDR_TO_SDR_USING_OPEN_GL)
+                      val warningMsg = getApplication<Application>().getString(R.string.warning_hdr_tone_mapped)
+                      _uiState.update { it.copy(warnings = listOf(warningMsg)) }
+                 }
+             }
+        }
+        
+        val transformer = transformerBuilder.build()
         
         activeTransformer = transformer
             
@@ -666,6 +822,24 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             extractor.release()
         }
         return 0
+    }
+
+    private fun isHdr(context: Context, uri: Uri): Boolean {
+        val retriever = android.media.MediaMetadataRetriever()
+        try {
+            retriever.setDataSource(context, uri)
+            // METADATA_KEY_COLOR_TRANSFER (36) is available on API 24+
+            if (Build.VERSION.SDK_INT >= 24) {
+               val transfer = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER)
+               // 6 = ST2084 (PQ), 7 = HLG
+               return transfer == "6" || transfer == "7"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try { retriever.release() } catch(e: Exception) {}
+        }
+        return false
     }
 
     fun saveToUri(context: Context, targetUri: Uri) {

@@ -1,0 +1,2 @@
+Compressor 1.5.2 adds new features:
+- Resolution, frame rate and audio bitrate now scale up and down with target size

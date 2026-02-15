@@ -31,7 +31,7 @@
     <string name="total_saved">Você economizou %1$s de espaço com o Compressor</string>
     <string name="compression_complete">Compressão concluída!</string>
     <string name="compressing_video_label">COMPRIMINDO VÍDEO</string>
-    <string name="cancel">Fechar</string>
+    <string name="cancel">Cancelar</string>
 
     <string name="info_title">Info do Dispositivo e App</string>
     <string name="info_copy_clipboard">Copiar para área de transferência</string>
@@ -76,4 +76,9 @@
     <string name="error_details">Detalhes do Erro</string>
     <string name="copy_logs">Copiar Logs</string>
     <string name="open_issue_tracker">Abrir Rastreador de Problemas</string>
+
+    <string name="warning_hdr_tone_mapped">O vídeo HDR foi convertido para SDR para evitar problemas de compatibilidade do codificador neste dispositivo. Use AV1 se precisar preservar o HDR.</string>
+    <string name="warning_details">Detalhes do aviso</string>
+    <string name="dismiss">Dispensar</string>
+
 </resources>

@@ -55,7 +55,7 @@
     <string name="total_saved">Compressorでこれまでに %1$s 節約しました</string>
     <string name="compression_complete">圧縮完了！</string>
     <string name="compressing_video_label">ビデオを圧縮中</string>
-    <string name="cancel">閉じる</string>
+    <string name="cancel">キャンセル</string>
     
     <!-- Errors -->
     <string name="error_file_lost">ファイルが見つかりません</string>
@@ -103,4 +103,9 @@
     <string name="error_details">エラーの詳細</string>
     <string name="copy_logs">ログをコピー</string>
     <string name="open_issue_tracker">課題トラッカーを開く</string>
+
+    <string name="warning_hdr_tone_mapped">このデバイスでのエンコーダー互換性の問題を回避するため、HDRビデオはSDRにトーンマッピングされました。HDRを維持する必要がある場合は、AV1を使用してください。</string>
+    <string name="warning_details">警告の詳細</string>
+    <string name="dismiss">閉じる</string>
+
 </resources>
