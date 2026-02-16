@@ -21,6 +21,9 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 
 [![GitHub Downloads (all assets, all releases)](https://img.shields.io/github/downloads/JoshAtticus/Compressor/total?style=for-the-badge&label=GitHub%20Downloads&v=2)](https://github.com/JoshAtticus/Compressor/releases) [![IzzyOnDroid Downloads (This year)](https://img.shields.io/badge/dynamic/json?url=https://dlstats.izzyondroid.org/iod-stats-collector/stats/basic/yearly/rolling.json&query=$.['compress.joshattic.us']&label=IzzyOnDroid%20yearly%20downloads&style=for-the-badge)](https://apt.izzysoft.de/packages/compress.joshattic.us) [![Google Play Downloads](https://img.shields.io/endpoint?color=green&style=for-the-badge&url=https%3A%2F%2Fplay.cuzi.workers.dev%2Fplay%3Fi%3Dcompress.joshattic.us%26gl%3DUS%26hl%3Den%26l%3DGoogle%2520Play%2520Store%2520Downloads%26m%3D%24totalinstalls)](https://play.google.com/store/apps/details?id=compress.joshattic.us)
 
+### Yes, reproducible builds have failed, I'm sorry
+I'm not going to push blame onto anybody else, this is completely my fault. I've worked really hard on Compressor over the past month, and it's starting to burn me out. I've been trying to fix user issues within 24-48 hours, and in doing so, have been pushing updates very frequently. You may have noticed I've already started releasing and committing less frequently. If I don't respond to your issue instantly, please don't take it personally, I have a life too, I work on Compressor completely for free, and thank you so much for using Compressor :)
+
 Do you like Compressor? Consider supporting development by [buying me a coffee](https://www.buymeacoffee.com/joshatticus) ☕️
 
 You can also donate with crypto
