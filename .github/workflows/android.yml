@@ -138,8 +138,7 @@ jobs:
                  
                  [Download from Artifacts](${runUrl})
                  
-                 > **Note:** You may need to uninstall the existing version before installing this debug build.
-                ` 
+                 > **Note:** You may need to uninstall the existing version before installing this debug build.`
               : `**The build encountered errors.** See the logs below for details.`;
 
             const body = `${marker}
