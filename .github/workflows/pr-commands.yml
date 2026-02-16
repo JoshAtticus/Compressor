@@ -1,0 +1,67 @@
+name: PR Commands
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  pull-requests: read
+  issues: read
+  actions: write
+  contents: read
+
+jobs:
+  command-handler:
+    runs-on: ubuntu-latest
+    if: github.event.issue.pull_request && contains(github.event.comment.body, '/rebuild')
+    steps:
+      - name: Check Permission and Trigger Build
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const commenter = context.payload.comment.user.login;
+            const prCreator = context.payload.issue.user.login;
+            const owner = context.repo.owner;
+            const body = context.payload.comment.body;
+
+            console.log(`User: ${commenter}, PR Creator: ${prCreator}, Owner: ${owner}`);
+
+            // 1. Authorization Check
+            if (commenter !== prCreator && commenter !== owner) {
+              console.log(`❌ User ${commenter} is not authorized.`);
+              await github.rest.reactions.createForIssueComment({
+                owner, repo: context.repo.repo,
+                comment_id: context.payload.comment.id,
+                content: '-1'
+              });
+              return;
+            }
+
+            console.log('✅ User is authorized.');
+
+            // 2. React to the comment (Thumbs up)
+            await github.rest.reactions.createForIssueComment({
+              owner, repo: context.repo.repo,
+              comment_id: context.payload.comment.id,
+              content: '+1'
+            });
+
+            // 3. Get PR details to find the branch
+            const { data: pr } = await github.rest.pulls.get({
+              owner,
+              repo: context.repo.repo,
+              pull_number: context.issue.number
+            });
+
+            console.log(`Triggering rebuild for branch: ${pr.head.ref}`);
+
+            // 4. Trigger the main android.yml workflow
+            await github.rest.actions.createWorkflowDispatch({
+              owner,
+              repo: context.repo.repo,
+              workflow_id: 'android.yml',
+              ref: pr.head.ref, // IMPORTANT: Run on the PR's branch
+              inputs: {
+                pr_number: context.issue.number.toString()
+              }
+            });
