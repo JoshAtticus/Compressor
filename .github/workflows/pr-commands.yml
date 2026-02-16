@@ -5,8 +5,8 @@ on:
     types: [created]
 
 permissions:
-  pull-requests: read
-  issues: read
+  pull-requests: write
+  issues: write
   actions: write
   contents: read
 
