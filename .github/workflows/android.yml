@@ -46,10 +46,9 @@ jobs:
             
             const body = `${marker}
             ### 🔨 Building Debug APK...
-            _Compiling latest changes... please wait._
             
             <details>
-            <summary>Current Status</summary>
+            <summary>View Status</summary>
             Building on GitHub Actions...
             </details>`;
 
@@ -67,7 +66,9 @@ jobs:
       # We pipe output to a file (build.log) AND to console (tee) so we can read it later
       - name: Build Debug APK
         id: build_apk
+        shell: bash
         run: |
+          set -o pipefail
           ./gradlew assembleDebug --stacktrace | tee build.log
 
       # 3. UPLOAD THE APK ARTIFACT
@@ -114,16 +115,15 @@ jobs:
             });
             const botComment = comments.data.find(c => c.body.includes(marker));
             
-            let title = status === 'success' ? '✅ Build Successful' : '❌ Build Failed';
+            let title = status === 'success' ? '## ✅ Build Successful' : '## ❌ Build Failed';
             let downloadSection = status === 'success' 
-              ? `### 📥 [Download Debug APK](${runUrl})
-                 **⚠️ WARNING:** This is a **DEBUG** build. It is signed with a debug key.
-                 - Do not install this unless you are testing this PR.
-                 - You will need to uninstall Release version first.
-                 - To download: Click the link above, scroll down to **Artifacts**.
-                ` 
-              : `### ⛔ Build Failed
-                 The compiler encountered errors. See logs below.`;
+              ? \`**Debug APK Ready**
+                 
+                 [Download from Artifacts](${runUrl})
+                 
+                 > **Note:** You may need to uninstall the existing version before installing this debug build.
+                \` 
+              : \`**The build encountered errors.** See the logs below for details.\`;
 
             const body = `${marker}
             ${title}
@@ -131,14 +131,12 @@ jobs:
             ${downloadSection}
             
             <details>
-            <summary>📝 Build Logs (Last 150 lines)</summary>
+            <summary>Build Logs</summary>
             
             \`\`\`text
             ${logs}
             \`\`\`
             </details>
-            
-            _Updated: ${new Date().toISOString()}_
             `;
 
             if (botComment) {
