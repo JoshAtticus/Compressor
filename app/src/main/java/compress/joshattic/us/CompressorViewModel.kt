@@ -741,19 +741,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 }
             })
 
-        // this is certainly a workaround ever, a workaround so horrific, it would be enough to stop me from getting through the pearly gates
-        // also google's fault, womp womp, can google stop being absolute garbage at anything related to the gpus
-        // me, a pixel 8 pro user, laughing at pixel 10 users because the gpu on the tensor g5 is 56% slower than the g3 :skull:
-        if (Build.MANUFACTURER.equals("Google", ignoreCase = true) && Build.MODEL.contains("Pixel 10")) {
-             if (videoMimeType == MimeTypes.VIDEO_H265 || videoMimeType == MimeTypes.VIDEO_H264) {
-                 if (isHdr(context, inputUri)) {
-                      transformerBuilder.setHdrMode(Transformer.HDR_MODE_TONE_MAP_HDR_TO_SDR_USING_OPEN_GL)
-                      val warningMsg = getApplication<Application>().getString(R.string.warning_hdr_tone_mapped)
-                      _uiState.update { it.copy(warnings = listOf(warningMsg)) }
-                 }
-             }
-        }
-        
         val transformer = transformerBuilder.build()
         
         activeTransformer = transformer
@@ -784,9 +771,25 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setRemoveAudio(currentState.removeAudio)
             .build()
 
+        var hdrMode = Composition.HDR_MODE_KEEP_HDR
+        // this is certainly a workaround ever, a workaround so horrific, it would be enough to stop me from getting through the pearly gates
+        // also google's fault, womp womp, can google stop being absolute garbage at anything related to the gpus
+        // me, a pixel 8 pro user, laughing at pixel 10 users because the gpu on the tensor g5 is 56% slower than the g3 :skull:
+        if (Build.MANUFACTURER.equals("Google", ignoreCase = true) && Build.MODEL.contains("Pixel 10")) {
+             if (videoMimeType == MimeTypes.VIDEO_H265 || videoMimeType == MimeTypes.VIDEO_H264) {
+                 if (isHdr(context, inputUri)) {
+                      hdrMode = Composition.HDR_MODE_TONE_MAP_HDR_TO_SDR_USING_OPEN_GL
+                      val warningMsg = getApplication<Application>().getString(R.string.warning_hdr_tone_mapped)
+                      _uiState.update { it.copy(warnings = listOf(warningMsg)) }
+                 }
+             }
+        }
+
         val composition = Composition.Builder(
             listOf(EditedMediaItemSequence(editedMediaItem))
-        ).build()
+        )
+        .setHdrMode(hdrMode)
+        .build()
 
         transformer.start(composition, outputPath)
         
