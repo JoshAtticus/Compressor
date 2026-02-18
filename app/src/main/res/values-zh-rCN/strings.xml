@@ -92,4 +92,9 @@
     <string name="error_details">错误详情</string>
     <string name="copy_logs">复制日志</string>
     <string name="open_issue_tracker">打开问题追踪器</string>
+
+    <string name="warning_hdr_tone_mapped">HDR 视频已转换为 SDR，以避免此设备上的编码器兼容性问题。如需保留 HDR，请使用 AV1。</string>
+    <string name="warning_details">警告详情</string>
+    <string name="dismiss">关闭</string>
+
 </resources>

@@ -103,4 +103,9 @@
     <string name="error_details">エラーの詳細</string>
     <string name="copy_logs">ログをコピー</string>
     <string name="open_issue_tracker">課題トラッカーを開く</string>
+
+    <string name="warning_hdr_tone_mapped">このデバイスでのエンコーダー互換性の問題を回避するため、HDRビデオはSDRにトーンマッピングされました。HDRを維持する必要がある場合は、AV1を使用してください。</string>
+    <string name="warning_details">警告の詳細</string>
+    <string name="dismiss">閉じる</string>
+
 </resources>

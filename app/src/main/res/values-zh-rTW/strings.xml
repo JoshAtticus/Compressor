@@ -76,4 +76,9 @@
     <string name="error_details">錯誤詳情</string>
     <string name="copy_logs">複製日誌</string>
     <string name="open_issue_tracker">打開問題追蹤器</string>
+    
+    <string name="warning_hdr_tone_mapped">HDR 影片已轉換為 SDR，以避免此裝置上的編碼器相容性問題。如需保留 HDR，請使用 AV1。</string>
+    <string name="warning_details">警告詳情</string>
+    <string name="dismiss">關閉</string>
+
 </resources>

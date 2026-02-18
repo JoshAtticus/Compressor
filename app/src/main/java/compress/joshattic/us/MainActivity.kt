@@ -569,6 +569,44 @@ fun ResultScreen(
                 fontWeight = FontWeight.Bold
             )
         }
+
+        if (state.warnings.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(16.dp))
+            var showWarningDialog by remember { mutableStateOf(false) }
+            
+            OutlinedButton(
+                onClick = { showWarningDialog = true },
+                colors = ButtonDefaults.outlinedButtonColors(
+                    contentColor = MaterialTheme.colorScheme.error
+                ),
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+            ) {
+                 Icon(Icons.Outlined.Warning, contentDescription = null)
+                 Spacer(modifier = Modifier.width(8.dp))
+                 Text("${state.warnings.size} Warning${if (state.warnings.size > 1) "s" else ""} - Tap for Details")
+            }
+            
+            if (showWarningDialog) {
+                AlertDialog(
+                    onDismissRequest = { showWarningDialog = false },
+                    icon = { Icon(Icons.Outlined.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
+                    title = { Text(stringResource(R.string.warning_details)) },
+                    text = {
+                        Column {
+                            state.warnings.forEach { warning ->
+                                Text("• $warning", style = MaterialTheme.typography.bodyMedium)
+                                Spacer(modifier = Modifier.height(8.dp))
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        TextButton(onClick = { showWarningDialog = false }) {
+                            Text(stringResource(R.string.dismiss))
+                        }
+                    }
+                )
+            }
+        }
         
         Spacer(modifier = Modifier.height(48.dp))
         

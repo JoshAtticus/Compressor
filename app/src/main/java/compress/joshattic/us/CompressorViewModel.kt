@@ -76,13 +76,14 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.5.1",
+    val appInfoVersion: String = "1.5.1 (Experimental, google-pixel-10-fix branch)",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
-    val audioVolume: Float = 1.0f
+    val audioVolume: Float = 1.0f,
+    val warnings: List<String> = emptyList()
 ) {
     private val minBitrate: Long
         get() {
@@ -660,7 +661,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return
 
-        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false) }
+        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false, warnings = emptyList()) }
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
@@ -692,7 +693,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             )
             .build()
         
-        val transformer = Transformer.Builder(context)
+        val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
             .setEncoderFactory(encoderFactory)
             .addListener(object : Transformer.Listener {
@@ -739,7 +740,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     }
                 }
             })
-            .build()
+
+        val transformer = transformerBuilder.build()
         
         activeTransformer = transformer
             
@@ -769,9 +771,25 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setRemoveAudio(currentState.removeAudio)
             .build()
 
+        var hdrMode = Composition.HDR_MODE_KEEP_HDR
+        // this is certainly a workaround ever, a workaround so horrific, it would be enough to stop me from getting through the pearly gates
+        // also google's fault, womp womp, can google stop being absolute garbage at anything related to the gpus
+        // me, a pixel 8 pro user, laughing at pixel 10 users because the gpu on the tensor g5 is 56% slower than the g3 :skull:
+        if (Build.MANUFACTURER.equals("Google", ignoreCase = true) && Build.MODEL.contains("Pixel 10")) {
+             if (videoMimeType == MimeTypes.VIDEO_H265 || videoMimeType == MimeTypes.VIDEO_H264) {
+                 if (isHdr(context, inputUri)) {
+                      hdrMode = Composition.HDR_MODE_TONE_MAP_HDR_TO_SDR_USING_OPEN_GL
+                      val warningMsg = getApplication<Application>().getString(R.string.warning_hdr_tone_mapped)
+                      _uiState.update { it.copy(warnings = listOf(warningMsg)) }
+                 }
+             }
+        }
+
         val composition = Composition.Builder(
             listOf(EditedMediaItemSequence(editedMediaItem))
-        ).build()
+        )
+        .setHdrMode(hdrMode)
+        .build()
 
         transformer.start(composition, outputPath)
         
@@ -807,6 +825,24 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             extractor.release()
         }
         return 0
+    }
+
+    private fun isHdr(context: Context, uri: Uri): Boolean {
+        val retriever = android.media.MediaMetadataRetriever()
+        try {
+            retriever.setDataSource(context, uri)
+            // METADATA_KEY_COLOR_TRANSFER (36) is available on API 24+
+            if (Build.VERSION.SDK_INT >= 24) {
+               val transfer = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_COLOR_TRANSFER)
+               // 6 = ST2084 (PQ), 7 = HLG
+               return transfer == "6" || transfer == "7"
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            try { retriever.release() } catch(e: Exception) {}
+        }
+        return false
     }
 
     fun saveToUri(context: Context, targetUri: Uri) {

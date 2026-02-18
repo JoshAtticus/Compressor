@@ -92,4 +92,9 @@
     <string name="error_details">Fehlerdetails</string>
     <string name="copy_logs">Protokolle kopieren</string>
     <string name="open_issue_tracker">Issue Tracker öffnen</string>
+
+    <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
+    <string name="warning_details">Warnungsdetails</string>
+    <string name="dismiss">Schließen</string>
+
 </resources>

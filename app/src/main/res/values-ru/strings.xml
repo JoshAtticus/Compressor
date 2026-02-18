@@ -90,4 +90,9 @@
     <string name="error_details">Детали ошибки</string>
     <string name="copy_logs">Копировать логи</string>
     <string name="open_issue_tracker">Открыть трекер задач</string>
+
+    <string name="warning_hdr_tone_mapped">HDR-видео было преобразовано в SDR, чтобы избежать проблем с кодировщиком на этом устройстве. Используйте AV1, если нужно сохранить HDR.</string>
+    <string name="warning_details">Детали предупреждения</string>
+    <string name="dismiss">Закрыть</string>
+
 </resources>
