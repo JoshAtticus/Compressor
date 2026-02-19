@@ -80,5 +80,6 @@
     <string name="warning_hdr_tone_mapped">O vídeo HDR foi convertido para SDR para evitar problemas de compatibilidade do codificador neste dispositivo. Use AV1 se precisar preservar o HDR.</string>
     <string name="warning_details">Detalhes do aviso</string>
     <string name="dismiss">Dispensar</string>
+    <string name="view_on_github">Ver no GitHub</string>
 
 </resources>

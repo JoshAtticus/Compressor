@@ -666,6 +666,7 @@ fun InfoDialog(
     onToggleBitrateUnit: () -> Unit
 ) {
     var copied by remember { mutableStateOf(false) }
+    val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
     
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -725,6 +726,17 @@ fun InfoDialog(
                         style = MaterialTheme.typography.bodySmall,
                         modifier = Modifier.padding(start = 8.dp)
                     )
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+                HorizontalDivider()
+                Spacer(modifier = Modifier.height(8.dp))
+                
+                TextButton(
+                    onClick = { uriHandler.openUri("https://github.com/JoshAtticus/Compressor") },
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.view_on_github))
                 }
             }
         },

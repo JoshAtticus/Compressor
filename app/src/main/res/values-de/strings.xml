@@ -96,5 +96,6 @@
     <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
     <string name="warning_details">Warnungsdetails</string>
     <string name="dismiss">Schließen</string>
+    <string name="view_on_github">Auf GitHub ansehen</string>
 
 </resources>

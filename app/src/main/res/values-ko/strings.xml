@@ -96,5 +96,6 @@
     <string name="warning_hdr_tone_mapped">이 장치에서 인코더 호환성 문제를 방지하기 위해 HDR 비디오가 SDR로 톤 매핑되었습니다. HDR을 보존하려면 AV1을 사용하십시오.</string>
     <string name="warning_details">경고 세부 정보</string>
     <string name="dismiss">닫기</string>
+    <string name="view_on_github">GitHub에서 보기</string>
 
 </resources>
