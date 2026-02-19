@@ -1,2 +1,8 @@
 Compressor 1.5.2 adds new features:
 - Resolution, frame rate and audio bitrate now scale up and down with target size
+- Link to GitHub repo in the info tab
+
+Bug Fixes:
+- Fixed an issue with HDR tonemapping on Tensor G5 devices for videos with BT.2020 and HLG colour space when encoding to H.264 or H.265
+- Fixed the report bug modal not being scrollable
+- Fixed reproducible builds
