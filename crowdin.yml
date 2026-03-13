@@ -1,0 +1,5 @@
+preserve_hierarchy: true
+
+files:
+  - source: /app/src/main/res/values/strings.xml
+    translation: /app/src/main/res/values-%android_code%/%original_file_name%
