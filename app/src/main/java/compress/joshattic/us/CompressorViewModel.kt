@@ -55,6 +55,7 @@ data class CompressorUiState(
     val durationMs: Long = 0L,
     val originalDate: Long? = null,
     val originalLocation: String? = null,
+    val originalName: String? = null,
     
     val isCompressing: Boolean = false,
     val progress: Float = 0f,
@@ -79,6 +80,8 @@ data class CompressorUiState(
     val appInfoVersion: String = "1.5.2",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
+    val preserveOriginalName: Boolean = false,
+    val preserveMetadata: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
@@ -334,7 +337,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val saved = prefs.getLong("total_saved_bytes", 0L)
         val showBitrate = prefs.getBoolean("show_bitrate", false)
         val useMbps = prefs.getBoolean("use_mbps", false)
-        _uiState.update { it.copy(totalSavedBytes = saved, showBitrate = showBitrate, useMbps = useMbps) }
+        val preserveOriginalName = prefs.getBoolean("preserve_original_name", false)
+        val preserveMetadata = prefs.getBoolean("preserve_metadata", false)
+        _uiState.update { it.copy(
+            totalSavedBytes = saved, 
+            showBitrate = showBitrate, 
+            useMbps = useMbps,
+            preserveOriginalName = preserveOriginalName,
+            preserveMetadata = preserveMetadata
+        ) }
         checkSupportedCodecs()
         clearCache()
     }
@@ -400,6 +411,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         var duration = 0L
         var originalDate: Long? = null
         var originalLocation: String? = null
+        var originalName: String? = null
         
         try {
             audioBitrate = getAudioBitrate(context, uri)
@@ -447,6 +459,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
             originalLocation = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_LOCATION)
 
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            if (cursor != null && cursor.moveToFirst()) {
+                val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if (nameIndex != -1) {
+                    originalName = cursor.getString(nameIndex)
+                }
+                cursor.close()
+            }
+
             retriever.release()
         } catch (e: Exception) {
             e.printStackTrace()
@@ -457,6 +478,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentSavedBytes = _uiState.value.totalSavedBytes
         val showBitrate = _uiState.value.showBitrate
         val useMbps = _uiState.value.useMbps
+        val preserveOriginalName = _uiState.value.preserveOriginalName
+        val preserveMetadata = _uiState.value.preserveMetadata
         val supportedCodecs = _uiState.value.supportedCodecs
 
         _uiState.value = CompressorUiState(
@@ -470,12 +493,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             durationMs = duration,
             originalDate = originalDate,
             originalLocation = originalLocation,
+            originalName = originalName,
             targetSizeMb = defaultTargetMb,
             targetResolutionHeight = height,
             activePreset = QualityPreset.HIGH,
             totalSavedBytes = currentSavedBytes,
             showBitrate = showBitrate,
             useMbps = useMbps,
+            preserveOriginalName = preserveOriginalName,
+            preserveMetadata = preserveMetadata,
             supportedCodecs = supportedCodecs
         ).autoAdjust(defaultTargetMb)
     }
@@ -572,6 +598,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val newValue = !it.useMbps
             prefs.edit().putBoolean("use_mbps", newValue).apply()
             it.copy(useMbps = newValue)
+        }
+    }
+
+    fun togglePreserveOriginalName() {
+        _uiState.update {
+            val newVal = !it.preserveOriginalName
+            prefs.edit().putBoolean("preserve_original_name", newVal).apply()
+            it.copy(preserveOriginalName = newVal)
+        }
+    }
+
+    fun togglePreserveMetadata() {
+        _uiState.update {
+            val newVal = !it.preserveMetadata
+            prefs.edit().putBoolean("preserve_metadata", newVal).apply()
+            it.copy(preserveMetadata = newVal)
         }
     }
 
@@ -882,20 +924,29 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     return@launch
                 }
 
+                val targetName = if (currentState.preserveOriginalName && currentState.originalName != null) {
+                    val nameWithoutExt = currentState.originalName.substringBeforeLast(".")
+                    "${nameWithoutExt}_compressed.mp4"
+                } else {
+                    "Compressed_${System.currentTimeMillis()}.mp4"
+                }
+
                 val values = ContentValues().apply {
-                    put(MediaStore.Video.Media.DISPLAY_NAME, "Compressed_${System.currentTimeMillis()}.mp4")
+                    put(MediaStore.Video.Media.DISPLAY_NAME, targetName)
                     put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
                     put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
                     if (currentState.originalDate != null) {
                          put(MediaStore.Video.Media.DATE_TAKEN, currentState.originalDate)
                     }
                     
-                    if (currentState.originalLocation != null) {
+                    if (currentState.preserveMetadata && currentState.originalLocation != null) {
                          val matcher = java.util.regex.Pattern.compile("([+-]\\d+\\.\\d+)([+-]\\d+\\.\\d+)").matcher(currentState.originalLocation)
                          if (matcher.find()) {
                              val lat = matcher.group(1)?.toDoubleOrNull()
                              val lon = matcher.group(2)?.toDoubleOrNull()
                              if (lat != null && lon != null) {
+                                  // Warning: MediaStore.Video.Media.LATITUDE is deprecated in Q+ and writing to it is ignored.
+                                  // However, leaving it here for backward compatibility.
                                   put(MediaStore.Video.Media.LATITUDE, lat)
                                   put(MediaStore.Video.Media.LONGITUDE, lon)
                              }
