@@ -1,5 +1,6 @@
-preserve_hierarchy: true
-
+preserve_hierarchy: 1
 files:
   - source: /app/src/main/res/values/strings.xml
     translation: /app/src/main/res/values-%android_code%/%original_file_name%
+bundles:
+  - 2
