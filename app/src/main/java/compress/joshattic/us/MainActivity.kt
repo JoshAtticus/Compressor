@@ -301,7 +301,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             context.startActivity(shareIntent)
                         },
                         onToggleShowBitrate = { viewModel.toggleShowBitrate() },
-                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() }
+                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
+                        onTogglePreserveOriginalName = { viewModel.togglePreserveOriginalName() },
+                        onTogglePreserveMetadata = { viewModel.togglePreserveMetadata() }
                     )
                 }
             }
@@ -663,7 +665,9 @@ fun InfoDialog(
     onCopy: () -> Unit,
     onShare: () -> Unit,
     onToggleShowBitrate: () -> Unit,
-    onToggleBitrateUnit: () -> Unit
+    onToggleBitrateUnit: () -> Unit,
+    onTogglePreserveOriginalName: () -> Unit,
+    onTogglePreserveMetadata: () -> Unit
 ) {
     var copied by remember { mutableStateOf(false) }
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
@@ -713,6 +717,30 @@ fun InfoDialog(
                             onCheckedChange = { onToggleBitrateUnit() }
                         )
                     }
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.preserve_original_name), style = MaterialTheme.typography.bodyMedium)
+                    Switch(
+                        checked = state.preserveOriginalName, 
+                        onCheckedChange = { onTogglePreserveOriginalName() }
+                    )
+                }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(stringResource(R.string.preserve_metadata), style = MaterialTheme.typography.bodyMedium)
+                    Switch(
+                        checked = state.preserveMetadata, 
+                        onCheckedChange = { onTogglePreserveMetadata() }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
