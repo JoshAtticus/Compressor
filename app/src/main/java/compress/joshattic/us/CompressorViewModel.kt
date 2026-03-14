@@ -632,7 +632,20 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun setResolution(height: Int) {
-        _uiState.update { it.copy(targetResolutionHeight = height, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update {
+            val isVertical = it.originalHeight > it.originalWidth
+            val mappedHeight = if (
+                isVertical &&
+                it.originalWidth > 0 &&
+                it.originalHeight > 0 &&
+                height > 0
+            ) {
+                (height.toLong() * it.originalHeight / it.originalWidth).toInt()
+            } else {
+                height
+            }
+            it.copy(targetResolutionHeight = mappedHeight, activePreset = QualityPreset.CUSTOM)
+        }
     }
 
     fun setFps(fps: Int) {

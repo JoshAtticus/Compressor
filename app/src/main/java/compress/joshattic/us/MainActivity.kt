@@ -1375,35 +1375,51 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 val resQuarter = stringResource(R.string.res_quarter)
 
                 val allRes = listOf(4320 to res4320, 2160 to res2160, 1440 to res1440, 1080 to res1080, 720 to res720, 540 to res540, 480 to res480)
+                val isVertical = state.originalHeight > state.originalWidth
+                val originalShortSide = minOf(state.originalWidth, state.originalHeight)
+                val currentShortSide = if (
+                    isVertical &&
+                    state.originalWidth > 0 &&
+                    state.originalHeight > 0 &&
+                    state.targetResolutionHeight > 0
+                ) {
+                    (state.targetResolutionHeight.toLong() * state.originalWidth / state.originalHeight).toInt()
+                } else if (state.targetResolutionHeight > 0) {
+                    state.targetResolutionHeight
+                } else {
+                    originalShortSide
+                }
                 
-                val options = remember(state.originalHeight) {
-                    val standard = allRes.filter { it.first <= state.originalHeight }
+                val options = remember(state.originalWidth, state.originalHeight) {
+                    val shortSide = minOf(state.originalWidth, state.originalHeight)
+                    val standard = allRes.filter { it.first <= shortSide }
                     val fractions = listOf(
-                        (state.originalHeight * 0.75).toInt() to resThreeQuarters,
-                        (state.originalHeight * 0.5).toInt() to resHalf,
-                        (state.originalHeight * 0.25).toInt() to resQuarter
+                        (shortSide * 0.75).toInt() to resThreeQuarters,
+                        (shortSide * 0.5).toInt() to resHalf,
+                        (shortSide * 0.25).toInt() to resQuarter
                     )
                     (standard + fractions)
                         .filter { it.first > 0 }
                         .sortedByDescending { it.first }
+                        .distinctBy { it.first }
                 }
 
                 androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                      val interactionSource = remember { MutableInteractionSource() }
                      FilterChip(
-                        selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0, 
+                        selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.setResolution(state.originalHeight) 
+                            viewModel.setResolution(originalShortSide)
                         }, 
                         interactionSource = interactionSource,
-                        label = { Text(stringResource(R.string.original) + " • ${state.originalHeight}p") },
+                        label = { Text(stringResource(R.string.original) + " • ${originalShortSide}p") },
                         modifier = Modifier.padding(end = 8.dp).expressiveScale(interactionSource)
                     )
                     options.forEach { (res, label) ->
                          val itemInteractionSource = remember { MutableInteractionSource() }
                          FilterChip(
-                            selected = state.targetResolutionHeight == res, 
+                            selected = currentShortSide == res,
                             onClick = { 
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.setResolution(res) 
