@@ -77,7 +77,7 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.5.2",
+    val appInfoVersion: String = "1.5.3",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val preserveMetadata: Boolean = false,
