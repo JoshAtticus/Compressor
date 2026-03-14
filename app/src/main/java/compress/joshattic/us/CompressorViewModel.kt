@@ -190,7 +190,7 @@ data class CompressorUiState(
     val formattedCurrentOutputSize: String
         get() = formatFileSize(currentOutputSize)
 
-    fun autoAdjust(targetMb: Float): CompressorUiState {
+    fun autoAdjust(targetMb: Float, lockAudioBitrate: Boolean = false, allowUpward: Boolean = true): CompressorUiState {
         var state = this
         var attempts = 0
         val maxAttempts = 20
@@ -207,17 +207,19 @@ data class CompressorUiState(
                 continue
             }
             
-            // 2. Reduce Audio Bitrate to 128k
-            if (state.audioBitrate > 128_000) {
-                 state = state.copy(audioBitrate = 128_000)
-                 continue
-            }
-            
-            // 3. Reduce Audio Bitrate to 64k if really needed (big gap)
-            if (state.audioBitrate > 64_000 && state.minimumSizeMb > targetMb * 1.5) {
-                 state = state.copy(audioBitrate = 64_000)
-                 continue
-            }
+              if (!lockAudioBitrate) {
+                 // 2. Reduce Audio Bitrate to 128k
+                 if (state.audioBitrate > 128_000) {
+                     state = state.copy(audioBitrate = 128_000)
+                     continue
+                 }
+                
+                 // 3. Reduce Audio Bitrate to 64k if really needed (big gap)
+                 if (state.audioBitrate > 64_000 && state.minimumSizeMb > targetMb * 1.5) {
+                     state = state.copy(audioBitrate = 64_000)
+                     continue
+                 }
+              }
 
             // 4. Reduce Resolution
             val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
@@ -246,10 +248,11 @@ data class CompressorUiState(
         }
 
         // Upward adjustment (Increase quality if we have headroom)
-        attempts = 0
-        while (attempts < maxAttempts) {
-            attempts++
-            var changed = false
+        if (allowUpward) {
+            attempts = 0
+            while (attempts < maxAttempts) {
+                attempts++
+                var changed = false
             
             // 1. Try to increase Resolution 
             val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
@@ -288,26 +291,29 @@ data class CompressorUiState(
                  }
             }
             
-             // 3. Try to increase Audio Bitrate
-             val maxAudio = if (state.originalAudioBitrate > 0) state.originalAudioBitrate else 320_000
-             if (state.audioBitrate < maxAudio) {
-                 val nextAudio = when {
-                     state.audioBitrate < 64_000 -> 64_000
-                     state.audioBitrate < 128_000 -> 128_000
-                     state.audioBitrate < 192_000 -> 192_000
-                     state.audioBitrate < 320_000 -> 320_000
-                     else -> maxAudio
-                 }.coerceAtMost(maxAudio)
-                 
-                 val testState = state.copy(audioBitrate = nextAudio)
-                 if (testState.minimumSizeMb <= targetMb) {
-                     state = testState
-                     changed = true
-                     continue
+             if (!lockAudioBitrate) {
+                 // 3. Try to increase Audio Bitrate
+                 val maxAudio = if (state.originalAudioBitrate > 0) state.originalAudioBitrate else 320_000
+                 if (state.audioBitrate < maxAudio) {
+                     val nextAudio = when {
+                         state.audioBitrate < 64_000 -> 64_000
+                         state.audioBitrate < 128_000 -> 128_000
+                         state.audioBitrate < 192_000 -> 192_000
+                         state.audioBitrate < 320_000 -> 320_000
+                         else -> maxAudio
+                     }.coerceAtMost(maxAudio)
+                     
+                     val testState = state.copy(audioBitrate = nextAudio)
+                     if (testState.minimumSizeMb <= targetMb) {
+                         state = testState
+                         changed = true
+                         continue
+                     }
                  }
              }
 
             if (!changed) break
+            }
         }
 
         return state
@@ -535,7 +541,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 320_000,
                          removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f))
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
                  }
             }
             QualityPreset.MEDIUM -> {
@@ -547,7 +553,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 192_000,
                          removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f))
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
                  }
             }
             QualityPreset.LOW -> {
@@ -559,7 +565,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                          targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f),
                          audioBitrate = 128_000,
                          removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f))
+                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
                  }
             }
             else -> {}
@@ -737,6 +743,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
+            .setAudioMimeType(MimeTypes.AUDIO_AAC)
             .setEncoderFactory(encoderFactory)
             .addListener(object : Transformer.Listener {
                 override fun onCompleted(composition: Composition, exportResult: ExportResult) {
