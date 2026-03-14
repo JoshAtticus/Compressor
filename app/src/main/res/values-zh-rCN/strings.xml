@@ -54,6 +54,8 @@
     <string name="info_copied">已复制到剪贴板</string>
     <string name="show_bitrate">显示码率</string>
     <string name="bitrate_unit_mbps">Mbps</string>
+    <string name="preserve_original_name">为原始文件名添加后缀</string>
+    <string name="preserve_metadata">保留位置信息元数据</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

@@ -54,6 +54,8 @@
     <string name="info_copied">클립보드에 복사됨</string>
     <string name="show_bitrate">비트레이트 표시</string>
     <string name="bitrate_unit_mbps">Mbps</string>
+    <string name="preserve_original_name">원본 파일 이름에 접미사 추가</string>
+    <string name="preserve_metadata">위치 메타데이터 유지</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

@@ -38,6 +38,8 @@
     <string name="info_copied">Copiado para área de transferência</string>
     <string name="show_bitrate">Mostrar taxa de bits</string>
     <string name="bitrate_unit_mbps">Mbps</string>
+    <string name="preserve_original_name">Anexar sufixo ao nome original do arquivo</string>
+    <string name="preserve_metadata">Preservar metadados de localização</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

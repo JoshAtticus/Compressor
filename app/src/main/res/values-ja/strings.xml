@@ -39,6 +39,8 @@
     <string name="info_copied">クリップボードにコピーしました</string>
     <string name="show_bitrate">ビットレートを表示</string>
     <string name="bitrate_unit_mbps">Mbps</string>
+    <string name="preserve_original_name">元のファイル名に接尾辞を追加</string>
+    <string name="preserve_metadata">位置情報メタデータを保持</string>
     
     <string name="resolution">解像度</string>
     <string name="audio_options">音声オプション</string>
