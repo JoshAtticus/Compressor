@@ -1,0 +1,6 @@
+Compressor 1.5.3 adds new features:
+- Significantly more responsive UI
+- Metadata is now preserved
+
+Bug Fixes:
+- Fixed vertical video resolution

@@ -940,6 +940,7 @@ fun ConfigScreen(
                     Box(modifier = Modifier.weight(1f)) {
                          HorizontalPager(
                              state = pagerState,
+                             beyondViewportPageCount = 2,
                              modifier = Modifier.fillMaxSize()
                          ) { index ->
                              when (index) {
@@ -1294,7 +1295,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 onValueChangeFinished = {
                     isUserInteracting = false
                 },
-                valueRange = 0.1f..maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f))),
+                valueRange = 0.1f..maxOf(10f, state.targetSizeMb, (state.originalSize.toFloat() / (1024f*1024f))),
                 steps = 0
             )
             Row(
@@ -1403,7 +1404,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         .distinctBy { it.first }
                 }
 
-                androidx.compose.foundation.layout.Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
                      val interactionSource = remember { MutableInteractionSource() }
                      FilterChip(
                         selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0,

@@ -36,6 +36,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.util.UUID
 
@@ -405,8 +406,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     private var activeTransformer: Transformer? = null
 
     fun updateSelectedUri(context: Context, uri: Uri) {
-        var size = 0L
-        var width = 0
+        viewModelScope.launch(Dispatchers.IO) {
+            var size = 0L
+            var width = 0
         var height = 0
         var bitrate = 0
         var audioBitrate = 0
@@ -505,6 +507,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             preserveMetadata = preserveMetadata,
             supportedCodecs = supportedCodecs
         ).autoAdjust(defaultTargetMb)
+        }
     }
     
     fun markAsShared() {
@@ -711,17 +714,20 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false, warnings = emptyList()) }
 
-        val outputDir = File(context.cacheDir, "compressed_videos")
-        outputDir.mkdirs()
-        val outputFile = File(outputDir, "compress_${UUID.randomUUID()}.mp4")
-        val outputPath = outputFile.absolutePath
+        viewModelScope.launch {
+            val outputDir = File(context.cacheDir, "compressed_videos")
+            val outputFile = File(outputDir, "compress_${UUID.randomUUID()}.mp4")
+            val outputPath = outputFile.absolutePath
+            withContext(Dispatchers.IO) {
+                outputDir.mkdirs()
+            }
 
-        val targetBitrate = currentState.targetBitrate.toLong()
+            val targetBitrate = currentState.targetBitrate.toLong()
 
-        val audioBitrateToUse = if (currentState.audioBitrate == 0) {
-            val original = getAudioBitrate(context, inputUri)
-            if (original > 0) original else 256_000
-        } else {
+            val audioBitrateToUse = if (currentState.audioBitrate == 0) {
+                val original = withContext(Dispatchers.IO) { getAudioBitrate(context, inputUri) }
+                if (original > 0) original else 256_000
+            } else {
              currentState.audioBitrate
         }
 
@@ -853,6 +859,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 kotlinx.coroutines.delay(200)
             }
         }
+        }
     }
 
     private fun getAudioBitrate(context: Context, uri: Uri): Int {
@@ -923,7 +930,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val compressedUri = currentState.compressedUri ?: return
         
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
             try {
                 val file = File(compressedUri.path!!)
                 if (!file.exists()) {
