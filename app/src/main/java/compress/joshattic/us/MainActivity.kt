@@ -302,7 +302,6 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                         },
                         onToggleShowBitrate = { viewModel.toggleShowBitrate() },
                         onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
-                        onTogglePreserveOriginalName = { viewModel.togglePreserveOriginalName() },
                         onTogglePreserveMetadata = { viewModel.togglePreserveMetadata() }
                     )
                 }
@@ -666,7 +665,6 @@ fun InfoDialog(
     onShare: () -> Unit,
     onToggleShowBitrate: () -> Unit,
     onToggleBitrateUnit: () -> Unit,
-    onTogglePreserveOriginalName: () -> Unit,
     onTogglePreserveMetadata: () -> Unit
 ) {
     var copied by remember { mutableStateOf(false) }
@@ -717,18 +715,6 @@ fun InfoDialog(
                             onCheckedChange = { onToggleBitrateUnit() }
                         )
                     }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.preserve_original_name), style = MaterialTheme.typography.bodyMedium)
-                    Switch(
-                        checked = state.preserveOriginalName, 
-                        onCheckedChange = { onTogglePreserveOriginalName() }
-                    )
                 }
 
                 Row(

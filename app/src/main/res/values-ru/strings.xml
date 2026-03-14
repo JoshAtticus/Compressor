@@ -53,8 +53,7 @@
     <string name="info_copied">Скопировано в буфер</string>
     <string name="show_bitrate">Показать битрейт</string>
     <string name="bitrate_unit_mbps">Мбит/с</string>
-    <string name="preserve_original_name">Добавлять суффикс к исходному имени файла</string>
-    <string name="preserve_metadata">Сохранять метаданные местоположения</string>
+    <string name="preserve_metadata">Сохранять метаданные</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

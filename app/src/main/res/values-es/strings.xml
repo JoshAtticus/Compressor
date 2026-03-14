@@ -40,8 +40,7 @@
     <string name="info_copied">Copiado al portapapeles</string>
     <string name="show_bitrate">Mostrar tasa de bits</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_original_name">Agregar sufijo al nombre de archivo original</string>
-    <string name="preserve_metadata">Conservar metadatos de ubicación</string>
+    <string name="preserve_metadata">Conservar metadatos</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

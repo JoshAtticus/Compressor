@@ -38,8 +38,7 @@
     <string name="info_copied">Copied to clipboard</string>
     <string name="show_bitrate">Show Bitrate</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_original_name">Append suffix to original file name</string>
-    <string name="preserve_metadata">Preserve Location Metadata</string>
+    <string name="preserve_metadata">Preserve Metadata</string>
 
     <string name="resolution">Resolution</string>
     <string name="audio_options">Audio Options</string>

@@ -80,7 +80,6 @@ data class CompressorUiState(
     val appInfoVersion: String = "1.5.2",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
-    val preserveOriginalName: Boolean = false,
     val preserveMetadata: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
@@ -337,13 +336,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val saved = prefs.getLong("total_saved_bytes", 0L)
         val showBitrate = prefs.getBoolean("show_bitrate", false)
         val useMbps = prefs.getBoolean("use_mbps", false)
-        val preserveOriginalName = prefs.getBoolean("preserve_original_name", false)
         val preserveMetadata = prefs.getBoolean("preserve_metadata", false)
         _uiState.update { it.copy(
             totalSavedBytes = saved, 
             showBitrate = showBitrate, 
             useMbps = useMbps,
-            preserveOriginalName = preserveOriginalName,
             preserveMetadata = preserveMetadata
         ) }
         checkSupportedCodecs()
@@ -478,7 +475,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentSavedBytes = _uiState.value.totalSavedBytes
         val showBitrate = _uiState.value.showBitrate
         val useMbps = _uiState.value.useMbps
-        val preserveOriginalName = _uiState.value.preserveOriginalName
         val preserveMetadata = _uiState.value.preserveMetadata
         val supportedCodecs = _uiState.value.supportedCodecs
 
@@ -500,7 +496,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             totalSavedBytes = currentSavedBytes,
             showBitrate = showBitrate,
             useMbps = useMbps,
-            preserveOriginalName = preserveOriginalName,
             preserveMetadata = preserveMetadata,
             supportedCodecs = supportedCodecs
         ).autoAdjust(defaultTargetMb)
@@ -598,14 +593,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val newValue = !it.useMbps
             prefs.edit().putBoolean("use_mbps", newValue).apply()
             it.copy(useMbps = newValue)
-        }
-    }
-
-    fun togglePreserveOriginalName() {
-        _uiState.update {
-            val newVal = !it.preserveOriginalName
-            prefs.edit().putBoolean("preserve_original_name", newVal).apply()
-            it.copy(preserveOriginalName = newVal)
         }
     }
 
@@ -924,7 +911,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     return@launch
                 }
 
-                val targetName = if (currentState.preserveOriginalName && currentState.originalName != null) {
+                val targetName = if (currentState.originalName != null) {
                     val nameWithoutExt = currentState.originalName.substringBeforeLast(".")
                     "${nameWithoutExt}_compressed.mp4"
                 } else {
@@ -934,23 +921,21 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, targetName)
                     put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-                    put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-                    if (currentState.originalDate != null) {
-                         put(MediaStore.Video.Media.DATE_TAKEN, currentState.originalDate)
+                    if (currentState.preserveMetadata) {
+                        applyPreservedMetadata(context, currentState, this)
+                    } else {
+                        put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
                     }
-                    
-                    if (currentState.preserveMetadata && currentState.originalLocation != null) {
-                         val matcher = java.util.regex.Pattern.compile("([+-]\\d+\\.\\d+)([+-]\\d+\\.\\d+)").matcher(currentState.originalLocation)
-                         if (matcher.find()) {
-                             val lat = matcher.group(1)?.toDoubleOrNull()
-                             val lon = matcher.group(2)?.toDoubleOrNull()
-                             if (lat != null && lon != null) {
-                                  // Warning: MediaStore.Video.Media.LATITUDE is deprecated in Q+ and writing to it is ignored.
-                                  // However, leaving it here for backward compatibility.
-                                  put(MediaStore.Video.Media.LATITUDE, lat)
-                                  put(MediaStore.Video.Media.LONGITUDE, lon)
-                             }
-                         }
+
+                    if (!containsKey(MediaStore.Video.Media.DATE_ADDED)) {
+                        put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
+                    }
+                    if (!containsKey(MediaStore.Video.Media.DATE_MODIFIED)) {
+                        put(MediaStore.Video.Media.DATE_MODIFIED, System.currentTimeMillis() / 1000)
+                    }
+
+                    if (currentState.preserveMetadata && currentState.originalDate != null && !containsKey(MediaStore.Video.Media.DATE_TAKEN)) {
+                        put(MediaStore.Video.Media.DATE_TAKEN, currentState.originalDate)
                     }
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -989,6 +974,77 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
             }
         }
+    }
+
+    private fun applyPreservedMetadata(context: Context, state: CompressorUiState, values: ContentValues) {
+        val sourceUri = state.selectedUri
+        val projection = arrayOf(
+            MediaStore.Video.Media.DATE_ADDED,
+            MediaStore.Video.Media.DATE_MODIFIED,
+            MediaStore.Video.Media.DATE_TAKEN,
+            MediaStore.Video.Media.TITLE,
+            MediaStore.Video.Media.ARTIST,
+            MediaStore.Video.Media.ALBUM,
+            MediaStore.Video.Media.DESCRIPTION
+        )
+
+        if (sourceUri != null) {
+            try {
+                context.contentResolver.query(sourceUri, projection, null, null, null)?.use { cursor ->
+                    if (cursor.moveToFirst()) {
+                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_ADDED)?.let {
+                            values.put(MediaStore.Video.Media.DATE_ADDED, it)
+                        }
+                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_MODIFIED)?.let {
+                            values.put(MediaStore.Video.Media.DATE_MODIFIED, it)
+                        }
+                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_TAKEN)?.let {
+                            values.put(MediaStore.Video.Media.DATE_TAKEN, it)
+                        }
+                        copyStringColumn(cursor, MediaStore.Video.Media.TITLE)?.let {
+                            values.put(MediaStore.Video.Media.TITLE, it)
+                        }
+                        copyStringColumn(cursor, MediaStore.Video.Media.ARTIST)?.let {
+                            values.put(MediaStore.Video.Media.ARTIST, it)
+                        }
+                        copyStringColumn(cursor, MediaStore.Video.Media.ALBUM)?.let {
+                            values.put(MediaStore.Video.Media.ALBUM, it)
+                        }
+                        copyStringColumn(cursor, MediaStore.Video.Media.DESCRIPTION)?.let {
+                            values.put(MediaStore.Video.Media.DESCRIPTION, it)
+                        }
+                    }
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+
+        val locationString = state.originalLocation
+        if (locationString != null) {
+            val matcher = java.util.regex.Pattern.compile("([+-]\\d+\\.\\d+)([+-]\\d+\\.\\d+)").matcher(locationString)
+            if (matcher.find()) {
+                val lat = matcher.group(1)?.toDoubleOrNull()
+                val lon = matcher.group(2)?.toDoubleOrNull()
+                if (lat != null && lon != null) {
+                    // On Android Q+, LATITUDE/LONGITUDE writes are ignored for privacy.
+                    values.put(MediaStore.Video.Media.LATITUDE, lat)
+                    values.put(MediaStore.Video.Media.LONGITUDE, lon)
+                }
+            }
+        }
+    }
+
+    private fun copyLongColumn(cursor: android.database.Cursor, column: String): Long? {
+        val index = cursor.getColumnIndex(column)
+        if (index == -1 || cursor.isNull(index)) return null
+        return cursor.getLong(index)
+    }
+
+    private fun copyStringColumn(cursor: android.database.Cursor, column: String): String? {
+        val index = cursor.getColumnIndex(column)
+        if (index == -1 || cursor.isNull(index)) return null
+        return cursor.getString(index)
     }
 
 }
