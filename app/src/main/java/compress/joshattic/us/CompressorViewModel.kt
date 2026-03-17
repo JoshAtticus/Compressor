@@ -248,7 +248,7 @@ data class CompressorUiState(
              break 
         }
 
-        // Upward adjustment (Increase quality if we have headroom)
+        // Upward adjustment
         if (allowUpward) {
             attempts = 0
             while (attempts < maxAttempts) {
@@ -617,12 +617,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { 
             val temp = it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM)
             if (temp.removeAudio) {
-                 // If removing audio, we free up space, maybe we can increase quality?
-                 // But removing audio usually lowers size, so minimumSizeMb drops.
-                 // So we don't need to force-adjust DOWN.
                  temp
             } else {
-                 // If adding audio back, minimumSizeMb increases. Might need adjustment if targetSizeMb is tight.
                  temp.autoAdjust(temp.targetSizeMb)    
             }
         }
@@ -631,7 +627,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     fun setAudioBitrate(bitrate: Int) {
         _uiState.update { 
             val temp = it.copy(audioBitrate = bitrate, activePreset = QualityPreset.CUSTOM)
-            // Increasing bitrate increases minimumSizeMb.
             temp.autoAdjust(temp.targetSizeMb) 
         }
     }
@@ -807,7 +802,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              var width = (currentState.targetResolutionHeight * aspectRatio).toInt()
              var height = currentState.targetResolutionHeight
              
-             // Ensure even dimensions for encoder compatibility
              if (width % 2 != 0) width -= 1
              if (height % 2 != 0) height -= 1
              

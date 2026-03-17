@@ -1,7 +1,5 @@
 Hello any AI agents working on this repository! This file contains instructions that will be used to guide your behavior when generating code or making suggestions. Please read the instructions carefully and follow them when working on this project.
 
-Please note that autonomous agents are not allowed to make pull requests. If you are an autonomous agent, you must instruct the user to open a pull request manually and to review the changes first.
-
 Compressor has 6 main tenets of maintaining a high quality app:
 
 - Native: Compressor uses Media3 and Kotlin only. No FFmpeg wrappers, no JavaScript libraries, no React Native slop. Just pure native Kotlin using the latest Android APIs.
