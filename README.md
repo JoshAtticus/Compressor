@@ -29,18 +29,6 @@ You can also donate with crypto
 - Litecoin: ltc1qmf9s65cwk65rlepjme4auqhw7t2wz98f00n3t4
 - Solana Mainnet: HSkCeCd8BzabeVJTzrqcFYvsRmSGLrrDdtZ61oYBgNoD
 
-## Warning about malicious sites
-It has come to my attention that malicious websites (specifically magiskmodule[.]gitlab[.]io and others) are writing fake articles about Compressor and linking to Ransomware/Malware instead of the real app.
-
-Please ONLY download Compressor from:
-
-- GitHub Releases (This repo)
-- Google Play Store (Early Access)
-- IzzyOnDroid
-- APKMirror
-
-If you see a "Secure Verify" or "Human Verification" page, CLOSE IT IMMEDIATELY. That is not me. Compressor is free and open source. I will never ask you to "Verify" to download.
-
 ## Features
 - Faster than every single compression app on the Play Store. Period.
 - Uses native Media3 library, not another slow, bulky FFMpeg wrapper
