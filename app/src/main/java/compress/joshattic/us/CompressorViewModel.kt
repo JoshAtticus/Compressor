@@ -86,7 +86,9 @@ data class CompressorUiState(
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
     val audioVolume: Float = 1.0f,
-    val warnings: List<String> = emptyList()
+    val warnings: List<String> = emptyList(),
+    val cqSupported: Boolean = false,
+    val useCqMode: Boolean = false
 ) {
     private val minBitrate: Long
         get() {
@@ -371,8 +373,36 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             if (newCodec == MimeTypes.VIDEO_H265 && !supported.contains(MimeTypes.VIDEO_H265)) {
                 newCodec = MimeTypes.VIDEO_H264
             }
-            it.copy(supportedCodecs = supported, videoCodec = newCodec, useH265 = newCodec == MimeTypes.VIDEO_H265) 
+            val cqSupported = hasCqEncoder(newCodec)
+            val useCqMode = if (cqSupported) it.useCqMode else false
+            it.copy(supportedCodecs = supported, videoCodec = newCodec, useH265 = newCodec == MimeTypes.VIDEO_H265, cqSupported = cqSupported, useCqMode = useCqMode) 
         }
+    }
+
+    private fun hasCqEncoder(mimeType: String): Boolean {
+        try {
+            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
+            for (info in list.codecInfos) {
+                if (!info.isEncoder) continue
+
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                    if (info.isSoftwareOnly) continue
+                } else {
+                    if (info.name.lowercase().startsWith("c2.android")) continue
+                }
+
+                if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
+                    val caps = info.getCapabilitiesForType(mimeType)
+                    val encoderCaps = caps.encoderCapabilities
+                    if (encoderCaps?.isBitrateModeSupported(android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CQ) == true) {
+                        return true
+                    }
+                }
+            }
+        } catch(e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     private fun hasEncoder(mimeType: String): Boolean {
@@ -485,6 +515,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val useMbps = _uiState.value.useMbps
         val preserveMetadata = _uiState.value.preserveMetadata
         val supportedCodecs = _uiState.value.supportedCodecs
+        val cqSupported = _uiState.value.cqSupported
+        val useCqMode = _uiState.value.useCqMode
+        val currentVideoCodec = _uiState.value.videoCodec
 
         _uiState.value = CompressorUiState(
             selectedUri = uri,
@@ -505,7 +538,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             showBitrate = showBitrate,
             useMbps = useMbps,
             preserveMetadata = preserveMetadata,
-            supportedCodecs = supportedCodecs
+            supportedCodecs = supportedCodecs,
+            cqSupported = cqSupported,
+            useCqMode = useCqMode,
+            videoCodec = currentVideoCodec
         ).autoAdjust(defaultTargetMb)
         }
     }
@@ -581,14 +617,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     fun setVideoCodec(codec: String) {
         _uiState.update { 
+            val cqSupported = hasCqEncoder(codec)
+            val useCqMode = if (cqSupported) it.useCqMode else false
             val temp = it.copy(
                 videoCodec = codec, 
                 useH265 = codec == MimeTypes.VIDEO_H265, 
-                activePreset = QualityPreset.CUSTOM
+                activePreset = QualityPreset.CUSTOM,
+                cqSupported = cqSupported,
+                useCqMode = useCqMode
             )
             temp.autoAdjust(temp.targetSizeMb)
         }
     }
+    fun setUseCqMode(use: Boolean) {
+        _uiState.update { it.copy(useCqMode = use) }
+    }
+
     fun toggleShowBitrate() {
         _uiState.update { 
             val newValue = !it.showBitrate
@@ -692,6 +736,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val defaultCodec = if (supportedCodecs.contains(MimeTypes.VIDEO_H265)) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
         val useH265 = defaultCodec == MimeTypes.VIDEO_H265
+        val cqSupported = hasCqEncoder(defaultCodec)
         
         _uiState.value = CompressorUiState(
             totalSavedBytes = savedBytes,
@@ -699,7 +744,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             showBitrate = showBitrate,
             useMbps = useMbps,
             videoCodec = defaultCodec,
-            useH265 = useH265
+            useH265 = useH265,
+            cqSupported = cqSupported
         )
     }
 
@@ -728,12 +774,27 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val videoMimeType = currentState.videoCodec
 
+        val videoEncoderSettingsBuilder = VideoEncoderSettings.Builder()
+        if (currentState.useCqMode) {
+            try {
+                // Media3's setBitrateMode() explicitly blocks CQ mode and throws IllegalArgumentException
+                // By bypassing through reflection, we can pass it down to the underlying MediaCodec anyway.
+                val field = videoEncoderSettingsBuilder.javaClass.getDeclaredField("bitrateMode")
+                field.isAccessible = true
+                field.set(videoEncoderSettingsBuilder, android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CQ)
+            } catch (e: Exception) {
+                // If reflection fails, fallback to standard VBR bitrate
+                videoEncoderSettingsBuilder.setBitrate(targetBitrate.toInt())
+                e.printStackTrace()
+            }
+        } else {
+            videoEncoderSettingsBuilder.setBitrate(targetBitrate.toInt())
+        }
+
         val encoderFactory = DefaultEncoderFactory.Builder(context)
             .setEnableFallback(true)
             .setRequestedVideoEncoderSettings(
-                VideoEncoderSettings.Builder()
-                    .setBitrate(targetBitrate.toInt())
-                    .build()
+                videoEncoderSettingsBuilder.build()
             )
             .setRequestedAudioEncoderSettings(
                 AudioEncoderSettings.Builder()

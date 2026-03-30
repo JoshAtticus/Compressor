@@ -280,9 +280,11 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 }
                 
                 if (showInfoDialog) {
+                    val cqSupportString = if (state.cqSupported) context.getString(R.string.smart_quality_mode_supported) else context.getString(R.string.smart_quality_mode_unsupported)
                     val infoText = "App Version: ${state.appInfoVersion}\n" +
                                    "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
-                                   "Supported Encoders: ${state.supportedCodecs.joinToString()}"
+                                   "Supported Encoders: ${state.supportedCodecs.joinToString()}\n" +
+                                   "Smart Quality Mode: $cqSupportString"
                                    
                     InfoDialog(
                         state = state,
@@ -740,6 +742,12 @@ fun InfoDialog(
                         modifier = Modifier.padding(start = 8.dp)
                     )
                 }
+                
+                Spacer(modifier = Modifier.height(8.dp))
+                InfoRow(
+                    stringResource(R.string.smart_quality_mode),
+                    if (state.cqSupported) stringResource(R.string.smart_quality_mode_supported) else stringResource(R.string.smart_quality_mode_unsupported)
+                )
 
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider()
@@ -1355,6 +1363,24 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                     label = { Text(stringResource(R.string.h264_compat)) },
                     modifier = Modifier.expressiveScale(interactionSource)
                 )
+            }
+            
+            if (state.cqSupported) {
+                Spacer(modifier = Modifier.height(16.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.smart_quality_mode), style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.smart_quality_mode_desc), style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.secondary)
+                    }
+                    Switch(
+                        checked = state.useCqMode,
+                        onCheckedChange = { viewModel.setUseCqMode(it) }
+                    )
+                }
             }
              
             Spacer(modifier = Modifier.height(16.dp))
