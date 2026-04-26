@@ -39,7 +39,6 @@
     <string name="info_copied">クリップボードにコピーしました</string>
     <string name="show_bitrate">ビットレートを表示</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">メタデータを保持</string>
     
     <string name="resolution">解像度</string>
     <string name="audio_options">音声オプション</string>
@@ -65,6 +64,12 @@
     <string name="error_gallery_entry">ギャラリーエントリを作成できませんでした</string>
     <string name="error_unknown">不明なエラー</string>
     <string name="error_codec_unsupported">このビデオコーデックはお使いのデバイスのハードウェアでサポートされていません。</string>
+    <string name="error_decoder_config_unsupported">このデバイスでは、このソース動画の設定をデコードできません。</string>
+    <string name="error_encoder_config_unsupported">このデバイスでは、選択した出力設定をエンコードできません。</string>
+    <string name="error_decoder_config_unsupported_details">このデバイスでは、このソース動画の設定をデコードできません (%1$dx%2$d @ %3$.1ffps, %4$s)。</string>
+    <string name="error_encoder_config_unsupported_details">このデバイスでは、選択した出力設定をエンコードできません。試行した設定: %1$s。</string>
+    <string name="warning_codec_fallback_h264">選択したコーデックはこのデバイスでこの出力設定に対応していません。互換性のため H.264 にフォールバックします。</string>
+    <string name="warning_quality_fallback">このデバイスでは選択した設定をエンコードできません。H.264 の %1$dp / %2$dfps にフォールバックします。</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

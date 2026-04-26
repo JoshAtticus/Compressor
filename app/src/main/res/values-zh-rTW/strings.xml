@@ -27,6 +27,12 @@
     <string name="start_compression">開始壓縮</string>
     <string name="error_prefix">錯誤：%1$s</string>
     <string name="error_codec_unsupported">此影片編碼格式不被您的裝置硬體支援。</string>
+    <string name="error_decoder_config_unsupported">此裝置無法解碼此來源影片設定。</string>
+    <string name="error_encoder_config_unsupported">此裝置無法編碼所選的輸出設定。</string>
+    <string name="error_decoder_config_unsupported_details">此裝置無法解碼此來源影片設定（%1$dx%2$d @ %3$.1ffps，%4$s）。</string>
+    <string name="error_encoder_config_unsupported_details">此裝置無法編碼所選的輸出設定。已嘗試：%1$s。</string>
+    <string name="warning_codec_fallback_h264">所選編碼格式在此裝置上不支援目前輸出設定。將回退為 H.264 以提升相容性。</string>
+    <string name="warning_quality_fallback">此裝置無法編碼所選設定。將回退為 H.264（%1$dp、%2$dfps）。</string>
     <string name="select_video">選擇要壓縮的影片</string>
     <string name="total_saved">您已使用 Compressor 節省了 %1$s 的儲存空間</string>
     <string name="compression_complete">壓縮完成！</string>
@@ -38,7 +44,6 @@
     <string name="info_copied">已複製到剪貼簿</string>
     <string name="show_bitrate">顯示位元率</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">保留中繼資料</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

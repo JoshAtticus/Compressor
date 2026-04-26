@@ -20,6 +20,7 @@ import androidx.media3.common.util.UnstableApi
 import androidx.media3.effect.Presentation
 import androidx.media3.effect.FrameDropEffect
 import androidx.media3.transformer.Composition
+import androidx.media3.transformer.DefaultDecoderFactory
 import androidx.media3.transformer.DefaultEncoderFactory
 import androidx.media3.transformer.EditedMediaItem
 import androidx.media3.transformer.EditedMediaItemSequence
@@ -52,9 +53,8 @@ data class CompressorUiState(
     val originalBitrate: Int = 0,
     val originalAudioBitrate: Int = 0,
     val originalFps: Float = 30f,
+    val originalVideoMime: String? = null,
     val durationMs: Long = 0L,
-    val originalDate: Long? = null,
-    val originalLocation: String? = null,
     val originalName: String? = null,
     
     val isCompressing: Boolean = false,
@@ -80,7 +80,6 @@ data class CompressorUiState(
     val appInfoVersion: String = "1.5.3",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
-    val preserveMetadata: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
@@ -331,6 +330,21 @@ fun formatFileSize(size: Long): String {
 
 @OptIn(UnstableApi::class)
 class CompressorViewModel(application: Application) : AndroidViewModel(application) {
+    private data class VideoTrackInfo(
+        val mimeType: String?,
+        val width: Int,
+        val height: Int,
+        val frameRate: Float
+    )
+
+    private data class CompressionPlan(
+        val outputVideoMimeType: String,
+        val outputHeight: Int,
+        val outputFps: Int,
+        val warnings: List<String>,
+        val blockingError: String?
+    )
+
     private val _uiState = MutableStateFlow(CompressorUiState())
     val uiState = _uiState.asStateFlow()
     
@@ -342,12 +356,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val saved = prefs.getLong("total_saved_bytes", 0L)
         val showBitrate = prefs.getBoolean("show_bitrate", false)
         val useMbps = prefs.getBoolean("use_mbps", false)
-        val preserveMetadata = prefs.getBoolean("preserve_metadata", false)
         _uiState.update { it.copy(
             totalSavedBytes = saved, 
             showBitrate = showBitrate, 
-            useMbps = useMbps,
-            preserveMetadata = preserveMetadata
+            useMbps = useMbps
         ) }
         checkSupportedCodecs()
         clearCache()
@@ -411,13 +423,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         var bitrate = 0
         var audioBitrate = 0
         var fps = 30f
+        var videoMime: String? = null
         var duration = 0L
-        var originalDate: Long? = null
-        var originalLocation: String? = null
         var originalName: String? = null
         
         try {
             audioBitrate = getAudioBitrate(context, uri)
+            val videoInfo = getVideoTrackInfo(context, uri)
+            videoMime = videoInfo?.mimeType
             context.contentResolver.openFileDescriptor(uri, "r")?.use {
                 size = it.statSize
             }
@@ -440,27 +453,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             // FPS extraction is flaky, sometimes in CAPTURE_FRAMERATE or needs calculation
             val fpsStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE) 
             fps = fpsStr?.toFloatOrNull() ?: 30f
-            
-            val dateStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_DATE)
-            if (dateStr != null) {
-                val formats = listOf(
-                    "yyyyMMdd'T'HHmmss.SSS'Z'",
-                    "yyyyMMdd'T'HHmmss'Z'",
-                    "yyyy-MM-dd HH:mm:ss"
-                )
-                for (format in formats) {
-                    try {
-                        val sdf = java.text.SimpleDateFormat(format, java.util.Locale.US)
-                        sdf.timeZone = java.util.TimeZone.getTimeZone("UTC")
-                        originalDate = sdf.parse(dateStr)?.time
-                        if (originalDate != null) break
-                    } catch (e: Exception) {
-                        // ignore
-                    }
-                }
+            if (fps <= 0f && videoInfo != null && videoInfo.frameRate > 0f) {
+                fps = videoInfo.frameRate
             }
-
-            originalLocation = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_LOCATION)
 
             val cursor = context.contentResolver.query(uri, null, null, null, null)
             if (cursor != null && cursor.moveToFirst()) {
@@ -481,7 +476,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentSavedBytes = _uiState.value.totalSavedBytes
         val showBitrate = _uiState.value.showBitrate
         val useMbps = _uiState.value.useMbps
-        val preserveMetadata = _uiState.value.preserveMetadata
         val supportedCodecs = _uiState.value.supportedCodecs
 
         _uiState.value = CompressorUiState(
@@ -492,9 +486,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             originalBitrate = bitrate,
             originalAudioBitrate = audioBitrate,
             originalFps = fps,
+            originalVideoMime = videoMime,
             durationMs = duration,
-            originalDate = originalDate,
-            originalLocation = originalLocation,
             originalName = originalName,
             targetSizeMb = defaultTargetMb,
             targetResolutionHeight = height,
@@ -502,7 +495,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             totalSavedBytes = currentSavedBytes,
             showBitrate = showBitrate,
             useMbps = useMbps,
-            preserveMetadata = preserveMetadata,
             supportedCodecs = supportedCodecs
         ).autoAdjust(defaultTargetMb)
     }
@@ -599,14 +591,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val newValue = !it.useMbps
             prefs.edit().putBoolean("use_mbps", newValue).apply()
             it.copy(useMbps = newValue)
-        }
-    }
-
-    fun togglePreserveMetadata() {
-        _uiState.update {
-            val newVal = !it.preserveMetadata
-            prefs.edit().putBoolean("preserve_metadata", newVal).apply()
-            it.copy(preserveMetadata = newVal)
         }
     }
 
@@ -709,7 +693,24 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return
 
-        _uiState.update { it.copy(isCompressing = true, progress = 0f, currentOutputSize = 0L, error = null, errorLog = null, compressedUri = null, saveSuccess = false, warnings = emptyList()) }
+        val plan = buildCompressionPlan(context, currentState, inputUri)
+        if (plan.blockingError != null) {
+            _uiState.update { it.copy(error = plan.blockingError, errorLog = null, isCompressing = false) }
+            return
+        }
+
+        _uiState.update {
+            it.copy(
+                isCompressing = true,
+                progress = 0f,
+                currentOutputSize = 0L,
+                error = null,
+                errorLog = null,
+                compressedUri = null,
+                saveSuccess = false,
+                warnings = plan.warnings
+            )
+        }
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
@@ -725,7 +726,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              currentState.audioBitrate
         }
 
-        val videoMimeType = currentState.videoCodec
+        val videoMimeType = plan.outputVideoMimeType
+
+        val decoderFactory = DefaultDecoderFactory.Builder(context)
+            .setEnableDecoderFallback(true)
+            .build()
 
         val encoderFactory = DefaultEncoderFactory.Builder(context)
             .setEnableFallback(true)
@@ -744,6 +749,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
             .setAudioMimeType(MimeTypes.AUDIO_AAC)
+            .setAssetLoaderFactory(androidx.media3.transformer.DefaultAssetLoaderFactory(context, decoderFactory, androidx.media3.common.util.Clock.DEFAULT))
             .setEncoderFactory(encoderFactory)
             .addListener(object : Transformer.Listener {
                 override fun onCompleted(composition: Composition, exportResult: ExportResult) {
@@ -772,11 +778,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     _uiState.update { 
                         val isCodecError = exportException.errorCode == ExportException.ERROR_CODE_DECODER_INIT_FAILED ||
                                            exportException.errorCode == ExportException.ERROR_CODE_ENCODER_INIT_FAILED
+                        val isDecoderInitError = exportException.errorCode == ExportException.ERROR_CODE_DECODER_INIT_FAILED
+                        val isEncoderInitError = exportException.errorCode == ExportException.ERROR_CODE_ENCODER_INIT_FAILED
                         val isMuxerError = exportException.errorCode == ExportException.ERROR_CODE_MUXING_FAILED
                         val isHuawei = android.os.Build.MANUFACTURER.equals("HUAWEI", ignoreCase = true)
 
                         val errorMsg = when {
                             isMuxerError && isHuawei -> app.getString(R.string.error_huawei_muxer)
+                            isDecoderInitError -> app.getString(R.string.error_decoder_config_unsupported)
+                            isEncoderInitError -> app.getString(R.string.error_encoder_config_unsupported)
                             isCodecError -> app.getString(R.string.error_codec_unsupported)
                             else -> exportException.localizedMessage ?: app.getString(R.string.error_unknown)
                         }
@@ -796,10 +806,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             
         val effectsList = mutableListOf<Effect>()
         
-        if (currentState.targetResolutionHeight > 0 && currentState.targetResolutionHeight != currentState.originalHeight) {
+           if (plan.outputHeight > 0 && plan.outputHeight != currentState.originalHeight) {
              val aspectRatio = if (currentState.originalHeight > 0) currentState.originalWidth.toFloat() / currentState.originalHeight else 16f/9f
-             var width = (currentState.targetResolutionHeight * aspectRatio).toInt()
-             var height = currentState.targetResolutionHeight
+               var width = (plan.outputHeight * aspectRatio).toInt()
+               var height = plan.outputHeight
              
              // Ensure even dimensions for encoder compatibility
              if (width % 2 != 0) width -= 1
@@ -810,8 +820,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              }
         }
         
-        if (currentState.activePreset != QualityPreset.HIGH && currentState.targetFps > 0) {
-             effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, currentState.targetFps.toFloat()))
+           if (currentState.activePreset != QualityPreset.HIGH && plan.outputFps > 0) {
+               effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, plan.outputFps.toFloat()))
         }
         
         val mediaItem = MediaItem.fromUri(inputUri)
@@ -874,6 +884,170 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             extractor.release()
         }
         return 0
+    }
+
+    private fun getVideoTrackInfo(context: Context, uri: Uri): VideoTrackInfo? {
+        val extractor = MediaExtractor()
+        try {
+            extractor.setDataSource(context, uri, null)
+            for (i in 0 until extractor.trackCount) {
+                val format = extractor.getTrackFormat(i)
+                val mime = format.getString(MediaFormat.KEY_MIME)
+                if (mime?.startsWith("video/") == true) {
+                    val width = if (format.containsKey(MediaFormat.KEY_WIDTH)) format.getInteger(MediaFormat.KEY_WIDTH) else 0
+                    val height = if (format.containsKey(MediaFormat.KEY_HEIGHT)) format.getInteger(MediaFormat.KEY_HEIGHT) else 0
+                    val frameRate = if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) format.getInteger(MediaFormat.KEY_FRAME_RATE).toFloat() else 0f
+                    return VideoTrackInfo(mime, width, height, frameRate)
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            extractor.release()
+        }
+        return null
+    }
+
+    private fun buildCompressionPlan(context: Context, state: CompressorUiState, inputUri: Uri): CompressionPlan {
+        var outputMime = state.videoCodec
+        var outputHeight = state.targetResolutionHeight
+        var outputFps = state.targetFps
+        val warnings = mutableListOf<String>()
+
+        val sourceInfo = getVideoTrackInfo(context, inputUri)
+        val sourceMime = sourceInfo?.mimeType ?: state.originalVideoMime
+        val sourceWidth = sourceInfo?.width ?: 0
+        val sourceHeight = sourceInfo?.height ?: 0
+        val sourceFps = if (sourceInfo?.frameRate ?: 0f > 0f) sourceInfo!!.frameRate else state.originalFps
+
+        if (!sourceMime.isNullOrBlank() && sourceWidth > 0 && sourceHeight > 0) {
+            val decoderSupported = isCodecConfigurationSupported(
+                mimeType = sourceMime,
+                width = sourceWidth,
+                height = sourceHeight,
+                fps = sourceFps,
+                encoder = false
+            )
+            if (!decoderSupported) {
+                return CompressionPlan(
+                    outputVideoMimeType = outputMime,
+                    outputHeight = outputHeight,
+                    outputFps = outputFps,
+                    warnings = warnings,
+                    blockingError = getApplication<Application>().getString(
+                        R.string.error_decoder_config_unsupported_details,
+                        sourceWidth,
+                        sourceHeight,
+                        sourceFps,
+                        sourceMime.substringAfter("/")
+                    )
+                )
+            }
+        }
+
+        val attemptedConfigs = mutableListOf<Triple<String, Int, Int>>()
+        fun isCurrentOutputSupported(mime: String, height: Int, fps: Int): Boolean {
+            val safeHeight = if (height > 0) height else state.originalHeight
+            val safeFps = if (fps > 0) fps else state.originalFps.toInt()
+            val aspectRatio = if (state.originalHeight > 0) state.originalWidth.toFloat() / state.originalHeight else 16f / 9f
+            var outputWidth = (safeHeight * aspectRatio).toInt().coerceAtLeast(2)
+            var outputActualHeight = safeHeight.coerceAtLeast(2)
+            if (outputWidth % 2 != 0) outputWidth -= 1
+            if (outputActualHeight % 2 != 0) outputActualHeight -= 1
+            attemptedConfigs.add(Triple(mime, outputActualHeight, safeFps))
+            return isCodecConfigurationSupported(
+                mimeType = mime,
+                width = outputWidth,
+                height = outputActualHeight,
+                fps = safeFps.toFloat(),
+                encoder = true
+            )
+        }
+
+        if (!isCurrentOutputSupported(outputMime, outputHeight, outputFps)) {
+            if (outputMime != MimeTypes.VIDEO_H264 && isCurrentOutputSupported(MimeTypes.VIDEO_H264, outputHeight, outputFps)) {
+                outputMime = MimeTypes.VIDEO_H264
+                warnings.add(getApplication<Application>().getString(R.string.warning_codec_fallback_h264))
+            } else {
+                val fallbackHeights = listOf(1080, 720, 540, 480)
+                    .filter { it in 2..state.originalHeight }
+                    .ifEmpty { listOf(state.originalHeight.coerceAtLeast(2)) }
+                val fallbackFps = listOf(30, 24)
+                var supported = false
+
+                for (heightCandidate in fallbackHeights) {
+                    for (fpsCandidate in fallbackFps) {
+                        if (isCurrentOutputSupported(MimeTypes.VIDEO_H264, heightCandidate, fpsCandidate)) {
+                            outputMime = MimeTypes.VIDEO_H264
+                            outputHeight = heightCandidate
+                            outputFps = fpsCandidate
+                            warnings.add(
+                                getApplication<Application>().getString(
+                                    R.string.warning_quality_fallback,
+                                    outputHeight,
+                                    outputFps
+                                )
+                            )
+                            supported = true
+                            break
+                        }
+                    }
+                    if (supported) break
+                }
+
+                if (!supported) {
+                    val attempted = attemptedConfigs
+                        .joinToString(separator = ", ") { "${it.first.substringAfter("/")} ${it.second}p@${it.third}fps" }
+                    return CompressionPlan(
+                        outputVideoMimeType = outputMime,
+                        outputHeight = outputHeight,
+                        outputFps = outputFps,
+                        warnings = warnings,
+                        blockingError = getApplication<Application>().getString(
+                            R.string.error_encoder_config_unsupported_details,
+                            attempted
+                        )
+                    )
+                }
+            }
+        }
+
+        return CompressionPlan(
+            outputVideoMimeType = outputMime,
+            outputHeight = outputHeight,
+            outputFps = outputFps,
+            warnings = warnings,
+            blockingError = null
+        )
+    }
+
+    private fun isCodecConfigurationSupported(
+        mimeType: String,
+        width: Int,
+        height: Int,
+        fps: Float,
+        encoder: Boolean
+    ): Boolean {
+        return try {
+            val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
+            val safeFps: Float = if (fps > 0f) fps else 30f
+            codecList.codecInfos
+                .asSequence()
+                .filter { it.isEncoder == encoder }
+                .filter { info -> info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) } }
+                .any { info ->
+                    try {
+                        val capabilities = info.getCapabilitiesForType(mimeType)
+                        val videoCaps = capabilities.videoCapabilities ?: return@any false
+                        videoCaps.areSizeAndRateSupported(width, height, safeFps.toDouble()) ||
+                            videoCaps.areSizeAndRateSupported(height, width, safeFps.toDouble())
+                    } catch (_: Exception) {
+                        false
+                    }
+                }
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun isHdr(context: Context, uri: Uri): Boolean {
@@ -941,21 +1115,13 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, targetName)
                     put(MediaStore.Video.Media.MIME_TYPE, "video/mp4")
-                    if (currentState.preserveMetadata) {
-                        applyPreservedMetadata(context, currentState, this)
-                    } else {
-                        put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
-                    }
+                    put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
 
                     if (!containsKey(MediaStore.Video.Media.DATE_ADDED)) {
                         put(MediaStore.Video.Media.DATE_ADDED, System.currentTimeMillis() / 1000)
                     }
                     if (!containsKey(MediaStore.Video.Media.DATE_MODIFIED)) {
                         put(MediaStore.Video.Media.DATE_MODIFIED, System.currentTimeMillis() / 1000)
-                    }
-
-                    if (currentState.preserveMetadata && currentState.originalDate != null && !containsKey(MediaStore.Video.Media.DATE_TAKEN)) {
-                        put(MediaStore.Video.Media.DATE_TAKEN, currentState.originalDate)
                     }
 
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -994,77 +1160,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
             }
         }
-    }
-
-    private fun applyPreservedMetadata(context: Context, state: CompressorUiState, values: ContentValues) {
-        val sourceUri = state.selectedUri
-        val projection = arrayOf(
-            MediaStore.Video.Media.DATE_ADDED,
-            MediaStore.Video.Media.DATE_MODIFIED,
-            MediaStore.Video.Media.DATE_TAKEN,
-            MediaStore.Video.Media.TITLE,
-            MediaStore.Video.Media.ARTIST,
-            MediaStore.Video.Media.ALBUM,
-            MediaStore.Video.Media.DESCRIPTION
-        )
-
-        if (sourceUri != null) {
-            try {
-                context.contentResolver.query(sourceUri, projection, null, null, null)?.use { cursor ->
-                    if (cursor.moveToFirst()) {
-                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_ADDED)?.let {
-                            values.put(MediaStore.Video.Media.DATE_ADDED, it)
-                        }
-                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_MODIFIED)?.let {
-                            values.put(MediaStore.Video.Media.DATE_MODIFIED, it)
-                        }
-                        copyLongColumn(cursor, MediaStore.Video.Media.DATE_TAKEN)?.let {
-                            values.put(MediaStore.Video.Media.DATE_TAKEN, it)
-                        }
-                        copyStringColumn(cursor, MediaStore.Video.Media.TITLE)?.let {
-                            values.put(MediaStore.Video.Media.TITLE, it)
-                        }
-                        copyStringColumn(cursor, MediaStore.Video.Media.ARTIST)?.let {
-                            values.put(MediaStore.Video.Media.ARTIST, it)
-                        }
-                        copyStringColumn(cursor, MediaStore.Video.Media.ALBUM)?.let {
-                            values.put(MediaStore.Video.Media.ALBUM, it)
-                        }
-                        copyStringColumn(cursor, MediaStore.Video.Media.DESCRIPTION)?.let {
-                            values.put(MediaStore.Video.Media.DESCRIPTION, it)
-                        }
-                    }
-                }
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
-        }
-
-        val locationString = state.originalLocation
-        if (locationString != null) {
-            val matcher = java.util.regex.Pattern.compile("([+-]\\d+\\.\\d+)([+-]\\d+\\.\\d+)").matcher(locationString)
-            if (matcher.find()) {
-                val lat = matcher.group(1)?.toDoubleOrNull()
-                val lon = matcher.group(2)?.toDoubleOrNull()
-                if (lat != null && lon != null) {
-                    // On Android Q+, LATITUDE/LONGITUDE writes are ignored for privacy.
-                    values.put(MediaStore.Video.Media.LATITUDE, lat)
-                    values.put(MediaStore.Video.Media.LONGITUDE, lon)
-                }
-            }
-        }
-    }
-
-    private fun copyLongColumn(cursor: android.database.Cursor, column: String): Long? {
-        val index = cursor.getColumnIndex(column)
-        if (index == -1 || cursor.isNull(index)) return null
-        return cursor.getLong(index)
-    }
-
-    private fun copyStringColumn(cursor: android.database.Cursor, column: String): String? {
-        val index = cursor.getColumnIndex(column)
-        if (index == -1 || cursor.isNull(index)) return null
-        return cursor.getString(index)
     }
 
 }

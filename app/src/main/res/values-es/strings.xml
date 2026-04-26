@@ -34,13 +34,18 @@
     <string name="cancel">Cancelar</string>
     <string name="error_file_lost">Archivo perdido</string>
     <string name="error_codec_unsupported">Este códec de video no es compatible con el hardware de tu dispositivo.</string>
+    <string name="error_decoder_config_unsupported">Este dispositivo no puede decodificar esta configuración de video de origen.</string>
+    <string name="error_encoder_config_unsupported">Este dispositivo no puede codificar la configuración de salida seleccionada.</string>
+    <string name="error_decoder_config_unsupported_details">Este dispositivo no puede decodificar esta configuración de video de origen (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">Este dispositivo no puede codificar la configuración de salida seleccionada. Se intentó con: %1$s.</string>
+    <string name="warning_codec_fallback_h264">El códec seleccionado no es compatible con esta salida en este dispositivo. Se cambiará a H.264 para mayor compatibilidad.</string>
+    <string name="warning_quality_fallback">Este dispositivo no puede codificar la configuración seleccionada. Se cambiará a H.264 a %1$dp y %2$dfps.</string>
 
     <string name="info_title">Info de Dispositivo y App</string>
     <string name="info_copy_clipboard">Copiar al portapapeles</string>
     <string name="info_copied">Copiado al portapapeles</string>
     <string name="show_bitrate">Mostrar tasa de bits</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">Conservar metadatos</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

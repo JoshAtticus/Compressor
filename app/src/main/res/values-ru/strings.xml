@@ -48,12 +48,17 @@
     <string name="error_gallery_entry">Не удалось создать запись в галерее</string>
     <string name="error_unknown">Неизвестная ошибка</string>
     <string name="error_codec_unsupported">Этот кодек не поддерживается вашим устройством.</string>
+    <string name="error_decoder_config_unsupported">Это устройство не может декодировать такую конфигурацию исходного видео.</string>
+    <string name="error_encoder_config_unsupported">Это устройство не может кодировать выбранную выходную конфигурацию.</string>
+    <string name="error_decoder_config_unsupported_details">Это устройство не может декодировать такую конфигурацию исходного видео (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">Это устройство не может кодировать выбранные выходные настройки. Пробовали: %1$s.</string>
+    <string name="warning_codec_fallback_h264">Выбранный кодек не поддерживается для этого вывода на данном устройстве. Для совместимости используется H.264.</string>
+    <string name="warning_quality_fallback">Это устройство не может кодировать выбранные настройки. Переход на H.264 с %1$dp и %2$dfps.</string>
     <string name="info_title">Инфо о устройстве и приложении</string>
     <string name="info_copy_clipboard">Скопировать в буфер</string>
     <string name="info_copied">Скопировано в буфер</string>
     <string name="show_bitrate">Показать битрейт</string>
     <string name="bitrate_unit_mbps">Мбит/с</string>
-    <string name="preserve_metadata">Сохранять метаданные</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

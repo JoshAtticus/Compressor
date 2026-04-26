@@ -48,13 +48,18 @@
     <string name="error_gallery_entry">无法创建相册条目</string>
     <string name="error_unknown">未知错误</string>
     <string name="error_codec_unsupported">您的设备硬件不支持此视频编解码器。</string>
+    <string name="error_decoder_config_unsupported">此设备无法解码该源视频配置。</string>
+    <string name="error_encoder_config_unsupported">此设备无法编码所选输出配置。</string>
+    <string name="error_decoder_config_unsupported_details">此设备无法解码该源视频配置（%1$dx%2$d @ %3$.1ffps，%4$s）。</string>
+    <string name="error_encoder_config_unsupported_details">此设备无法编码所选输出设置。已尝试：%1$s。</string>
+    <string name="warning_codec_fallback_h264">所选编解码器在此设备上不支持当前输出设置。将回退到 H.264 以提高兼容性。</string>
+    <string name="warning_quality_fallback">此设备无法编码所选设置。将回退到 H.264（%1$dp，%2$dfps）。</string>
 
     <string name="info_title">设备与应用信息</string>
     <string name="info_copy_clipboard">复制到剪贴板</string>
     <string name="info_copied">已复制到剪贴板</string>
     <string name="show_bitrate">显示码率</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">保留元数据</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

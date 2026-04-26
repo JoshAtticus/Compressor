@@ -300,8 +300,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             context.startActivity(shareIntent)
                         },
                         onToggleShowBitrate = { viewModel.toggleShowBitrate() },
-                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
-                        onTogglePreserveMetadata = { viewModel.togglePreserveMetadata() }
+                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() }
                     )
                 }
             }
@@ -663,8 +662,7 @@ fun InfoDialog(
     onCopy: () -> Unit,
     onShare: () -> Unit,
     onToggleShowBitrate: () -> Unit,
-    onToggleBitrateUnit: () -> Unit,
-    onTogglePreserveMetadata: () -> Unit
+    onToggleBitrateUnit: () -> Unit
 ) {
     var copied by remember { mutableStateOf(false) }
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
@@ -714,18 +712,6 @@ fun InfoDialog(
                             onCheckedChange = { onToggleBitrateUnit() }
                         )
                     }
-                }
-
-                Row(
-                    modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(stringResource(R.string.preserve_metadata), style = MaterialTheme.typography.bodyMedium)
-                    Switch(
-                        checked = state.preserveMetadata, 
-                        onCheckedChange = { onTogglePreserveMetadata() }
-                    )
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))

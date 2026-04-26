@@ -48,13 +48,18 @@
     <string name="error_gallery_entry">Galerie-Eintrag konnte nicht erstellt werden</string>
     <string name="error_unknown">Unbekannter Fehler</string>
     <string name="error_codec_unsupported">Dieser Video-Codec wird von deinem Gerät nicht unterstützt.</string>
+    <string name="error_decoder_config_unsupported">Dieses Gerät kann diese Quellvideo-Konfiguration nicht dekodieren.</string>
+    <string name="error_encoder_config_unsupported">Dieses Gerät kann die gewählte Ausgabe-Konfiguration nicht kodieren.</string>
+    <string name="error_decoder_config_unsupported_details">Dieses Gerät kann diese Quellvideo-Konfiguration nicht dekodieren (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">Dieses Gerät kann die gewählten Ausgabeeinstellungen nicht kodieren. Versucht: %1$s.</string>
+    <string name="warning_codec_fallback_h264">Der gewählte Codec wird auf diesem Gerät für diese Ausgabe nicht unterstützt. Es wird zur Kompatibilität auf H.264 zurückgegriffen.</string>
+    <string name="warning_quality_fallback">Dieses Gerät kann die gewählten Einstellungen nicht kodieren. Es wird auf H.264 mit %1$dp und %2$dfps zurückgegriffen.</string>
 
     <string name="info_title">Geräte- &amp; App-Info</string>
     <string name="info_copy_clipboard">In die Zwischenablage kopieren</string>
     <string name="info_copied">In die Zwischenablage kopiert</string>
     <string name="show_bitrate">Bitrate anzeigen</string>
     <string name="bitrate_unit_mbps">Mbit/s</string>
-    <string name="preserve_metadata">Metadaten beibehalten</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

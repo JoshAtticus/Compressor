@@ -27,6 +27,12 @@
     <string name="start_compression">Iniciar compressão</string>
     <string name="error_prefix">Erro: %1$s</string>
     <string name="error_codec_unsupported">Este codec de vídeo não é suportado pelo hardware do seu dispositivo.</string>
+    <string name="error_decoder_config_unsupported">Este dispositivo não consegue decodificar esta configuração de vídeo de origem.</string>
+    <string name="error_encoder_config_unsupported">Este dispositivo não consegue codificar a configuração de saída selecionada.</string>
+    <string name="error_decoder_config_unsupported_details">Este dispositivo não consegue decodificar esta configuração de vídeo de origem (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">Este dispositivo não consegue codificar as configurações de saída selecionadas. Tentativas: %1$s.</string>
+    <string name="warning_codec_fallback_h264">O codec selecionado não é compatível com essa saída neste dispositivo. Alterando para H.264 por compatibilidade.</string>
+    <string name="warning_quality_fallback">Este dispositivo não consegue codificar as configurações selecionadas. Alterando para H.264 em %1$dp e %2$dfps.</string>
     <string name="select_video">Selecione um vídeo para comprimir</string>
     <string name="total_saved">Você economizou %1$s de espaço com o Compressor</string>
     <string name="compression_complete">Compressão concluída!</string>
@@ -38,7 +44,6 @@
     <string name="info_copied">Copiado para área de transferência</string>
     <string name="show_bitrate">Mostrar taxa de bits</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">Preservar metadados</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>

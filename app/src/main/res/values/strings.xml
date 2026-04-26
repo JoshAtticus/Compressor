@@ -38,7 +38,6 @@
     <string name="info_copied">Copied to clipboard</string>
     <string name="show_bitrate">Show Bitrate</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-    <string name="preserve_metadata">Preserve Metadata</string>
 
     <string name="resolution">Resolution</string>
     <string name="audio_options">Audio Options</string>
@@ -73,6 +72,12 @@
     <string name="error_gallery_entry">Could not create gallery entry</string>
     <string name="error_unknown">Unknown error</string>
     <string name="error_codec_unsupported">This video codec is not supported by your device hardware.</string>
+    <string name="error_decoder_config_unsupported">This device can\'t decode this source video configuration.</string>
+    <string name="error_encoder_config_unsupported">This device can\'t encode the selected output configuration.</string>
+    <string name="error_decoder_config_unsupported_details">This device can\'t decode this source video configuration (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">This device can\'t encode the selected output settings. Tried: %1$s.</string>
+    <string name="warning_codec_fallback_h264">Your selected codec is not supported for this output on this device. Falling back to H.264 for compatibility.</string>
+    <string name="warning_quality_fallback">This device can\'t encode your selected settings. Falling back to H.264 at %1$dp and %2$dfps.</string>
 
     <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
