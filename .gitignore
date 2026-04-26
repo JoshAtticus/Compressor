@@ -14,6 +14,7 @@
 .cxx
 local.properties
 app-release.apk
+app-release.aab
 app-debug.apk
 output-metadata.json
 .kotlin/*
