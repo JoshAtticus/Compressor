@@ -1,0 +1,7 @@
+Compressor 1.5.3 adds the following features:
+- Compressor now detects if your device can decode a source video or not and fails gracefully
+- Improved the automatic quality adjustment
+- Removed unused imports and code
+
+Bug Fixes:
+- Fixed vertical video resolution regression from 1.5.2
