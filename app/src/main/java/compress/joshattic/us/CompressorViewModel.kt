@@ -452,9 +452,12 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             
             // FPS extraction is flaky, sometimes in CAPTURE_FRAMERATE or needs calculation
             val fpsStr = retriever.extractMetadata(android.media.MediaMetadataRetriever.METADATA_KEY_CAPTURE_FRAMERATE) 
-            fps = fpsStr?.toFloatOrNull() ?: 30f
+            fps = fpsStr?.toFloatOrNull() ?: 0f
             if (fps <= 0f && videoInfo != null && videoInfo.frameRate > 0f) {
                 fps = videoInfo.frameRate
+            }
+            if (fps <= 0f) {
+                fps = 30f
             }
 
             val cursor = context.contentResolver.query(uri, null, null, null, null)
@@ -896,7 +899,16 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 if (mime?.startsWith("video/") == true) {
                     val width = if (format.containsKey(MediaFormat.KEY_WIDTH)) format.getInteger(MediaFormat.KEY_WIDTH) else 0
                     val height = if (format.containsKey(MediaFormat.KEY_HEIGHT)) format.getInteger(MediaFormat.KEY_HEIGHT) else 0
-                    val frameRate = if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) format.getInteger(MediaFormat.KEY_FRAME_RATE).toFloat() else 0f
+                    var frameRate = 0f
+                    if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
+                        try {
+                            frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE).toFloat()
+                        } catch (e: Exception) {
+                            try {
+                                frameRate = format.getFloat(MediaFormat.KEY_FRAME_RATE)
+                            } catch (ignored: Exception) {}
+                        }
+                    }
                     return VideoTrackInfo(mime, width, height, frameRate)
                 }
             }
