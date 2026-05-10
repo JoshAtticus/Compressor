@@ -266,7 +266,8 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                             if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
                                                 viewModel.saveToGallery(context)
                                             } else {
-                                                createDocumentLauncher.launch("CompressedVideo.mp4")
+                                                val fileName = state.compressedUri?.lastPathSegment ?: "CompressedVideo.mp4"
+                                                createDocumentLauncher.launch(fileName)
                                             }
                                         },
                                         onCompressAnother = { viewModel.reset() },

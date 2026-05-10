@@ -717,7 +717,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
-        val outputFile = File(outputDir, "compress_${UUID.randomUUID()}.mp4")
+        val baseName = currentState.originalName?.substringBeforeLast(".") ?: "Compressed_${System.currentTimeMillis()}"
+        val outputFile = File(outputDir, "${baseName}_Compressed.mp4")
+        if (outputFile.exists()) {
+            outputFile.delete()
+        }
         val outputPath = outputFile.absolutePath
 
         val targetBitrate = currentState.targetBitrate.toLong()
@@ -1119,7 +1123,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                 val targetName = if (currentState.originalName != null) {
                     val nameWithoutExt = currentState.originalName.substringBeforeLast(".")
-                    "${nameWithoutExt}_compressed.mp4"
+                    "${nameWithoutExt}_Compressed.mp4"
                 } else {
                     "Compressed_${System.currentTimeMillis()}.mp4"
                 }
