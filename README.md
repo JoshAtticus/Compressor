@@ -7,10 +7,6 @@ Lightning fast, ad free, super lightweight native video compressor for Android (
 
 <img src="assets/select.png" alt="Screenshot 3" width="24%"/><img src="assets/settings.png" alt="Screenshot 1" width="24%"/><img src="assets/compressing.png" alt="Screenshot 2" width="24%"><img src="assets/done.png" alt="Screenshot 4" width="24%"/>
 
-### See the quality for yourself on YouTube
-
-<a href="https://www.youtube.com/watch?v=KieyI-8Tttk"><img width="50%" src="https://github.com/user-attachments/assets/759c18dc-afeb-4023-ac04-6f331058d6bb"></a>
-
 ![Kotlin](https://img.shields.io/badge/kotlin-%237F52FF.svg?style=for-the-badge&logo=kotlin&logoColor=white) ![Android](https://img.shields.io/badge/Android-3DDC84?style=for-the-badge&logo=android&logoColor=white) ![License](https://img.shields.io/github/license/JoshAtticus/Compressor?style=for-the-badge)
 
 **Stats**
