@@ -10,7 +10,6 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedContent
@@ -160,8 +159,14 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
     
-    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    // SAF-based picker — preserves the real file name (Photo Picker hides it for privacy on API 33+).
+    val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocument()) { uri ->
         if (uri != null) {
+            try {
+                context.contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            } catch (_: SecurityException) {
+                // Some providers don't grant persistable URIs; the URI is still readable for this session.
+            }
             viewModel.updateSelectedUri(context, uri)
         }
     }
@@ -241,7 +246,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                         when(index) {
                             0 -> EmptyScreen(
                                 totalSaved = state.formattedTotalSaved,
-                                onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
+                                onPick = { pickMedia.launch(arrayOf("video/*")) }
                             )
                             2 -> {
                                 if (state.error != null) {

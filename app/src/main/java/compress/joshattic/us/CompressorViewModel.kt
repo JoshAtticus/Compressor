@@ -416,7 +416,43 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     private var compressionJob: Job? = null
     private var activeTransformer: Transformer? = null
 
+    private fun queryDisplayName(context: Context, uri: Uri): String? {
+        val raw = try {
+            context.contentResolver.query(
+                uri,
+                arrayOf(android.provider.OpenableColumns.DISPLAY_NAME),
+                null, null, null
+            )?.use { cursor ->
+                if (cursor.moveToFirst()) {
+                    val idx = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (idx >= 0) cursor.getString(idx) else null
+                } else null
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+        // Reject Photo Picker synthetic IDs (e.g. "1000040501") — these are MediaStore IDs,
+        // not real filenames. The picker hides the actual name for privacy on Android 13+.
+        if (raw.isNullOrBlank() || raw.matches(Regex("""^\d{6,}$"""))) return null
+        return raw
+    }
+
+    private fun sanitizeFilename(name: String): String =
+        name.replace(Regex("""[/\\:*?"<>|\x00-\x1F]"""), "_").trim().ifBlank { "Video" }
+
+    private fun makeOutputName(originalName: String?): String {
+        val base = originalName?.substringBeforeLast(".")?.takeIf { it.isNotBlank() }
+            ?.let { sanitizeFilename(it) }
+            ?: "Video_${System.currentTimeMillis()}"
+        return "${base}_Compressed.mp4"
+    }
+
     fun updateSelectedUri(context: Context, uri: Uri) {
+        // Resolve the display name independently — if metadata extraction throws below
+        // (HDR videos, unsupported codecs, slow URIs), we still keep the original name.
+        val originalName = queryDisplayName(context, uri)
+
         var size = 0L
         var width = 0
         var height = 0
@@ -425,8 +461,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         var fps = 30f
         var videoMime: String? = null
         var duration = 0L
-        var originalName: String? = null
-        
+
         try {
             audioBitrate = getAudioBitrate(context, uri)
             val videoInfo = getVideoTrackInfo(context, uri)
@@ -458,15 +493,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             }
             if (fps <= 0f) {
                 fps = 30f
-            }
-
-            val cursor = context.contentResolver.query(uri, null, null, null, null)
-            if (cursor != null && cursor.moveToFirst()) {
-                val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
-                if (nameIndex != -1) {
-                    originalName = cursor.getString(nameIndex)
-                }
-                cursor.close()
             }
 
             retriever.release()
@@ -713,8 +739,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val outputDir = File(context.cacheDir, "compressed_videos")
         outputDir.mkdirs()
-        val baseName = currentState.originalName?.substringBeforeLast(".") ?: "Compressed_${System.currentTimeMillis()}"
-        val outputFile = File(outputDir, "${baseName}_Compressed.mp4")
+        val outputFile = File(outputDir, makeOutputName(currentState.originalName))
         if (outputFile.exists()) {
             outputFile.delete()
         }
@@ -1117,12 +1142,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     return@launch
                 }
 
-                val targetName = if (currentState.originalName != null) {
-                    val nameWithoutExt = currentState.originalName.substringBeforeLast(".")
-                    "${nameWithoutExt}_Compressed.mp4"
-                } else {
-                    "Compressed_${System.currentTimeMillis()}.mp4"
-                }
+                val targetName = makeOutputName(currentState.originalName)
 
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, targetName)
