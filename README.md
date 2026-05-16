@@ -56,8 +56,6 @@ The following devices are used for testing where possible
 | Samsung Galaxy A71 4G       | Snapdragon 730          | 6GB  |
 | Samsung Galaxy A32 4G       | Helio G80               | 6GB  |
 | Samsung Galaxy A05s         | Snapdragon 680          | 4GB  |
-
-*The Samsung Galaxy J5 (2017) is actually a Galaxy J5 Pro, but only 2GB of RAM is enabled instead of 3GB, making it essentially a Galaxy J5 (2017).
 </details>
 
 <details>
