@@ -740,6 +740,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
                     .setBitrate(targetBitrate.toInt())
+                    .setBitrateMode(android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR)
                     .build()
             )
             .setRequestedAudioEncoderSettings(
