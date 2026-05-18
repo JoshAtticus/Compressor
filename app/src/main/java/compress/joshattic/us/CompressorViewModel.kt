@@ -735,7 +735,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setEnableDecoderFallback(true)
             .build()
 
-        val encoderFactory = DefaultEncoderFactory.Builder(context)
+        val defaultEncoderFactory = DefaultEncoderFactory.Builder(context)
             .setEnableFallback(true)
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
@@ -749,6 +749,23 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     .build()
             )
             .build()
+            
+        val encoderFactory = object : androidx.media3.transformer.Codec.EncoderFactory {
+            override fun createForAudioEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
+                return defaultEncoderFactory.createForAudioEncoding(format)
+            }
+
+            override fun createForVideoEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
+                var modifiedFormat = format
+                if (format.colorInfo == null || !androidx.media3.common.ColorInfo.isTransferHdr(format.colorInfo)) {
+                     modifiedFormat = format.buildUpon().setColorInfo(null).build()
+                }
+                return defaultEncoderFactory.createForVideoEncoding(modifiedFormat)
+            }
+
+            override fun audioNeedsEncoding(): Boolean = defaultEncoderFactory.audioNeedsEncoding()
+            override fun videoNeedsEncoding(): Boolean = defaultEncoderFactory.videoNeedsEncoding()
+        }
         
         val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
@@ -1043,7 +1060,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     ): Boolean {
         return try {
             val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
-            val safeFps: Float = if (fps > 0f) fps else 30f
+            val safeFps = kotlin.math.ceil(if (fps > 0f) fps.toDouble() else 30.0)
             codecList.codecInfos
                 .asSequence()
                 .filter { it.isEncoder == encoder }
@@ -1052,8 +1069,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     try {
                         val capabilities = info.getCapabilitiesForType(mimeType)
                         val videoCaps = capabilities.videoCapabilities ?: return@any false
-                        videoCaps.areSizeAndRateSupported(width, height, safeFps.toDouble()) ||
-                            videoCaps.areSizeAndRateSupported(height, width, safeFps.toDouble())
+                        videoCaps.areSizeAndRateSupported(width, height, safeFps) ||
+                            videoCaps.areSizeAndRateSupported(height, width, safeFps)
                     } catch (_: Exception) {
                         false
                     }
