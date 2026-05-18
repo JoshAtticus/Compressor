@@ -735,7 +735,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setEnableDecoderFallback(true)
             .build()
 
-        val defaultEncoderFactory = DefaultEncoderFactory.Builder(context)
+        val cbrEncoderFactory = DefaultEncoderFactory.Builder(context)
             .setEnableFallback(true)
             .setRequestedVideoEncoderSettings(
                 VideoEncoderSettings.Builder()
@@ -749,10 +749,25 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     .build()
             )
             .build()
+
+        val vbrEncoderFactory = DefaultEncoderFactory.Builder(context)
+            .setEnableFallback(true)
+            .setRequestedVideoEncoderSettings(
+                VideoEncoderSettings.Builder()
+                    .setBitrate(targetBitrate.toInt())
+                    .setBitrateMode(android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_VBR)
+                    .build()
+            )
+            .setRequestedAudioEncoderSettings(
+                AudioEncoderSettings.Builder()
+                    .setBitrate(audioBitrateToUse)
+                    .build()
+            )
+            .build()
             
         val encoderFactory = object : androidx.media3.transformer.Codec.EncoderFactory {
             override fun createForAudioEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
-                return defaultEncoderFactory.createForAudioEncoding(format)
+                return cbrEncoderFactory.createForAudioEncoding(format)
             }
 
             override fun createForVideoEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
@@ -760,11 +775,16 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 if (format.colorInfo == null || !androidx.media3.common.ColorInfo.isTransferHdr(format.colorInfo)) {
                      modifiedFormat = format.buildUpon().setColorInfo(null).build()
                 }
-                return defaultEncoderFactory.createForVideoEncoding(modifiedFormat)
+
+                return try {
+                    cbrEncoderFactory.createForVideoEncoding(modifiedFormat)
+                } catch (e: Exception) {
+                    vbrEncoderFactory.createForVideoEncoding(modifiedFormat)
+                }
             }
 
-            override fun audioNeedsEncoding(): Boolean = defaultEncoderFactory.audioNeedsEncoding()
-            override fun videoNeedsEncoding(): Boolean = defaultEncoderFactory.videoNeedsEncoding()
+            override fun audioNeedsEncoding(): Boolean = cbrEncoderFactory.audioNeedsEncoding()
+            override fun videoNeedsEncoding(): Boolean = cbrEncoderFactory.videoNeedsEncoding()
         }
         
         val transformerBuilder = Transformer.Builder(context)
