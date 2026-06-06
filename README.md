@@ -1,3 +1,5 @@
+<img width="64" alt="ic_launcher-playstore" src="https://github.com/user-attachments/assets/9a2e0de5-1b6e-4110-81f1-b4616a31da6b" />
+
 # Compressor
 Lightning fast, ad free, super lightweight native video compressor for Android (inspired by the AMAZING Kompresso app for iOS).
 
