@@ -45,6 +45,7 @@ jobs:
 
       # 1. FIND OR CREATE THE INITIAL COMMENT
       - name: Post "Building" Comment
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           PR_NUMBER: ${{ env.PR_NUMBER }}
@@ -102,7 +103,11 @@ jobs:
         id: process_logs
         run: |
           # Get the last 150 lines of the log to avoid comment size limits
-          tail -n 150 build.log > trimmed_log.txt
+          if [ -f build.log ]; then
+            tail -n 150 build.log > trimmed_log.txt
+          else
+            echo "Build log not found. The build step may not have produced output." > trimmed_log.txt
+          fi
           # Read file into variable
           echo "LOG_CONTENT<<EOF" >> $GITHUB_OUTPUT
           cat trimmed_log.txt >> $GITHUB_OUTPUT
@@ -111,6 +116,7 @@ jobs:
       # 5. UPDATE COMMENT WITH RESULT (Success or Failure)
       - name: Update Comment with Result
         if: always()
+        continue-on-error: true
         uses: actions/github-script@v7
         env:
           LOGS: ${{ steps.process_logs.outputs.LOG_CONTENT }}
