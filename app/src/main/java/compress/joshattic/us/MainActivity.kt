@@ -216,7 +216,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                         ),
                         actions = {
                             IconButton(onClick = { showInfoDialog = true }) {
-                                Icon(Icons.Outlined.Info, contentDescription = "Info", tint = MaterialTheme.colorScheme.onSurface)
+                                Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.info_content_desc), tint = MaterialTheme.colorScheme.onSurface)
                             }
                         }
                     )
@@ -679,8 +679,8 @@ fun InfoDialog(
         },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
-                InfoRow("Device", "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-                InfoRow("Android", android.os.Build.VERSION.RELEASE)
+                InfoRow(stringResource(R.string.info_device), "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
+                InfoRow(stringResource(R.string.info_android), android.os.Build.VERSION.RELEASE)
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider()
@@ -720,7 +720,7 @@ fun InfoDialog(
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(8.dp))
                 
-                InfoRow("Supported Codecs", "")
+                InfoRow(stringResource(R.string.info_supported_codecs), "")
                 state.supportedCodecs.forEach { codec ->
                      Text(
                         "• ${codec.substringAfter("/")}", 
@@ -782,7 +782,7 @@ fun ConfigScreen(
 ) {
     val pagerState = rememberPagerState(pageCount = { 3 })
     val scope = rememberCoroutineScope()
-    val tabs = listOf("Presets", "Video", "Audio")
+    val tabs = listOf(stringResource(R.string.tab_presets), stringResource(R.string.tab_video), stringResource(R.string.tab_audio))
     val haptics = LocalHapticFeedback.current
 
     val originalMb = state.originalSize / (1024f * 1024f)
@@ -806,21 +806,21 @@ fun ConfigScreen(
                         selected = pagerState.currentPage == 0,
                         onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        label = { Text("Presets") }
+                        label = { Text(stringResource(R.string.tab_presets)) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 1,
                         onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                         icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
-                        label = { Text("Video") }
+                        label = { Text(stringResource(R.string.tab_video)) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 2,
                         onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text("Audio") }
+                        label = { Text(stringResource(R.string.tab_audio)) }
                     )
                     Spacer(Modifier.weight(1f))
                 }
