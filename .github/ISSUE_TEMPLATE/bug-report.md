@@ -16,7 +16,7 @@ assignees: JoshAtticus
 - [ ] My issue is written in English, and I understand that my issue will be closed if it is not
 - [ ] My issue is not listed in https://github.com/JoshAtticus/Compressor/issues/3
 - [ ] I have added a title to my issue
-- [ ] I understand that my issue will be closed if all 5 of these checkboxes are not checked
+- [ ] I understand that my issue will be closed if all 7 of these checkboxes are not checked
 
 ## Issue Description (required)
 <!-- Please describe your issue with at least 2 sentences or dot points. -->
