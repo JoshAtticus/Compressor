@@ -562,10 +562,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     .build()
             )
             .build()
+
+        val isMediaTek = isMediaTekDeviceOrEncoder(videoMimeType)
+        val primaryEncoderFactory = if (isMediaTek) vbrEncoderFactory else cbrEncoderFactory
+        val fallbackEncoderFactory = if (isMediaTek) cbrEncoderFactory else vbrEncoderFactory
             
         val encoderFactory = object : androidx.media3.transformer.Codec.EncoderFactory {
             override fun createForAudioEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
-                return cbrEncoderFactory.createForAudioEncoding(format)
+                return primaryEncoderFactory.createForAudioEncoding(format)
             }
 
             override fun createForVideoEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
@@ -580,14 +584,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 val modifiedFormat = modifiedFormatBuilder.build()
 
                 return try {
-                    cbrEncoderFactory.createForVideoEncoding(modifiedFormat)
+                    primaryEncoderFactory.createForVideoEncoding(modifiedFormat)
                 } catch (e: Exception) {
-                    vbrEncoderFactory.createForVideoEncoding(modifiedFormat)
+                    fallbackEncoderFactory.createForVideoEncoding(modifiedFormat)
                 }
             }
 
-            override fun audioNeedsEncoding(): Boolean = cbrEncoderFactory.audioNeedsEncoding()
-            override fun videoNeedsEncoding(): Boolean = cbrEncoderFactory.videoNeedsEncoding()
+            override fun audioNeedsEncoding(): Boolean = primaryEncoderFactory.audioNeedsEncoding()
+            override fun videoNeedsEncoding(): Boolean = primaryEncoderFactory.videoNeedsEncoding()
         }
         
         val transformerBuilder = Transformer.Builder(context)
@@ -902,6 +906,36 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         } catch (_: Exception) {
             false
         }
+    }
+
+    private fun isMediaTekDeviceOrEncoder(mimeType: String): Boolean {
+        try {
+            val hardware = Build.HARDWARE.lowercase()
+            val board = Build.BOARD.lowercase()
+            val manufacturer = Build.MANUFACTURER.lowercase()
+            val soc = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) Build.SOC_MODEL.lowercase() else ""
+
+            if (hardware.contains("mediatek") || board.contains("mediatek") || manufacturer.contains("mediatek") ||
+                soc.contains("mediatek") || soc.contains("dimensity") ||
+                hardware.matches(Regex(""".*mt\d{4}.*""")) || board.matches(Regex(""".*mt\d{4}.*"""))
+            ) {
+                return true
+            }
+
+            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
+            for (info in list.codecInfos) {
+                if (!info.isEncoder) continue
+                if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
+                    val name = info.name.lowercase()
+                    if (name.contains("mtk") || name.contains("mediatek")) {
+                        return true
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        return false
     }
 
     private fun isHdr(context: Context, uri: Uri): Boolean {
