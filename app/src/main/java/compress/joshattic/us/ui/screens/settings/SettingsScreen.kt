@@ -249,7 +249,7 @@ fun SettingsScreen(
 
                                 if (index < searchResults.size - 1) {
                                     HorizontalDivider(
-                                        modifier = Modifier.padding(start = 80.dp, end = 20.dp),
+                                        modifier = Modifier.padding(horizontal = 20.dp),
                                         thickness = 0.5.dp,
                                         color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
                                     )
@@ -329,7 +329,7 @@ fun SettingsScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
 
-                val categories = listOf(
+                val generalAndPresets = listOf(
                     SearchableSetting(
                         title = displayTitle,
                         description = stringResource(R.string.category_display_subtitle),
@@ -345,7 +345,10 @@ fun SettingsScreen(
                         categoryId = "presets",
                         icon = Icons.Outlined.BookmarkBorder,
                         onClick = onNavigateToPresets
-                    ),
+                    )
+                )
+
+                val videoAndAudio = listOf(
                     SearchableSetting(
                         title = videoTitle,
                         description = stringResource(R.string.category_video_subtitle),
@@ -364,78 +367,90 @@ fun SettingsScreen(
                     )
                 )
 
-                Surface(
-                    modifier = Modifier.fillMaxWidth(),
-                    shape = RoundedCornerShape(32.dp),
-                    color = MaterialTheme.colorScheme.surfaceContainer
-                ) {
-                    Column {
-                        categories.forEachIndexed { index, category ->
-                            val (badgeBg, badgeIcon) = getCategoryBadgeColors(category.categoryId)
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .clickable { 
-                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                        category.onClick() 
-                                    }
-                                    .padding(horizontal = 20.dp, vertical = 16.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Box(
-                                    modifier = Modifier
-                                        .size(44.dp)
-                                        .clip(CircleShape)
-                                        .background(badgeBg),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Icon(
-                                        imageVector = category.icon,
-                                        contentDescription = null,
-                                        tint = badgeIcon,
-                                        modifier = Modifier.size(24.dp)
-                                    )
-                                }
+                CategoryGroupCard(categories = generalAndPresets, haptics = haptics)
 
-                                Spacer(modifier = Modifier.width(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
-                                Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        text = category.title,
-                                        style = MaterialTheme.typography.titleMedium,
-                                        fontWeight = FontWeight.Bold,
-                                        color = MaterialTheme.colorScheme.onSurface
-                                    )
-                                    Spacer(modifier = Modifier.height(2.dp))
-                                    Text(
-                                        text = category.description,
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontWeight = FontWeight.SemiBold,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
-                                }
-
-                                Icon(
-                                    imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(20.dp)
-                                )
-                            }
-
-                            if (index < categories.size - 1) {
-                                HorizontalDivider(
-                                    modifier = Modifier.padding(start = 80.dp, end = 20.dp),
-                                    thickness = 0.5.dp,
-                                    color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
-                                )
-                            }
-                        }
-                    }
-                }
+                CategoryGroupCard(categories = videoAndAudio, haptics = haptics)
             }
 
             Spacer(modifier = Modifier.height(32.dp))
+        }
+    }
+}
+
+@Composable
+private fun CategoryGroupCard(
+    categories: List<SearchableSetting>,
+    haptics: androidx.compose.ui.hapticfeedback.HapticFeedback
+) {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(32.dp),
+        color = MaterialTheme.colorScheme.surfaceContainer
+    ) {
+        Column {
+            categories.forEachIndexed { index, category ->
+                val (badgeBg, badgeIcon) = getCategoryBadgeColors(category.categoryId)
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable { 
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            category.onClick() 
+                        }
+                        .padding(horizontal = 20.dp, vertical = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .size(44.dp)
+                            .clip(CircleShape)
+                            .background(badgeBg),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            imageVector = category.icon,
+                            contentDescription = null,
+                            tint = badgeIcon,
+                            modifier = Modifier.size(24.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(16.dp))
+
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = category.title,
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = category.description,
+                            style = MaterialTheme.typography.bodyMedium,
+                            fontWeight = FontWeight.SemiBold,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Icon(
+                        imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.size(20.dp)
+                    )
+                }
+
+                if (index < categories.size - 1) {
+                    HorizontalDivider(
+                        modifier = Modifier.padding(horizontal = 20.dp),
+                        thickness = 0.5.dp,
+                        color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.6f)
+                    )
+                }
+            }
         }
     }
 }

@@ -275,7 +275,7 @@ fun PresetsSettingsScreen(
                             editingQualityPreset = QualityPreset.HIGH
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
                         name = stringResource(R.string.preset_medium),
                         config = state.mediumPresetConfig,
@@ -284,7 +284,7 @@ fun PresetsSettingsScreen(
                             editingQualityPreset = QualityPreset.MEDIUM
                         }
                     )
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
                         name = stringResource(R.string.preset_low),
                         config = state.lowPresetConfig,
@@ -419,7 +419,7 @@ fun PresetsSettingsScreen(
 
                                     if (index < state.targetSizePresets.size - 1) {
                                         HorizontalDivider(
-                                            modifier = Modifier.padding(start = 20.dp),
+                                            modifier = Modifier.padding(horizontal = 20.dp),
                                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
                                         )
                                     }

@@ -224,11 +224,11 @@ fun AboutScreen(
             ) {
                 Column {
                     InfoDetailRow(title = stringResource(R.string.info_app_name), value = stringResource(R.string.app_name))
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     InfoDetailRow(title = stringResource(R.string.info_app_version), value = "v${state.appInfoVersion}")
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     InfoDetailRow(title = stringResource(R.string.info_device), value = "${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}")
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     InfoDetailRow(title = stringResource(R.string.info_android), value = "Android ${android.os.Build.VERSION.RELEASE}")
                 }
             }
@@ -290,7 +290,7 @@ fun AboutScreen(
                     }
 
                     if (state.allCodecsUnlocked) {
-                        HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                         Row(
                             modifier = Modifier
                                 .fillMaxWidth()
@@ -317,7 +317,7 @@ fun AboutScreen(
                         }
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 14.dp)) {
                         state.supportedCodecs.forEach { codec ->
@@ -393,7 +393,7 @@ fun AboutScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 56.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     Row(
                         modifier = Modifier
@@ -421,7 +421,7 @@ fun AboutScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 56.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     Row(
                         modifier = Modifier

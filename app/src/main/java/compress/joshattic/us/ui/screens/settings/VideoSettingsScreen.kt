@@ -151,7 +151,7 @@ fun VideoSettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Default Resolution
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
@@ -174,7 +174,7 @@ fun VideoSettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Default Framerate
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
@@ -196,7 +196,7 @@ fun VideoSettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Default Target Size Ratio
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {

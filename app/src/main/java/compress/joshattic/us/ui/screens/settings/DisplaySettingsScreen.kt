@@ -162,7 +162,7 @@ fun DisplaySettingsScreen(
                         }
 
                         HorizontalDivider(
-                            modifier = Modifier.padding(start = 20.dp),
+                            modifier = Modifier.padding(horizontal = 20.dp),
                             color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
                         )
                     }
@@ -213,7 +213,7 @@ fun DisplaySettingsScreen(
                     AnimatedVisibility(visible = hasCustomLocation) {
                         Column {
                             HorizontalDivider(
-                                modifier = Modifier.padding(start = 20.dp),
+                                modifier = Modifier.padding(horizontal = 20.dp),
                                 color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
                             )
                             Row(
@@ -301,7 +301,7 @@ fun DisplaySettingsScreen(
                     // Bitrate unit (Mbps vs kbps)
                     AnimatedVisibility(visible = state.showBitrate) {
                         Column {
-                            HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                            HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
@@ -339,7 +339,7 @@ fun DisplaySettingsScreen(
                         }
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Show storage saved on main page
                     Row(
@@ -377,7 +377,7 @@ fun DisplaySettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Show target size preset
                     Row(

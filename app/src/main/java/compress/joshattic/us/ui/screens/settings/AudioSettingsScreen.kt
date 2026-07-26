@@ -141,7 +141,7 @@ fun AudioSettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Mute Audio by Default (Toggle with 16dp spacing)
                     Row(
@@ -179,7 +179,7 @@ fun AudioSettingsScreen(
                         )
                     }
 
-                    HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
 
                     // Default Audio Volume
                     Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 12.dp)) {
