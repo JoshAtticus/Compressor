@@ -13,3 +13,5 @@ Compressor 1.6.0 is a major overhaul, adding the following features:
 Bug Fixes:
 
 - Fixed various issues related to Media3 encoder errors
+
+Compressor 1.6.0 being a major update, may contain bugs or issues. If you encounter such, please open a GitHub issue or send an email to compressor@joshattic.us
