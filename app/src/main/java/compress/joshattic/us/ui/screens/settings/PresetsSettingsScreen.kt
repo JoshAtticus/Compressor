@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
+import kotlinx.coroutines.launch
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -80,12 +81,14 @@ fun PresetsSettingsScreen(
     onResetTargetSizePresets: () -> Unit
 ) {
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+    val coroutineScope = androidx.compose.runtime.rememberCoroutineScope()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var editingQualityPreset by remember { mutableStateOf<QualityPreset?>(null) }
     var editingTargetSizePreset by remember { mutableStateOf<TargetSizePreset?>(null) }
     var showAddTargetSizeDialog by remember { mutableStateOf(false) }
     var showResetTargetSizeConfirmDialog by remember { mutableStateOf(false) }
+    var deletingPresetIds by remember { mutableStateOf(setOf<String>()) }
 
     // Dialog: Edit Quality Preset (High, Medium, Low)
     editingQualityPreset?.let { preset ->
@@ -202,7 +205,7 @@ fun PresetsSettingsScreen(
                                 onBack()
                             },
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                         ) {
@@ -329,7 +332,7 @@ fun PresetsSettingsScreen(
                     state.targetSizePresets.forEachIndexed { index, preset ->
                         androidx.compose.runtime.key(preset.id) {
                             AnimatedVisibility(
-                                visible = true,
+                                visible = !deletingPresetIds.contains(preset.id),
                                 enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
                                 exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
                             ) {
@@ -395,7 +398,13 @@ fun PresetsSettingsScreen(
                                         IconButton(
                                             onClick = {
                                                 haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                                onDeleteTargetSizePreset(preset.id)
+                                                val idToDelete = preset.id
+                                                deletingPresetIds = deletingPresetIds + idToDelete
+                                                coroutineScope.launch {
+                                                    kotlinx.coroutines.delay(250)
+                                                    onDeleteTargetSizePreset(idToDelete)
+                                                    deletingPresetIds = deletingPresetIds - idToDelete
+                                                }
                                             }
                                         ) {
                                             Icon(

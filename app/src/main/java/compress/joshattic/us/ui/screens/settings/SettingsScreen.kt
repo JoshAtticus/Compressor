@@ -308,9 +308,12 @@ fun SettingsScreen(
                 navigationIcon = {
                     Box(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         IconButton(
-                            onClick = onBack,
+                            onClick = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onBack()
+                            },
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                         ) {

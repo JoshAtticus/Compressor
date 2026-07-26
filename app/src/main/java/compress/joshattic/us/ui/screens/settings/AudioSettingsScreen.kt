@@ -77,7 +77,7 @@ fun AudioSettingsScreen(
                                 onBack()
                             },
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                         ) {
