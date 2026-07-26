@@ -57,6 +57,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
+import compress.joshattic.us.model.SearchableSetting
+import compress.joshattic.us.model.filterSearchableSettings
+import compress.joshattic.us.model.rememberSearchableSettings
 import compress.joshattic.us.ui.theme.A16BadgeAppGreen
 import compress.joshattic.us.ui.theme.A16BadgeAppGreenOnBadge
 import compress.joshattic.us.ui.theme.getCategoryBadgeColors
@@ -77,221 +80,22 @@ fun SettingsScreen(
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var searchQuery by remember { mutableStateOf("") }
 
-    data class SearchableSetting(
-        val title: String,
-        val description: String,
-        val categoryName: String,
-        val categoryId: String,
-        val icon: ImageVector,
-        val onClick: () -> Unit
-    )
-
-    val displayTitle = stringResource(R.string.display_settings_title)
+    val displayTitle = stringResource(R.string.general_settings_title)
     val presetsTitle = stringResource(R.string.tab_presets)
     val videoTitle = stringResource(R.string.tab_video)
     val audioTitle = stringResource(R.string.tab_audio)
-    val aboutTitle = stringResource(R.string.about_compressor_title)
 
-    val allSearchableSettings = listOf(
-        // Categories
-        SearchableSetting(
-            title = displayTitle,
-            description = stringResource(R.string.category_display_subtitle),
-            categoryName = displayTitle,
-            categoryId = "display",
-            icon = Icons.Default.Tune,
-            onClick = onNavigateToDisplay
-        ),
-        SearchableSetting(
-            title = presetsTitle,
-            description = stringResource(R.string.category_presets_subtitle),
-            categoryName = presetsTitle,
-            categoryId = "presets",
-            icon = Icons.Outlined.BookmarkBorder,
-            onClick = onNavigateToPresets
-        ),
-        SearchableSetting(
-            title = videoTitle,
-            description = stringResource(R.string.category_video_subtitle),
-            categoryName = videoTitle,
-            categoryId = "video",
-            icon = Icons.Default.Movie,
-            onClick = onNavigateToVideo
-        ),
-        SearchableSetting(
-            title = audioTitle,
-            description = stringResource(R.string.category_audio_subtitle),
-            categoryName = audioTitle,
-            categoryId = "audio",
-            icon = Icons.Default.MusicNote,
-            onClick = onNavigateToAudio
-        ),
-        SearchableSetting(
-            title = aboutTitle,
-            description = stringResource(R.string.version_format, state.appInfoVersion),
-            categoryName = aboutTitle,
-            categoryId = "about",
-            icon = Icons.Default.Info,
-            onClick = onNavigateToAbout
-        ),
-
-        // Individual Display Settings
-        SearchableSetting(
-            title = stringResource(R.string.show_bitrate),
-            description = stringResource(R.string.show_bitrate_subtitle),
-            categoryName = displayTitle,
-            categoryId = "display",
-            icon = Icons.Default.Tune,
-            onClick = onNavigateToDisplay
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.bitrate_unit_mbps),
-            description = stringResource(R.string.bitrate_unit_mbps_subtitle) + " / " + stringResource(R.string.bitrate_unit_kbps_subtitle),
-            categoryName = displayTitle,
-            categoryId = "display",
-            icon = Icons.Default.Tune,
-            onClick = onNavigateToDisplay
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.show_storage_saved_title),
-            description = stringResource(R.string.show_storage_saved_subtitle),
-            categoryName = displayTitle,
-            categoryId = "display",
-            icon = Icons.Default.Tune,
-            onClick = onNavigateToDisplay
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.show_target_size_preset_title),
-            description = stringResource(R.string.show_target_size_preset_subtitle),
-            categoryName = displayTitle,
-            categoryId = "display",
-            icon = Icons.Default.Tune,
-            onClick = onNavigateToDisplay
-        ),
-
-        // Individual About Settings
-        SearchableSetting(
-            title = stringResource(R.string.info_supported_codecs),
-            description = stringResource(R.string.codecs_supported_count, state.supportedCodecs.size),
-            categoryName = aboutTitle,
-            categoryId = "about",
-            icon = Icons.Default.Info,
-            onClick = onNavigateToAbout
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.enable_all_codecs),
-            description = stringResource(R.string.header_hardware_codecs),
-            categoryName = aboutTitle,
-            categoryId = "about",
-            icon = Icons.Default.Info,
-            onClick = onNavigateToAbout
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.view_on_github),
-            description = "https://github.com/JoshAtticus/Compressor",
-            categoryName = aboutTitle,
-            categoryId = "about",
-            icon = Icons.Default.Build,
-            onClick = onNavigateToAbout
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.info_copy_clipboard),
-            description = stringResource(R.string.header_links_actions),
-            categoryName = aboutTitle,
-            categoryId = "about",
-            icon = Icons.Default.Info,
-            onClick = onNavigateToAbout
-        ),
-
-        // Individual Video Settings
-        SearchableSetting(
-            title = stringResource(R.string.encoding),
-            description = "AV1, H.265 (HEVC), H.264 (AVC)",
-            categoryName = videoTitle,
-            categoryId = "video",
-            icon = Icons.Default.Movie,
-            onClick = onNavigateToVideo
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.target_size),
-            description = stringResource(R.string.advanced_options),
-            categoryName = videoTitle,
-            categoryId = "video",
-            icon = Icons.Default.Movie,
-            onClick = onNavigateToVideo
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.resolution),
-            description = "8K, 4K, 1080p, 720p, 480p",
-            categoryName = videoTitle,
-            categoryId = "video",
-            icon = Icons.Default.Movie,
-            onClick = onNavigateToVideo
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.framerate),
-            description = "Original, 60fps, 30fps",
-            categoryName = videoTitle,
-            categoryId = "video",
-            icon = Icons.Default.Movie,
-            onClick = onNavigateToVideo
-        ),
-
-        // Individual Audio Settings
-        SearchableSetting(
-            title = stringResource(R.string.audio_bitrate),
-            description = "320k, 256k, 192k, 128k, 96k, 64k",
-            categoryName = audioTitle,
-            categoryId = "audio",
-            icon = Icons.Default.MusicNote,
-            onClick = onNavigateToAudio
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.volume),
-            description = stringResource(R.string.audio_options),
-            categoryName = audioTitle,
-            categoryId = "audio",
-            icon = Icons.Default.MusicNote,
-            onClick = onNavigateToAudio
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.remove_audio),
-            description = stringResource(R.string.audio_options),
-            categoryName = audioTitle,
-            categoryId = "audio",
-            icon = Icons.Default.MusicNote,
-            onClick = onNavigateToAudio
-        ),
-
-        // Individual Presets Settings
-        SearchableSetting(
-            title = stringResource(R.string.quality_preset),
-            description = stringResource(R.string.preset_high) + " • " + stringResource(R.string.preset_medium) + " • " + stringResource(R.string.preset_low),
-            categoryName = presetsTitle,
-            categoryId = "presets",
-            icon = Icons.Outlined.BookmarkBorder,
-            onClick = onNavigateToPresets
-        ),
-        SearchableSetting(
-            title = stringResource(R.string.target_size_limits),
-            description = "Discord (10MB), Email (25MB), Stories (50MB), Twitter/X",
-            categoryName = presetsTitle,
-            categoryId = "presets",
-            icon = Icons.Outlined.BookmarkBorder,
-            onClick = onNavigateToPresets
-        )
+    val allSearchableSettings = rememberSearchableSettings(
+        state = state,
+        onNavigateToDisplay = onNavigateToDisplay,
+        onNavigateToPresets = onNavigateToPresets,
+        onNavigateToVideo = onNavigateToVideo,
+        onNavigateToAudio = onNavigateToAudio,
+        onNavigateToAbout = onNavigateToAbout
     )
 
     val searchResults = remember(searchQuery, allSearchableSettings) {
-        if (searchQuery.isBlank()) emptyList()
-        else {
-            val q = searchQuery.trim().lowercase()
-            allSearchableSettings.filter {
-                it.title.lowercase().contains(q) ||
-                it.description.lowercase().contains(q) ||
-                it.categoryName.lowercase().contains(q)
-            }.distinctBy { it.title + it.categoryName }
-        }
+        filterSearchableSettings(allSearchableSettings, searchQuery)
     }
 
     Scaffold(
