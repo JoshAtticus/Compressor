@@ -1,3 +1,15 @@
-Compressor 1.6.0 adds the following features:
+Compressor 1.6.0 is a major overhaul, adding the following features:
 
-- Advanced option to enable all codecs
+- Fresh new Google Sans font & light UI changes
+- Info has been replaced with the all new Settings screen
+- Compressed videos are now automatically saved by default (disable in Settings)
+- Save location can be changed from Settings
+- Target Size Presets & Total storage saved can be hidden from Settings
+- Quality Presets can be edited and Target Size Presets can be edited, deleted and created from Settings
+- Default Video & Audio settings can be changed from Settings
+- Predictive Back Gesture support has been added
+- The entire codebase has been refactored for easier maintenance & efficiency
+
+Bug Fixes:
+
+- Fixed various issues related to Media3 encoder errors
