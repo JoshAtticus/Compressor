@@ -102,6 +102,7 @@
     <string name="warning_details">Detalles de advertencia</string>
     <string name="dismiss">Descartar</string>
     <string name="view_on_github">Ver en GitHub</string>
+    <string name="buy_me_a_coffee">Invítame un café</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Ajustes</string>
@@ -126,8 +127,16 @@
     <string name="header_basic_info">Información básica</string>
     <string name="header_hardware_codecs">Hardware y códecs</string>
     <string name="header_links_actions">Enlaces y acciones</string>
-    <string name="info_app_name">Nombre de la app</string>
-    <string name="info_app_version">Versión de la app</string>
+    <string name="info_app_name">Nombre de la aplicación</string>
+    <string name="info_app_version">Versión de la aplicación</string>
+    <string name="info_chipset">Procesador / SoC</string>
+    <string name="info_ram">Memoria RAM</string>
+    <string name="info_gpu">Procesador gráfico (GPU)</string>
+    <string name="header_device_workarounds">Soluciones específicas del dispositivo</string>
+    <string name="workaround_mediatek_vbr">MediaTek VBR forzado</string>
+    <string name="workaround_pixel10_hdr">Mapeo de tonos HDR para Pixel 10</string>
+    <string name="workaround_huawei_muxer">Alternativa de muxer Huawei</string>
+    <string name="workaround_none">Ninguno</string>
     <string name="codecs_supported_count">%1$d códecs compatibles en este dispositivo</string>
     <string name="enable_all_codecs">Habilitar todos los códecs</string>
     <string name="software_encoding">Codificación por software</string>
@@ -144,6 +153,15 @@
     <string name="show_target_size_preset_title">Mostrar tamaño objetivo predeterminado</string>
     <string name="show_target_size_preset_subtitle">Mostrar pestaña de ajustes de calidad durante la configuración de video</string>
     
+    <string name="output_location_title">Ubicación de guardado</string>
+    <string name="output_location_default">Fotos (Movies/Compressor)</string>
+    <string name="output_location_subtitle">Dónde se guardan los videos comprimidos por defecto</string>
+    <string name="output_location_reset_title">Usar predeterminado (Fotos)</string>
+    <string name="output_location_reset_subtitle">Restablecer ubicación de guardado a Movies/Compressor</string>
+    <string name="save_to_folder">Guardar</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • tamaño %3$s • audio %4$s</string>
+
     <string name="placeholder_video_desc">Las opciones predeterminadas de compresión de video y códec llegarán en una próxima actualización.</string>
     <string name="placeholder_audio_desc">Las opciones predeterminadas de tasa de bits y canales de audio llegarán en una próxima actualización.</string>
     <string name="placeholder_presets_desc">Las opciones predeterminadas de configuración llegarán en una próxima actualización.</string>

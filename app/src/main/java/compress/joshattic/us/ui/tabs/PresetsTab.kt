@@ -1,5 +1,6 @@
 package compress.joshattic.us.ui.tabs
 
+import compress.joshattic.us.model.getLocalizedLabel
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -172,7 +173,7 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold
                                 )
-                                Text(preset.label, style = MaterialTheme.typography.labelSmall)
+                                Text(preset.getLocalizedLabel(), style = MaterialTheme.typography.labelSmall)
                             }
                         },
                         modifier = Modifier

@@ -91,6 +91,7 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • Feed</string>
     <string name="size_x_premium">X Premium</string>
+    <string name="preset_summary_format">%1$s • %2$s • %3$s size • %4$s audio</string>
     
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
@@ -118,6 +119,7 @@
     <string name="copy_logs">Copy Logs</string>
     <string name="open_issue_tracker">Open Issue Tracker</string>
     <string name="view_on_github">View on GitHub</string>
+    <string name="buy_me_a_coffee">Buy Me a Coffee</string>
 
     <string name="info_content_desc">Info</string>
     <string name="tab_presets">Presets</string>
@@ -186,6 +188,14 @@
     <string name="step_away_codecs">You are now %1$d steps away from enabling all codecs.</string>
     <string name="info_device">Device</string>
     <string name="info_android">Android Version</string>
+    <string name="info_chipset">Chipset / SoC</string>
+    <string name="info_ram">RAM</string>
+    <string name="info_gpu">GPU</string>
+    <string name="header_device_workarounds">Device-specific workarounds</string>
+    <string name="workaround_mediatek_vbr">MediaTek forced VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 Series HDR Tone-Map</string>
+    <string name="workaround_huawei_muxer">Huawei Muxer Fallback</string>
+    <string name="workaround_none">None</string>
     <string name="info_supported_codecs">Supported Codecs</string>
 
     <!-- Presets Management Keys -->

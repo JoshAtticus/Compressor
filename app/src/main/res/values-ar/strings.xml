@@ -100,6 +100,7 @@
     <string name="copy_logs">نسخ السجلات</string>
     <string name="open_issue_tracker">فتح متتبع المشكلات</string>
     <string name="view_on_github">العرض على GitHub</string>
+    <string name="buy_me_a_coffee">اشتَرِ لي قهوة</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">الإعدادات</string>
@@ -126,6 +127,14 @@
     <string name="header_links_actions">الروابط والإجراءات</string>
     <string name="info_app_name">اسم التطبيق</string>
     <string name="info_app_version">إصدار التطبيق</string>
+    <string name="info_chipset">المعالج / SoC</string>
+    <string name="info_ram">الذاكرة العشوائية (RAM)</string>
+    <string name="info_gpu">معالج الرسوميات (GPU)</string>
+    <string name="header_device_workarounds">إصلاحات خاصة بالجهاز</string>
+    <string name="workaround_mediatek_vbr">MediaTek VBR الإجباري</string>
+    <string name="workaround_pixel10_hdr">معالجة HDR لسلسلة Pixel 10</string>
+    <string name="workaround_huawei_muxer">بديل دمج Huawei</string>
+    <string name="workaround_none">لا يوجد</string>
     <string name="codecs_supported_count">%1$d من الترميزات مدعومة على هذا الجهاز</string>
     <string name="enable_all_codecs">تمكين جميع الترميزات</string>
     <string name="software_encoding">الترميز البرمجي</string>
@@ -142,6 +151,15 @@
     <string name="show_target_size_preset_title">إظهار الحجم المستهدف</string>
     <string name="show_target_size_preset_subtitle">إظهار علامة تبويب الجودة أثناء إعداد الفيديو</string>
     
+    <string name="output_location_title">موقع الحفظ</string>
+    <string name="output_location_default">الصور (Movies/Compressor)</string>
+    <string name="output_location_subtitle">أين تُحفظ الفيديوهات المضغوطة افتراضيًا</string>
+    <string name="output_location_reset_title">استخدام الافتراضي (الصور)</string>
+    <string name="output_location_reset_subtitle">إعادة ضبط موقع الحفظ إلى Movies/Compressor</string>
+    <string name="save_to_folder">حفظ</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • الحجم %3$s • الصوت %4$s</string>
+
     <string name="placeholder_video_desc">خيارات ضغط الفيديو والترميز الافتراضية ستتوفر قريبًا في تحديث قادم.</string>
     <string name="placeholder_audio_desc">خيارات معدل بت الصوت والقنوات الافتراضية ستتوفر قريبًا في تحديث قادم.</string>
     <string name="placeholder_presets_desc">خيارات الإعدادات المسبقة الافتراضية ستتوفر قريبًا في تحديث قادم.</string>

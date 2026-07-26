@@ -22,6 +22,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.Warning
@@ -82,10 +83,28 @@ fun AboutScreen(
     var copied by remember { mutableStateOf(false) }
     var currentToast by remember { mutableStateOf<Toast?>(null) }
 
-    val infoText = remember(state.appInfoVersion, state.supportedCodecs) {
-        "App: Compressor v${state.appInfoVersion}\n" +
-        "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
-        "Supported Encoders: ${state.supportedCodecs.joinToString()}"
+    val hardwareInfo = remember(context) { compress.joshattic.us.utils.HardwareUtils.getHardwareInfo(context) }
+    val workarounds = remember { compress.joshattic.us.utils.HardwareUtils.getDeviceWorkarounds() }
+
+    val activeWorkaroundText = when {
+        workarounds.isMediaTekVbrPatchActive -> stringResource(R.string.workaround_mediatek_vbr)
+        workarounds.isPixel10HdrPatchActive -> stringResource(R.string.workaround_pixel10_hdr)
+        workarounds.isHuaweiMuxerPatchActive -> stringResource(R.string.workaround_huawei_muxer)
+        else -> stringResource(R.string.workaround_none)
+    }
+
+    val infoText = remember(state.appInfoVersion, state.supportedCodecs, hardwareInfo, activeWorkaroundText) {
+        buildString {
+            appendLine("App: Compressor v${state.appInfoVersion}")
+            appendLine("Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})")
+            appendLine("Chipset: ${hardwareInfo.chipset}")
+            appendLine("RAM: ${hardwareInfo.totalRam}")
+            if (hardwareInfo.gpu.isNotBlank()) {
+                appendLine("GPU: ${hardwareInfo.gpu}")
+            }
+            appendLine("Device-specific Workaround: $activeWorkaroundText")
+            append("Supported Encoders: ${state.supportedCodecs.joinToString()}")
+        }
     }
 
     if (showConfirmDialog) {
@@ -251,6 +270,25 @@ fun AboutScreen(
                 color = MaterialTheme.colorScheme.surfaceContainer
             ) {
                 Column {
+                    InfoDetailRow(title = stringResource(R.string.info_chipset), value = hardwareInfo.chipset)
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    InfoDetailRow(title = stringResource(R.string.info_ram), value = hardwareInfo.totalRam)
+                    if (hardwareInfo.gpu.isNotBlank()) {
+                        HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                        InfoDetailRow(title = stringResource(R.string.info_gpu), value = hardwareInfo.gpu)
+                    }
+
+                    val activeWorkaround = when {
+                        workarounds.isMediaTekVbrPatchActive -> stringResource(R.string.workaround_mediatek_vbr)
+                        workarounds.isPixel10HdrPatchActive -> stringResource(R.string.workaround_pixel10_hdr)
+                        workarounds.isHuaweiMuxerPatchActive -> stringResource(R.string.workaround_huawei_muxer)
+                        else -> stringResource(R.string.workaround_none)
+                    }
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+                    InfoDetailRow(title = stringResource(R.string.header_device_workarounds), value = activeWorkaround)
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -402,6 +440,30 @@ fun AboutScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
+                            .clickable { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
+                            .padding(horizontal = 20.dp, vertical = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Favorite,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Text(
+                            text = stringResource(R.string.buy_me_a_coffee),
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f)
+                        )
+                    }
+
+                    HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
                             .clickable {
                                 clipboardManager.setText(AnnotatedString(infoText))
                                 copied = true
@@ -484,3 +546,5 @@ private fun InfoDetailRow(title: String, value: String) {
         )
     }
 }
+
+

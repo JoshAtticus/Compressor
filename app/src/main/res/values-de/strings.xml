@@ -102,7 +102,8 @@
     <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
     <string name="warning_details">Warnungsdetails</string>
     <string name="dismiss">Schließen</string>
-    <string name="view_on_github">Auf GitHub ansehen</string>
+    <string name="view_on_github">Auf GitHub anzeigen</string>
+    <string name="buy_me_a_coffee">Kauf mir einen Kaffee</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Einstellungen</string>
@@ -129,6 +130,14 @@
     <string name="header_links_actions">Links &amp; Aktionen</string>
     <string name="info_app_name">App-Name</string>
     <string name="info_app_version">App-Version</string>
+    <string name="info_chipset">Chipsatz / SoC</string>
+    <string name="info_ram">Arbeitsspeicher (RAM)</string>
+    <string name="info_gpu">Grafikprozessor (GPU)</string>
+    <string name="header_device_workarounds">Gerätespezifische Anpassungen</string>
+    <string name="workaround_mediatek_vbr">MediaTek erzwungenes VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 Serie HDR-Tonemapping</string>
+    <string name="workaround_huawei_muxer">Huawei Muxer-Fallback</string>
+    <string name="workaround_none">Keine</string>
     <string name="codecs_supported_count">%1$d Codecs auf diesem Gerät unterstützt</string>
     <string name="enable_all_codecs">Alle Codecs aktivieren</string>
     <string name="software_encoding">Software-Kodierung</string>
@@ -145,6 +154,15 @@
     <string name="show_target_size_preset_title">Zielgrößen-Voreinstellung anzeigen</string>
     <string name="show_target_size_preset_subtitle">Registerkarte für Qualitätsvoreinstellungen während der Videoeinrichtung anzeigen</string>
     
+    <string name="output_location_title">Speicherort</string>
+    <string name="output_location_default">Fotos (Filme/Compressor)</string>
+    <string name="output_location_subtitle">Wo komprimierte Videos standardmäßig gespeichert werden</string>
+    <string name="output_location_reset_title">Standard verwenden (Fotos)</string>
+    <string name="output_location_reset_subtitle">Speicherort auf Filme/Compressor zurücksetzen</string>
+    <string name="save_to_folder">Speichern</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • %3$s Größe • %4$s Audio</string>
+
     <string name="placeholder_video_desc">Standardoptionen für Videokomprimierung und Codec kommen bald in einem zukünftigen Update.</string>
     <string name="placeholder_audio_desc">Standardoptionen für Audio-Bitrate und Kanäle kommen bald in einem zukünftigen Update.</string>
     <string name="placeholder_presets_desc">Standardoptionen für Voreinstellungen kommen bald in einem zukünftigen Update.</string>

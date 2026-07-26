@@ -100,6 +100,7 @@
     <string name="copy_logs">复制日志</string>
     <string name="open_issue_tracker">打开 Issue 追踪</string>
     <string name="view_on_github">在 GitHub 上查看</string>
+    <string name="buy_me_a_coffee">请我喝杯咖啡</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">设置</string>
@@ -125,6 +126,14 @@
     <string name="header_links_actions">链接与操作</string>
     <string name="info_app_name">应用名称</string>
     <string name="info_app_version">应用版本</string>
+    <string name="info_chipset">芯片 / SoC</string>
+    <string name="info_ram">运行内存 (RAM)</string>
+    <string name="info_gpu">图形处理器 (GPU)</string>
+    <string name="header_device_workarounds">特定设备兼容性修复</string>
+    <string name="workaround_mediatek_vbr">联发科 (MediaTek) 强制 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 系列 HDR 色彩映射补丁</string>
+    <string name="workaround_huawei_muxer">华为 (Huawei) 混流器降级补丁</string>
+    <string name="workaround_none">无</string>
     <string name="codecs_supported_count">此设备支持 %1$d 个编解码器</string>
     <string name="enable_all_codecs">开启所有编解码器</string>
     <string name="software_encoding">软解/软编</string>
@@ -138,6 +147,15 @@
     <string name="show_target_size_preset_title">显示目标大小预设</string>
     <string name="show_target_size_preset_subtitle">在视频设置期间显示画质预设标签页</string>
     
+    <string name="output_location_title">保存位置</string>
+    <string name="output_location_default">相册 (Movies/Compressor)</string>
+    <string name="output_location_subtitle">压缩后的视频默认保存目录</string>
+    <string name="output_location_reset_title">使用默认位置 (相册)</string>
+    <string name="output_location_reset_subtitle">重置保存位置为 Movies/Compressor</string>
+    <string name="save_to_folder">保存</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • 大小 %3$s • 音频 %4$s</string>
+
     <string name="placeholder_video_desc">视频压缩和编解码器默认选项将在未来的更新中推出。</string>
     <string name="placeholder_audio_desc">音频码率和声道默认选项将在未来的更新中推出。</string>
     <string name="placeholder_presets_desc">预设配置默认选项将在未来的更新中推出。</string>

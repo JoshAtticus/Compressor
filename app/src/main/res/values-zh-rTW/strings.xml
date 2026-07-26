@@ -100,6 +100,7 @@
     <string name="copy_logs">複製紀錄</string>
     <string name="open_issue_tracker">開啟 Issue 追蹤</string>
     <string name="view_on_github">在 GitHub 上檢視</string>
+    <string name="buy_me_a_coffee">請我喝杯咖啡</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">設定</string>
@@ -125,6 +126,14 @@
     <string name="header_links_actions">連結與操作</string>
     <string name="info_app_name">應用程式名稱</string>
     <string name="info_app_version">應用程式版本</string>
+    <string name="info_chipset">晶片 / SoC</string>
+    <string name="info_ram">記憶體 (RAM)</string>
+    <string name="info_gpu">圖形處理器 (GPU)</string>
+    <string name="header_device_workarounds">特定裝置相容性修正</string>
+    <string name="workaround_mediatek_vbr">聯發科 (MediaTek) 強制 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 系列 HDR 色彩對映修正</string>
+    <string name="workaround_huawei_muxer">華為 (Huawei) 混流器降級修正</string>
+    <string name="workaround_none">無</string>
     <string name="codecs_supported_count">此裝置支援 %1$d 個編解碼器</string>
     <string name="enable_all_codecs">開啟所有編解碼器</string>
     <string name="software_encoding">軟體編碼</string>
@@ -138,6 +147,15 @@
     <string name="show_target_size_preset_title">顯示目標大小預設</string>
     <string name="show_target_size_preset_subtitle">在影片設定期間顯示畫質預設分頁</string>
     
+    <string name="output_location_title">儲存位置</string>
+    <string name="output_location_default">相簿 (Movies/Compressor)</string>
+    <string name="output_location_subtitle">壓縮後的影片預設儲存目錄</string>
+    <string name="output_location_reset_title">使用預設位置 (相簿)</string>
+    <string name="output_location_reset_subtitle">重設儲存位置為 Movies/Compressor</string>
+    <string name="save_to_folder">儲存</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • 大小 %3$s • 音訊 %4$s</string>
+
     <string name="placeholder_video_desc">影片壓縮與編解碼器預設選項將在未來的更新中推出。</string>
     <string name="placeholder_audio_desc">音訊位元率與聲道預設選項將在未来的更新中推出。</string>
     <string name="placeholder_presets_desc">預設設定預設選項將在未來的更新中推出。</string>

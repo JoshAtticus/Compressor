@@ -100,6 +100,7 @@
     <string name="copy_logs">Скопировать логи</string>
     <string name="open_issue_tracker">Открыть трекер ошибок</string>
     <string name="view_on_github">Посмотреть на GitHub</string>
+    <string name="buy_me_a_coffee">Купить мне кофе</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Настройки</string>
@@ -125,6 +126,14 @@
     <string name="header_links_actions">Ссылки и действия</string>
     <string name="info_app_name">Название приложения</string>
     <string name="info_app_version">Версия приложения</string>
+    <string name="info_chipset">Чипсет / SoC</string>
+    <string name="info_ram">Оперативная память (RAM)</string>
+    <string name="info_gpu">Видеопроцессор (GPU)</string>
+    <string name="header_device_workarounds">Исправления для конкретных устройств</string>
+    <string name="workaround_mediatek_vbr">MediaTek принудительный VBR</string>
+    <string name="workaround_pixel10_hdr">Тон-маппинг HDR для серии Pixel 10</string>
+    <string name="workaround_huawei_muxer">Резервный муксер Huawei</string>
+    <string name="workaround_none">Нет</string>
     <string name="codecs_supported_count">%1$d кодеков поддерживается на этом устройстве</string>
     <string name="enable_all_codecs">Включить все кодеки</string>
     <string name="software_encoding">Программное кодирование</string>
@@ -138,6 +147,15 @@
     <string name="show_target_size_preset_title">Показывать пресет целевого размера</string>
     <string name="show_target_size_preset_subtitle">Показывать вкладку пресетов качества при настройке видео</string>
     
+    <string name="output_location_title">Место сохранения</string>
+    <string name="output_location_default">Фото (Фильмы/Compressor)</string>
+    <string name="output_location_subtitle">Где сжатые видео сохраняются по умолчанию</string>
+    <string name="output_location_reset_title">Использовать по умолчанию (Фото)</string>
+    <string name="output_location_reset_subtitle">Сбросить место сохранения на Фильмы/Compressor</string>
+    <string name="save_to_folder">Сохранить</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • размер %3$s • аудио %4$s</string>
+
     <string name="placeholder_video_desc">Параметры видео по умолчанию появятся в будущем обновлении.</string>
     <string name="placeholder_audio_desc">Параметры аудио по умолчанию появятся в будущем обновлении.</string>
     <string name="placeholder_presets_desc">Параметры пресетов по умолчанию появятся в будущем обновлении.</string>

@@ -99,7 +99,8 @@
     <string name="error_details">エラーの詳細</string>
     <string name="copy_logs">ログをコピー</string>
     <string name="open_issue_tracker">Issueトラッカーを開く</string>
-    <string name="view_on_github">GitHubで見る</string>
+    <string name="view_on_github">GitHub で見る</string>
+    <string name="buy_me_a_coffee">コーヒーをご馳走する</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">設定</string>
@@ -126,6 +127,14 @@
     <string name="header_links_actions">リンクとアクション</string>
     <string name="info_app_name">アプリ名</string>
     <string name="info_app_version">アプリのバージョン</string>
+    <string name="info_chipset">チップセット / SoC</string>
+    <string name="info_ram">RAM</string>
+    <string name="info_gpu">GPU</string>
+    <string name="header_device_workarounds">端末固有の回避策</string>
+    <string name="workaround_mediatek_vbr">MediaTek 強制 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 シリーズ HDR トーンマップ</string>
+    <string name="workaround_huawei_muxer">Huawei ミキサーフォールバック</string>
+    <string name="workaround_none">なし</string>
     <string name="codecs_supported_count">この端末で %1$d 個のコーデックに対応しています</string>
     <string name="enable_all_codecs">すべてのコーデックを有効化</string>
     <string name="software_encoding">ソフトウェアエンコード</string>
@@ -142,6 +151,15 @@
     <string name="show_target_size_preset_title">目標サイズプリセットを表示</string>
     <string name="show_target_size_preset_subtitle">動画設定時に画質プリセットタブを表示</string>
     
+    <string name="output_location_title">保存先</string>
+    <string name="output_location_default">写真 (Movies/Compressor)</string>
+    <string name="output_location_subtitle">圧縮した動画のデフォルト保存先</string>
+    <string name="output_location_reset_title">デフォルトを使用 (写真)</string>
+    <string name="output_location_reset_subtitle">保存先を Movies/Compressor にリセット</string>
+    <string name="save_to_folder">保存</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • サイズ %3$s • 音声 %4$s</string>
+
     <string name="placeholder_video_desc">動画圧縮およびコーデックのデフォルト設定は今後のアップデートで追加予定です。</string>
     <string name="placeholder_audio_desc">音声ビットレートおよびチャンネルのデフォルト設定は今後のアップデートで追加予定です。</string>
     <string name="placeholder_presets_desc">プリセット構成のデフォルト設定は今後のアップデートで追加予定です。</string>

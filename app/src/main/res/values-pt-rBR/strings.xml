@@ -100,6 +100,7 @@
     <string name="copy_logs">Copiar Logs</string>
     <string name="open_issue_tracker">Abrir Rastreador de Problemas</string>
     <string name="view_on_github">Ver no GitHub</string>
+    <string name="buy_me_a_coffee">Pague um café para mim</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Configurações</string>
@@ -126,6 +127,14 @@
     <string name="header_links_actions">Links e Ações</string>
     <string name="info_app_name">Nome do App</string>
     <string name="info_app_version">Versão do App</string>
+    <string name="info_chipset">Processador / SoC</string>
+    <string name="info_ram">Memória RAM</string>
+    <string name="info_gpu">Processador Gráfico (GPU)</string>
+    <string name="header_device_workarounds">Ajustes específicos do dispositivo</string>
+    <string name="workaround_mediatek_vbr">VBR forçado para MediaTek</string>
+    <string name="workaround_pixel10_hdr">Mapeamento de tom HDR para Pixel 10</string>
+    <string name="workaround_huawei_muxer">Alternativa para muxer Huawei</string>
+    <string name="workaround_none">Nenhum</string>
     <string name="codecs_supported_count">%1$d codecs suportados neste dispositivo</string>
     <string name="enable_all_codecs">Ativar Todos os Codecs</string>
     <string name="software_encoding">Codificação via Software</string>
@@ -142,6 +151,15 @@
     <string name="show_target_size_preset_title">Mostrar pré-definição de tamanho alvo</string>
     <string name="show_target_size_preset_subtitle">Mostrar aba de qualidade durante a configuração do vídeo</string>
     
+    <string name="output_location_title">Local de salvamento</string>
+    <string name="output_location_default">Fotos (Filmes/Compressor)</string>
+    <string name="output_location_subtitle">Onde os vídeos comprimidos são salvos por padrão</string>
+    <string name="output_location_reset_title">Usar padrão (Fotos)</string>
+    <string name="output_location_reset_subtitle">Redefinir local para Filmes/Compressor</string>
+    <string name="save_to_folder">Salvar</string>
+
+    <string name="preset_summary_format">%1$s • %2$s • tamanho %3$s • áudio %4$s</string>
+
     <string name="placeholder_video_desc">Opções padrão de compressão e codec virão em uma atualização futura.</string>
     <string name="placeholder_audio_desc">Opções padrão de taxa de bits e áudio virão em uma atualização futura.</string>
     <string name="placeholder_presets_desc">Opções padrão de pré-definições virão em uma atualização futura.</string>

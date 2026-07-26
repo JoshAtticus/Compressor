@@ -3,6 +3,7 @@ package compress.joshattic.us.model
 import android.os.Build
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Info
 import androidx.compose.material.icons.filled.Movie
 import androidx.compose.material.icons.filled.MusicNote
@@ -96,13 +97,28 @@ fun rememberSearchableSettings(
     val infoAppVersion = stringResource(R.string.info_app_version)
     val infoDevice = stringResource(R.string.info_device)
     val infoAndroid = stringResource(R.string.info_android)
+    val infoChipset = stringResource(R.string.info_chipset)
+    val infoRam = stringResource(R.string.info_ram)
+    val infoGpu = stringResource(R.string.info_gpu)
+    val headerDeviceWorkarounds = stringResource(R.string.header_device_workarounds)
     val infoSupportedCodecs = stringResource(R.string.info_supported_codecs)
     val codecsSupportedCount = stringResource(R.string.codecs_supported_count, state.supportedCodecs.size)
     val enableAllCodecs = stringResource(R.string.enable_all_codecs)
     val headerHardwareCodecs = stringResource(R.string.header_hardware_codecs)
     val viewOnGithub = stringResource(R.string.view_on_github)
+    val buyMeACoffee = stringResource(R.string.buy_me_a_coffee)
     val infoCopyClipboard = stringResource(R.string.info_copy_clipboard)
     val headerLinksActions = stringResource(R.string.header_links_actions)
+
+    val sizeDiscord = stringResource(R.string.size_discord)
+    val sizeEmail = stringResource(R.string.size_email)
+    val sizeStories = stringResource(R.string.size_stories)
+    val sizeMessenger = stringResource(R.string.size_messenger)
+    val sizeNitro = stringResource(R.string.size_nitro)
+    val sizeTwitter = stringResource(R.string.size_twitter)
+    val sizeWhatsapp = stringResource(R.string.size_whatsapp)
+    val sizeTgPremium = stringResource(R.string.size_tg_premium)
+    val sizeXPremium = stringResource(R.string.size_x_premium)
 
     return remember(
         state.appInfoVersion,
@@ -163,9 +179,21 @@ fun rememberSearchableSettings(
         settings.add(SearchableSetting(resetToDefault, "$headerQualityPresets / $targetSizeLimits", presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
 
         state.targetSizePresets.forEach { preset ->
+            val presetDisplayTitle = if (preset.isCustom) preset.label else when (preset.id) {
+                "discord" -> sizeDiscord
+                "email" -> sizeEmail
+                "stories" -> sizeStories
+                "messenger" -> sizeMessenger
+                "nitro" -> sizeNitro
+                "twitter" -> sizeTwitter
+                "whatsapp" -> sizeWhatsapp
+                "tg_premium" -> sizeTgPremium
+                "x_premium" -> sizeXPremium
+                else -> preset.label
+            }
             settings.add(
                 SearchableSetting(
-                    title = preset.label,
+                    title = presetDisplayTitle,
                     description = "${preset.sizeMb.toInt()} MB",
                     categoryName = presetsTitle,
                     categoryId = "presets",
@@ -179,10 +207,15 @@ fun rememberSearchableSettings(
         settings.add(SearchableSetting(infoAppName, appName, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(infoAppVersion, "v${state.appInfoVersion}", aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(infoDevice, "${Build.MANUFACTURER} ${Build.MODEL}", aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
+        settings.add(SearchableSetting(infoChipset, headerHardwareCodecs, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
+        settings.add(SearchableSetting(infoRam, headerHardwareCodecs, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
+        settings.add(SearchableSetting(infoGpu, headerHardwareCodecs, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
+        settings.add(SearchableSetting(headerDeviceWorkarounds, headerHardwareCodecs, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(infoAndroid, "Android ${Build.VERSION.RELEASE}", aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(infoSupportedCodecs, codecsSupportedCount, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(enableAllCodecs, headerHardwareCodecs, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
         settings.add(SearchableSetting(viewOnGithub, "https://github.com/JoshAtticus/Compressor", aboutTitle, "about", Icons.Default.Build, onNavigateToAbout))
+        settings.add(SearchableSetting(buyMeACoffee, "https://buymeacoffee.com/joshatticus", aboutTitle, "about", Icons.Default.Favorite, onNavigateToAbout))
         settings.add(SearchableSetting(infoCopyClipboard, headerLinksActions, aboutTitle, "about", Icons.Default.Info, onNavigateToAbout))
 
         settings

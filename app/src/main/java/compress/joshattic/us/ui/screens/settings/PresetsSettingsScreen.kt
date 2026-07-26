@@ -1,5 +1,6 @@
 package compress.joshattic.us.ui.screens.settings
 
+import compress.joshattic.us.model.getLocalizedLabel
 import androidx.compose.animation.AnimatedVisibility
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.background
@@ -375,7 +376,7 @@ fun PresetsSettingsScreen(
                                         Spacer(modifier = Modifier.width(16.dp))
 
                                         Text(
-                                            text = preset.label,
+                                            text = preset.getLocalizedLabel(),
                                             style = MaterialTheme.typography.titleMedium,
                                             fontWeight = FontWeight.Bold,
                                             color = MaterialTheme.colorScheme.onSurface,
@@ -494,7 +495,7 @@ private fun QualityPresetRow(
             val audioStr = "${config.audioBitrate / 1000}k"
 
             Text(
-                text = "$resStr • $fpsStr • $ratioStr size • $audioStr audio",
+                text = stringResource(R.string.preset_summary_format, resStr, fpsStr, ratioStr, audioStr),
                 style = MaterialTheme.typography.bodyMedium,
                 fontWeight = FontWeight.SemiBold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
