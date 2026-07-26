@@ -867,10 +867,15 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             }
 
             override fun createForVideoEncoding(format: androidx.media3.common.Format): androidx.media3.transformer.Codec {
-                var modifiedFormat = format
-                if (format.colorInfo == null || !androidx.media3.common.ColorInfo.isTransferHdr(format.colorInfo)) {
-                     modifiedFormat = format.buildUpon().setColorInfo(null).build()
+                val targetFps = if (plan.outputFps > 0) plan.outputFps.toFloat() else currentState.originalFps
+                var modifiedFormatBuilder = format.buildUpon()
+                if (targetFps > 0f) {
+                    modifiedFormatBuilder.setFrameRate(targetFps)
                 }
+                if (format.colorInfo == null || !androidx.media3.common.ColorInfo.isTransferHdr(format.colorInfo)) {
+                     modifiedFormatBuilder.setColorInfo(null)
+                }
+                val modifiedFormat = modifiedFormatBuilder.build()
 
                 return try {
                     cbrEncoderFactory.createForVideoEncoding(modifiedFormat)
@@ -957,8 +962,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              }
         }
         
-           if (currentState.activePreset != QualityPreset.HIGH && plan.outputFps > 0) {
-               effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, plan.outputFps.toFloat()))
+        if (plan.outputFps > 0 && plan.outputFps.toFloat() < currentState.originalFps) {
+            effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, plan.outputFps.toFloat()))
         }
         
         val mediaItem = MediaItem.fromUri(inputUri)
