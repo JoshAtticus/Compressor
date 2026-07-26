@@ -80,6 +80,7 @@ fun AboutScreen(
     var tapCount by remember { mutableIntStateOf(0) }
     var showConfirmDialog by remember { mutableStateOf(false) }
     var copied by remember { mutableStateOf(false) }
+    var currentToast by remember { mutableStateOf<Toast?>(null) }
 
     val infoText = remember(state.appInfoVersion, state.supportedCodecs) {
         "App: Compressor v${state.appInfoVersion}\n" +
@@ -257,16 +258,19 @@ fun AboutScreen(
                                 if (!state.allCodecsUnlocked) {
                                     tapCount++
                                     if (tapCount >= 7) {
+                                        currentToast?.cancel()
+                                        currentToast = null
                                         showConfirmDialog = true
                                         tapCount = 0
                                     } else if (tapCount >= 4) {
-                                        Toast
-                                            .makeText(
-                                                context,
-                                                context.getString(R.string.step_away_codecs, 7 - tapCount),
-                                                Toast.LENGTH_SHORT
-                                            )
-                                            .show()
+                                        currentToast?.cancel()
+                                        val toast = Toast.makeText(
+                                            context,
+                                            context.getString(R.string.step_away_codecs, 7 - tapCount),
+                                            Toast.LENGTH_SHORT
+                                        )
+                                        toast.show()
+                                        currentToast = toast
                                     }
                                 }
                             }
