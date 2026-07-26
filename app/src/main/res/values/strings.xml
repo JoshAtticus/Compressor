@@ -137,8 +137,8 @@
     <string name="settings_content_desc">Settings</string>
     <string name="back">Back</string>
 
-    <string name="category_general_subtitle">Auto-save, bitrate, units, storage saved</string>
-    <string name="category_display_subtitle">Auto-save, bitrate, units, storage saved</string>
+    <string name="category_general_subtitle">Auto-save, save location, bitrate, units</string>
+    <string name="category_display_subtitle">Auto-save, save location, bitrate, units</string>
     <string name="category_presets_subtitle">Preset configuration options</string>
     <string name="category_video_subtitle">Adjust default video settings</string>
     <string name="category_audio_subtitle">Adjust default audio settings</string>
@@ -155,8 +155,14 @@
     
     <string name="header_general_options">General options</string>
     <string name="header_display_options">Display options</string>
-    <string name="auto_save_photos_title">Automatically Save to Photos</string>
-    <string name="auto_save_photos_subtitle">Automatically save compressed videos to your photos library</string>
+    <string name="auto_save_photos_title">Automatically save</string>
+    <string name="auto_save_photos_subtitle">Automatically save compressed videos after compression</string>
+    <string name="output_location_title">Save location</string>
+    <string name="output_location_default">Photos (Movies/Compressor)</string>
+    <string name="output_location_subtitle">Where compressed videos are saved by default</string>
+    <string name="output_location_reset_title">Use default (Photos)</string>
+    <string name="output_location_reset_subtitle">Reset save location to Movies/Compressor</string>
+    <string name="save_to_folder">Save</string>
     <string name="show_bitrate_subtitle">Show bitrate values on original and estimated sizes</string>
     <string name="bitrate_unit_mbps_subtitle">Display bitrate in Mbps</string>
     <string name="bitrate_unit_kbps_subtitle">Display bitrate in kbps</string>

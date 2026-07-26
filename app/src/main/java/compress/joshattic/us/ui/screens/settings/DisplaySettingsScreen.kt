@@ -31,6 +31,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
+import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -48,6 +49,8 @@ fun DisplaySettingsScreen(
     state: CompressorUiState,
     onBack: () -> Unit,
     onToggleAutoSaveToPhotos: () -> Unit,
+    onChangeOutputLocation: () -> Unit,
+    onResetOutputLocation: () -> Unit,
     onToggleShowBitrate: () -> Unit,
     onToggleBitrateUnit: () -> Unit,
     onToggleShowStorageSaved: () -> Unit,
@@ -120,40 +123,126 @@ fun DisplaySettingsScreen(
                 color = MaterialTheme.colorScheme.surfaceContainer
             ) {
                 Column {
-                    // Automatically Save to Photos
+                    // Auto-save only works reliably on Android 10+ (scoped MediaStore / no storage perm).
+                    val autoSaveSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+                    if (autoSaveSupported) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    onToggleAutoSaveToPhotos()
+                                }
+                                .padding(horizontal = 20.dp, vertical = 18.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.auto_save_photos_title),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = stringResource(R.string.auto_save_photos_subtitle),
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                            Spacer(modifier = Modifier.width(16.dp))
+                            Switch(
+                                checked = state.autoSaveToPhotos,
+                                onCheckedChange = {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    onToggleAutoSaveToPhotos()
+                                }
+                            )
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 20.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                        )
+                    }
+
+                    // Save location
+                    val hasCustomLocation = !state.customOutputTreeUri.isNullOrBlank()
+                    val locationLabel = if (hasCustomLocation) {
+                        state.customOutputFolderName
+                            ?.takeIf { it.isNotBlank() }
+                            ?: stringResource(R.string.output_location_default)
+                    } else {
+                        stringResource(R.string.output_location_default)
+                    }
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
                                 haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                onToggleAutoSaveToPhotos()
+                                onChangeOutputLocation()
                             }
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = stringResource(R.string.auto_save_photos_title),
+                                text = stringResource(R.string.output_location_title),
                                 style = MaterialTheme.typography.titleMedium,
                                 fontWeight = FontWeight.Bold,
                                 color = MaterialTheme.colorScheme.onSurface
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = stringResource(R.string.auto_save_photos_subtitle),
+                                text = locationLabel,
                                 style = MaterialTheme.typography.bodyMedium,
                                 fontWeight = FontWeight.SemiBold,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant
                             )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = stringResource(R.string.output_location_subtitle),
+                                style = MaterialTheme.typography.bodySmall,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                            )
                         }
-                        Spacer(modifier = Modifier.width(16.dp))
-                        Switch(
-                            checked = state.autoSaveToPhotos,
-                            onCheckedChange = {
-                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                onToggleAutoSaveToPhotos()
+                    }
+
+                    AnimatedVisibility(visible = hasCustomLocation) {
+                        Column {
+                            HorizontalDivider(
+                                modifier = Modifier.padding(start = 20.dp),
+                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                            )
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .clickable {
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        onResetOutputLocation()
+                                    }
+                                    .padding(horizontal = 20.dp, vertical = 18.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.output_location_reset_title),
+                                        style = MaterialTheme.typography.titleMedium,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Text(
+                                        text = stringResource(R.string.output_location_reset_subtitle),
+                                        style = MaterialTheme.typography.bodyMedium,
+                                        fontWeight = FontWeight.SemiBold,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
                             }
-                        )
+                        }
                     }
                 }
             }

@@ -3,6 +3,7 @@ package compress.joshattic.us.viewmodel
 import android.app.Application
 import android.content.ContentValues
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.media.MediaCodecList
 import android.media.MediaExtractor
@@ -10,9 +11,11 @@ import android.media.MediaFormat
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
+import android.provider.DocumentsContract
 import android.provider.MediaStore
 import androidx.annotation.OptIn
 import androidx.core.content.edit
+import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.Effect
@@ -74,13 +77,25 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         getApplication<Application>().getSharedPreferences("compressor_prefs", Context.MODE_PRIVATE)
     }
 
+    companion object {
+        private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
+        private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
+        private const val PERSIST_URI_FLAGS =
+            Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+    }
+
     init {
         val saved = prefs.getLong("total_saved_bytes", 0L)
         val showBitrate = prefs.getBoolean("show_bitrate", false)
         val useMbps = prefs.getBoolean("use_mbps", false)
         val showStorageSaved = prefs.getBoolean("show_storage_saved", true)
         val showTargetSizePreset = prefs.getBoolean("show_target_size_preset", true)
-        val autoSaveToPhotos = prefs.getBoolean("auto_save_photos", true)
+        // Auto-save relies on MediaStore scoped inserts (API 29+) or needs a prior SAF folder;
+        // on Android 7–9 the default path is unreliable without storage permissions, so keep it off.
+        val autoSaveSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
+        val autoSaveToPhotos = autoSaveSupported && prefs.getBoolean("auto_save_photos", true)
+        val customOutputTreeUri = prefs.getString(PREF_CUSTOM_OUTPUT_TREE_URI, null)
+        val customOutputFolderName = prefs.getString(PREF_CUSTOM_OUTPUT_FOLDER_NAME, null)
         val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
         val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
         val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))
@@ -95,6 +110,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             showStorageSaved = showStorageSaved,
             showTargetSizePreset = showTargetSizePreset,
             autoSaveToPhotos = autoSaveToPhotos,
+            customOutputTreeUri = customOutputTreeUri,
+            customOutputFolderName = customOutputFolderName,
             highPresetConfig = highConfig,
             mediumPresetConfig = mediumConfig,
             lowPresetConfig = lowConfig,
@@ -674,10 +691,87 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun toggleAutoSaveToPhotos() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) return
         _uiState.update { 
             val newValue = !it.autoSaveToPhotos
             prefs.edit { putBoolean("auto_save_photos", newValue) }
             it.copy(autoSaveToPhotos = newValue)
+        }
+    }
+
+    fun setCustomOutputFolder(context: Context, treeUri: Uri) {
+        try {
+            releasePersistedTreeUri(context, _uiState.value.customOutputTreeUri)
+            context.contentResolver.takePersistableUriPermission(treeUri, PERSIST_URI_FLAGS)
+            val folderName = resolveFolderDisplayName(context, treeUri)
+            prefs.edit {
+                putString(PREF_CUSTOM_OUTPUT_TREE_URI, treeUri.toString())
+                putString(PREF_CUSTOM_OUTPUT_FOLDER_NAME, folderName)
+            }
+            _uiState.update {
+                it.copy(
+                    customOutputTreeUri = treeUri.toString(),
+                    customOutputFolderName = folderName
+                )
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    fun clearCustomOutputFolder(context: Context) {
+        releasePersistedTreeUri(context, _uiState.value.customOutputTreeUri)
+        prefs.edit {
+            remove(PREF_CUSTOM_OUTPUT_TREE_URI)
+            remove(PREF_CUSTOM_OUTPUT_FOLDER_NAME)
+        }
+        _uiState.update {
+            it.copy(customOutputTreeUri = null, customOutputFolderName = null)
+        }
+    }
+
+    private fun releasePersistedTreeUri(context: Context, uriString: String?) {
+        if (uriString.isNullOrBlank()) return
+        try {
+            val uri = Uri.parse(uriString)
+            val stillHeld = context.contentResolver.persistedUriPermissions.any { it.uri == uri }
+            if (stillHeld) {
+                context.contentResolver.releasePersistableUriPermission(uri, PERSIST_URI_FLAGS)
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+
+    private fun resolveFolderDisplayName(context: Context, treeUri: Uri): String {
+        DocumentFile.fromTreeUri(context, treeUri)?.name?.takeIf { it.isNotBlank() }?.let { return it }
+        return try {
+            val docId = DocumentsContract.getTreeDocumentId(treeUri)
+            val path = docId.substringAfter(':', missingDelimiterValue = docId)
+            path.substringAfterLast('/').ifBlank { path }.ifBlank {
+                getApplication<Application>().getString(R.string.output_location_default)
+            }
+        } catch (_: Exception) {
+            getApplication<Application>().getString(R.string.output_location_default)
+        }
+    }
+
+    private fun compressedOutputFileName(state: CompressorUiState): String {
+        return if (state.originalName != null) {
+            val nameWithoutExt = state.originalName.substringBeforeLast(".")
+            "${nameWithoutExt}_Compressed.mp4"
+        } else {
+            "Compressed_${System.currentTimeMillis()}.mp4"
+        }
+    }
+
+    /** Saves using the configured location: custom SAF folder, or default Photos gallery. */
+    fun saveCompressedOutput(context: Context) {
+        val treeUri = _uiState.value.customOutputTreeUri
+        if (!treeUri.isNullOrBlank()) {
+            saveToCustomTree(context, Uri.parse(treeUri))
+        } else {
+            saveToGallery(context)
         }
     }
 
@@ -908,8 +1002,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                              totalSavedBytes = newTotal
                          ) 
                      }
-                     if (_uiState.value.autoSaveToPhotos) {
-                         saveToGallery(getApplication())
+                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q &&
+                         _uiState.value.autoSaveToPhotos
+                     ) {
+                         saveCompressedOutput(getApplication())
                      }
                 }
 
@@ -1271,6 +1367,57 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    private fun saveToCustomTree(context: Context, treeUri: Uri) {
+        val currentState = _uiState.value
+        val compressedUri = currentState.compressedUri ?: return
+
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val file = File(compressedUri.path!!)
+                if (!file.exists()) {
+                    _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_file_lost)) }
+                    return@launch
+                }
+
+                val tree = DocumentFile.fromTreeUri(context, treeUri)
+                if (tree == null || !tree.canWrite()) {
+                    _uiState.update {
+                        it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, "Folder not writable"))
+                    }
+                    return@launch
+                }
+
+                val targetName = compressedOutputFileName(currentState)
+                tree.findFile(targetName)?.takeIf { it.isFile }?.delete()
+                val target = tree.createFile("video/mp4", targetName)
+                if (target == null) {
+                    _uiState.update {
+                        it.copy(error = getApplication<Application>().getString(R.string.error_gallery_entry))
+                    }
+                    return@launch
+                }
+
+                context.contentResolver.openOutputStream(target.uri)?.use { out ->
+                    file.inputStream().use { input ->
+                        input.copyTo(out)
+                    }
+                } ?: run {
+                    _uiState.update {
+                        it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, "No output stream"))
+                    }
+                    return@launch
+                }
+
+                _uiState.update { it.copy(saveSuccess = true) }
+            } catch (e: Exception) {
+                e.printStackTrace()
+                _uiState.update {
+                    it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message))
+                }
+            }
+        }
+    }
+
     fun saveToGallery(context: Context) {
         val currentState = _uiState.value
         val compressedUri = currentState.compressedUri ?: return
@@ -1283,12 +1430,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     return@launch
                 }
 
-                val targetName = if (currentState.originalName != null) {
-                    val nameWithoutExt = currentState.originalName.substringBeforeLast(".")
-                    "${nameWithoutExt}_Compressed.mp4"
-                } else {
-                    "Compressed_${System.currentTimeMillis()}.mp4"
-                }
+                val targetName = compressedOutputFileName(currentState)
 
                 val values = ContentValues().apply {
                     put(MediaStore.Video.Media.DISPLAY_NAME, targetName)

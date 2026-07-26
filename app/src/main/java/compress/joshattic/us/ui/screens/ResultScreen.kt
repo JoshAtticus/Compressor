@@ -199,7 +199,13 @@ fun ResultScreen(
                     Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        stringResource(R.string.save_to_photos),
+                        stringResource(
+                            if (state.customOutputTreeUri.isNullOrBlank()) {
+                                R.string.save_to_photos
+                            } else {
+                                R.string.save_to_folder
+                            }
+                        ),
                         fontWeight = FontWeight.Bold,
                         fontSize = 12.5.sp,
                         maxLines = 1

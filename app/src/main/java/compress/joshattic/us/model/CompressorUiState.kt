@@ -54,7 +54,10 @@ data class CompressorUiState(
     val useMbps: Boolean = false,
     val showStorageSaved: Boolean = true,
     val showTargetSizePreset: Boolean = true,
-    val autoSaveToPhotos: Boolean = true,
+    /** Only meaningful on Android 10+; forced off on older versions. */
+    val autoSaveToPhotos: Boolean = false,
+    val customOutputTreeUri: String? = null,
+    val customOutputFolderName: String? = null,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,

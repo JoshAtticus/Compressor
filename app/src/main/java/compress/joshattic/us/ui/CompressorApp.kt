@@ -120,6 +120,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
             viewModel.saveToUri(context, uri)
         }
     }
+
+    val openDocumentTreeLauncher = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) {
+            viewModel.setCustomOutputFolder(context, uri)
+        }
+    }
     
     fun shareVideo(uri: Uri?) {
         if (uri == null) return
@@ -189,6 +195,11 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             state = state,
                             onBack = { currentSettingsDestination = SettingsDestination.MAIN },
                             onToggleAutoSaveToPhotos = { viewModel.toggleAutoSaveToPhotos() },
+                            onChangeOutputLocation = {
+                                val initial = state.customOutputTreeUri?.let { Uri.parse(it) }
+                                openDocumentTreeLauncher.launch(initial)
+                            },
+                            onResetOutputLocation = { viewModel.clearCustomOutputFolder(context) },
                             onToggleShowBitrate = { viewModel.toggleShowBitrate() },
                             onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
                             onToggleShowStorageSaved = { viewModel.toggleShowStorageSaved() },
@@ -289,11 +300,15 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                                 shareVideo(state.compressedUri) 
                                                 viewModel.markAsShared()
                                             },
-                                            onSave = { 
-                                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                                                    viewModel.saveToGallery(context)
+                                            onSave = {
+                                                val hasCustomLocation = !state.customOutputTreeUri.isNullOrBlank()
+                                                if (hasCustomLocation ||
+                                                    android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+                                                ) {
+                                                    viewModel.saveCompressedOutput(context)
                                                 } else {
-                                                    val fileName = state.compressedUri?.lastPathSegment ?: "CompressedVideo.mp4"
+                                                    val fileName = state.compressedUri?.lastPathSegment
+                                                        ?: "CompressedVideo.mp4"
                                                     createDocumentLauncher.launch(fileName)
                                                 }
                                             },
