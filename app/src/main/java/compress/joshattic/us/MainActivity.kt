@@ -76,6 +76,9 @@ import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import kotlinx.coroutines.flow.collect
 
 class MainActivity : ComponentActivity() {
@@ -288,7 +291,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                    
                     InfoDialog(
                         state = state,
-                        onDismiss = { showInfoDialog = false },
+                        onDismiss = { finalEnabled -> 
+                            showInfoDialog = false 
+                            if (!finalEnabled && state.allCodecsEnabled) {
+                                viewModel.disableAllCodecsFeature()
+                            }
+                        },
                         onCopy = { 
                             clipboardManager.setText(AnnotatedString(infoText))
                         },
@@ -302,7 +310,9 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             context.startActivity(shareIntent)
                         },
                         onToggleShowBitrate = { viewModel.toggleShowBitrate() },
-                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() }
+                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
+                        onEnableAllCodecs = { viewModel.enableAllCodecsFeature() },
+                        isSoftwareCodec = { viewModel.isSoftwareCodec(it) }
                     )
                 }
             }
@@ -499,7 +509,13 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             Spacer(modifier = Modifier.height(24.dp))
             
             TextButton(
-                onClick = { showReportDialog = true }
+                onClick = {
+                    if (state.allCodecsEnabled) {
+                        Toast.makeText(context, "Disable all codecs first", Toast.LENGTH_SHORT).show()
+                    } else {
+                        showReportDialog = true
+                    }
+                }
             ) {
                 Icon(Icons.Outlined.Info, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
@@ -660,17 +676,116 @@ fun ResultScreen(
 @Composable
 fun InfoDialog(
     state: CompressorUiState,
-    onDismiss: () -> Unit,
+    onDismiss: (Boolean) -> Unit,
     onCopy: () -> Unit,
     onShare: () -> Unit,
     onToggleShowBitrate: () -> Unit,
-    onToggleBitrateUnit: () -> Unit
+    onToggleBitrateUnit: () -> Unit,
+    onEnableAllCodecs: () -> Unit,
+    isSoftwareCodec: (String) -> Boolean
 ) {
     var copied by remember { mutableStateOf(false) }
     val uriHandler = androidx.compose.ui.platform.LocalUriHandler.current
-    
+    val context = LocalContext.current
+
+    var tapCount by remember { mutableStateOf(0) }
+    var showConfirmDialog by remember { mutableStateOf(false) }
+    var localAllCodecsEnabled by remember(state.allCodecsEnabled) { mutableStateOf(state.allCodecsEnabled) }
+
+    if (showConfirmDialog) {
+        var checked1 by remember { mutableStateOf(false) }
+        var checked2 by remember { mutableStateOf(false) }
+        var checked3 by remember { mutableStateOf(false) }
+        var checked4 by remember { mutableStateOf(false) }
+        var checked5 by remember { mutableStateOf(false) }
+
+        val allChecked = checked1 && checked2 && checked3 && checked4 && checked5
+
+        AlertDialog(
+            onDismissRequest = { showConfirmDialog = false },
+            title = { Text("Are you sure?") },
+            text = {
+                Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                    Text(
+                        "Enabling all codecs may result in poor performance, encoding failures, thermonuclear war, melting batteries and abnormally warm hands",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(bottom = 16.dp)
+                    )
+                    
+                    CheckboxRow(
+                        checked = checked1,
+                        onCheckedChange = { checked1 = it },
+                        label = buildAnnotatedString {
+                            append("I ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("HATE")
+                            }
+                            append(" good battery life")
+                        }
+                    )
+                    CheckboxRow(
+                        checked = checked2,
+                        onCheckedChange = { checked2 = it },
+                        label = buildAnnotatedString {
+                            append("I ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("LOVE")
+                            }
+                            append(" when my hands melt")
+                        }
+                    )
+                    CheckboxRow(
+                        checked = checked3,
+                        onCheckedChange = { checked3 = it },
+                        label = buildAnnotatedString {
+                            append("Time is no object")
+                        }
+                    )
+                    CheckboxRow(
+                        checked = checked4,
+                        onCheckedChange = { checked4 = it },
+                        label = buildAnnotatedString {
+                            append("I ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("LOVE")
+                            }
+                            append(" when an app crashes constantly")
+                        }
+                    )
+                    CheckboxRow(
+                        checked = checked5,
+                        onCheckedChange = { checked5 = it },
+                        label = buildAnnotatedString {
+                            append("I will ")
+                            withStyle(SpanStyle(fontWeight = FontWeight.Bold)) {
+                                append("NOT")
+                            }
+                            append(" open any bug reports while this is on")
+                        }
+                    )
+                }
+            },
+            confirmButton = {
+                TextButton(
+                    enabled = allChecked,
+                    onClick = {
+                        showConfirmDialog = false
+                        onEnableAllCodecs()
+                    }
+                ) {
+                    Text("Enable all codecs")
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showConfirmDialog = false }) {
+                    Text("Cancel")
+                }
+            }
+        )
+    }
+
     AlertDialog(
-        onDismissRequest = onDismiss,
+        onDismissRequest = { onDismiss(localAllCodecsEnabled) },
         title = {
             Column {
                  Text(stringResource(R.string.info_title), style = MaterialTheme.typography.titleLarge)
@@ -716,17 +831,74 @@ fun InfoDialog(
                     }
                 }
 
+                if (state.allCodecsUnlocked) {
+                     Row(
+                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
+                        Text(
+                            "Enable all codecs", 
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Switch(
+                            checked = localAllCodecsEnabled, 
+                            onCheckedChange = { localAllCodecsEnabled = it }
+                        )
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(16.dp))
                 HorizontalDivider()
                 Spacer(modifier = Modifier.height(8.dp))
                 
-                InfoRow("Supported Codecs", "")
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            if (!state.allCodecsUnlocked) {
+                                tapCount++
+                                if (tapCount >= 7) {
+                                    showConfirmDialog = true
+                                    tapCount = 0
+                                } else if (tapCount >= 4) {
+                                    Toast.makeText(
+                                        context,
+                                        "You are now ${7 - tapCount} steps away from enabling all codecs.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
+                        }
+                ) {
+                    InfoRow("Supported Codecs", "")
+                }
                 state.supportedCodecs.forEach { codec ->
-                     Text(
-                        "• ${codec.substringAfter("/")}", 
-                        style = MaterialTheme.typography.bodySmall,
-                        modifier = Modifier.padding(start = 8.dp)
-                    )
+                     val isSoftware = isSoftwareCodec(codec)
+                      Row(
+                          modifier = Modifier.padding(start = 8.dp, top = 2.dp, bottom = 2.dp),
+                          verticalAlignment = Alignment.CenterVertically
+                     ) {
+                         Text(
+                             "• ${codec.substringAfter("/")}", 
+                             style = MaterialTheme.typography.bodySmall
+                         )
+                         if (isSoftware) {
+                             Spacer(modifier = Modifier.width(4.dp))
+                             Icon(
+                                 imageVector = Icons.Outlined.Warning,
+                                 contentDescription = "Software Encoding Warning",
+                                 tint = Color(0xFFFBC02D), // Yellow
+                                 modifier = Modifier.size(12.dp)
+                             )
+                             Spacer(modifier = Modifier.width(2.dp))
+                             Text(
+                                 "Software Encoding",
+                                 style = MaterialTheme.typography.bodySmall,
+                                 color = Color(0xFFFBC02D)
+                             )
+                         }
+                     }
                 }
 
                 Spacer(modifier = Modifier.height(16.dp))
@@ -757,13 +929,27 @@ fun InfoDialog(
             }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) {
+            TextButton(onClick = { onDismiss(localAllCodecsEnabled) }) {
                 Text(stringResource(R.string.cancel))
             }
         }
     )
 }
 
+@Composable
+fun CheckboxRow(checked: Boolean, onCheckedChange: (Boolean) -> Unit, label: AnnotatedString) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clickable { onCheckedChange(!checked) }
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Checkbox(checked = checked, onCheckedChange = onCheckedChange)
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(label, style = MaterialTheme.typography.bodyMedium)
+    }
+}
 @Composable
 fun InfoRow(label: String, value: String) {
     Column(modifier = Modifier.padding(vertical = 4.dp)) {
@@ -1324,44 +1510,25 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 val supported = state.supportedCodecs
-                
-                if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_AV1)) {
+                supported.forEach { codec ->
                     val interactionSource = remember { MutableInteractionSource() }
+                    val labelText = when (codec) {
+                        androidx.media3.common.MimeTypes.VIDEO_AV1 -> stringResource(R.string.av1_high_efficiency)
+                        androidx.media3.common.MimeTypes.VIDEO_H265 -> stringResource(R.string.h265_efficient)
+                        androidx.media3.common.MimeTypes.VIDEO_H264 -> stringResource(R.string.h264_compat)
+                        else -> codec.substringAfter("/").uppercase()
+                    }
                     FilterChip(
-                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_AV1,
+                        selected = state.videoCodec == codec,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_AV1) 
+                            viewModel.setVideoCodec(codec) 
                         },
                         interactionSource = interactionSource,
-                        label = { Text(stringResource(R.string.av1_high_efficiency)) },
+                        label = { Text(labelText) },
                         modifier = Modifier.expressiveScale(interactionSource)
                     )
                 }
-                if (supported.contains(androidx.media3.common.MimeTypes.VIDEO_H265)) {
-                    val interactionSource = remember { MutableInteractionSource() }
-                    FilterChip(
-                        selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H265,
-                        onClick = { 
-                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H265) 
-                        },
-                        interactionSource = interactionSource,
-                        label = { Text(stringResource(R.string.h265_efficient)) },
-                        modifier = Modifier.expressiveScale(interactionSource)
-                    )
-                }
-                val interactionSource = remember { MutableInteractionSource() }
-                FilterChip(
-                    selected = state.videoCodec == androidx.media3.common.MimeTypes.VIDEO_H264,
-                    onClick = { 
-                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                        viewModel.setVideoCodec(androidx.media3.common.MimeTypes.VIDEO_H264) 
-                    },
-                    interactionSource = interactionSource,
-                    label = { Text(stringResource(R.string.h264_compat)) },
-                    modifier = Modifier.expressiveScale(interactionSource)
-                )
             }
              
             Spacer(modifier = Modifier.height(16.dp))

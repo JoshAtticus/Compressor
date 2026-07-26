@@ -78,14 +78,16 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.5.7",
+    val appInfoVersion: String = "1.6.0",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
     val audioVolume: Float = 1.0f,
-    val warnings: List<String> = emptyList()
+    val warnings: List<String> = emptyList(),
+    val allCodecsEnabled: Boolean = false,
+    val allCodecsUnlocked: Boolean = false
 ) {
     private val minBitrate: Long
         get() {
@@ -367,24 +369,111 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
     
     private fun checkSupportedCodecs() {
+        val allCodecsEnabled = prefs.getBoolean("all_codecs_enabled", false)
+        val allCodecsUnlocked = prefs.getBoolean("all_codecs_unlocked", false)
         val supported = mutableListOf<String>()
-        supported.add(MimeTypes.VIDEO_H264) // I mean this is supported on like everything ever, if not then skill issue ig?
 
-        if (hasEncoder(MimeTypes.VIDEO_H265)) {
-            supported.add(MimeTypes.VIDEO_H265)
-        }
-        if (hasEncoder(MimeTypes.VIDEO_AV1)) {
-            supported.add(MimeTypes.VIDEO_AV1)
+        if (allCodecsEnabled) {
+            supported.addAll(getDeviceEncoders())
+        } else {
+            supported.add(MimeTypes.VIDEO_H264)
+            if (hasEncoder(MimeTypes.VIDEO_H265)) {
+                supported.add(MimeTypes.VIDEO_H265)
+            }
+            if (hasEncoder(MimeTypes.VIDEO_AV1)) {
+                supported.add(MimeTypes.VIDEO_AV1)
+            }
         }
         
         _uiState.update { 
             var newCodec = it.videoCodec
-            // Fallback if H265 not supported but was default because I can't be assed to properly fix it
-            if (newCodec == MimeTypes.VIDEO_H265 && !supported.contains(MimeTypes.VIDEO_H265)) {
-                newCodec = MimeTypes.VIDEO_H264
+            if (!supported.contains(newCodec)) {
+                newCodec = when {
+                    supported.contains(MimeTypes.VIDEO_H265) -> MimeTypes.VIDEO_H265
+                    supported.contains(MimeTypes.VIDEO_H264) -> MimeTypes.VIDEO_H264
+                    supported.isNotEmpty() -> supported.first()
+                    else -> MimeTypes.VIDEO_H264
+                }
             }
-            it.copy(supportedCodecs = supported, videoCodec = newCodec, useH265 = newCodec == MimeTypes.VIDEO_H265) 
+            it.copy(
+                supportedCodecs = supported, 
+                videoCodec = newCodec, 
+                useH265 = newCodec == MimeTypes.VIDEO_H265,
+                allCodecsEnabled = allCodecsEnabled,
+                allCodecsUnlocked = allCodecsUnlocked
+            ) 
         }
+    }
+
+    private fun getDeviceEncoders(): List<String> {
+        val codecs = mutableSetOf<String>()
+        try {
+            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
+            for (info in list.codecInfos) {
+                if (!info.isEncoder) continue
+                for (type in info.supportedTypes) {
+                    if (type.startsWith("video/", ignoreCase = true)) {
+                        codecs.add(type.lowercase())
+                    }
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        val preferred = listOf(MimeTypes.VIDEO_H264, MimeTypes.VIDEO_H265, MimeTypes.VIDEO_AV1)
+        return codecs.toList().sortedWith { a, b ->
+            val indexA = preferred.indexOf(a)
+            val indexB = preferred.indexOf(b)
+            when {
+                indexA != -1 && indexB != -1 -> indexA.compareTo(indexB)
+                indexA != -1 -> -1
+                indexB != -1 -> 1
+                else -> a.compareTo(b)
+            }
+        }
+    }
+
+    fun isSoftwareCodec(mimeType: String): Boolean {
+        try {
+            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
+            var hasHardware = false
+            var hasSoftware = false
+            for (info in list.codecInfos) {
+                if (!info.isEncoder) continue
+                if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
+                    val isSW = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        info.isSoftwareOnly
+                    } else {
+                        val name = info.name.lowercase()
+                        name.startsWith("c2.android") || name.startsWith("omx.google")
+                    }
+                    if (isSW) {
+                        hasSoftware = true
+                    } else {
+                        hasHardware = true
+                    }
+                }
+            }
+            return hasSoftware && !hasHardware
+        } catch (e: Exception) {
+            return false
+        }
+    }
+
+    fun enableAllCodecsFeature() {
+        prefs.edit {
+            putBoolean("all_codecs_enabled", true)
+            putBoolean("all_codecs_unlocked", true)
+        }
+        checkSupportedCodecs()
+    }
+
+    fun disableAllCodecsFeature() {
+        prefs.edit {
+            putBoolean("all_codecs_enabled", false)
+            putBoolean("all_codecs_unlocked", false)
+        }
+        checkSupportedCodecs()
     }
 
     private fun hasEncoder(mimeType: String): Boolean {
