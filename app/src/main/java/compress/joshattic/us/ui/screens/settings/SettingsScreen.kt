@@ -493,7 +493,7 @@ fun SettingsScreen(
                                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                                 contentDescription = null,
                                 tint = A16BadgeAppGreenOnBadge,
-                                modifier = Modifier.size(38.dp)
+                                modifier = Modifier.size(96.dp)
                             )
                         }
 
