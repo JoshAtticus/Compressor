@@ -214,4 +214,4 @@ I would like to acknowledge that Compressor has used AI language models to assis
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=JoshAtticus/Compressor&type=Date)](https://star-history.com/#JoshAtticus/Compressor&Date)
+[![Star History Chart](https://api.star-history.com/chart?repos=JoshAtticus/Compressor&type=date&legend=top-left&sealed_token=sNTeAN-m_zFqDfeGZd5lJAfsf4y3KjmvJR7uXX32il2bO6AFPFeqr7UiNveSw0YOrLwlol6zew0GOlZa21PNAzzf3XQLOhQCyoxJ3prS4EAmbhp3MOq_yg)](https://www.star-history.com/?type=date&repos=JoshAtticus%2FCompressor)

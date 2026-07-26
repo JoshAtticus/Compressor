@@ -6,6 +6,11 @@ labels: enhancement, low-priority, triage
 assignees: JoshAtticus
 
 ---
+## Disclaimer
+By opening this issue, I agree that
+
+- I have read https://github.com/JoshAtticus/Compressor/issues/3 and my issue is not listed there
+- I am adding a valid title to my issue
 
 ## Feature Request
 <!-- Describe the feature you'd like added to Compressor -->

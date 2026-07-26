@@ -14,7 +14,9 @@ assignees: JoshAtticus
 - [ ] I have copied the device & app info to my clipboard and pasted it into the device info section where indicated, and I understand that my issue will be closed if it is not
 - [ ] I have uploaded appropriate screenshots and log files, and I understand that my issue may be closed or remain unresolved if not
 - [ ] My issue is written in English, and I understand that my issue will be closed if it is not
-- [ ] I understand that my issue will be closed if all 5 of these checkboxes are not checked
+- [ ] My issue is not listed in https://github.com/JoshAtticus/Compressor/issues/3
+- [ ] I have added a title to my issue
+- [ ] I understand that my issue will be closed if all 7 of these checkboxes are not checked
 
 ## Issue Description (required)
 <!-- Please describe your issue with at least 2 sentences or dot points. -->
