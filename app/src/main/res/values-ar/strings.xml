@@ -109,14 +109,16 @@
     <string name="no_settings_found">لم يتم العثور على إعدادات</string>
     <string name="about_compressor_title">حول Compressor</string>
     <string name="basic_info_header">المعلومات الأساسية</string>
-    <string name="display_settings_title">العرض</string>
+    <string name="display_settings_title">عام</string>
+    <string name="general_settings_title">عام</string>
     <string name="settings_content_desc">الإعدادات</string>
     <string name="back">رجوع</string>
 
-    <string name="category_display_subtitle">معدل البت، الوحدات، التوفير، الإعدادات المسبقة</string>
+    <string name="category_general_subtitle">الحفظ التلقائي، معدل البت، الوحدات، المساحة الموفرة</string>
+    <string name="category_display_subtitle">الحفظ التلقائي، معدل البت، الوحدات، المساحة الموفرة</string>
     <string name="category_presets_subtitle">خيارات تكوين الإعدادات المسبقة</string>
-    <string name="category_video_subtitle">ضغط الفيديو وخيارات الترميز</string>
-    <string name="category_audio_subtitle">معدل بت الصوت وخيارات القنوات</string>
+    <string name="category_video_subtitle">تعديل إعدادات الفيديو الافتراضية</string>
+    <string name="category_audio_subtitle">تعديل إعدادات الصوت الافتراضية</string>
     <string name="version_format">الإصدار %1$s</string>
     
     <string name="header_basic_info">المعلومات الأساسية</string>
@@ -128,7 +130,10 @@
     <string name="enable_all_codecs">تمكين جميع الترميزات</string>
     <string name="software_encoding">الترميز البرمجي</string>
     
+    <string name="header_general_options">الخيارات العامة</string>
     <string name="header_display_options">خيارات العرض</string>
+    <string name="auto_save_photos_title">حفظ تلقائي في الصور</string>
+    <string name="auto_save_photos_subtitle">حفظ الفيديوهات المضغوطة تلقائياً في مكتبة الصور</string>
     <string name="show_bitrate_subtitle">إظهار قيم معدل البت للأحجام الأصلية والمقدرة</string>
     <string name="bitrate_unit_mbps_subtitle">عرض معدل البت بميجابت/ثانية</string>
     <string name="bitrate_unit_kbps_subtitle">عرض معدل البت بكيلوبت/ثانية</string>

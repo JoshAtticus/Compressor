@@ -66,7 +66,8 @@ fun VideoSettingsScreen(
                 title = {
                     Text(
                         stringResource(R.string.tab_video),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
                 },
                 navigationIcon = {
@@ -109,7 +110,7 @@ fun VideoSettingsScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
             )
 
             Surface(

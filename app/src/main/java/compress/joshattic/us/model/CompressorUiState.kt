@@ -54,6 +54,7 @@ data class CompressorUiState(
     val useMbps: Boolean = false,
     val showStorageSaved: Boolean = true,
     val showTargetSizePreset: Boolean = true,
+    val autoSaveToPhotos: Boolean = true,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,

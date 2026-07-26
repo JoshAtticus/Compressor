@@ -109,14 +109,16 @@
     <string name="no_settings_found">設定が見つかりません</string>
     <string name="about_compressor_title">Compressorについて</string>
     <string name="basic_info_header">基本情報</string>
-    <string name="display_settings_title">表示</string>
+    <string name="display_settings_title">一般</string>
+    <string name="general_settings_title">一般</string>
     <string name="settings_content_desc">設定</string>
     <string name="back">戻る</string>
 
-    <string name="category_display_subtitle">ビットレート、単位、節約容量、プリセット</string>
+    <string name="category_general_subtitle">自動保存、ビットレート、単位、節約容量</string>
+    <string name="category_display_subtitle">自動保存、ビットレート、単位、節約容量</string>
     <string name="category_presets_subtitle">プリセット設定オプション</string>
-    <string name="category_video_subtitle">動画圧縮およびコーデック設定</string>
-    <string name="category_audio_subtitle">音声ビットレートおよびチャンネル設定</string>
+    <string name="category_video_subtitle">デフォルトの動画設定を調整</string>
+    <string name="category_audio_subtitle">デフォルトの音声設定を調整</string>
     <string name="version_format">バージョン %1$s</string>
     
     <string name="header_basic_info">基本情報</string>
@@ -128,7 +130,10 @@
     <string name="enable_all_codecs">すべてのコーデックを有効化</string>
     <string name="software_encoding">ソフトウェアエンコード</string>
     
+    <string name="header_general_options">一般設定</string>
     <string name="header_display_options">表示設定</string>
+    <string name="auto_save_photos_title">写真に自動保存</string>
+    <string name="auto_save_photos_subtitle">圧縮された動画を写真ライブラリに自動的に保存します</string>
     <string name="show_bitrate_subtitle">元サイズと予想サイズにビットレートを表示</string>
     <string name="bitrate_unit_mbps_subtitle">ビットレートをMbpsで表示</string>
     <string name="bitrate_unit_kbps_subtitle">ビットレートをkbpsで表示</string>

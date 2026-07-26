@@ -47,11 +47,13 @@ import compress.joshattic.us.model.CompressorUiState
 fun DisplaySettingsScreen(
     state: CompressorUiState,
     onBack: () -> Unit,
+    onToggleAutoSaveToPhotos: () -> Unit,
     onToggleShowBitrate: () -> Unit,
     onToggleBitrateUnit: () -> Unit,
     onToggleShowStorageSaved: () -> Unit,
     onToggleShowTargetSizePreset: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     Scaffold(
@@ -61,16 +63,20 @@ fun DisplaySettingsScreen(
             LargeTopAppBar(
                 title = {
                     Text(
-                        stringResource(R.string.display_settings_title),
-                        fontWeight = FontWeight.Bold
+                        stringResource(R.string.general_settings_title),
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
                 },
                 navigationIcon = {
                     Box(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         IconButton(
-                            onClick = onBack,
+                            onClick = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onBack()
+                            },
                             modifier = Modifier
-                                .size(40.dp)
+                                .size(32.dp)
                                 .clip(CircleShape)
                                 .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
                         ) {
@@ -97,12 +103,68 @@ fun DisplaySettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
+            // General Options Section Header
+            Text(
+                text = stringResource(R.string.header_general_options),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
+            )
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                shape = RoundedCornerShape(32.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer
+            ) {
+                Column {
+                    // Automatically Save to Photos
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleAutoSaveToPhotos()
+                            }
+                            .padding(horizontal = 20.dp, vertical = 18.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = stringResource(R.string.auto_save_photos_title),
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Spacer(modifier = Modifier.height(2.dp))
+                            Text(
+                                text = stringResource(R.string.auto_save_photos_subtitle),
+                                style = MaterialTheme.typography.bodyMedium,
+                                fontWeight = FontWeight.SemiBold,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Spacer(modifier = Modifier.width(16.dp))
+                        Switch(
+                            checked = state.autoSaveToPhotos,
+                            onCheckedChange = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleAutoSaveToPhotos()
+                            }
+                        )
+                    }
+                }
+            }
+
+            // Display Options Section Header
             Text(
                 text = stringResource(R.string.header_display_options),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
             )
 
             Surface(
@@ -115,7 +177,10 @@ fun DisplaySettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onToggleShowBitrate() }
+                            .clickable {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowBitrate()
+                            }
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -137,7 +202,10 @@ fun DisplaySettingsScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = state.showBitrate,
-                            onCheckedChange = { onToggleShowBitrate() }
+                            onCheckedChange = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowBitrate()
+                            }
                         )
                     }
 
@@ -148,7 +216,10 @@ fun DisplaySettingsScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { onToggleBitrateUnit() }
+                                    .clickable {
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        onToggleBitrateUnit()
+                                    }
                                     .padding(horizontal = 20.dp, vertical = 18.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -170,7 +241,10 @@ fun DisplaySettingsScreen(
                                 Spacer(modifier = Modifier.width(16.dp))
                                 Switch(
                                     checked = state.useMbps,
-                                    onCheckedChange = { onToggleBitrateUnit() }
+                                    onCheckedChange = {
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        onToggleBitrateUnit()
+                                    }
                                 )
                             }
                         }
@@ -182,7 +256,10 @@ fun DisplaySettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onToggleShowStorageSaved() }
+                            .clickable {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowStorageSaved()
+                            }
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -204,7 +281,10 @@ fun DisplaySettingsScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = state.showStorageSaved,
-                            onCheckedChange = { onToggleShowStorageSaved() }
+                            onCheckedChange = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowStorageSaved()
+                            }
                         )
                     }
 
@@ -214,7 +294,10 @@ fun DisplaySettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onToggleShowTargetSizePreset() }
+                            .clickable {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowTargetSizePreset()
+                            }
                             .padding(horizontal = 20.dp, vertical = 18.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -236,7 +319,10 @@ fun DisplaySettingsScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = state.showTargetSizePreset,
-                            onCheckedChange = { onToggleShowTargetSizePreset() }
+                            onCheckedChange = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onToggleShowTargetSizePreset()
+                            }
                         )
                     }
                 }

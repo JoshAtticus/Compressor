@@ -170,7 +170,8 @@ fun AboutScreen(
                 title = {
                     Text(
                         stringResource(R.string.about_compressor_title),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
                 },
                 navigationIcon = {
@@ -211,7 +212,7 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
             )
 
             Surface(
@@ -238,7 +239,7 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
             )
 
             Surface(
@@ -359,7 +360,7 @@ fun AboutScreen(
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(start = 0.dp, bottom = 8.dp)
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
             )
 
             Surface(

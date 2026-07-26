@@ -302,7 +302,8 @@ fun SettingsScreen(
                 title = {
                     Text(
                         stringResource(R.string.settings_title),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
                 },
                 navigationIcon = {

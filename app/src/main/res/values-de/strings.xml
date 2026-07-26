@@ -112,14 +112,16 @@
     <string name="no_settings_found">Keine Einstellungen gefunden</string>
     <string name="about_compressor_title">Über Compressor</string>
     <string name="basic_info_header">Basis-Info</string>
-    <string name="display_settings_title">Anzeige</string>
+    <string name="display_settings_title">Allgemein</string>
+    <string name="general_settings_title">Allgemein</string>
     <string name="settings_content_desc">Einstellungen</string>
     <string name="back">Zurück</string>
 
-    <string name="category_display_subtitle">Bitrate, Einheiten, Speicher gespart, Voreinstellungen</string>
+    <string name="category_general_subtitle">Auto-Speichern, Bitrate, Einheiten, Speicher gespart</string>
+    <string name="category_display_subtitle">Auto-Speichern, Bitrate, Einheiten, Speicher gespart</string>
     <string name="category_presets_subtitle">Konfigurationsoptionen für Voreinstellungen</string>
-    <string name="category_video_subtitle">Videokomprimierung &amp; Codec-Optionen</string>
-    <string name="category_audio_subtitle">Audio-Bitrate &amp; Kanal-Optionen</string>
+    <string name="category_video_subtitle">Standard-Videoeinstellungen anpassen</string>
+    <string name="category_audio_subtitle">Standard-Audioeinstellungen anpassen</string>
     <string name="version_format">Version %1$s</string>
     
     <string name="header_basic_info">Basis-Info</string>
@@ -131,7 +133,10 @@
     <string name="enable_all_codecs">Alle Codecs aktivieren</string>
     <string name="software_encoding">Software-Kodierung</string>
     
+    <string name="header_general_options">Allgemeine Optionen</string>
     <string name="header_display_options">Anzeige-Optionen</string>
+    <string name="auto_save_photos_title">Automatisch in Fotos speichern</string>
+    <string name="auto_save_photos_subtitle">Komprimierte Videos automatisch in der Fotobibliothek speichern</string>
     <string name="show_bitrate_subtitle">Bitratenwerte bei Original- und geschätzten Größen anzeigen</string>
     <string name="bitrate_unit_mbps_subtitle">Bitrate in Mbit/s anzeigen</string>
     <string name="bitrate_unit_kbps_subtitle">Bitrate in kbit/s anzeigen</string>

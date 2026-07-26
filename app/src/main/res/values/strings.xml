@@ -132,14 +132,16 @@
     <string name="no_settings_found">No settings found</string>
     <string name="about_compressor_title">About Compressor</string>
     <string name="basic_info_header">Basic Info</string>
-    <string name="display_settings_title">Display</string>
+    <string name="display_settings_title">General</string>
+    <string name="general_settings_title">General</string>
     <string name="settings_content_desc">Settings</string>
     <string name="back">Back</string>
 
-    <string name="category_display_subtitle">Bitrate, units, storage saved, presets</string>
+    <string name="category_general_subtitle">Auto-save, bitrate, units, storage saved</string>
+    <string name="category_display_subtitle">Auto-save, bitrate, units, storage saved</string>
     <string name="category_presets_subtitle">Preset configuration options</string>
-    <string name="category_video_subtitle">Video compression &amp; codec options</string>
-    <string name="category_audio_subtitle">Audio bitrate &amp; channel options</string>
+    <string name="category_video_subtitle">Adjust default video settings</string>
+    <string name="category_audio_subtitle">Adjust default audio settings</string>
     <string name="version_format">Version %1$s</string>
     
     <string name="header_basic_info">Basic info</string>
@@ -151,7 +153,10 @@
     <string name="enable_all_codecs">Enable all codecs</string>
     <string name="software_encoding">Software Encoding</string>
     
+    <string name="header_general_options">General options</string>
     <string name="header_display_options">Display options</string>
+    <string name="auto_save_photos_title">Automatically Save to Photos</string>
+    <string name="auto_save_photos_subtitle">Automatically save compressed videos to your photos library</string>
     <string name="show_bitrate_subtitle">Show bitrate values on original and estimated sizes</string>
     <string name="bitrate_unit_mbps_subtitle">Display bitrate in Mbps</string>
     <string name="bitrate_unit_kbps_subtitle">Display bitrate in kbps</string>

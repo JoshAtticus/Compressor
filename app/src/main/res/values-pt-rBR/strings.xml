@@ -109,14 +109,16 @@
     <string name="no_settings_found">Nenhuma configuração encontrada</string>
     <string name="about_compressor_title">Sobre o Compressor</string>
     <string name="basic_info_header">Informações Básicas</string>
-    <string name="display_settings_title">Exibição</string>
+    <string name="display_settings_title">Geral</string>
+    <string name="general_settings_title">Geral</string>
     <string name="settings_content_desc">Configurações</string>
     <string name="back">Voltar</string>
 
-    <string name="category_display_subtitle">Taxa de bits, unidades, espaço economizado, pré-definições</string>
+    <string name="category_general_subtitle">Salvamento automático, taxa de bits, unidades, espaço economizado</string>
+    <string name="category_display_subtitle">Salvamento automático, taxa de bits, unidades, espaço economizado</string>
     <string name="category_presets_subtitle">Opções de configuração de pré-definições</string>
-    <string name="category_video_subtitle">Compressão de vídeo e opções de codec</string>
-    <string name="category_audio_subtitle">Taxa de bits de áudio e opções de canal</string>
+    <string name="category_video_subtitle">Ajustar configurações de vídeo padrão</string>
+    <string name="category_audio_subtitle">Ajustar configurações de áudio padrão</string>
     <string name="version_format">Versão %1$s</string>
     
     <string name="header_basic_info">Informações Básicas</string>
@@ -128,7 +130,10 @@
     <string name="enable_all_codecs">Ativar Todos os Codecs</string>
     <string name="software_encoding">Codificação via Software</string>
     
+    <string name="header_general_options">Opções Gerais</string>
     <string name="header_display_options">Opções de Exibição</string>
+    <string name="auto_save_photos_title">Salvar Automaticamente em Fotos</string>
+    <string name="auto_save_photos_subtitle">Salvar automaticamente vídeos comprimidos na galeria de fotos</string>
     <string name="show_bitrate_subtitle">Mostrar valores de taxa de bits nos tamanhos original e estimado</string>
     <string name="bitrate_unit_mbps_subtitle">Exibir taxa de bits em Mbps</string>
     <string name="bitrate_unit_kbps_subtitle">Exibir taxa de bits em kbps</string>

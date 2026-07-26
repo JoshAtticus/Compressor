@@ -109,14 +109,16 @@
     <string name="no_settings_found">설정을 찾을 수 없음</string>
     <string name="about_compressor_title">Compressor 정보</string>
     <string name="basic_info_header">기본 정보</string>
-    <string name="display_settings_title">디스플레이</string>
+    <string name="display_settings_title">일반</string>
+    <string name="general_settings_title">일반</string>
     <string name="settings_content_desc">설정</string>
     <string name="back">뒤로</string>
 
-    <string name="category_display_subtitle">비트레이트, 단위, 절약 용량, 프리셋</string>
+    <string name="category_general_subtitle">자동 저장, 비트레이트, 단위, 절약 용량</string>
+    <string name="category_display_subtitle">자동 저장, 비트레이트, 단위, 절약 용량</string>
     <string name="category_presets_subtitle">프리셋 구성 옵션</string>
-    <string name="category_video_subtitle">비디오 압축 및 코덱 옵션</string>
-    <string name="category_audio_subtitle">오디오 비트레이트 및 채널 옵션</string>
+    <string name="category_video_subtitle">기본 비디오 설정 조정</string>
+    <string name="category_audio_subtitle">기본 오디오 설정 조정</string>
     <string name="version_format">버전 %1$s</string>
     
     <string name="header_basic_info">기본 정보</string>
@@ -128,7 +130,10 @@
     <string name="enable_all_codecs">모든 코덱 활성화</string>
     <string name="software_encoding">소프트웨어 인코딩</string>
     
+    <string name="header_general_options">일반 옵션</string>
     <string name="header_display_options">디스플레이 옵션</string>
+    <string name="auto_save_photos_title">사진에 자동으로 저장</string>
+    <string name="auto_save_photos_subtitle">압축된 비디오를 사진 라이브러리에 자동으로 저장합니다</string>
     <string name="show_bitrate_subtitle">원본 및 예상 크기에 비트레이트 값 표시</string>
     <string name="bitrate_unit_mbps_subtitle">비트레이트를 Mbps 단위로 표시</string>
     <string name="bitrate_unit_kbps_subtitle">비트레이트를 kbps 단위로 표시</string>

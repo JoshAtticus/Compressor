@@ -80,6 +80,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val useMbps = prefs.getBoolean("use_mbps", false)
         val showStorageSaved = prefs.getBoolean("show_storage_saved", true)
         val showTargetSizePreset = prefs.getBoolean("show_target_size_preset", true)
+        val autoSaveToPhotos = prefs.getBoolean("auto_save_photos", true)
         val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
         val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
         val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))
@@ -93,6 +94,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             useMbps = useMbps,
             showStorageSaved = showStorageSaved,
             showTargetSizePreset = showTargetSizePreset,
+            autoSaveToPhotos = autoSaveToPhotos,
             highPresetConfig = highConfig,
             mediumPresetConfig = mediumConfig,
             lowPresetConfig = lowConfig,
@@ -671,6 +673,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    fun toggleAutoSaveToPhotos() {
+        _uiState.update { 
+            val newValue = !it.autoSaveToPhotos
+            prefs.edit { putBoolean("auto_save_photos", newValue) }
+            it.copy(autoSaveToPhotos = newValue)
+        }
+    }
+
     fun toggleRemoveAudio() {
         _uiState.update { 
             val temp = it.copy(removeAudio = !it.removeAudio, activePreset = QualityPreset.CUSTOM)
@@ -897,6 +907,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                              compressedSize = finalSize,
                              totalSavedBytes = newTotal
                          ) 
+                     }
+                     if (_uiState.value.autoSaveToPhotos) {
+                         saveToGallery(getApplication())
                      }
                 }
 

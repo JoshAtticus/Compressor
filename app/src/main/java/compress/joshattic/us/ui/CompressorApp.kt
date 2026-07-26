@@ -188,6 +188,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                         SettingsDestination.DISPLAY -> DisplaySettingsScreen(
                             state = state,
                             onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onToggleAutoSaveToPhotos = { viewModel.toggleAutoSaveToPhotos() },
                             onToggleShowBitrate = { viewModel.toggleShowBitrate() },
                             onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
                             onToggleShowStorageSaved = { viewModel.toggleShowStorageSaved() },

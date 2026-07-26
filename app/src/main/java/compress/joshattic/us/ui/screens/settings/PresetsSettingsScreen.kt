@@ -194,7 +194,8 @@ fun PresetsSettingsScreen(
                 title = {
                     Text(
                         stringResource(R.string.tab_presets),
-                        fontWeight = FontWeight.Bold
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(start = 10.dp)
                     )
                 },
                 navigationIcon = {
@@ -236,7 +237,7 @@ fun PresetsSettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(start = 20.dp, end = 4.dp, bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -299,7 +300,7 @@ fun PresetsSettingsScreen(
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(bottom = 8.dp),
+                    .padding(start = 20.dp, end = 4.dp, bottom = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
