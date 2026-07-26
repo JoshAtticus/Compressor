@@ -114,8 +114,8 @@
     <string name="settings_content_desc">設定</string>
     <string name="back">戻る</string>
 
-    <string name="category_general_subtitle">自動保存、ビットレート、単位、節約容量</string>
-    <string name="category_display_subtitle">自動保存、ビットレート、単位、節約容量</string>
+    <string name="category_general_subtitle">自動保存、保存先、ビットレート、単位</string>
+    <string name="category_display_subtitle">自動保存、保存先、ビットレート、単位</string>
     <string name="category_presets_subtitle">プリセット設定オプション</string>
     <string name="category_video_subtitle">デフォルトの動画設定を調整</string>
     <string name="category_audio_subtitle">デフォルトの音声設定を調整</string>

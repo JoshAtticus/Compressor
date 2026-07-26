@@ -114,8 +114,8 @@
     <string name="settings_content_desc">الإعدادات</string>
     <string name="back">رجوع</string>
 
-    <string name="category_general_subtitle">الحفظ التلقائي، معدل البت، الوحدات، المساحة الموفرة</string>
-    <string name="category_display_subtitle">الحفظ التلقائي، معدل البت، الوحدات، المساحة الموفرة</string>
+    <string name="category_general_subtitle">الحفظ التلقائي، موقع الحفظ، معدل البت، الوحدات</string>
+    <string name="category_display_subtitle">الحفظ التلقائي، موقع الحفظ، معدل البت، الوحدات</string>
     <string name="category_presets_subtitle">خيارات تكوين الإعدادات المسبقة</string>
     <string name="category_video_subtitle">تعديل إعدادات الفيديو الافتراضية</string>
     <string name="category_audio_subtitle">تعديل إعدادات الصوت الافتراضية</string>

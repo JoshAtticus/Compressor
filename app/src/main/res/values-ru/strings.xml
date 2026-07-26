@@ -113,7 +113,8 @@
     <string name="settings_content_desc">Настройки</string>
     <string name="back">Назад</string>
 
-    <string name="category_display_subtitle">Битрейт, единицы, сэкономлено места, пресеты</string>
+    <string name="category_general_subtitle">Автосохранение, место сохранения, битрейт, единицы</string>
+    <string name="category_display_subtitle">Автосохранение, место сохранения, битрейт, единицы</string>
     <string name="category_presets_subtitle">Параметры конфигурации пресетов</string>
     <string name="category_video_subtitle">Сжатие видео и параметры кодеков</string>
     <string name="category_audio_subtitle">Битрейт аудио и параметры каналов</string>

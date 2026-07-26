@@ -114,8 +114,8 @@
     <string name="settings_content_desc">설정</string>
     <string name="back">뒤로</string>
 
-    <string name="category_general_subtitle">자동 저장, 비트레이트, 단위, 절약 용량</string>
-    <string name="category_display_subtitle">자동 저장, 비트레이트, 단위, 절약 용량</string>
+    <string name="category_general_subtitle">자동 저장, 저장 위치, 비트레이트, 단위</string>
+    <string name="category_display_subtitle">자동 저장, 저장 위치, 비트레이트, 단위</string>
     <string name="category_presets_subtitle">프리셋 구성 옵션</string>
     <string name="category_video_subtitle">기본 비디오 설정 조정</string>
     <string name="category_audio_subtitle">기본 오디오 설정 조정</string>

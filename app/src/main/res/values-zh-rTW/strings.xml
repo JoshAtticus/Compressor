@@ -113,7 +113,8 @@
     <string name="settings_content_desc">設定</string>
     <string name="back">返回</string>
 
-    <string name="category_display_subtitle">位元率、單位、已節省空間、預設</string>
+    <string name="category_general_subtitle">自動儲存、儲存位置、位元率、單位</string>
+    <string name="category_display_subtitle">自動儲存、儲存位置、位元率、單位</string>
     <string name="category_presets_subtitle">預設設定選項</string>
     <string name="category_video_subtitle">影片壓縮與編解碼器選項</string>
     <string name="category_audio_subtitle">音訊位元率與聲道選項</string>

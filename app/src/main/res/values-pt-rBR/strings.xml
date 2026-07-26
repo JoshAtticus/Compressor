@@ -114,8 +114,8 @@
     <string name="settings_content_desc">Configurações</string>
     <string name="back">Voltar</string>
 
-    <string name="category_general_subtitle">Salvamento automático, taxa de bits, unidades, espaço economizado</string>
-    <string name="category_display_subtitle">Salvamento automático, taxa de bits, unidades, espaço economizado</string>
+    <string name="category_general_subtitle">Salvamento automático, local de salvamento, taxa de bits, unidades</string>
+    <string name="category_display_subtitle">Salvamento automático, local de salvamento, taxa de bits, unidades</string>
     <string name="category_presets_subtitle">Opções de configuração de pré-definições</string>
     <string name="category_video_subtitle">Ajustar configurações de vídeo padrão</string>
     <string name="category_audio_subtitle">Ajustar configurações de áudio padrão</string>

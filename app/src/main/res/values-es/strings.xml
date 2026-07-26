@@ -116,8 +116,8 @@
     <string name="settings_content_desc">Ajustes</string>
     <string name="back">Atrás</string>
 
-    <string name="category_general_subtitle">Guardado automático, tasa de bits, unidades, espacio ahorrado</string>
-    <string name="category_display_subtitle">Guardado automático, tasa de bits, unidades, espacio ahorrado</string>
+    <string name="category_general_subtitle">Guardado automático, ubicación de guardado, tasa de bits, unidades</string>
+    <string name="category_display_subtitle">Guardado automático, ubicación de guardado, tasa de bits, unidades</string>
     <string name="category_presets_subtitle">Opciones de configuración de ajustes preestablecidos</string>
     <string name="category_video_subtitle">Ajustar la configuración de video predeterminada</string>
     <string name="category_audio_subtitle">Ajustar la configuración de audio predeterminada</string>

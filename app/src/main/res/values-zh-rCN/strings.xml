@@ -113,7 +113,8 @@
     <string name="settings_content_desc">设置</string>
     <string name="back">返回</string>
 
-    <string name="category_display_subtitle">码率、单位、已节省空间、预设</string>
+    <string name="category_general_subtitle">自动保存、保存位置、码率、单位</string>
+    <string name="category_display_subtitle">自动保存、保存位置、码率、单位</string>
     <string name="category_presets_subtitle">预设配置选项</string>
     <string name="category_video_subtitle">视频压缩与编解码器选项</string>
     <string name="category_audio_subtitle">音频码率与声道选项</string>

@@ -117,8 +117,8 @@
     <string name="settings_content_desc">Einstellungen</string>
     <string name="back">Zurück</string>
 
-    <string name="category_general_subtitle">Auto-Speichern, Bitrate, Einheiten, Speicher gespart</string>
-    <string name="category_display_subtitle">Auto-Speichern, Bitrate, Einheiten, Speicher gespart</string>
+    <string name="category_general_subtitle">Auto-Speichern, Speicherort, Bitrate, Einheiten</string>
+    <string name="category_display_subtitle">Auto-Speichern, Speicherort, Bitrate, Einheiten</string>
     <string name="category_presets_subtitle">Konfigurationsoptionen für Voreinstellungen</string>
     <string name="category_video_subtitle">Standard-Videoeinstellungen anpassen</string>
     <string name="category_audio_subtitle">Standard-Audioeinstellungen anpassen</string>
