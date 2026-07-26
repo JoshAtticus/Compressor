@@ -33,7 +33,7 @@ import compress.joshattic.us.model.CompressorUiState
 fun InfoCard(state: CompressorUiState) {
     ElevatedCard(
         modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
+        shape = RoundedCornerShape(28.dp),
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow)
     ) {
         Row(
@@ -44,12 +44,13 @@ fun InfoCard(state: CompressorUiState) {
                 Text(
                     stringResource(R.string.original),
                     style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
                     state.formattedOriginalSize,
                     style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.SemiBold
+                    fontWeight = FontWeight.Bold
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
@@ -72,6 +73,7 @@ fun InfoCard(state: CompressorUiState) {
                  Text(
                     stringResource(R.string.estimated),
                     style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
                 
@@ -85,7 +87,7 @@ fun InfoCard(state: CompressorUiState) {
                     Text(
                         text,
                         style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.SemiBold,
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.primary
                     )
                 }

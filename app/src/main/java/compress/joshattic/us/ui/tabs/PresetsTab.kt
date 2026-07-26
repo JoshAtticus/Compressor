@@ -58,7 +58,12 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             .padding(bottom = 80.dp)
     ) {
         
-        Text(stringResource(R.string.quality_preset), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+        Text(
+            stringResource(R.string.quality_preset),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 12.dp)
+        )
 
         val presets = listOf(
             Triple(QualityPreset.HIGH, stringResource(R.string.preset_high), stringResource(R.string.preset_high_desc)),
@@ -111,9 +116,10 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         Text(
                             title, 
                             style = MaterialTheme.typography.titleMedium, 
-                            fontWeight = FontWeight.Medium,
+                            fontWeight = FontWeight.Bold,
                             color = if (isEnabled) Color.Unspecified else MaterialTheme.colorScheme.onSurface.copy(alpha=0.38f)
                         )
+                        Spacer(modifier = Modifier.height(2.dp))
                         Text(
                             sub, 
                             style = MaterialTheme.typography.bodyMedium, 
@@ -129,22 +135,17 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
         
         Spacer(modifier = Modifier.height(24.dp))
 
-        val sizePresets = listOf(
-            10f to stringResource(R.string.size_discord),
-            25f to stringResource(R.string.size_email),
-            50f to stringResource(R.string.size_stories),
-            100f to stringResource(R.string.size_messenger),
-            500f to stringResource(R.string.size_nitro),
-            512f to stringResource(R.string.size_twitter),
-            2048f to stringResource(R.string.size_whatsapp),
-            4096f to stringResource(R.string.size_tg_premium),
-            8192f to stringResource(R.string.size_x_premium)
-        ).filter { (size, _) -> 
-            size < (state.originalSize.toFloat() / (1024f * 1024f))
+        val sizePresets = state.targetSizePresets.filter { preset -> 
+            preset.sizeMb < (state.originalSize.toFloat() / (1024f * 1024f))
         }
 
-        if (sizePresets.isNotEmpty()) {
-            Text(stringResource(R.string.target_size_limits), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+        if (state.showTargetSizePreset && sizePresets.isNotEmpty()) {
+            Text(
+                stringResource(R.string.target_size_limits),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
 
             Row(
                 modifier = Modifier
@@ -153,13 +154,13 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                     .padding(bottom = 8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                sizePresets.forEach { (size, label) ->
+                sizePresets.forEach { preset ->
                     val interactionSource = remember { MutableInteractionSource() }
                     FilterChip(
-                        selected = state.targetSizeMb == size,
+                        selected = state.targetSizeMb == preset.sizeMb,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.setTargetSize(size) 
+                            viewModel.setTargetSize(preset.sizeMb) 
                         },
                         interactionSource = interactionSource,
                         label = { 
@@ -167,11 +168,11 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                                 val unitGb = stringResource(R.string.unit_gb)
                                 val unitMb = stringResource(R.string.unit_mb)
                                 Text(
-                                    if (size >= 1024) "${(size/1024).toInt()} $unitGb" else "${size.toInt()} $unitMb", 
+                                    if (preset.sizeMb >= 1024) "${(preset.sizeMb/1024).toInt()} $unitGb" else "${preset.sizeMb.toInt()} $unitMb", 
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold
                                 )
-                                Text(label, style = MaterialTheme.typography.labelSmall)
+                                Text(preset.label, style = MaterialTheme.typography.labelSmall)
                             }
                         },
                         modifier = Modifier

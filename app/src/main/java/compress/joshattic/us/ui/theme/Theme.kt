@@ -1,6 +1,5 @@
 package compress.joshattic.us.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -12,31 +11,38 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.platform.LocalContext
 
 private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+    primary                = A16BadgeAppGreen,
+    onPrimary              = Android16DarkBackground,
+    background             = Android16DarkBackground,
+    surface                = Android16DarkSurface,
+    surfaceContainer       = Android16DarkSurfaceContainer,
+    surfaceContainerHigh   = Android16DarkSurfaceContainerHigh,
+    surfaceContainerLow    = Android16DarkSurfaceContainerLow,
+    onBackground           = Android16DarkOnSurface,
+    onSurface              = Android16DarkOnSurface,
+    onSurfaceVariant       = Android16DarkOnSurfaceVariant,
+    outline                = Android16DarkOutline,
+    outlineVariant         = Android16DarkOutlineVariant,
 )
 
 private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+    primary                = A16BadgeAppGreen,
+    onPrimary              = Android16LightBackground,
+    background             = Android16LightBackground,
+    surface                = Android16LightSurface,
+    surfaceContainer       = Android16LightSurfaceContainer,
+    surfaceContainerHigh   = Android16LightSurfaceContainerHigh,
+    surfaceContainerLow    = Android16LightSurfaceContainerLow,
+    onBackground           = Android16LightOnSurface,
+    onSurface              = Android16LightOnSurface,
+    onSurfaceVariant       = Android16LightOnSurfaceVariant,
+    outline                = Android16LightOutline,
+    outlineVariant         = Android16LightOutlineVariant,
 )
 
 @Composable
 fun CompressorTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
@@ -45,7 +51,6 @@ fun CompressorTheme(
             val context = LocalContext.current
             if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
         }
-
         darkTheme -> DarkColorScheme
         else -> LightColorScheme
     }

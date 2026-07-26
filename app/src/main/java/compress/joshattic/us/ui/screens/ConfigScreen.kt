@@ -40,6 +40,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compress.joshattic.us.R
@@ -84,21 +85,21 @@ fun ConfigScreen(
                         selected = pagerState.currentPage == 0,
                         onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
                         icon = { Icon(Icons.Default.Settings, contentDescription = null) },
-                        label = { Text(stringResource(R.string.tab_presets)) }
+                        label = { Text(stringResource(R.string.tab_presets), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 1,
                         onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
                         icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
-                        label = { Text(stringResource(R.string.tab_video)) }
+                        label = { Text(stringResource(R.string.tab_video), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 2,
                         onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
                         icon = { Icon(Icons.Default.Star, contentDescription = null) },
-                        label = { Text(stringResource(R.string.tab_audio)) }
+                        label = { Text(stringResource(R.string.tab_audio), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.weight(1f))
                 }
@@ -169,9 +170,9 @@ fun ConfigScreen(
                                     .fillMaxWidth()
                                     .height(56.dp)
                                     .expressiveScale(interactionSource),
-                                shape = RoundedCornerShape(16.dp)
+                                shape = RoundedCornerShape(24.dp)
                             ) {
-                                Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                                Text(stringResource(R.string.start_compression), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                             }
                         }
                     }
@@ -198,7 +199,7 @@ fun ConfigScreen(
                             Tab(
                                 selected = pagerState.currentPage == index,
                                 onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                                text = { Text(title) }
+                                text = { Text(title, fontWeight = FontWeight.Bold) }
                             )
                         }
                     }
@@ -249,9 +250,9 @@ fun ConfigScreen(
                                 .fillMaxWidth()
                                 .height(56.dp)
                                 .expressiveScale(interactionSource),
-                            shape = RoundedCornerShape(16.dp)
+                            shape = RoundedCornerShape(24.dp)
                         ) {
-                            Text(stringResource(R.string.start_compression), fontSize = 16.sp)
+                            Text(stringResource(R.string.start_compression), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
                 }

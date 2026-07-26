@@ -104,4 +104,90 @@
     <string name="dismiss">Schließen</string>
     <string name="view_on_github">Auf GitHub ansehen</string>
 
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="search_settings_hint">Einstellungen suchen</string>
+    <string name="search_icon_desc">Suchen</string>
+    <string name="clear_search_desc">Suche löschen</string>
+    <string name="no_settings_found">Keine Einstellungen gefunden</string>
+    <string name="about_compressor_title">Über Compressor</string>
+    <string name="basic_info_header">Basis-Info</string>
+    <string name="display_settings_title">Anzeige</string>
+    <string name="settings_content_desc">Einstellungen</string>
+    <string name="back">Zurück</string>
+
+    <string name="category_display_subtitle">Bitrate, Einheiten, Speicher gespart, Voreinstellungen</string>
+    <string name="category_presets_subtitle">Konfigurationsoptionen für Voreinstellungen</string>
+    <string name="category_video_subtitle">Videokomprimierung &amp; Codec-Optionen</string>
+    <string name="category_audio_subtitle">Audio-Bitrate &amp; Kanal-Optionen</string>
+    <string name="version_format">Version %1$s</string>
+    
+    <string name="header_basic_info">Basis-Info</string>
+    <string name="header_hardware_codecs">Hardware &amp; Codecs</string>
+    <string name="header_links_actions">Links &amp; Aktionen</string>
+    <string name="info_app_name">App-Name</string>
+    <string name="info_app_version">App-Version</string>
+    <string name="codecs_supported_count">%1$d Codecs auf diesem Gerät unterstützt</string>
+    <string name="enable_all_codecs">Alle Codecs aktivieren</string>
+    <string name="software_encoding">Software-Kodierung</string>
+    
+    <string name="header_display_options">Anzeige-Optionen</string>
+    <string name="show_bitrate_subtitle">Bitratenwerte bei Original- und geschätzten Größen anzeigen</string>
+    <string name="bitrate_unit_mbps_subtitle">Bitrate in Mbit/s anzeigen</string>
+    <string name="bitrate_unit_kbps_subtitle">Bitrate in kbit/s anzeigen</string>
+    <string name="show_storage_saved_title">Gesparten Speicher auf Hauptseite anzeigen</string>
+    <string name="show_storage_saved_subtitle">Gesamten gesparten Speicherplatz unten auf dem Hauptbildschirm anzeigen</string>
+    <string name="show_target_size_preset_title">Zielgrößen-Voreinstellung anzeigen</string>
+    <string name="show_target_size_preset_subtitle">Registerkarte für Qualitätsvoreinstellungen während der Videoeinrichtung anzeigen</string>
+    
+    <string name="placeholder_video_desc">Standardoptionen für Videokomprimierung und Codec kommen bald in einem zukünftigen Update.</string>
+    <string name="placeholder_audio_desc">Standardoptionen für Audio-Bitrate und Kanäle kommen bald in einem zukünftigen Update.</string>
+    <string name="placeholder_presets_desc">Standardoptionen für Voreinstellungen kommen bald in einem zukünftigen Update.</string>
+
+    <string name="are_you_sure">Bist du sicher?</string>
+    <string name="enable_all_codecs_warn_dialog">Das Aktivieren aller Codecs kann zu schlechter Leistung, Kodierungsfehlern, geschmolzenen Akkus und ungewöhnlich warmen Händen führen.</string>
+    <string name="warn_battery_life">Ich HASSE gute Akkulaufzeit</string>
+    <string name="warn_hands_melt">Ich LIEBE es, wenn meine Hände schmelzen</string>
+    <string name="warn_time">Zeit spielt keine Rolle</string>
+    <string name="warn_crashes">Ich LIEBE es, wenn eine App ständig abstürzt</string>
+    <string name="warn_bug_reports">Ich werde KEINE Fehlerberichte öffnen, während dies aktiv ist</string>
+    <string name="warning_count">%1$d Warnung(en) - Tippen für Details</string>
+    <string name="step_away_codecs">Du bist noch %1$d Schritte vom Aktivieren aller Codecs entfernt.</string>
+    <string name="delete_original">Originalvideo löschen</string>
+    <string name="delete_original_success">Video erfolgreich gelöscht</string>
+    <string name="delete_original_failed">Löschen des Videos fehlgeschlagen</string>
+    <string name="delete_confirm_title">Original löschen?</string>
+    <string name="info_device">Gerät</string>
+    <string name="info_android">Android-Version</string>
+    <string name="info_supported_codecs">Unterstützte Codecs</string>
+    <string name="info_content_desc">Info</string>
+    <string name="tab_presets">Presets</string>
+    <string name="tab_video">Video</string>
+    <string name="tab_audio">Audio</string>
+    <!-- Presets Management Keys -->
+    <string name="header_quality_presets">Qualitäts-Voreinstellungen</string>
+    <string name="reset_to_default">Auf Standard zurücksetzen</string>
+    <string name="add_preset">Voreinstellung hinzufügen</string>
+    <string name="reset_presets_to_default">Größen-Voreinstellungen zurücksetzen</string>
+    <string name="reset_presets_confirm_title">Zielgrößen-Voreinstellungen zurücksetzen?</string>
+    <string name="reset_presets_confirm_message">Dadurch werden alle Standard-Zielgrößen-Voreinstellungen wiederhergestellt und benutzerdefinierte entfernt.</string>
+    <string name="add_size_preset_title">Größen-Voreinstellung hinzufügen</string>
+    <string name="edit_size_preset_title">Größen-Voreinstellung bearbeiten</string>
+    <string name="preset_label_hint">Bezeichnung (z. B. Discord, E-Mail)</string>
+    <string name="target_size_mb_hint">Zielgröße (in MB)</string>
+    <string name="save_action">Speichern</string>
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">Standard-Video-Optionen</string>
+    <string name="header_default_audio_options">Standard-Audio-Optionen</string>
+    <string name="default_video_codec">Standard-Videocodec</string>
+    <string name="default_video_codec_desc">Wähle den Standard-Video-Encoder für neue Komprimierungen</string>
+    <string name="default_resolution">Standard-Auflösung</string>
+    <string name="default_framerate">Standard-Bildrate</string>
+    <string name="default_size_ratio">Standard-Zielgrößenverhältnis</string>
+    <string name="default_audio_bitrate">Standard-Audio-Bitrate</string>
+    <string name="default_mute_audio">Audio standardmäßig stummschalten</string>
+    <string name="default_mute_audio_desc">Tonspuren bei neuen Videos automatisch entfernen</string>
+    <string name="default_audio_volume">Standard-Audiolautstärke</string>
+    <string name="reset_video_defaults">Video-Standards zurücksetzen</string>
+    <string name="reset_audio_defaults">Audio-Standards zurücksetzen</string>
 </resources>

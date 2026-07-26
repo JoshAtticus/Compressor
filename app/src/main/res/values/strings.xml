@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">Share</string>
     <string name="saved">Saved</string>
+    <string name="save_action">Save</string>
     <string name="save_to_photos">Save to Photos</string>
     <string name="compress_another_video">Compress Another Video</string>
     <string name="buy_coffee">☕ Happy with Compressor? Buy me a coffee!</string>
@@ -20,6 +21,7 @@
     <string name="preset_low_desc">720p • 30fps</string>
     
     <string name="quality_preset">Change Video Quality</string>
+    <string name="header_quality_presets">Quality Presets</string>
     <string name="target_size_limits">Target Size Presets</string>
     <string name="advanced_options">Advanced Options</string>
     <string name="target_size">Target Size</string>
@@ -117,12 +119,87 @@
     <string name="open_issue_tracker">Open Issue Tracker</string>
     <string name="view_on_github">View on GitHub</string>
 
-    <!-- Previously hardcoded strings -->
     <string name="info_content_desc">Info</string>
     <string name="tab_presets">Presets</string>
     <string name="tab_video">Video</string>
     <string name="tab_audio">Audio</string>
+    
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">Settings</string>
+    <string name="search_settings_hint">Search settings</string>
+    <string name="search_icon_desc">Search</string>
+    <string name="clear_search_desc">Clear search</string>
+    <string name="no_settings_found">No settings found</string>
+    <string name="about_compressor_title">About Compressor</string>
+    <string name="basic_info_header">Basic Info</string>
+    <string name="display_settings_title">Display</string>
+    <string name="settings_content_desc">Settings</string>
+    <string name="back">Back</string>
+
+    <string name="category_display_subtitle">Bitrate, units, storage saved, presets</string>
+    <string name="category_presets_subtitle">Preset configuration options</string>
+    <string name="category_video_subtitle">Video compression &amp; codec options</string>
+    <string name="category_audio_subtitle">Audio bitrate &amp; channel options</string>
+    <string name="version_format">Version %1$s</string>
+    
+    <string name="header_basic_info">Basic info</string>
+    <string name="header_hardware_codecs">Hardware &amp; codecs</string>
+    <string name="header_links_actions">Links &amp; actions</string>
+    <string name="info_app_name">App name</string>
+    <string name="info_app_version">App version</string>
+    <string name="codecs_supported_count">%1$d codecs supported on this device</string>
+    <string name="enable_all_codecs">Enable all codecs</string>
+    <string name="software_encoding">Software Encoding</string>
+    
+    <string name="header_display_options">Display options</string>
+    <string name="show_bitrate_subtitle">Show bitrate values on original and estimated sizes</string>
+    <string name="bitrate_unit_mbps_subtitle">Display bitrate in Mbps</string>
+    <string name="bitrate_unit_kbps_subtitle">Display bitrate in kbps</string>
+    <string name="show_storage_saved_title">Show storage saved on main page</string>
+    <string name="show_storage_saved_subtitle">Display total storage space saved at the bottom of main screen</string>
+    <string name="show_target_size_preset_title">Show target size preset</string>
+    <string name="show_target_size_preset_subtitle">Show quality presets tab during video setup</string>
+    
+    <string name="placeholder_video_desc">Video compression and codec default options are coming soon in a future update.</string>
+    <string name="placeholder_audio_desc">Audio bitrate and channel default options are coming soon in a future update.</string>
+    <string name="placeholder_presets_desc">Preset configuration default options are coming soon in a future update.</string>
+
+    <string name="are_you_sure">Are you sure?</string>
+    <string name="enable_all_codecs_warn_dialog">Enabling all codecs may result in poor performance, encoding failures, thermonuclear war, melting batteries and abnormally warm hands</string>
+    <string name="warn_battery_life">I HATE good battery life</string>
+    <string name="warn_hands_melt">I LOVE when my hands melt</string>
+    <string name="warn_time">Time is no object</string>
+    <string name="warn_crashes">I LOVE when an app crashes constantly</string>
+    <string name="warn_bug_reports">I will NOT open any bug reports while this is on</string>
+    <string name="warning_count">%1$d Warning(s) - Tap for Details</string>
+    <string name="step_away_codecs">You are now %1$d steps away from enabling all codecs.</string>
     <string name="info_device">Device</string>
-    <string name="info_android">Android</string>
+    <string name="info_android">Android Version</string>
     <string name="info_supported_codecs">Supported Codecs</string>
+
+    <!-- Presets Management Keys -->
+    <string name="reset_to_default">Reset to Default</string>
+    <string name="add_preset">Add Preset</string>
+    <string name="reset_presets_to_default">Reset Presets to Default</string>
+    <string name="reset_presets_confirm_title">Reset Target Size Presets?</string>
+    <string name="reset_presets_confirm_message">This will restore all default target size presets and remove custom ones.</string>
+    <string name="add_size_preset_title">Add Size Preset</string>
+    <string name="edit_size_preset_title">Edit Size Preset</string>
+    <string name="preset_label_hint">Preset Label (e.g. Discord, Email)</string>
+    <string name="target_size_mb_hint">Target Size (in MB)</string>
+
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">Default Video Options</string>
+    <string name="header_default_audio_options">Default Audio Options</string>
+    <string name="default_video_codec">Default Video Codec</string>
+    <string name="default_video_codec_desc">Select the default video encoder for new compressions</string>
+    <string name="default_resolution">Default Resolution</string>
+    <string name="default_framerate">Default Framerate</string>
+    <string name="default_size_ratio">Default Target Size Ratio</string>
+    <string name="default_audio_bitrate">Default Audio Bitrate</string>
+    <string name="default_mute_audio">Mute Audio by Default</string>
+    <string name="default_mute_audio_desc">Automatically strip audio tracks from new videos</string>
+    <string name="default_audio_volume">Default Audio Volume</string>
+    <string name="reset_video_defaults">Reset Video Defaults</string>
+    <string name="reset_audio_defaults">Reset Audio Defaults</string>
 </resources>

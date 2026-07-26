@@ -34,7 +34,13 @@ import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
+import compress.joshattic.us.model.DefaultAudioConfig
+import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.QualityPreset
+import compress.joshattic.us.model.QualityPresetConfig
+import compress.joshattic.us.model.TargetSizePreset
+import org.json.JSONArray
+import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -72,10 +78,27 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val saved = prefs.getLong("total_saved_bytes", 0L)
         val showBitrate = prefs.getBoolean("show_bitrate", false)
         val useMbps = prefs.getBoolean("use_mbps", false)
+        val showStorageSaved = prefs.getBoolean("show_storage_saved", true)
+        val showTargetSizePreset = prefs.getBoolean("show_target_size_preset", true)
+        val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
+        val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
+        val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))
+        val sizePresetsList = loadTargetSizePresets()
+        val defaultVideo = loadDefaultVideoConfig()
+        val defaultAudio = loadDefaultAudioConfig()
+
         _uiState.update { it.copy(
             totalSavedBytes = saved, 
             showBitrate = showBitrate, 
-            useMbps = useMbps
+            useMbps = useMbps,
+            showStorageSaved = showStorageSaved,
+            showTargetSizePreset = showTargetSizePreset,
+            highPresetConfig = highConfig,
+            mediumPresetConfig = mediumConfig,
+            lowPresetConfig = lowConfig,
+            targetSizePresets = sizePresetsList,
+            defaultVideoConfig = defaultVideo,
+            defaultAudioConfig = defaultAudio
         ) }
         checkSupportedCodecs()
         clearCache()
@@ -277,32 +300,62 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 e.printStackTrace()
             }
 
-            val defaultTargetMb = if (size > 0) (size / (1024.0 * 1024.0) * 0.7).toFloat() else 10f
+            val current = _uiState.value
+            val videoConfig = current.defaultVideoConfig
+            val audioConfig = current.defaultAudioConfig
 
-            val currentSavedBytes = _uiState.value.totalSavedBytes
-            val showBitrate = _uiState.value.showBitrate
-            val useMbps = _uiState.value.useMbps
-            val supportedCodecs = _uiState.value.supportedCodecs
+            val defaultTargetMb = if (size > 0) (size / (1024.0 * 1024.0) * videoConfig.defaultSizeRatio).toFloat().coerceAtLeast(0.1f) else 10f
 
-            _uiState.value = CompressorUiState(
-                selectedUri = uri,
-                originalSize = size,
-                originalWidth = width,
-                originalHeight = height,
-                originalBitrate = bitrate,
-                originalAudioBitrate = audioBitrate,
-                originalFps = fps,
-                originalVideoMime = videoMime,
-                durationMs = duration,
-                originalName = originalName,
-                targetSizeMb = defaultTargetMb,
-                targetResolutionHeight = height,
-                activePreset = QualityPreset.HIGH,
-                totalSavedBytes = currentSavedBytes,
-                showBitrate = showBitrate,
-                useMbps = useMbps,
-                supportedCodecs = supportedCodecs
-            ).autoAdjust(defaultTargetMb)
+            val preferredCodec = if (current.supportedCodecs.contains(videoConfig.defaultVideoCodec)) videoConfig.defaultVideoCodec
+                                 else if (current.supportedCodecs.contains(MimeTypes.VIDEO_H265)) MimeTypes.VIDEO_H265
+                                 else MimeTypes.VIDEO_H264
+
+            val isVertical = height > width
+            fun getTargetHeight(targetShortSide: Int): Int {
+                if (width <= 0 || height <= 0) return height
+                if (isVertical) {
+                    val targetWidth = minOf(targetShortSide, width)
+                    return (targetWidth.toDouble() * height / width).toInt()
+                } else {
+                    return minOf(targetShortSide, height)
+                }
+            }
+
+            val targetHeight = if (videoConfig.defaultTargetResolutionHeight > 0) getTargetHeight(videoConfig.defaultTargetResolutionHeight) else height
+            val targetFpsVal = if (videoConfig.defaultTargetFps > 0 && fps >= videoConfig.defaultTargetFps) videoConfig.defaultTargetFps else 0
+
+            _uiState.update { state ->
+                state.copy(
+                    selectedUri = uri,
+                    originalSize = size,
+                    originalWidth = width,
+                    originalHeight = height,
+                    originalBitrate = bitrate,
+                    originalAudioBitrate = audioBitrate,
+                    originalFps = fps,
+                    originalVideoMime = videoMime,
+                    durationMs = duration,
+                    originalName = originalName,
+                    targetSizeMb = defaultTargetMb,
+                    targetResolutionHeight = targetHeight,
+                    targetFps = targetFpsVal,
+                    videoCodec = preferredCodec,
+                    useH265 = preferredCodec == MimeTypes.VIDEO_H265,
+                    activePreset = QualityPreset.CUSTOM,
+                    audioBitrate = audioConfig.defaultAudioBitrate,
+                    removeAudio = audioConfig.defaultRemoveAudio,
+                    audioVolume = audioConfig.defaultAudioVolume,
+                    isCompressing = false,
+                    progress = 0f,
+                    compressedUri = null,
+                    compressedSize = 0L,
+                    currentOutputSize = 0L,
+                    error = null,
+                    errorLog = null,
+                    saveSuccess = false,
+                    hasShared = false
+                ).autoAdjust(defaultTargetMb)
+            }
         }
     }
     
@@ -329,45 +382,245 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 return minOf(targetShortSide, current.originalHeight)
             }
         }
-        
-        when(preset) {
-            QualityPreset.HIGH -> {
-                 _uiState.update { 
-                     it.copy(
-                         activePreset = QualityPreset.HIGH,
-                         targetResolutionHeight = current.originalHeight,
-                         targetFps = 0,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f),
-                         audioBitrate = 320_000,
-                         removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.7).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
-                 }
+
+        val config = when(preset) {
+            QualityPreset.HIGH -> current.highPresetConfig
+            QualityPreset.MEDIUM -> current.mediumPresetConfig
+            QualityPreset.LOW -> current.lowPresetConfig
+            else -> null
+        }
+
+        if (config != null) {
+            val targetHeight = if (config.resolutionShortSide > 0) getTargetHeight(config.resolutionShortSide) else current.originalHeight
+            val targetFpsVal = if (config.targetFps > 0 && current.originalFps >= config.targetFps) config.targetFps else 0
+            val targetMb = (current.originalSize / (1024.0 * 1024.0) * config.sizeRatio).toFloat().coerceAtLeast(0.1f)
+
+            _uiState.update { 
+                it.copy(
+                    activePreset = preset,
+                    targetResolutionHeight = targetHeight,
+                    targetFps = targetFpsVal,
+                    targetSizeMb = targetMb,
+                    audioBitrate = config.audioBitrate,
+                    removeAudio = false
+                ).autoAdjust(targetMb, lockAudioBitrate = true, allowUpward = false)
             }
-            QualityPreset.MEDIUM -> {
-                 _uiState.update { 
-                     it.copy(
-                         activePreset = QualityPreset.MEDIUM,
-                         targetResolutionHeight = getTargetHeight(1080),
-                         targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f),
-                         audioBitrate = 192_000,
-                         removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.4).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
-                 }
+        }
+    }
+
+    fun updateHighPresetConfig(config: QualityPresetConfig) {
+        _uiState.update { it.copy(highPresetConfig = config) }
+        saveQualityPresetConfig("preset_high", config)
+    }
+
+    fun updateMediumPresetConfig(config: QualityPresetConfig) {
+        _uiState.update { it.copy(mediumPresetConfig = config) }
+        saveQualityPresetConfig("preset_medium", config)
+    }
+
+    fun updateLowPresetConfig(config: QualityPresetConfig) {
+        _uiState.update { it.copy(lowPresetConfig = config) }
+        saveQualityPresetConfig("preset_low", config)
+    }
+
+    fun resetQualityPresets() {
+        val defaultConfigHigh = QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000)
+        val defaultConfigMedium = QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000)
+        val defaultConfigLow = QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000)
+        _uiState.update { it.copy(
+            highPresetConfig = defaultConfigHigh,
+            mediumPresetConfig = defaultConfigMedium,
+            lowPresetConfig = defaultConfigLow
+        ) }
+        prefs.edit().remove("preset_high").remove("preset_medium").remove("preset_low").apply()
+    }
+
+    fun addTargetSizePreset(label: String, sizeMb: Float) {
+        val newPreset = compress.joshattic.us.model.TargetSizePreset(
+            id = "custom_" + System.currentTimeMillis(),
+            sizeMb = sizeMb,
+            label = label,
+            isCustom = true
+        )
+        val newList = (_uiState.value.targetSizePresets + newPreset).sortedBy { it.sizeMb }
+        _uiState.update { it.copy(targetSizePresets = newList) }
+        saveTargetSizePresets(newList)
+    }
+
+    fun updateTargetSizePreset(id: String, label: String, sizeMb: Float) {
+        val newList = _uiState.value.targetSizePresets.map { preset ->
+            if (preset.id == id) preset.copy(label = label, sizeMb = sizeMb)
+            else preset
+        }.sortedBy { it.sizeMb }
+        _uiState.update { it.copy(targetSizePresets = newList) }
+        saveTargetSizePresets(newList)
+    }
+
+    fun deleteTargetSizePreset(id: String) {
+        val newList = _uiState.value.targetSizePresets.filterNot { it.id == id }.sortedBy { it.sizeMb }
+        _uiState.update { it.copy(targetSizePresets = newList) }
+        saveTargetSizePresets(newList)
+    }
+
+    fun resetTargetSizePresets() {
+        val newList = compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
+        _uiState.update { it.copy(targetSizePresets = newList) }
+        prefs.edit().remove("target_size_presets").apply()
+    }
+
+    fun updateDefaultVideoConfig(config: DefaultVideoConfig) {
+        _uiState.update { it.copy(defaultVideoConfig = config) }
+        saveDefaultVideoConfig(config)
+    }
+
+    fun resetDefaultVideoConfig() {
+        val defaultConfig = DefaultVideoConfig()
+        _uiState.update { it.copy(defaultVideoConfig = defaultConfig) }
+        prefs.edit().remove("default_video_config").apply()
+    }
+
+    fun updateDefaultAudioConfig(config: DefaultAudioConfig) {
+        _uiState.update { it.copy(defaultAudioConfig = config) }
+        saveDefaultAudioConfig(config)
+    }
+
+    fun resetDefaultAudioConfig() {
+        val defaultConfig = DefaultAudioConfig()
+        _uiState.update { it.copy(defaultAudioConfig = defaultConfig) }
+        prefs.edit().remove("default_audio_config").apply()
+    }
+
+    private fun saveDefaultVideoConfig(config: DefaultVideoConfig) {
+        val obj = JSONObject().apply {
+            put("defaultVideoCodec", config.defaultVideoCodec)
+            put("defaultTargetResolutionHeight", config.defaultTargetResolutionHeight)
+            put("defaultTargetFps", config.defaultTargetFps)
+            put("defaultSizeRatio", config.defaultSizeRatio.toDouble())
+        }
+        prefs.edit().putString("default_video_config", obj.toString()).apply()
+    }
+
+    private fun loadDefaultVideoConfig(): DefaultVideoConfig {
+        val str = prefs.getString("default_video_config", null) ?: return DefaultVideoConfig()
+        return try {
+            val obj = JSONObject(str)
+            DefaultVideoConfig(
+                defaultVideoCodec = obj.optString("defaultVideoCodec", MimeTypes.VIDEO_H265),
+                defaultTargetResolutionHeight = obj.optInt("defaultTargetResolutionHeight", 0),
+                defaultTargetFps = obj.optInt("defaultTargetFps", 0),
+                defaultSizeRatio = obj.optDouble("defaultSizeRatio", 0.7).toFloat()
+            )
+        } catch (e: Exception) {
+            DefaultVideoConfig()
+        }
+    }
+
+    private fun saveDefaultAudioConfig(config: DefaultAudioConfig) {
+        val obj = JSONObject().apply {
+            put("defaultAudioBitrate", config.defaultAudioBitrate)
+            put("defaultRemoveAudio", config.defaultRemoveAudio)
+            put("defaultAudioVolume", config.defaultAudioVolume.toDouble())
+        }
+        prefs.edit().putString("default_audio_config", obj.toString()).apply()
+    }
+
+    private fun loadDefaultAudioConfig(): DefaultAudioConfig {
+        val str = prefs.getString("default_audio_config", null) ?: return DefaultAudioConfig()
+        return try {
+            val obj = JSONObject(str)
+            DefaultAudioConfig(
+                defaultAudioBitrate = obj.optInt("defaultAudioBitrate", 128_000),
+                defaultRemoveAudio = obj.optBoolean("defaultRemoveAudio", false),
+                defaultAudioVolume = obj.optDouble("defaultAudioVolume", 1.0).toFloat()
+            )
+        } catch (e: Exception) {
+            DefaultAudioConfig()
+        }
+    }
+
+    private fun saveQualityPresetConfig(key: String, config: QualityPresetConfig) {
+        val obj = JSONObject().apply {
+            put("resolutionShortSide", config.resolutionShortSide)
+            put("targetFps", config.targetFps)
+            put("sizeRatio", config.sizeRatio.toDouble())
+            put("audioBitrate", config.audioBitrate)
+        }
+        prefs.edit().putString(key, obj.toString()).apply()
+    }
+
+    private fun loadQualityPresetConfig(key: String, default: QualityPresetConfig): QualityPresetConfig {
+        val str = prefs.getString(key, null) ?: return default
+        return try {
+            val obj = JSONObject(str)
+            QualityPresetConfig(
+                resolutionShortSide = obj.getInt("resolutionShortSide"),
+                targetFps = obj.getInt("targetFps"),
+                sizeRatio = obj.getDouble("sizeRatio").toFloat(),
+                audioBitrate = obj.getInt("audioBitrate")
+            )
+        } catch (e: Exception) {
+            try {
+                val parts = str.split(",")
+                QualityPresetConfig(
+                    resolutionShortSide = parts[0].toInt(),
+                    targetFps = parts[1].toInt(),
+                    sizeRatio = parts[2].toFloat(),
+                    audioBitrate = parts[3].toInt()
+                )
+            } catch (ex: Exception) {
+                default
             }
-            QualityPreset.LOW -> {
-                  _uiState.update { 
-                     it.copy(
-                         activePreset = QualityPreset.LOW,
-                         targetResolutionHeight = getTargetHeight(720),
-                         targetFps = if (current.originalFps < 30) 0 else 30,
-                         targetSizeMb = (current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f),
-                         audioBitrate = 128_000,
-                         removeAudio = false
-                     ).autoAdjust((current.originalSize / (1024.0 * 1024.0) * 0.2).toFloat().coerceAtLeast(0.1f), lockAudioBitrate = true, allowUpward = false)
-                 }
+        }
+    }
+
+    private fun saveTargetSizePresets(list: List<compress.joshattic.us.model.TargetSizePreset>) {
+        val array = JSONArray()
+        for (preset in list) {
+            val obj = JSONObject().apply {
+                put("id", preset.id)
+                put("sizeMb", preset.sizeMb.toDouble())
+                put("label", preset.label)
+                put("isCustom", preset.isCustom)
             }
-            else -> {}
+            array.put(obj)
+        }
+        prefs.edit().putString("target_size_presets", array.toString()).apply()
+    }
+
+    private fun loadTargetSizePresets(): List<compress.joshattic.us.model.TargetSizePreset> {
+        val str = prefs.getString("target_size_presets", null) ?: return compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
+        return try {
+            if (str.startsWith("[")) {
+                val array = JSONArray(str)
+                val list = mutableListOf<compress.joshattic.us.model.TargetSizePreset>()
+                for (i in 0 until array.length()) {
+                    val obj = array.getJSONObject(i)
+                    list.add(
+                        compress.joshattic.us.model.TargetSizePreset(
+                            id = obj.getString("id"),
+                            sizeMb = obj.getDouble("sizeMb").toFloat(),
+                            label = obj.getString("label"),
+                            isCustom = obj.optBoolean("isCustom", false)
+                        )
+                    )
+                }
+                list.ifEmpty { compress.joshattic.us.model.defaultTargetSizePresets }.sortedBy { it.sizeMb }
+            } else {
+                // Legacy split parser fallback
+                str.split(";\n", ";").mapNotNull { itemStr ->
+                    val parts = itemStr.trim().split("|")
+                    if (parts.size >= 4) {
+                        compress.joshattic.us.model.TargetSizePreset(
+                            id = parts[0],
+                            sizeMb = parts[1].toFloat(),
+                            label = parts[2],
+                            isCustom = parts[3].trim().toBoolean()
+                        )
+                    } else null
+                }.ifEmpty { compress.joshattic.us.model.defaultTargetSizePresets }.sortedBy { it.sizeMb }
+            }
+        } catch (e: Exception) {
+            compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
         }
     }
 
@@ -399,6 +652,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val newValue = !it.useMbps
             prefs.edit { putBoolean("use_mbps", newValue) }
             it.copy(useMbps = newValue)
+        }
+    }
+
+    fun toggleShowStorageSaved() {
+        _uiState.update { 
+            val newValue = !it.showStorageSaved
+            prefs.edit { putBoolean("show_storage_saved", newValue) }
+            it.copy(showStorageSaved = newValue)
+        }
+    }
+
+    fun toggleShowTargetSizePreset() {
+        _uiState.update { 
+            val newValue = !it.showTargetSizePreset
+            prefs.edit { putBoolean("show_target_size_preset", newValue) }
+            it.copy(showTargetSizePreset = newValue)
         }
     }
 
@@ -477,14 +746,24 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val defaultCodec = if (supportedCodecs.contains(MimeTypes.VIDEO_H265)) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
         val useH265 = defaultCodec == MimeTypes.VIDEO_H265
         
-        _uiState.value = CompressorUiState(
-            totalSavedBytes = savedBytes,
-            supportedCodecs = supportedCodecs,
-            showBitrate = showBitrate,
-            useMbps = useMbps,
-            videoCodec = defaultCodec,
-            useH265 = useH265
-        )
+        _uiState.update {
+            CompressorUiState(
+                totalSavedBytes = savedBytes,
+                supportedCodecs = supportedCodecs,
+                showBitrate = showBitrate,
+                useMbps = useMbps,
+                showStorageSaved = current.showStorageSaved,
+                showTargetSizePreset = current.showTargetSizePreset,
+                allCodecsEnabled = current.allCodecsEnabled,
+                allCodecsUnlocked = current.allCodecsUnlocked,
+                highPresetConfig = current.highPresetConfig,
+                mediumPresetConfig = current.mediumPresetConfig,
+                lowPresetConfig = current.lowPresetConfig,
+                targetSizePresets = current.targetSizePresets,
+                videoCodec = defaultCodec,
+                useH265 = useH265
+            )
+        }
     }
 
     fun startCompression(context: Context) = viewModelScope.launch(Dispatchers.Main) {

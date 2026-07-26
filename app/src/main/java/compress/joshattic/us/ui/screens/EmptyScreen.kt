@@ -17,12 +17,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compress.joshattic.us.R
 import compress.joshattic.us.utils.scaleOnPress
 
 @Composable
-fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
+fun EmptyScreen(
+    totalSaved: String, 
+    showStorageSaved: Boolean = true,
+    onPick: () -> Unit
+) {
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
@@ -38,15 +43,17 @@ fun EmptyScreen(totalSaved: String, onPick: () -> Unit) {
             Text(
                 stringResource(R.string.select_video),
                 style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant
             )
         }
 
-        if (totalSaved != "0.0 MB" && totalSaved != "0 MB") {
+        if (showStorageSaved && totalSaved != "0.0 MB" && totalSaved != "0 MB") {
              Text(
                 text = stringResource(R.string.total_saved, totalSaved),
                 style = MaterialTheme.typography.labelMedium,
-                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.4f),
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f),
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .padding(bottom = 32.dp)

@@ -18,9 +18,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Warning
@@ -46,7 +48,10 @@ import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.utils.scaleOnPress
@@ -94,13 +99,16 @@ fun ResultScreen(
         Text(
             stringResource(R.string.compression_complete),
             style = MaterialTheme.typography.headlineMedium,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             "${state.formattedOriginalSize} → ${state.formattedCompressedSize}",
             style = MaterialTheme.typography.titleMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
+            fontWeight = FontWeight.Bold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            textAlign = TextAlign.Center
         )
         
         val reduction = if (state.originalSize > 0) ((state.originalSize - state.compressedSize).toFloat() / state.originalSize * 100).toInt() else 0
@@ -122,29 +130,30 @@ fun ResultScreen(
                 colors = ButtonDefaults.outlinedButtonColors(
                     contentColor = MaterialTheme.colorScheme.error
                 ),
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error)
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.error),
+                shape = RoundedCornerShape(24.dp)
             ) {
                  Icon(Icons.Outlined.Warning, contentDescription = null)
                  Spacer(modifier = Modifier.width(8.dp))
-                 Text("${state.warnings.size} Warning${if (state.warnings.size > 1) "s" else ""} - Tap for Details")
+                 Text("${state.warnings.size} Warning${if (state.warnings.size > 1) "s" else ""} - Tap for Details", fontWeight = FontWeight.Bold)
             }
             
             if (showWarningDialog) {
                 AlertDialog(
                     onDismissRequest = { showWarningDialog = false },
                     icon = { Icon(Icons.Outlined.Warning, contentDescription = null, tint = MaterialTheme.colorScheme.error) },
-                    title = { Text(stringResource(R.string.warning_details)) },
+                    title = { Text(stringResource(R.string.warning_details), fontWeight = FontWeight.Bold) },
                     text = {
                         Column {
                             state.warnings.forEach { warning ->
-                                Text("• $warning", style = MaterialTheme.typography.bodyMedium)
+                                Text("• $warning", style = MaterialTheme.typography.bodyMedium, fontWeight = FontWeight.SemiBold)
                                 Spacer(modifier = Modifier.height(8.dp))
                             }
                         }
                     },
                     confirmButton = {
                         TextButton(onClick = { showWarningDialog = false }) {
-                            Text(stringResource(R.string.dismiss))
+                            Text(stringResource(R.string.dismiss), fontWeight = FontWeight.Bold)
                         }
                     }
                 )
@@ -153,27 +162,48 @@ fun ResultScreen(
         
         Spacer(modifier = Modifier.height(48.dp))
         
-        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(16.dp)) {
+        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Button(
                 onClick = onShare,
-                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onShare)
+                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onShare),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                shape = RoundedCornerShape(24.dp)
             ) {
-                Icon(Icons.Default.Share, contentDescription = null)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.share))
+                Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
+                Spacer(modifier = Modifier.width(4.dp))
+                Text(
+                    stringResource(R.string.share),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 14.sp,
+                    maxLines = 1
+                )
             }
             
             FilledTonalButton(
                 onClick = onSave,
                 modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onSave),
-                enabled = !state.saveSuccess
+                enabled = !state.saveSuccess,
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                shape = RoundedCornerShape(24.dp)
             ) {
                 if (state.saveSuccess) {
-                    Icon(Icons.Default.Check, contentDescription = null)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.saved))
+                    Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.saved),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        maxLines = 1
+                    )
                 } else {
-                    Text(stringResource(R.string.save_to_photos))
+                    Icon(Icons.Default.Download, contentDescription = null, modifier = Modifier.size(18.dp))
+                    Spacer(modifier = Modifier.width(4.dp))
+                    Text(
+                        stringResource(R.string.save_to_photos),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.5.sp,
+                        maxLines = 1
+                    )
                 }
             }
         }
@@ -181,7 +211,7 @@ fun ResultScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         TextButton(onClick = onCompressAnother) {
-            Text(stringResource(R.string.compress_another_video))
+            Text(stringResource(R.string.compress_another_video), fontWeight = FontWeight.Bold)
         }
         
         Spacer(modifier = Modifier.height(24.dp))
@@ -192,6 +222,7 @@ fun ResultScreen(
              Text(
                 stringResource(R.string.buy_coffee),
                 style = MaterialTheme.typography.labelMedium,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.tertiary
             )
         }

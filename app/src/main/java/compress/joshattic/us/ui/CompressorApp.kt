@@ -45,15 +45,23 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.core.content.FileProvider
 import kotlinx.coroutines.flow.collect
+import androidx.compose.material.icons.outlined.Settings
 import compress.joshattic.us.R
-import compress.joshattic.us.ui.components.InfoDialog
 import compress.joshattic.us.ui.screens.CompressionFailedScreen
 import compress.joshattic.us.ui.screens.CompressingScreen
 import compress.joshattic.us.ui.screens.ConfigScreen
 import compress.joshattic.us.ui.screens.EmptyScreen
 import compress.joshattic.us.ui.screens.ResultScreen
+import compress.joshattic.us.ui.screens.settings.AboutScreen
+import compress.joshattic.us.ui.screens.settings.DisplaySettingsScreen
+import compress.joshattic.us.ui.screens.settings.PlaceholderSettingsScreen
+import compress.joshattic.us.ui.screens.settings.SettingsScreen
 import compress.joshattic.us.viewmodel.CompressorViewModel
 import java.io.File
+
+enum class SettingsDestination {
+    MAIN, ABOUT, DISPLAY, PRESETS, VIDEO, AUDIO
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,9 +70,8 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val context = LocalContext.current
     val window = (context as? ComponentActivity)?.window
 
-    val clipboardManager = LocalClipboardManager.current
-    var showInfoDialog by remember { mutableStateOf(false) }
     var forceShowResult by remember { mutableStateOf(false) }
+    var currentSettingsDestination by remember { mutableStateOf<SettingsDestination?>(null) }
     
     // Reset forceShowResult when we leave the result screen
     LaunchedEffect(state.compressedUri) {
@@ -83,11 +90,18 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         }
     }
 
-    PredictiveBackHandler(enabled = state.selectedUri != null) { progress ->
+    val isSettingsOpen = currentSettingsDestination != null
+    PredictiveBackHandler(enabled = isSettingsOpen || state.selectedUri != null) { progress ->
         try {
             progress.collect()
         } finally {
-            if (state.isCompressing) {
+            if (isSettingsOpen) {
+                if (currentSettingsDestination == SettingsDestination.MAIN) {
+                    currentSettingsDestination = null
+                } else {
+                    currentSettingsDestination = SettingsDestination.MAIN
+                }
+            } else if (state.isCompressing) {
                 viewModel.cancelCompression()
             } else {
                 viewModel.reset()
@@ -124,128 +138,173 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     }
 
     AnimatedContent(
-        targetState = state.isCompressing,
+        targetState = when {
+            state.isCompressing -> "compressing"
+            currentSettingsDestination != null -> "settings"
+            else -> "main"
+        },
         transitionSpec = {
-            if (targetState) {
+            if (targetState == "settings" || targetState == "compressing") {
                 slideInVertically { h -> h } + fadeIn() togetherWith fadeOut()
             } else {
                 fadeIn() togetherWith slideOutVertically { h -> h }
             }
         },
-        label = "MainContent"
-    ) { isCompressing ->
-        if (isCompressing) {
-            CompressingScreen(state = state, onCancel = { viewModel.cancelCompression() })
-        } else {
-            Scaffold(
-                topBar = {
-                    CenterAlignedTopAppBar(
-                        title = { 
-                            Text(
-                                stringResource(R.string.title_compressor), 
-                                style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
-                            ) 
-                        },
-                        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                            containerColor = MaterialTheme.colorScheme.background
-                        ),
-                        actions = {
-                            IconButton(onClick = { showInfoDialog = true }) {
-                                Icon(Icons.Outlined.Info, contentDescription = stringResource(R.string.info_content_desc), tint = MaterialTheme.colorScheme.onSurface)
-                            }
+        label = "TopLevelContent"
+    ) { destination ->
+        when (destination) {
+            "compressing" -> {
+                CompressingScreen(state = state, onCancel = { viewModel.cancelCompression() })
+            }
+            "settings" -> {
+                AnimatedContent(
+                    targetState = currentSettingsDestination,
+                    transitionSpec = {
+                        if (targetState != SettingsDestination.MAIN) {
+                            slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
+                        } else {
+                            slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
                         }
-                    )
+                    },
+                    label = "SettingsFlow"
+                ) { settingsDest ->
+                    when (settingsDest) {
+                        SettingsDestination.MAIN -> SettingsScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = null },
+                            onNavigateToAbout = { currentSettingsDestination = SettingsDestination.ABOUT },
+                            onNavigateToDisplay = { currentSettingsDestination = SettingsDestination.DISPLAY },
+                            onNavigateToPresets = { currentSettingsDestination = SettingsDestination.PRESETS },
+                            onNavigateToVideo = { currentSettingsDestination = SettingsDestination.VIDEO },
+                            onNavigateToAudio = { currentSettingsDestination = SettingsDestination.AUDIO }
+                        )
+                        SettingsDestination.ABOUT -> AboutScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onEnableAllCodecs = { viewModel.enableAllCodecsFeature() },
+                            onDisableAllCodecs = { viewModel.disableAllCodecsFeature() },
+                            isSoftwareCodec = { viewModel.isSoftwareCodec(it) }
+                        )
+                        SettingsDestination.DISPLAY -> DisplaySettingsScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onToggleShowBitrate = { viewModel.toggleShowBitrate() },
+                            onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
+                            onToggleShowStorageSaved = { viewModel.toggleShowStorageSaved() },
+                            onToggleShowTargetSizePreset = { viewModel.toggleShowTargetSizePreset() }
+                        )
+                        SettingsDestination.PRESETS -> compress.joshattic.us.ui.screens.settings.PresetsSettingsScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onUpdateHighPreset = { viewModel.updateHighPresetConfig(it) },
+                            onUpdateMediumPreset = { viewModel.updateMediumPresetConfig(it) },
+                            onUpdateLowPreset = { viewModel.updateLowPresetConfig(it) },
+                            onResetQualityPresets = { viewModel.resetQualityPresets() },
+                            onAddTargetSizePreset = { label, size -> viewModel.addTargetSizePreset(label, size) },
+                            onUpdateTargetSizePreset = { id, label, size -> viewModel.updateTargetSizePreset(id, label, size) },
+                            onDeleteTargetSizePreset = { id -> viewModel.deleteTargetSizePreset(id) },
+                            onResetTargetSizePresets = { viewModel.resetTargetSizePresets() }
+                        )
+                        SettingsDestination.VIDEO -> compress.joshattic.us.ui.screens.settings.VideoSettingsScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onUpdateVideoConfig = { viewModel.updateDefaultVideoConfig(it) },
+                            onResetVideoConfig = { viewModel.resetDefaultVideoConfig() }
+                        )
+                        SettingsDestination.AUDIO -> compress.joshattic.us.ui.screens.settings.AudioSettingsScreen(
+                            state = state,
+                            onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                            onUpdateAudioConfig = { viewModel.updateDefaultAudioConfig(it) },
+                            onResetAudioConfig = { viewModel.resetDefaultAudioConfig() }
+                        )
+                        null -> {}
+                    }
                 }
-            ) { innerPadding ->
-                Box(modifier = Modifier.padding(innerPadding)) {
-                    AnimatedContent(
-                        targetState = when {
-                            state.selectedUri == null -> 0
-                            state.compressedUri != null || state.error != null -> 2
-                            else -> 1
-                        },
-                        transitionSpec = {
-                            if (targetState > initialState) {
-                                slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
-                            } else {
-                                slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
-                            }
-                        },
-                        label = "FlowContent"
-                    ) { index ->
-                        when(index) {
-                            0 -> EmptyScreen(
-                                totalSaved = state.formattedTotalSaved,
-                                onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
-                            )
-                            2 -> {
-                                if (state.error != null) {
-                                     CompressionFailedScreen(
-                                        state = state,
-                                        onBack = { viewModel.reset() },
-                                        onSaveAnyway = { /* No-op for actual errors */ }
-                                    )
-                                } else if (state.compressedSize > state.originalSize && !forceShowResult) {
-                                    CompressionFailedScreen(
-                                        state = state,
-                                        onBack = { viewModel.reset() },
-                                        onSaveAnyway = { forceShowResult = true }
-                                    )
-                                } else {
-                                    ResultScreen(
-                                        state = state,
-                                        onShare = { 
-                                            shareVideo(state.compressedUri) 
-                                            viewModel.markAsShared()
-                                        },
-                                        onSave = { 
-                                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                                                viewModel.saveToGallery(context)
-                                            } else {
-                                                val fileName = state.compressedUri?.lastPathSegment ?: "CompressedVideo.mp4"
-                                                createDocumentLauncher.launch(fileName)
-                                            }
-                                        },
-                                        onCompressAnother = { viewModel.reset() },
-                                        onBack = { viewModel.reset() }
+            }
+            else -> {
+                Scaffold(
+                    topBar = {
+                        CenterAlignedTopAppBar(
+                            title = { 
+                                Text(
+                                    stringResource(R.string.title_compressor), 
+                                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                                ) 
+                            },
+                            colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+                                containerColor = MaterialTheme.colorScheme.background
+                            ),
+                            actions = {
+                                IconButton(onClick = { currentSettingsDestination = SettingsDestination.MAIN }) {
+                                    Icon(
+                                        imageVector = Icons.Outlined.Settings, 
+                                        contentDescription = stringResource(R.string.settings_content_desc), 
+                                        tint = MaterialTheme.colorScheme.onSurface
                                     )
                                 }
                             }
-                            else -> ConfigScreen(state, viewModel, context)
+                        )
+                    }
+                ) { innerPadding ->
+                    Box(modifier = Modifier.padding(innerPadding)) {
+                        AnimatedContent(
+                            targetState = when {
+                                state.selectedUri == null -> 0
+                                state.compressedUri != null || state.error != null -> 2
+                                else -> 1
+                            },
+                            transitionSpec = {
+                                if (targetState > initialState) {
+                                    slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
+                                } else {
+                                    slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
+                                }
+                            },
+                            label = "FlowContent"
+                        ) { index ->
+                            when(index) {
+                                0 -> EmptyScreen(
+                                    totalSaved = state.formattedTotalSaved,
+                                    showStorageSaved = state.showStorageSaved,
+                                    onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
+                                )
+                                2 -> {
+                                    if (state.error != null) {
+                                         CompressionFailedScreen(
+                                            state = state,
+                                            onBack = { viewModel.reset() },
+                                            onSaveAnyway = { /* No-op for actual errors */ }
+                                        )
+                                    } else if (state.compressedSize > state.originalSize && !forceShowResult) {
+                                        CompressionFailedScreen(
+                                            state = state,
+                                            onBack = { viewModel.reset() },
+                                            onSaveAnyway = { forceShowResult = true }
+                                        )
+                                    } else {
+                                        ResultScreen(
+                                            state = state,
+                                            onShare = { 
+                                                shareVideo(state.compressedUri) 
+                                                viewModel.markAsShared()
+                                            },
+                                            onSave = { 
+                                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                                                    viewModel.saveToGallery(context)
+                                                } else {
+                                                    val fileName = state.compressedUri?.lastPathSegment ?: "CompressedVideo.mp4"
+                                                    createDocumentLauncher.launch(fileName)
+                                                }
+                                            },
+                                            onCompressAnother = { viewModel.reset() },
+                                            onBack = { viewModel.reset() }
+                                        )
+                                    }
+                                }
+                                else -> ConfigScreen(state, viewModel, context)
+                            }
                         }
                     }
-                }
-                
-                if (showInfoDialog) {
-                    val infoText = "App Version: ${state.appInfoVersion}\n" +
-                                   "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL} (Android ${android.os.Build.VERSION.RELEASE})\n" +
-                                   "Supported Encoders: ${state.supportedCodecs.joinToString()}"
-                                   
-                    InfoDialog(
-                        state = state,
-                        onDismiss = { finalEnabled -> 
-                            showInfoDialog = false 
-                            if (!finalEnabled && state.allCodecsEnabled) {
-                                viewModel.disableAllCodecsFeature()
-                            }
-                        },
-                        onCopy = { 
-                            clipboardManager.setText(AnnotatedString(infoText))
-                        },
-                        onShare = {
-                             val sendIntent = Intent().apply {
-                                action = Intent.ACTION_SEND
-                                putExtra(Intent.EXTRA_TEXT, infoText)
-                                type = "text/plain"
-                            }
-                            val shareIntent = Intent.createChooser(sendIntent, null)
-                            context.startActivity(shareIntent)
-                        },
-                        onToggleShowBitrate = { viewModel.toggleShowBitrate() },
-                        onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
-                        onEnableAllCodecs = { viewModel.enableAllCodecsFeature() },
-                        isSoftwareCodec = { viewModel.isSoftwareCodec(it) }
-                    )
                 }
             }
         }

@@ -103,7 +103,7 @@ fun CompressingScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .aspectRatio(16f/9f)
-                    .clip(RoundedCornerShape(24.dp))
+                    .clip(RoundedCornerShape(28.dp))
                     .background(Color.DarkGray)
             ) {
                 if (thumbnail != null) {
@@ -161,7 +161,7 @@ fun CompressingScreen(
             
             Card(
                 modifier = Modifier.fillMaxWidth(),
-                shape = RoundedCornerShape(16.dp),
+                shape = RoundedCornerShape(24.dp),
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainer)
             ) {
                 Column(
@@ -204,7 +204,7 @@ fun CompressingScreen(
                 Text(
                     stringResource(R.string.cancel),
                     fontSize = 18.sp,
-                    fontWeight = FontWeight.Medium
+                    fontWeight = FontWeight.Bold
                 )
             }
             

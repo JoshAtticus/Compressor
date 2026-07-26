@@ -1,51 +1,72 @@
 <resources>
     <string name="app_name">Compressor</string>
+    <string name="title_compressor">Compressor</string>
     <string name="share">分享</string>
     <string name="saved">已儲存</string>
-    <string name="save_to_photos">儲存至相簿</string>
+    <string name="save_to_photos">儲存至相片</string>
     <string name="compress_another_video">壓縮另一個影片</string>
-    <string name="buy_coffee">☕ 對 Compressor 滿意嗎？請我喝杯咖啡吧！</string>
+    <string name="buy_coffee">☕ 喜歡 Compressor？請我喝杯咖啡！</string>
     <string name="share_video_title">分享壓縮後的影片</string>
     <string name="share_error">無法分享：%1$s</string>
-    <string name="original">原始大小</string>
-    <string name="estimated">預計大小</string>
+    <string name="original">原始影片</string>
+    <string name="estimated">預估</string>
+
     <string name="preset_high">高畫質</string>
     <string name="preset_high_desc">僅優化位元率</string>
-    <string name="preset_medium">中畫質</string>
-    <string name="preset_low">低畫質</string>
+    <string name="preset_medium">中等</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_low">順暢</string>
+    <string name="preset_low_desc">720p • 30fps</string>
+
     <string name="quality_preset">畫質預設</string>
-    <string name="target_size_limits">目標大小限制</string>
+    <string name="target_size_limits">大小限制預設</string>
     <string name="advanced_options">進階選項</string>
     <string name="target_size">目標大小</string>
-    <string name="encoding">編碼格式</string>
+    <string name="encoding">編碼</string>
     <string name="av1_high_efficiency">AV1 (快速 • 高效)</string>
     <string name="h265_efficient">H.265 (高效)</string>
     <string name="h264_compat">H.264 (相容)</string>
+
+    <string name="delete_original">刪除原始影片</string>
+    <string name="delete_original_success">原始影片已成功刪除</string>
+    <string name="delete_original_failed">刪除影片失敗</string>
+    <string name="delete_confirm_title">確認刪除原始影片？</string>
+
+    <string name="info_title">裝置與應用程式資訊</string>
+    <string name="info_copy_clipboard">複製至剪貼簿</string>
+    <string name="info_copied">已複製至剪貼簿</string>
+    <string name="show_bitrate">顯示位元率</string>
+    <string name="bitrate_unit_mbps">Mbps</string>
+
     <string name="resolution">解析度</string>
+    <string name="audio_options">音訊選項</string>
+    <string name="audio_bitrate">音訊位元率</string>
+    <string name="volume">音量</string>
     <string name="remove_audio">移除音訊</string>
     <string name="framerate">幀率</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
     <string name="start_compression">開始壓縮</string>
+    <string name="warning_hdr_tone_mapped">HDR 影片已轉換為 SDR，以避免此裝置上的編碼器相容性問題。如需保留 HDR，請使用 AV1。</string>
+    <string name="warning_details">警告詳情</string>
+    <string name="dismiss">關閉</string>
+
     <string name="error_prefix">錯誤：%1$s</string>
-    <string name="error_codec_unsupported">此影片編碼格式不被您的裝置硬體支援。</string>
-    <string name="error_decoder_config_unsupported">此裝置無法解碼此來源影片設定。</string>
-    <string name="error_encoder_config_unsupported">此裝置無法編碼所選的輸出設定。</string>
-    <string name="error_decoder_config_unsupported_details">此裝置無法解碼此來源影片設定（%1$dx%2$d @ %3$.1ffps，%4$s）。</string>
-    <string name="error_encoder_config_unsupported_details">此裝置無法編碼所選的輸出設定。已嘗試：%1$s。</string>
-    <string name="warning_codec_fallback_h264">所選編碼格式在此裝置上不支援目前輸出設定。將回退為 H.264 以提升相容性。</string>
-    <string name="warning_quality_fallback">此裝置無法編碼所選設定。將回退為 H.264（%1$dp、%2$dfps）。</string>
     <string name="select_video">選擇要壓縮的影片</string>
-    <string name="total_saved">您已使用 Compressor 節省了 %1$s 的儲存空間</string>
+    <string name="add_video_desc">新增影片</string>
+    <string name="total_saved">您已透過 Compressor 節省了 %1$s 儲存空間</string>
+
+    <string name="slider_less_space">更小容量</string>
+    <string name="slider_balanced">平衡</string>
+    <string name="slider_high_quality">更高畫質</string>
+
     <string name="compression_complete">壓縮完成！</string>
     <string name="compressing_video_label">正在壓縮影片</string>
     <string name="cancel">取消</string>
 
-    <string name="info_title">裝置與應用程式資訊</string>
-    <string name="info_copy_clipboard">複製到剪貼簿</string>
-    <string name="info_copied">已複製到剪貼簿</string>
-    <string name="show_bitrate">顯示位元率</string>
-    <string name="bitrate_unit_mbps">Mbps</string>
+    <string name="error_file_lost">檔案遺失</string>
+    <string name="error_export_failed">匯出失敗：%1$s</string>
 
-    <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">電子郵件</string>
     <string name="size_stories">Stories • Nitro Basic</string>
@@ -55,37 +76,85 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • 動態</string>
     <string name="size_x_premium">X Premium</string>
-    
+
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
 
-    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
+    <string name="res_540p">540p</string>
     <string name="res_480p">480p</string>
-    <string name="audio_options">音訊選項</string>
-    <string name="audio_bitrate">音訊位元率</string>
-    <string name="volume">音量</string>
-    <string name="slider_less_space">更小體積</string>
-    <string name="slider_balanced">平衡</string>
-    <string name="slider_high_quality">更高畫質</string>
+    <string name="res_three_quarters">¾</string>
+    <string name="res_half">½</string>
+    <string name="res_quarter">¼</string>
+
     <string name="compression_failed_title">壓縮失敗</string>
-    <string name="compression_larger_error">壓縮後的影片比原始影片大。\n影片可能已經被高度壓縮或位元速率非常低。</string>
-    <string name="error_huawei_muxer">此問題可能是由您的特定裝置與引起的。請嘗試重新啟動裝置。</string>
     <string name="try_again">重試</string>
-    <string name="save_anyway">仍然儲存</string>
+    <string name="save_anyway">仍要儲存</string>
 
-    <string name="report_error">報告錯誤</string>
+    <string name="report_error">回報錯誤</string>
     <string name="error_details">錯誤詳情</string>
-    <string name="copy_logs">複製日誌</string>
-    <string name="open_issue_tracker">打開問題追蹤器</string>
-    
-    <string name="warning_hdr_tone_mapped">HDR 影片已轉換為 SDR，以避免此裝置上的編碼器相容性問題。如需保留 HDR，請使用 AV1。</string>
-    <string name="warning_details">警告詳情</string>
-    <string name="dismiss">關閉</string>
-    <string name="view_on_github">在 GitHub 上查看</string>
+    <string name="copy_logs">複製紀錄</string>
+    <string name="open_issue_tracker">開啟 Issue 追蹤</string>
+    <string name="view_on_github">在 GitHub 上檢視</string>
 
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">設定</string>
+    <string name="search_settings_hint">搜尋設定</string>
+    <string name="search_icon_desc">搜尋</string>
+    <string name="clear_search_desc">清除搜尋</string>
+    <string name="no_settings_found">未找到相關設定</string>
+    <string name="about_compressor_title">關於 Compressor</string>
+    <string name="basic_info_header">基本資訊</string>
+    <string name="display_settings_title">顯示</string>
+    <string name="settings_content_desc">設定</string>
+    <string name="back">返回</string>
+
+    <string name="category_display_subtitle">位元率、單位、已節省空間、預設</string>
+    <string name="category_presets_subtitle">預設設定選項</string>
+    <string name="category_video_subtitle">影片壓縮與編解碼器選項</string>
+    <string name="category_audio_subtitle">音訊位元率與聲道選項</string>
+    <string name="version_format">版本 %1$s</string>
+    
+    <string name="header_basic_info">基本資訊</string>
+    <string name="header_hardware_codecs">硬體與編解碼器</string>
+    <string name="header_links_actions">連結與操作</string>
+    <string name="info_app_name">應用程式名稱</string>
+    <string name="info_app_version">應用程式版本</string>
+    <string name="codecs_supported_count">此裝置支援 %1$d 個編解碼器</string>
+    <string name="enable_all_codecs">開啟所有編解碼器</string>
+    <string name="software_encoding">軟體編碼</string>
+    
+    <string name="header_display_options">顯示選項</string>
+    <string name="show_bitrate_subtitle">在原影片與預估大小處顯示位元率數值</string>
+    <string name="bitrate_unit_mbps_subtitle">以 Mbps 為單位顯示位元率</string>
+    <string name="bitrate_unit_kbps_subtitle">以 kbps 為單位顯示位元率</string>
+    <string name="show_storage_saved_title">在主頁顯示已節省空間</string>
+    <string name="show_storage_saved_subtitle">在主螢幕底部顯示累計節省的總儲存空間</string>
+    <string name="show_target_size_preset_title">顯示目標大小預設</string>
+    <string name="show_target_size_preset_subtitle">在影片設定期間顯示畫質預設分頁</string>
+    
+    <string name="placeholder_video_desc">影片壓縮與編解碼器預設選項將在未來的更新中推出。</string>
+    <string name="placeholder_audio_desc">音訊位元率與聲道預設選項將在未来的更新中推出。</string>
+    <string name="placeholder_presets_desc">預設設定預設選項將在未來的更新中推出。</string>
+
+    <string name="are_you_sure">確定要繼續嗎？</string>
+    <string name="enable_all_codecs_warn_dialog">開啟所有編解碼器可能會導致效能下降、編碼失敗、電池發熱嚴重等問題。</string>
+    <string name="warn_battery_life">我不介意電池續航降低</string>
+    <string name="warn_hands_melt">我不介意裝置發熱</string>
+    <string name="warn_time">我不介意耗費額外時間</string>
+    <string name="warn_crashes">我不介意應用程式偶爾崩潰</string>
+    <string name="warn_bug_reports">開啟此功能期間我不會提交錯誤報告</string>
+    <string name="warning_count">%1$d 個警告 - 點擊檢視詳情</string>
+    <string name="step_away_codecs">還需點擊 %1$d 次即可開啟所有編解碼器。</string>
+    <string name="info_device">裝置</string>
+    <string name="info_android">Android 系統</string>
+    <string name="info_supported_codecs">支援的編解碼器</string>
+    <string name="info_content_desc">資訊</string>
+    <string name="tab_presets">預設</string>
+    <string name="tab_video">影片</string>
+    <string name="tab_audio">音訊</string>
 </resources>

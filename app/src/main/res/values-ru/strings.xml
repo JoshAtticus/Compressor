@@ -3,66 +3,72 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">Поделиться</string>
     <string name="saved">Сохранено</string>
-    <string name="save_to_photos">Сохранить в галерею</string>
+    <string name="save_to_photos">Сохранить в Фото</string>
     <string name="compress_another_video">Сжать другое видео</string>
     <string name="buy_coffee">☕ Нравится Compressor? Купите мне кофе!</string>
     <string name="share_video_title">Поделиться сжатым видео</string>
     <string name="share_error">Не удалось поделиться: %1$s</string>
     <string name="original">Оригинал</string>
-    <string name="estimated">Примерно</string>
+    <string name="estimated">Оценка</string>
 
-    <!-- Presets -->
     <string name="preset_high">Высокое</string>
     <string name="preset_high_desc">Только оптимизация битрейта</string>
     <string name="preset_medium">Среднее</string>
-    <string name="preset_medium_desc">1080p • 30fps</string>
+    <string name="preset_medium_desc">1080p • 30 кадров/с</string>
     <string name="preset_low">Низкое</string>
-    <string name="preset_low_desc">720p • 30fps</string>
+    <string name="preset_low_desc">720p • 30 кадров/с</string>
 
     <string name="quality_preset">Качество</string>
-    <string name="target_size_limits">Лимит размера</string>
+    <string name="target_size_limits">Ограничения размера</string>
     <string name="advanced_options">Расширенные настройки</string>
     <string name="target_size">Целевой размер</string>
     <string name="encoding">Кодирование</string>
     <string name="av1_high_efficiency">AV1 (Быстро • Эффективно)</string>
-    <string name="h265_efficient">H.265 (Эффективный)</string>
-    <string name="h264_compat">H.264 (Совместимый)</string>
+    <string name="h265_efficient">H.265 (Эффективно)</string>
+    <string name="h264_compat">H.264 (Совместимо)</string>
+
+    <string name="delete_original">Удалить исходное видео</string>
+    <string name="delete_original_success">Видео успешно удалено</string>
+    <string name="delete_original_failed">Не удалось удалить видео</string>
+    <string name="delete_confirm_title">Удалить оригинал?</string>
+
+    <string name="info_title">О устройстве и приложении</string>
+    <string name="info_copy_clipboard">Скопировать в буфер обмена</string>
+    <string name="info_copied">Скопировано в буфер обмена</string>
+    <string name="show_bitrate">Показывать битрейт</string>
+    <string name="bitrate_unit_mbps">Мбит/с</string>
+
     <string name="resolution">Разрешение</string>
+    <string name="audio_options">Настройки звука</string>
+    <string name="audio_bitrate">Битрейт звука</string>
+    <string name="volume">Громкость</string>
     <string name="remove_audio">Удалить звук</string>
-    <string name="framerate">Кадровая частота</string>
-    <string name="fps_60">60 к/с</string>
-    <string name="fps_30">30 к/с</string>
+    <string name="framerate">Частота кадров</string>
+    <string name="fps_60">60 кадров/с</string>
+    <string name="fps_30">30 кадров/с</string>
     <string name="start_compression">Начать сжатие</string>
+    <string name="warning_hdr_tone_mapped">HDR-видео было преобразовано в SDR во избежание проблем совместимости кодировщика. Используйте AV1 для сохранения HDR.</string>
+    <string name="warning_details">Подробности предупреждения</string>
+    <string name="dismiss">Закрыть</string>
+
     <string name="error_prefix">Ошибка: %1$s</string>
-    <string name="select_video">Выберите видео</string>
+    <string name="select_video">Выберите видео для сжатия</string>
     <string name="add_video_desc">Добавить видео</string>
-    <string name="total_saved">Вы сэкономили %1$s памяти с Compressor</string>
+    <string name="total_saved">Вы сэкономили %1$s памяти с помощью Compressor</string>
+
+    <string name="slider_less_space">Меньше места</string>
+    <string name="slider_balanced">Сбалансировано</string>
+    <string name="slider_high_quality">Высокое качество</string>
+
     <string name="compression_complete">Сжатие завершено!</string>
     <string name="compressing_video_label">СЖАТИЕ ВИДЕО</string>
     <string name="cancel">Отмена</string>
 
-    <!-- Errors -->
     <string name="error_file_lost">Файл потерян</string>
     <string name="error_export_failed">Ошибка экспорта: %1$s</string>
-    <string name="error_save_failed">Ошибка сохранения: %1$s</string>
-    <string name="error_gallery_entry">Не удалось создать запись в галерее</string>
-    <string name="error_unknown">Неизвестная ошибка</string>
-    <string name="error_codec_unsupported">Этот кодек не поддерживается вашим устройством.</string>
-    <string name="error_decoder_config_unsupported">Это устройство не может декодировать такую конфигурацию исходного видео.</string>
-    <string name="error_encoder_config_unsupported">Это устройство не может кодировать выбранную выходную конфигурацию.</string>
-    <string name="error_decoder_config_unsupported_details">Это устройство не может декодировать такую конфигурацию исходного видео (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
-    <string name="error_encoder_config_unsupported_details">Это устройство не может кодировать выбранные выходные настройки. Пробовали: %1$s.</string>
-    <string name="warning_codec_fallback_h264">Выбранный кодек не поддерживается для этого вывода на данном устройстве. Для совместимости используется H.264.</string>
-    <string name="warning_quality_fallback">Это устройство не может кодировать выбранные настройки. Переход на H.264 с %1$dp и %2$dfps.</string>
-    <string name="info_title">Инфо о устройстве и приложении</string>
-    <string name="info_copy_clipboard">Скопировать в буфер</string>
-    <string name="info_copied">Скопировано в буфер</string>
-    <string name="show_bitrate">Показать битрейт</string>
-    <string name="bitrate_unit_mbps">Мбит/с</string>
 
-    <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
-    <string name="size_email">Email</string>
+    <string name="size_email">Эл. почта</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>
     <string name="size_nitro">Nitro • Reels</string>
@@ -74,33 +80,81 @@
     <string name="unit_gb">ГБ</string>
     <string name="unit_mb">МБ</string>
 
-    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
+    <string name="res_540p">540p</string>
     <string name="res_480p">480p</string>
-    <string name="audio_options">Параметры звука</string>
-    <string name="audio_bitrate">Битрейт звука</string>
-    <string name="volume">Громкость</string>
-    <string name="slider_less_space">Меньше места</string>
-    <string name="slider_balanced">Баланс</string>
-    <string name="slider_high_quality">Выше качество</string>
-    <string name="compression_failed_title">Ошибка сжатия</string>
-    <string name="compression_larger_error">Сжатое видео больше оригинала.\nВидео уже может быть сильно сжато или иметь очень низкий битрейт.</string>
-    <string name="error_huawei_muxer">Эта проблема может быть вызвана вашим конкретным устройством. Попробуйте перезагрузить устройство.</string>
-    <string name="try_again">Попробовать снова</string>
+    <string name="res_three_quarters">¾</string>
+    <string name="res_half">½</string>
+    <string name="res_quarter">¼</string>
+
+    <string name="compression_failed_title">Сжатие не удалось</string>
+    <string name="try_again">Повторить</string>
     <string name="save_anyway">Сохранить всё равно</string>
 
     <string name="report_error">Сообщить об ошибке</string>
     <string name="error_details">Детали ошибки</string>
-    <string name="copy_logs">Копировать логи</string>
-    <string name="open_issue_tracker">Открыть трекер задач</string>
-
-    <string name="warning_hdr_tone_mapped">HDR-видео было преобразовано в SDR, чтобы избежать проблем с кодировщиком на этом устройстве. Используйте AV1, если нужно сохранить HDR.</string>
-    <string name="warning_details">Детали предупреждения</string>
-    <string name="dismiss">Закрыть</string>
+    <string name="copy_logs">Скопировать логи</string>
+    <string name="open_issue_tracker">Открыть трекер ошибок</string>
     <string name="view_on_github">Посмотреть на GitHub</string>
 
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">Настройки</string>
+    <string name="search_settings_hint">Поиск настроек</string>
+    <string name="search_icon_desc">Поиск</string>
+    <string name="clear_search_desc">Очистить поиск</string>
+    <string name="no_settings_found">Настройки не найдены</string>
+    <string name="about_compressor_title">О приложении Compressor</string>
+    <string name="basic_info_header">Основная информация</string>
+    <string name="display_settings_title">Экран</string>
+    <string name="settings_content_desc">Настройки</string>
+    <string name="back">Назад</string>
+
+    <string name="category_display_subtitle">Битрейт, единицы, сэкономлено места, пресеты</string>
+    <string name="category_presets_subtitle">Параметры конфигурации пресетов</string>
+    <string name="category_video_subtitle">Сжатие видео и параметры кодеков</string>
+    <string name="category_audio_subtitle">Битрейт аудио и параметры каналов</string>
+    <string name="version_format">Версия %1$s</string>
+    
+    <string name="header_basic_info">Основная информация</string>
+    <string name="header_hardware_codecs">Оборудование и кодеки</string>
+    <string name="header_links_actions">Ссылки и действия</string>
+    <string name="info_app_name">Название приложения</string>
+    <string name="info_app_version">Версия приложения</string>
+    <string name="codecs_supported_count">%1$d кодеков поддерживается на этом устройстве</string>
+    <string name="enable_all_codecs">Включить все кодеки</string>
+    <string name="software_encoding">Программное кодирование</string>
+    
+    <string name="header_display_options">Параметры экрана</string>
+    <string name="show_bitrate_subtitle">Показывать значения битрейта для исходного и сжатого размеров</string>
+    <string name="bitrate_unit_mbps_subtitle">Отображать битрейт в Мбит/с</string>
+    <string name="bitrate_unit_kbps_subtitle">Отображать битрейт в Кбит/с</string>
+    <string name="show_storage_saved_title">Показывать сэкономленное место на главной</string>
+    <string name="show_storage_saved_subtitle">Отображать общий объем сэкономленного места внизу главного экрана</string>
+    <string name="show_target_size_preset_title">Показывать пресет целевого размера</string>
+    <string name="show_target_size_preset_subtitle">Показывать вкладку пресетов качества при настройке видео</string>
+    
+    <string name="placeholder_video_desc">Параметры видео по умолчанию появятся в будущем обновлении.</string>
+    <string name="placeholder_audio_desc">Параметры аудио по умолчанию появятся в будущем обновлении.</string>
+    <string name="placeholder_presets_desc">Параметры пресетов по умолчанию появятся в будущем обновлении.</string>
+
+    <string name="are_you_sure">Вы уверены?</string>
+    <string name="enable_all_codecs_warn_dialog">Включение всех кодеков может привести к низкой производительности, ошибкам кодирования и нагреву батареи</string>
+    <string name="warn_battery_life">Я НЕНАВИЖУ хорошую автономность</string>
+    <string name="warn_hands_melt">Я ЛЮБЛЮ, когда руки нагреваются</string>
+    <string name="warn_time">Время не имеет значения</string>
+    <string name="warn_crashes">Я ЛЮБЛЮ, когда приложение часто вылетает</string>
+    <string name="warn_bug_reports">Я НЕ буду отправлять отчеты об ошибках, пока это включено</string>
+    <string name="warning_count">%1$d Предупреждение(й) - Нажмите для деталей</string>
+    <string name="step_away_codecs">Осталось %1$d нажатий до включения всех кодеков.</string>
+    <string name="info_device">Устройство</string>
+    <string name="info_android">Android</string>
+    <string name="info_supported_codecs">Поддерживаемые кодеки</string>
+    <string name="info_content_desc">Информация</string>
+    <string name="tab_presets">Пресеты</string>
+    <string name="tab_video">Видео</string>
+    <string name="tab_audio">Аудио</string>
 </resources>

@@ -1,32 +1,30 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Compressor</string>
     <string name="title_compressor">Compressor</string>
     <string name="share">مشاركة</string>
     <string name="saved">تم الحفظ</string>
-    <string name="save_to_photos">حفظ في المعرض</string>
+    <string name="save_to_photos">حفظ في الصور</string>
     <string name="compress_another_video">ضغط فيديو آخر</string>
-    <string name="buy_coffee">☕ أعجبك التطبيق؟ ادعمني بفنجان قهوة!</string>
+    <string name="buy_coffee">☕ راضٍ عن Compressor؟ اشترِ لي قهوة!</string>
     <string name="share_video_title">مشاركة الفيديو المضغوط</string>
-    <string name="share_error">تعذّرت المشاركة: %1$s</string>
+    <string name="share_error">تعذرت المشاركة: %1$s</string>
     <string name="original">الأصلي</string>
-    <string name="estimated">المتوقع</string>
+    <string name="estimated">المقدر</string>
 
-    <!-- Presets -->
     <string name="preset_high">عالي</string>
-    <string name="preset_high_desc">تحسين معدل البت فقط</string>
+    <string name="preset_high_desc">معدل نقل بت محسن فقط</string>
     <string name="preset_medium">متوسط</string>
-    <string name="preset_medium_desc">بدقة : 1080P و 30 إطار في الثانية</string>
+    <string name="preset_medium_desc">1080p • 30 إطارًا في الثانية</string>
     <string name="preset_low">منخفض</string>
-    <string name="preset_low_desc">بدقة : 720P و 30 إطار في الثانية</string>
+    <string name="preset_low_desc">720p • 30 إطارًا في الثانية</string>
 
     <string name="quality_preset">تغيير جودة الفيديو</string>
     <string name="target_size_limits">إعدادات الحجم المستهدف</string>
     <string name="advanced_options">خيارات متقدمة</string>
     <string name="target_size">الحجم المستهدف</string>
     <string name="encoding">الترميز</string>
-    <string name="av1_high_efficiency">AV1 (سريع • كفء)</string>
-    <string name="h265_efficient">H.265 (كفء)</string>
+    <string name="av1_high_efficiency">AV1 (سريع • كفاءة عالية)</string>
+    <string name="h265_efficient">H.265 (كفاءة عالية)</string>
     <string name="h264_compat">H.264 (متوافق)</string>
 
     <string name="delete_original">حذف الفيديو الأصلي</string>
@@ -37,8 +35,8 @@
     <string name="info_title">معلومات الجهاز والتطبيق</string>
     <string name="info_copy_clipboard">نسخ إلى الحافظة</string>
     <string name="info_copied">تم النسخ إلى الحافظة</string>
-    <string name="show_bitrate">عرض معدل البترايت</string>
-    <string name="bitrate_unit_mbps">الميغابت في الثانية أو Mbps</string>
+    <string name="show_bitrate">إظهار معدل البت</string>
+    <string name="bitrate_unit_mbps">ميغابت/ثانية</string>
 
     <string name="resolution">الدقة</string>
     <string name="audio_options">خيارات الصوت</string>
@@ -46,55 +44,42 @@
     <string name="volume">مستوى الصوت</string>
     <string name="remove_audio">إزالة الصوت</string>
     <string name="framerate">معدل الإطارات</string>
-    <string name="fps_60">60fps</string>
-    <string name="fps_30">30fps</string>
+    <string name="fps_60">60 إطار/ثانية</string>
+    <string name="fps_30">30 إطار/ثانية</string>
     <string name="start_compression">بدء الضغط</string>
-    <string name="warning_hdr_tone_mapped">تم تحويل الفيديو من HDR إلى SDR لتجنّب مشاكل التوافق مع المُشفِّر على هذا الجهاز. استخدم AV1 إذا أردت الحفاظ على HDR.</string>
+    <string name="warning_hdr_tone_mapped">تم تحويل فيديو HDR إلى SDR لتجنب مشاكل توافق الترميز. استخدم AV1 إذا كنت بحاجة للحفاظ على HDR.</string>
     <string name="warning_details">تفاصيل التحذير</string>
-    <string name="dismiss">تجاهل</string>
+    <string name="dismiss">إغلاق</string>
 
     <string name="error_prefix">خطأ: %1$s</string>
-    <string name="select_video">اختر فيديو ليتم ضغطه</string>
+    <string name="select_video">حدد فيديو لضغطه</string>
     <string name="add_video_desc">إضافة فيديو</string>
-    <string name="total_saved">لقد وفّرت %1$s من مساحة التخزين باستخدام Compressor</string>
+    <string name="total_saved">لقد وفرت %1$s من المساحة باستخدام Compressor</string>
 
     <string name="slider_less_space">مساحة أقل</string>
     <string name="slider_balanced">متوازن</string>
     <string name="slider_high_quality">جودة أعلى</string>
 
     <string name="compression_complete">اكتمل الضغط!</string>
-    <string name="compressing_video_label">جارٍ ضغط الفيديو</string>
+    <string name="compressing_video_label">جاري ضغط الفيديو</string>
     <string name="cancel">إلغاء</string>
 
-    <!-- Errors -->
-    <string name="error_file_lost">الملف مفقود</string>
+    <string name="error_file_lost">ملف مفقود</string>
     <string name="error_export_failed">فشل التصدير: %1$s</string>
-    <string name="error_save_failed">فشل الحفظ: %1$s</string>
-    <string name="error_gallery_entry">تعذّر إنشاء إدخال في المعرض</string>
-    <string name="error_unknown">خطأ غير معروف</string>
-    <string name="error_codec_unsupported">ترميز هذا الفيديو غير مدعوم على جهازك</string>
-    <string name="error_decoder_config_unsupported">لا يستطيع جهازك فك ترميز إعدادات الفيديو المصدر هذه.</string>
-    <string name="error_encoder_config_unsupported">لا يستطيع جهازك ترميز إعدادات الإخراج المحددة.</string>
-    <string name="error_decoder_config_unsupported_details">لا يستطيع جهازك فك ترميز إعدادات الفيديو المصدر هذه (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
-    <string name="error_encoder_config_unsupported_details">لا يستطيع جهازك ترميز إعدادات الإخراج المحددة. تمت المحاولة بـ: %1$s.</string>
-    <string name="warning_codec_fallback_h264">الترميز المحدد غير مدعوم لهذا الإخراج على جهازك. سيتم التراجع إلى H.264 للتوافق.</string>
-    <string name="warning_quality_fallback">لا يستطيع جهازك ترميز الإعدادات المحددة. سيتم التراجع إلى H.264 بدقة %1$dp و%2$dfps.</string>
 
-    <!-- Size Presets -->
     <string name="size_discord">Discord • GitHub</string>
-    <string name="size_email">Email</string>
-    <string name="size_stories">Stories • Nitro Basic</string>
+    <string name="size_email">البريد الإلكتروني</string>
+    <string name="size_stories">قصص • Nitro الأساسي</string>
     <string name="size_messenger">Messenger • BlueSky</string>
     <string name="size_nitro">Nitro • Reels</string>
     <string name="size_twitter">Twitter/X</string>
     <string name="size_whatsapp">WhatsApp • Telegram</string>
-    <string name="size_tg_premium">TG Premium • Feed</string>
-    <string name="size_x_premium">X Premium</string>
+    <string name="size_tg_premium">TG المميز • التغذية</string>
+    <string name="size_x_premium">X المميز</string>
 
-    <string name="unit_gb">جيغابايت</string>
-    <string name="unit_mb">ميغابايت</string>
+    <string name="unit_gb">جيجابايت</string>
+    <string name="unit_mb">ميجابايت</string>
 
-    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
@@ -107,22 +92,95 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">فشل الضغط</string>
-    <string name="compression_larger_error">الفيديو المضغوط أكبر من الأصلي.\nقد يكون الفيديو مضغوطاً بالفعل أو يمتلك معدل بت منخفضاً جداً.</string>
-    <string name="error_huawei_muxer">قد تكون المشكلة متعلقة بجهازك تحديداً. يُرجى إعادة تشغيل الجهاز والمحاولة مجدداً.</string>
-    <string name="try_again">حاول مجدداً</string>
-    <string name="save_anyway">حفظ على أي حال</string>
+    <string name="try_again">إعادة المحاولة</string>
+    <string name="save_anyway">الحفظ على أي حال</string>
 
     <string name="report_error">الإبلاغ عن خطأ</string>
     <string name="error_details">تفاصيل الخطأ</string>
     <string name="copy_logs">نسخ السجلات</string>
     <string name="open_issue_tracker">فتح متتبع المشكلات</string>
-    <string name="view_on_github">عرض على GitHub</string>
+    <string name="view_on_github">العرض على GitHub</string>
 
-<string name="info_content_desc">معلومات</string>
-<string name="tab_presets">الإعدادات المسبقة</string>
-<string name="tab_video">الفيديو</string>
-<string name="tab_audio">الصوت</string>
-<string name="info_device">الجهاز</string>
-<string name="info_android">أندرويد</string>
-<string name="info_supported_codecs">التراميز المدعومة</string>
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="search_settings_hint">البحث في الإعدادات</string>
+    <string name="search_icon_desc">بحث</string>
+    <string name="clear_search_desc">مسح البحث</string>
+    <string name="no_settings_found">لم يتم العثور على إعدادات</string>
+    <string name="about_compressor_title">حول Compressor</string>
+    <string name="basic_info_header">المعلومات الأساسية</string>
+    <string name="display_settings_title">العرض</string>
+    <string name="settings_content_desc">الإعدادات</string>
+    <string name="back">رجوع</string>
+
+    <string name="category_display_subtitle">معدل البت، الوحدات، التوفير، الإعدادات المسبقة</string>
+    <string name="category_presets_subtitle">خيارات تكوين الإعدادات المسبقة</string>
+    <string name="category_video_subtitle">ضغط الفيديو وخيارات الترميز</string>
+    <string name="category_audio_subtitle">معدل بت الصوت وخيارات القنوات</string>
+    <string name="version_format">الإصدار %1$s</string>
+    
+    <string name="header_basic_info">المعلومات الأساسية</string>
+    <string name="header_hardware_codecs">الأجهزة والترميزات</string>
+    <string name="header_links_actions">الروابط والإجراءات</string>
+    <string name="info_app_name">اسم التطبيق</string>
+    <string name="info_app_version">إصدار التطبيق</string>
+    <string name="codecs_supported_count">%1$d من الترميزات مدعومة على هذا الجهاز</string>
+    <string name="enable_all_codecs">تمكين جميع الترميزات</string>
+    <string name="software_encoding">الترميز البرمجي</string>
+    
+    <string name="header_display_options">خيارات العرض</string>
+    <string name="show_bitrate_subtitle">إظهار قيم معدل البت للأحجام الأصلية والمقدرة</string>
+    <string name="bitrate_unit_mbps_subtitle">عرض معدل البت بميجابت/ثانية</string>
+    <string name="bitrate_unit_kbps_subtitle">عرض معدل البت بكيلوبت/ثانية</string>
+    <string name="show_storage_saved_title">إظهار التوفير في الصفحة الرئيسية</string>
+    <string name="show_storage_saved_subtitle">عرض إجمالي المساحة الموفرة أسفل الشاشة الرئيسية</string>
+    <string name="show_target_size_preset_title">إظهار الحجم المستهدف</string>
+    <string name="show_target_size_preset_subtitle">إظهار علامة تبويب الجودة أثناء إعداد الفيديو</string>
+    
+    <string name="placeholder_video_desc">خيارات ضغط الفيديو والترميز الافتراضية ستتوفر قريبًا في تحديث قادم.</string>
+    <string name="placeholder_audio_desc">خيارات معدل بت الصوت والقنوات الافتراضية ستتوفر قريبًا في تحديث قادم.</string>
+    <string name="placeholder_presets_desc">خيارات الإعدادات المسبقة الافتراضية ستتوفر قريبًا في تحديث قادم.</string>
+
+    <string name="are_you_sure">هل أنت تأكد؟</string>
+    <string name="enable_all_codecs_warn_dialog">قد يؤدي تمكين جميع الترميزات إلى أداء ضعيف وفشل الترميز وتلف البطارية وزيادة حرارة الجهاز</string>
+    <string name="warn_battery_life">أكره عمر البطارية الجيد</string>
+    <string name="warn_hands_melt">أحب حرارة جهازي العالية</string>
+    <string name="warn_time">الوقت ليس مشكلة</string>
+    <string name="warn_crashes">أحب تعطل التطبيقات</string>
+    <string name="warn_bug_reports">لن أفتح تقارير أخطاء أثناء التفعيل</string>
+    <string name="warning_count">%1$d تحذير(ات) - اضغط للتفاصيل</string>
+    <string name="step_away_codecs">أنت على بعد %1$d خطوات من تمكين جميع الترميزات.</string>
+    <string name="info_device">الجهاز</string>
+    <string name="info_android">أندرويد</string>
+    <string name="info_supported_codecs">الترميزات المدعومة</string>
+    <string name="info_content_desc">معلومات</string>
+    <string name="tab_presets">الإعدادات المسبقة</string>
+    <string name="tab_video">فيديو</string>
+    <string name="tab_audio">صوت</string>
+    <!-- Presets Management Keys -->
+    <string name="header_quality_presets">إعدادات الجودة المسبقة</string>
+    <string name="reset_to_default">إعادة الضبط إلى الافتراضي</string>
+    <string name="add_preset">إضافة إعداد مسبق</string>
+    <string name="reset_presets_to_default">إعادة ضبط إعدادات الحجم المسبقة</string>
+    <string name="reset_presets_confirm_title">إعادة ضبط إعدادات الحجم المستهدف؟</string>
+    <string name="reset_presets_confirm_message">سيتم استعادة جميع الإعدادات المسبقة الافتراضية وإزالة الإعدادات المخصصة.</string>
+    <string name="add_size_preset_title">إضافة إعداد مسبق للحجم</string>
+    <string name="edit_size_preset_title">تعديل إعداد الحجم المسبق</string>
+    <string name="preset_label_hint">تسمية الإعداد المسبق (مثال: Discord, Email)</string>
+    <string name="target_size_mb_hint">الحجم المستهدف (بالميجابايت)</string>
+    <string name="save_action">حفظ</string>
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">خيارات الفيديو الافتراضية</string>
+    <string name="header_default_audio_options">خيارات الصوت الافتراضية</string>
+    <string name="default_video_codec">ترميز الفيديو الافتراضي</string>
+    <string name="default_video_codec_desc">حدد ترميز الفيديو الافتراضي لعمليات الضغط الجديدة</string>
+    <string name="default_resolution">الدقة الافتراضية</string>
+    <string name="default_framerate">معدل الإطارات الافتراضي</string>
+    <string name="default_size_ratio">نسبة الحجم المستهدف الافتراضية</string>
+    <string name="default_audio_bitrate">معدل نقل بيانات الصوت الافتراضي</string>
+    <string name="default_mute_audio">كتم الصوت افتراضياً</string>
+    <string name="default_mute_audio_desc">إزالة المقاطع الصوتية تلقائياً من الفيديوهات الجديدة</string>
+    <string name="default_audio_volume">مستوى الصوت الافتراضي</string>
+    <string name="reset_video_defaults">إعادة ضبط إعدادات الفيديو</string>
+    <string name="reset_audio_defaults">إعادة ضبط إعدادات الصوت</string>
 </resources>

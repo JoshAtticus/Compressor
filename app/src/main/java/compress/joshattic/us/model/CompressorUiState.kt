@@ -5,6 +5,18 @@ import androidx.media3.common.MimeTypes
 import compress.joshattic.us.utils.formatFileSize
 import java.util.Locale
 
+val defaultTargetSizePresets = listOf(
+    TargetSizePreset("discord", 10f, "Discord • GitHub"),
+    TargetSizePreset("email", 25f, "Email"),
+    TargetSizePreset("stories", 50f, "Stories • Nitro Basic"),
+    TargetSizePreset("messenger", 100f, "Messenger • BlueSky"),
+    TargetSizePreset("nitro", 500f, "Nitro • Reels"),
+    TargetSizePreset("twitter", 512f, "Twitter/X"),
+    TargetSizePreset("whatsapp", 2048f, "WhatsApp • Telegram"),
+    TargetSizePreset("tg_premium", 4096f, "TG Premium • Feed"),
+    TargetSizePreset("x_premium", 8192f, "X Premium")
+)
+
 data class CompressorUiState(
     val selectedUri: Uri? = null,
     val originalSize: Long = 0L,
@@ -27,7 +39,7 @@ data class CompressorUiState(
     val saveSuccess: Boolean = false,
     
     // Configuration
-    val activePreset: QualityPreset = QualityPreset.HIGH,
+    val activePreset: QualityPreset = QualityPreset.CUSTOM,
     val targetSizeMb: Float = 10f,
     val useH265: Boolean = true,
     val videoCodec: String = MimeTypes.VIDEO_H265,
@@ -40,13 +52,21 @@ data class CompressorUiState(
     val appInfoVersion: String = "1.6.0",
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
+    val showStorageSaved: Boolean = true,
+    val showTargetSizePreset: Boolean = true,
     val hasShared: Boolean = false,
     val removeAudio: Boolean = false,
     val audioBitrate: Int = 128_000,
     val audioVolume: Float = 1.0f,
     val warnings: List<String> = emptyList(),
     val allCodecsEnabled: Boolean = false,
-    val allCodecsUnlocked: Boolean = false
+    val allCodecsUnlocked: Boolean = false,
+    val highPresetConfig: QualityPresetConfig = QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000),
+    val mediumPresetConfig: QualityPresetConfig = QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000),
+    val lowPresetConfig: QualityPresetConfig = QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000),
+    val targetSizePresets: List<TargetSizePreset> = defaultTargetSizePresets,
+    val defaultVideoConfig: DefaultVideoConfig = DefaultVideoConfig(),
+    val defaultAudioConfig: DefaultAudioConfig = DefaultAudioConfig()
 ) {
     private val minBitrate: Long
         get() {

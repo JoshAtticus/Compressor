@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
@@ -51,7 +52,12 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .padding(bottom = 80.dp)
     ) {
-            Text(stringResource(R.string.advanced_options), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+            Text(
+                stringResource(R.string.advanced_options),
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 12.dp)
+            )
 
             var sliderValue by remember { mutableFloatStateOf(state.targetSizeMb) }
             var isUserInteracting by remember { mutableStateOf(false) }
@@ -67,34 +73,40 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(stringResource(R.string.target_size), style = MaterialTheme.typography.labelLarge)
                 Text(
-                    String.format(Locale.US, "%.1f MB", sliderValue), 
+                    stringResource(R.string.target_size),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                Text(
+                    if (sliderValue >= 1024) String.format(Locale.US, "%.2f GB", sliderValue / 1024f) else String.format(Locale.US, "%.1f MB", sliderValue), 
                     style = MaterialTheme.typography.labelMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary
                 )
             }
             
-            val minSize = 0.1f
-            val maxSize = maxOf(10f, state.targetSizeMb, (state.originalSize / (1024f*1024f)))
+            val originalMb = if (state.originalSize > 0) state.originalSize.toFloat() / (1024f * 1024f) else 100f
+            val minSize = (originalMb * 0.05f).coerceAtLeast(0.5f)
+            val maxSize = maxOf(originalMb, state.targetSizeMb, 1f)
             
             val sliderFraction = if (maxSize > minSize) {
-                (kotlin.math.ln(sliderValue / minSize) / kotlin.math.ln(maxSize / minSize)).toFloat().coerceIn(0f, 1f)
+                ((sliderValue - minSize) / (maxSize - minSize)).coerceIn(0f, 1f)
             } else {
-                0f
+                0.5f
             }
 
             Slider(
                 value = sliderFraction,
                 onValueChange = { fraction ->
                     isUserInteracting = true
-                    val calculatedSize = minSize * kotlin.math.exp(fraction * kotlin.math.ln(maxSize / minSize)).toFloat()
+                    val calculatedSize = minSize + fraction * (maxSize - minSize)
                     
                     val roundedSize = when {
-                        calculatedSize < 2.5f -> kotlin.math.round(calculatedSize * 10f) / 10f
-                        calculatedSize < 10f -> kotlin.math.round(calculatedSize * 2f) / 2f
-                        calculatedSize < 50f -> kotlin.math.round(calculatedSize)
-                        else -> kotlin.math.round(calculatedSize / 5f) * 5f
+                        maxSize > 500f -> kotlin.math.round(calculatedSize / 5f) * 5f
+                        maxSize > 100f -> kotlin.math.round(calculatedSize)
+                        maxSize > 20f -> kotlin.math.round(calculatedSize * 2f) / 2f
+                        else -> kotlin.math.round(calculatedSize * 10f) / 10f
                     }.coerceIn(minSize, maxSize)
 
                     if (sliderValue != roundedSize) {
@@ -120,7 +132,11 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            Text(stringResource(R.string.encoding), style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.encoding),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
             Row(
                 modifier = Modifier
                     .padding(top = 8.dp)
@@ -143,7 +159,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                             viewModel.setVideoCodec(codec) 
                         },
                         interactionSource = interactionSource,
-                        label = { Text(labelText) },
+                        label = { Text(labelText, fontWeight = FontWeight.Bold) },
                         modifier = Modifier.expressiveScale(interactionSource)
                     )
                 }
@@ -151,7 +167,11 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
              
             Spacer(modifier = Modifier.height(16.dp))
             
-            Text(stringResource(R.string.resolution), style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.resolution),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
             Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 
                 val res4320 = stringResource(R.string.res_8k)
@@ -205,7 +225,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                             viewModel.setResolution(originalShortSide)
                         }, 
                         interactionSource = interactionSource,
-                        label = { Text(stringResource(R.string.original) + " • ${originalShortSide}p") },
+                        label = { Text(stringResource(R.string.original) + " • ${originalShortSide}p", fontWeight = FontWeight.Bold) },
                         modifier = Modifier.padding(end = 8.dp).expressiveScale(interactionSource)
                     )
                     options.forEach { (res, label) ->
@@ -217,7 +237,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                                 viewModel.setResolution(res) 
                             }, 
                             interactionSource = itemInteractionSource,
-                            label = { Text(label) },
+                            label = { Text(label, fontWeight = FontWeight.Bold) },
                             modifier = Modifier.padding(end = 8.dp).expressiveScale(itemInteractionSource)
                         )
                     }
@@ -226,7 +246,11 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             
             Spacer(modifier = Modifier.height(16.dp))
             
-            Text(stringResource(R.string.framerate), style = MaterialTheme.typography.labelLarge)
+            Text(
+                stringResource(R.string.framerate),
+                style = MaterialTheme.typography.labelLarge,
+                fontWeight = FontWeight.Bold
+            )
             Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                  val iSource1 = remember { MutableInteractionSource() }
                  FilterChip(
@@ -236,7 +260,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         viewModel.setFps(0) 
                     },
                     interactionSource = iSource1,
-                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}") },
+                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}", fontWeight = FontWeight.Bold) },
                     modifier = Modifier.expressiveScale(iSource1)
                 )
                 val iSource2 = remember { MutableInteractionSource() }
@@ -247,7 +271,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         viewModel.setFps(60) 
                     },
                     interactionSource = iSource2,
-                    label = { Text(stringResource(R.string.fps_60)) },
+                    label = { Text(stringResource(R.string.fps_60), fontWeight = FontWeight.Bold) },
                     enabled = state.originalFps >= 50f,
                     modifier = Modifier.expressiveScale(iSource2)
                 )
@@ -259,7 +283,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         viewModel.setFps(30) 
                     },
                     interactionSource = iSource3,
-                    label = { Text(stringResource(R.string.fps_30)) },
+                    label = { Text(stringResource(R.string.fps_30), fontWeight = FontWeight.Bold) },
                     modifier = Modifier.expressiveScale(iSource3)
                 )
             }

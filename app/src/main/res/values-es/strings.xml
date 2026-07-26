@@ -13,7 +13,9 @@
     <string name="preset_high">Alta</string>
     <string name="preset_high_desc">Solo tasa de bits optimizada</string>
     <string name="preset_medium">Media</string>
+    <string name="preset_medium_desc">1080p • 30fps</string>
     <string name="preset_low">Baja</string>
+    <string name="preset_low_desc">720p • 30fps</string>
     <string name="quality_preset">Ajuste de calidad</string>
     <string name="target_size_limits">Límite de tamaño</string>
     <string name="advanced_options">Opciones avanzadas</string>
@@ -25,14 +27,21 @@
     <string name="resolution">Resolución</string>
     <string name="remove_audio">Eliminar audio</string>
     <string name="framerate">Fotogramas</string>
+    <string name="fps_60">60fps</string>
+    <string name="fps_30">30fps</string>
     <string name="start_compression">Iniciar compresión</string>
     <string name="error_prefix">Error: %1$s</string>
     <string name="select_video">Selecciona un video para comprimir</string>
+    <string name="add_video_desc">Agregar video</string>
     <string name="total_saved">Has ahorrado %1$s de almacenamiento con Compressor</string>
     <string name="compression_complete">¡Compresión completada!</string>
     <string name="compressing_video_label">COMPRIMIENDO VIDEO</string>
     <string name="cancel">Cancelar</string>
     <string name="error_file_lost">Archivo perdido</string>
+    <string name="error_export_failed">Error de exportación: %1$s</string>
+    <string name="error_save_failed">Error al guardar: %1$s</string>
+    <string name="error_gallery_entry">No se pudo crear la entrada de galería</string>
+    <string name="error_unknown">Error desconocido</string>
     <string name="error_codec_unsupported">Este códec de video no es compatible con el hardware de tu dispositivo.</string>
     <string name="error_decoder_config_unsupported">Este dispositivo no puede decodificar esta configuración de video de origen.</string>
     <string name="error_encoder_config_unsupported">Este dispositivo no puede codificar la configuración de salida seleccionada.</string>
@@ -67,7 +76,11 @@
     <string name="res_2k">2K</string>
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
+    <string name="res_540p">540p</string>
     <string name="res_480p">480p</string>
+    <string name="res_three_quarters">¾</string>
+    <string name="res_half">½</string>
+    <string name="res_quarter">¼</string>
     <string name="audio_options">Opciones de audio</string>
     <string name="audio_bitrate">Tasa de bits de audio</string>
     <string name="volume">Volumen</string>
@@ -90,4 +103,90 @@
     <string name="dismiss">Descartar</string>
     <string name="view_on_github">Ver en GitHub</string>
 
+    <!-- Settings Screen & i18n -->
+    <string name="settings_title">Ajustes</string>
+    <string name="search_settings_hint">Buscar ajustes</string>
+    <string name="search_icon_desc">Buscar</string>
+    <string name="clear_search_desc">Limpiar búsqueda</string>
+    <string name="no_settings_found">No se encontraron ajustes</string>
+    <string name="about_compressor_title">Acerca de Compressor</string>
+    <string name="basic_info_header">Información básica</string>
+    <string name="display_settings_title">Pantalla</string>
+    <string name="settings_content_desc">Ajustes</string>
+    <string name="back">Atrás</string>
+
+    <string name="category_display_subtitle">Tasa de bits, unidades, ahorro de espacio, ajustes preestablecidos</string>
+    <string name="category_presets_subtitle">Opciones de configuración de ajustes preestablecidos</string>
+    <string name="category_video_subtitle">Compresión de video y opciones de códec</string>
+    <string name="category_audio_subtitle">Tasa de bits de audio y opciones de canal</string>
+    <string name="version_format">Versión %1$s</string>
+    
+    <string name="header_basic_info">Información básica</string>
+    <string name="header_hardware_codecs">Hardware y códecs</string>
+    <string name="header_links_actions">Enlaces y acciones</string>
+    <string name="info_app_name">Nombre de la app</string>
+    <string name="info_app_version">Versión de la app</string>
+    <string name="codecs_supported_count">%1$d códecs compatibles en este dispositivo</string>
+    <string name="enable_all_codecs">Habilitar todos los códecs</string>
+    <string name="software_encoding">Codificación por software</string>
+    
+    <string name="header_display_options">Opciones de pantalla</string>
+    <string name="show_bitrate_subtitle">Mostrar valores de tasa de bits en tamaños original y estimado</string>
+    <string name="bitrate_unit_mbps_subtitle">Mostrar tasa de bits en Mbps</string>
+    <string name="bitrate_unit_kbps_subtitle">Mostrar tasa de bits en kbps</string>
+    <string name="show_storage_saved_title">Mostrar almacenamiento ahorrado en página principal</string>
+    <string name="show_storage_saved_subtitle">Mostrar espacio total ahorrado en la parte inferior de la pantalla principal</string>
+    <string name="show_target_size_preset_title">Mostrar tamaño objetivo predeterminado</string>
+    <string name="show_target_size_preset_subtitle">Mostrar pestaña de ajustes de calidad durante la configuración de video</string>
+    
+    <string name="placeholder_video_desc">Las opciones predeterminadas de compresión de video y códec llegarán en una próxima actualización.</string>
+    <string name="placeholder_audio_desc">Las opciones predeterminadas de tasa de bits y canales de audio llegarán en una próxima actualización.</string>
+    <string name="placeholder_presets_desc">Las opciones predeterminadas de configuración llegarán en una próxima actualización.</string>
+
+    <string name="are_you_sure">¿Estás seguro?</string>
+    <string name="enable_all_codecs_warn_dialog">Habilitar todos los códecs puede causar un rendimiento deficiente, fallos de codificación, baterías derretidas y manos anormalmente calientes</string>
+    <string name="warn_battery_life">ODIO la buena duración de batería</string>
+    <string name="warn_hands_melt">ME ENCANTA cuando mis manos se derriten</string>
+    <string name="warn_time">El tiempo no es problema</string>
+    <string name="warn_crashes">ME ENCANTA cuando una app falla constantemente</string>
+    <string name="warn_bug_reports">NO abriré reportes de fallos mientras esto esté activo</string>
+    <string name="warning_count">%1$d Advertencia(s) - Toca para detalles</string>
+    <string name="step_away_codecs">Estás a %1$d pasos de habilitar todos los códecs.</string>
+    <string name="delete_original">Eliminar video original</string>
+    <string name="delete_original_success">Video eliminado con éxito</string>
+    <string name="delete_original_failed">Error al eliminar el video</string>
+    <string name="delete_confirm_title">¿Eliminar original?</string>
+    <string name="info_device">Dispositivo</string>
+    <string name="info_android">Versión de Android</string>
+    <string name="info_supported_codecs">Códecs compatibles</string>
+    <string name="info_content_desc">Info</string>
+    <string name="tab_presets">Ajustes</string>
+    <string name="tab_video">Video</string>
+    <string name="tab_audio">Audio</string>
+    <!-- Presets Management Keys -->
+    <string name="header_quality_presets">Ajustes de calidad</string>
+    <string name="reset_to_default">Restablecer valores predeterminados</string>
+    <string name="add_preset">Añadir ajuste</string>
+    <string name="reset_presets_to_default">Restablecer ajustes de tamaño</string>
+    <string name="reset_presets_confirm_title">¿Restablecer ajustes de tamaño objetivo?</string>
+    <string name="reset_presets_confirm_message">Se restaurarán todos los ajustes predeterminados y se eliminarán los personalizados.</string>
+    <string name="add_size_preset_title">Añadir ajuste de tamaño</string>
+    <string name="edit_size_preset_title">Editar ajuste de tamaño</string>
+    <string name="preset_label_hint">Etiqueta (ej. Discord, Email)</string>
+    <string name="target_size_mb_hint">Tamaño objetivo (en MB)</string>
+    <string name="save_action">Guardar</string>
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">Opciones de video predeterminadas</string>
+    <string name="header_default_audio_options">Opciones de audio predeterminadas</string>
+    <string name="default_video_codec">Códec de video predeterminado</string>
+    <string name="default_video_codec_desc">Selecciona el codificador de video predeterminado para nuevas compresiones</string>
+    <string name="default_resolution">Resolución predeterminada</string>
+    <string name="default_framerate">Tasa de fotogramas predeterminada</string>
+    <string name="default_size_ratio">Relación de tamaño objetivo predeterminada</string>
+    <string name="default_audio_bitrate">Tasa de bits de audio predeterminada</string>
+    <string name="default_mute_audio">Silenciar audio de forma predeterminada</string>
+    <string name="default_mute_audio_desc">Eliminar automáticamente las pistas de audio de videos nuevos</string>
+    <string name="default_audio_volume">Volumen de audio predeterminado</string>
+    <string name="reset_video_defaults">Restablecer valores de video</string>
+    <string name="reset_audio_defaults">Restablecer valores de audio</string>
 </resources>

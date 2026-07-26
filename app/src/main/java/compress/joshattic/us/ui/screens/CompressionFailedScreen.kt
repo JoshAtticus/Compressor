@@ -73,7 +73,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
 
         AlertDialog(
             onDismissRequest = { showReportDialog = false },
-            title = { Text(stringResource(R.string.error_details)) },
+            title = { Text(stringResource(R.string.error_details), fontWeight = FontWeight.Bold) },
             text = {
                 Column {
                     SelectionContainer(
@@ -82,6 +82,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                         Text(
                             text = errorLogs,
                             style = MaterialTheme.typography.bodySmall,
+                            fontWeight = FontWeight.SemiBold,
                             modifier = Modifier
                                 .verticalScroll(rememberScrollState())
                                 .background(MaterialTheme.colorScheme.surfaceVariant, RoundedCornerShape(8.dp))
@@ -99,7 +100,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                         TextButton(onClick = {
                             clipboardManager.setText(AnnotatedString(errorLogs))
                         }) {
-                            Text(stringResource(R.string.copy_logs))
+                            Text(stringResource(R.string.copy_logs), fontWeight = FontWeight.Bold)
                         }
                         
                         TextButton(onClick = {
@@ -111,7 +112,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                             val shareIntent = Intent.createChooser(sendIntent, null)
                             context.startActivity(shareIntent)
                         }) {
-                            Text(stringResource(R.string.share))
+                            Text(stringResource(R.string.share), fontWeight = FontWeight.Bold)
                         }
                     }
                     
@@ -121,13 +122,13 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text(stringResource(R.string.open_issue_tracker))
+                        Text(stringResource(R.string.open_issue_tracker), fontWeight = FontWeight.Bold)
                     }
                 }
             },
             confirmButton = {
                 TextButton(onClick = { showReportDialog = false }) {
-                    Text(stringResource(android.R.string.ok))
+                    Text(stringResource(android.R.string.ok), fontWeight = FontWeight.Bold)
                 }
             }
         )
@@ -164,6 +165,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             Text(
                 errorText,
                 style = MaterialTheme.typography.bodyLarge,
+                fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 textAlign = TextAlign.Center
             )
@@ -173,6 +175,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                  Text(
                     "${state.formattedOriginalSize} → ${state.formattedCompressedSize}",
                     style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
@@ -183,7 +186,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                 onClick = onBack,
                 modifier = Modifier.fillMaxWidth().height(56.dp).scaleOnPress(onBack)
             ) {
-                Text(stringResource(R.string.try_again))
+                Text(stringResource(R.string.try_again), fontWeight = FontWeight.Bold)
             }
             
             if (state.error == null) {
@@ -195,6 +198,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                 ) {
                     Text(
                         stringResource(R.string.save_anyway), 
+                        fontWeight = FontWeight.Bold,
                         color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha=0.7f)
                     )
                 }
@@ -213,7 +217,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             ) {
                 Icon(Icons.Outlined.Info, contentDescription = null, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(stringResource(R.string.report_error))
+                Text(stringResource(R.string.report_error), fontWeight = FontWeight.Bold)
             }
         }
     }

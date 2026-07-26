@@ -30,6 +30,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
@@ -49,7 +50,12 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             .padding(horizontal = 24.dp, vertical = 24.dp)
             .padding(bottom = 80.dp)
     ) {
-         Text(stringResource(R.string.audio_options), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(bottom = 12.dp))
+         Text(
+            stringResource(R.string.audio_options),
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(bottom = 12.dp)
+         )
          
          Row(
             modifier = Modifier
@@ -62,7 +68,11 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Text(stringResource(R.string.remove_audio), style = MaterialTheme.typography.bodyMedium)
+            Text(
+                stringResource(R.string.remove_audio),
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Bold
+            )
             Switch(
                 checked = state.removeAudio,
                 onCheckedChange = { 
@@ -74,7 +84,11 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
 
         AnimatedVisibility(visible = !state.removeAudio) {
             Column(modifier = Modifier.padding(top = 16.dp)) {
-                 Text(stringResource(R.string.audio_bitrate), style = MaterialTheme.typography.labelLarge)
+                 Text(
+                    stringResource(R.string.audio_bitrate),
+                    style = MaterialTheme.typography.labelLarge,
+                    fontWeight = FontWeight.Bold
+                 )
                  
                  Row(
                      modifier = Modifier
@@ -94,9 +108,9 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                          interactionSource = origSource,
                          label = {
                              if (state.originalAudioBitrate > 0) {
-                                 Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k")
+                                 Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k", fontWeight = FontWeight.Bold)
                              } else {
-                                 Text(stringResource(R.string.original))
+                                 Text(stringResource(R.string.original), fontWeight = FontWeight.Bold)
                              }
                          },
                          modifier = Modifier.expressiveScale(origSource)
@@ -112,7 +126,7 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                                      viewModel.setAudioBitrate(rate)
                                  },
                                  interactionSource = iSource,
-                                 label = { Text("${rate / 1000}k") },
+                                 label = { Text("${rate / 1000}k", fontWeight = FontWeight.Bold) },
                                  modifier = Modifier.expressiveScale(iSource)
                              )
                          }
@@ -126,10 +140,15 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                      horizontalArrangement = Arrangement.SpaceBetween,
                      verticalAlignment = Alignment.CenterVertically
                  ) {
-                     Text(stringResource(R.string.volume), style = MaterialTheme.typography.labelLarge)
+                     Text(
+                        stringResource(R.string.volume),
+                        style = MaterialTheme.typography.labelLarge,
+                        fontWeight = FontWeight.Bold
+                     )
                      Text(
                          "${(state.audioVolume * 100).toInt()}%", 
                          style = MaterialTheme.typography.labelMedium,
+                         fontWeight = FontWeight.Bold,
                          color = MaterialTheme.colorScheme.primary
                      )
                  }
