@@ -212,4 +212,17 @@
     <string name="default_audio_volume">Volumen de audio predeterminado</string>
     <string name="reset_video_defaults">Restablecer valores de video</string>
     <string name="reset_audio_defaults">Restablecer valores de audio</string>
+
+    <!-- What's New Dialog -->
+    <string name="whats_new_title">Novedades en Compressor</string>
+    <string name="whats_new_version">Versión %1$s</string>
+    <string name="whats_new_button">Entendido</string>
+    <string name="whats_new_font_ui_title">Nueva fuente y cambios de interfaz</string>
+    <string name="whats_new_font_ui_desc">Nueva tipografía Google Sans, diseño Material 3 actualizado y animaciones fluidas en toda la aplicación.</string>
+    <string name="whats_new_settings_title">Adiós Información, hola Ajustes</string>
+    <string name="whats_new_settings_desc">Personaliza todo, desde las opciones de pantalla hasta los ajustes predeterminados de video/audio, preajustes y comportamiento de la app en un solo lugar.</string>
+    <string name="whats_new_auto_save_title">Guardado automático</string>
+    <string name="whats_new_auto_save_desc">Los videos comprimidos ahora se guardan automáticamente en tu galería de Fotos por defecto. (Android 10+, desactivar en Ajustes)</string>
+    <string name="whats_new_presets_title">Preajustes personalizables</string>
+    <string name="whats_new_presets_desc">Crea, edita y elimina preajustes de tamaño objetivo personalizados o ajusta los preajustes de calidad según tus necesidades.</string>
 </resources>

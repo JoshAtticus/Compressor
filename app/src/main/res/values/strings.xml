@@ -223,4 +223,17 @@
     <string name="default_audio_volume">Default Audio Volume</string>
     <string name="reset_video_defaults">Reset Video Defaults</string>
     <string name="reset_audio_defaults">Reset Audio Defaults</string>
+
+    <!-- What's New Dialog -->
+    <string name="whats_new_title">What\'s new in Compressor</string>
+    <string name="whats_new_version">Version %1$s</string>
+    <string name="whats_new_button">Got it</string>
+    <string name="whats_new_font_ui_title">New font &amp; UI changes</string>
+    <string name="whats_new_font_ui_desc">Fresh new Google Sans typography, updated Material 3 design, and smooth animations throughout the app.</string>
+    <string name="whats_new_settings_title">Info\'s out, Settings is in</string>
+    <string name="whats_new_settings_desc">Customize everything from display options, to your default video/audio settings, quality presets, and app behavior in one place.</string>
+    <string name="whats_new_auto_save_title">Automatic saving</string>
+    <string name="whats_new_auto_save_desc">Compressed videos are now automatically saved to your Photos library by default. (Android 10+, disable in Settings)</string>
+    <string name="whats_new_presets_title">Customizable presets</string>
+    <string name="whats_new_presets_desc">Create, edit, and delete custom target size presets or tweak quality presets to fit your exact needs.</string>
 </resources>

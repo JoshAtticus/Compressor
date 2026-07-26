@@ -176,4 +176,17 @@
     <string name="tab_presets">Пресеты</string>
     <string name="tab_video">Видео</string>
     <string name="tab_audio">Аудио</string>
+
+    <!-- What's New Dialog -->
+    <string name="whats_new_title">Что нового в Compressor</string>
+    <string name="whats_new_version">Версия %1$s</string>
+    <string name="whats_new_button">Понятно</string>
+    <string name="whats_new_font_ui_title">Новый шрифт и изменения интерфейса</string>
+    <string name="whats_new_font_ui_desc">Свежий шрифт Google Sans, обновленный дизайн Material 3 и плавные анимации по всему приложению.</string>
+    <string name="whats_new_settings_title">Вместо Информации — Настройки</string>
+    <string name="whats_new_settings_desc">Настраивайте абсолютно все — от параметров экрана до значений видео/аудио по умолчанию, пресетов и поведения приложения в одном месте.</string>
+    <string name="whats_new_auto_save_title">Автоматическое сохранение</string>
+    <string name="whats_new_auto_save_desc">Сжатые видео теперь автоматически сохраняются в галерею Фото по умолчанию. (Android 10+, можно отключить в Настройках)</string>
+    <string name="whats_new_presets_title">Настраиваемые пресеты</string>
+    <string name="whats_new_presets_desc">Создавайте, редактируйте и удаляйте пресеты целевого размера или настраивайте пресеты качества под ваши нужды.</string>
 </resources>

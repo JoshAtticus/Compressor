@@ -80,6 +80,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     companion object {
         private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
+        private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
+        private const val CURRENT_VERSION_CODE = 23
         private const val PERSIST_URI_FLAGS =
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     }
@@ -103,6 +105,17 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val defaultVideo = loadDefaultVideoConfig()
         val defaultAudio = loadDefaultAudioConfig()
 
+        val savedVersionCode = prefs.getInt(PREF_SAVED_VERSION_CODE, -1)
+        val showWhatsNew = if (savedVersionCode != -1) {
+            CURRENT_VERSION_CODE > savedVersionCode
+        } else {
+            val isExistingUser = prefs.all.isNotEmpty()
+            if (!isExistingUser) {
+                prefs.edit().putInt(PREF_SAVED_VERSION_CODE, CURRENT_VERSION_CODE).apply()
+            }
+            isExistingUser
+        }
+
         _uiState.update { it.copy(
             totalSavedBytes = saved, 
             showBitrate = showBitrate, 
@@ -117,10 +130,16 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             lowPresetConfig = lowConfig,
             targetSizePresets = sizePresetsList,
             defaultVideoConfig = defaultVideo,
-            defaultAudioConfig = defaultAudio
+            defaultAudioConfig = defaultAudio,
+            showWhatsNewDialog = showWhatsNew
         ) }
         checkSupportedCodecs()
         clearCache()
+    }
+
+    fun dismissWhatsNewDialog() {
+        prefs.edit().putInt(PREF_SAVED_VERSION_CODE, CURRENT_VERSION_CODE).apply()
+        _uiState.update { it.copy(showWhatsNewDialog = false) }
     }
     
     private fun checkSupportedCodecs() {

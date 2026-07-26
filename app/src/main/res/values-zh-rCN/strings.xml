@@ -176,4 +176,17 @@
     <string name="tab_presets">预设</string>
     <string name="tab_video">视频</string>
     <string name="tab_audio">音频</string>
+
+    <!-- What's New Dialog -->
+    <string name="whats_new_title">Compressor 新功能</string>
+    <string name="whats_new_version">版本 %1$s</string>
+    <string name="whats_new_button">知道了</string>
+    <string name="whats_new_font_ui_title">全新字体与 UI 界面改进</string>
+    <string name="whats_new_font_ui_desc">全新的 Google Sans 字体、更新的 Material 3 界面设计以及全应用流畅动画。</string>
+    <string name="whats_new_settings_title">信息页退场，全新设置页登场</string>
+    <string name="whats_new_settings_desc">在一个地方统一自定义所有内容：从显示选项、默认音视频设置，到画质预设及应用行为。</string>
+    <string name="whats_new_auto_save_title">自动保存</string>
+    <string name="whats_new_auto_save_desc">压缩后的视频现在默认自动保存至您的系统相册中。(仅限 Android 10+，可在设置中关闭)</string>
+    <string name="whats_new_presets_title">可自定义预设</string>
+    <string name="whats_new_presets_desc">自由创建、编辑和删除自定义目标大小预设，或微调画质预设以满足您的具体需求。</string>
 </resources>

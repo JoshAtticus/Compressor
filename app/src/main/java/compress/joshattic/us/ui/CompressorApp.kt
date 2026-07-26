@@ -1,5 +1,6 @@
 package compress.joshattic.us.ui
 
+import compress.joshattic.us.ui.components.WhatsNewDialog
 import android.content.Intent
 import android.net.Uri
 import android.view.WindowManager
@@ -377,5 +378,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                 }
             }
         }
+    }
+
+    if (state.showWhatsNewDialog) {
+        WhatsNewDialog(
+            versionName = state.appInfoVersion,
+            onDismiss = { viewModel.dismissWhatsNewDialog() }
+        )
     }
 }

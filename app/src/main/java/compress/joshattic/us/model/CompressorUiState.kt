@@ -50,6 +50,7 @@ data class CompressorUiState(
     
     val supportedCodecs: List<String> = emptyList(),
     val appInfoVersion: String = "1.6.0",
+    val showWhatsNewDialog: Boolean = false,
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,
     val showStorageSaved: Boolean = true,
