@@ -73,6 +73,7 @@ fun SettingsScreen(
     onNavigateToVideo: () -> Unit,
     onNavigateToAudio: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     var searchQuery by remember { mutableStateOf("") }
 
@@ -566,7 +567,10 @@ fun SettingsScreen(
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
-                                    .clickable { category.onClick() }
+                                    .clickable { 
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        category.onClick() 
+                                    }
                                     .padding(horizontal = 20.dp, vertical = 16.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {

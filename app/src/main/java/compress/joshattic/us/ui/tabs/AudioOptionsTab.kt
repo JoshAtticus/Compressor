@@ -97,37 +97,31 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                      horizontalArrangement = Arrangement.spacedBy(8.dp)
                  ) {
                      val bitrates = listOf(320000, 256000, 192000, 160000, 128000, 96000, 64000)
-                     val origSource = remember { MutableInteractionSource() }
                      val effectiveSelected = if (state.audioBitrate == 0) state.originalAudioBitrate else state.audioBitrate
-                     FilterChip(
+                     val origLabel = if (state.originalAudioBitrate > 0) {
+                         stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k"
+                     } else {
+                         stringResource(R.string.original)
+                     }
+                     
+                     compress.joshattic.us.ui.components.SelectionChip(
                          selected = state.audioBitrate == 0 || (state.originalAudioBitrate > 0 && effectiveSelected == state.originalAudioBitrate),
                          onClick = {
                              haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                              viewModel.setAudioBitrate(0)
                          },
-                         interactionSource = origSource,
-                         label = {
-                             if (state.originalAudioBitrate > 0) {
-                                 Text(stringResource(R.string.original) + " • ${state.originalAudioBitrate / 1000}k", fontWeight = FontWeight.Bold)
-                             } else {
-                                 Text(stringResource(R.string.original), fontWeight = FontWeight.Bold)
-                             }
-                         },
-                         modifier = Modifier.expressiveScale(origSource)
+                         label = origLabel
                      )
                      bitrates.forEach { rate ->
                          val showChip = state.originalAudioBitrate == 0 || rate < state.originalAudioBitrate
                          if (showChip) {
-                             val iSource = remember { MutableInteractionSource() }
-                             FilterChip(
+                             compress.joshattic.us.ui.components.SelectionChip(
                                  selected = state.audioBitrate == rate,
                                  onClick = {
                                      haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                      viewModel.setAudioBitrate(rate)
                                  },
-                                 interactionSource = iSource,
-                                 label = { Text("${rate / 1000}k", fontWeight = FontWeight.Bold) },
-                                 modifier = Modifier.expressiveScale(iSource)
+                                 label = "${rate / 1000}k"
                              )
                          }
                      }

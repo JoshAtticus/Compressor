@@ -1,5 +1,6 @@
 package compress.joshattic.us.ui.screens.settings
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
@@ -78,6 +79,7 @@ fun PresetsSettingsScreen(
     onDeleteTargetSizePreset: (id: String) -> Unit,
     onResetTargetSizePresets: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var editingQualityPreset by remember { mutableStateOf<QualityPreset?>(null) }
@@ -102,8 +104,12 @@ fun PresetsSettingsScreen(
                 else -> ""
             },
             config = currentConfig,
-            onDismiss = { editingQualityPreset = null },
+            onDismiss = {
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                editingQualityPreset = null
+            },
             onSave = { updated ->
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                 when (preset) {
                     QualityPreset.HIGH -> onUpdateHighPreset(updated)
                     QualityPreset.MEDIUM -> onUpdateMediumPreset(updated)
@@ -119,9 +125,13 @@ fun PresetsSettingsScreen(
     if (showAddTargetSizeDialog) {
         AddEditTargetSizeDialog(
             preset = null,
-            onDismiss = { showAddTargetSizeDialog = false },
-            onSave = { label, sizeMb ->
-                onAddTargetSizePreset(label, sizeMb)
+            onDismiss = {
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                showAddTargetSizeDialog = false
+            },
+            onSave = { label, mb ->
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                onAddTargetSizePreset(label, mb)
                 showAddTargetSizeDialog = false
             }
         )
@@ -131,32 +141,42 @@ fun PresetsSettingsScreen(
     editingTargetSizePreset?.let { preset ->
         AddEditTargetSizeDialog(
             preset = preset,
-            onDismiss = { editingTargetSizePreset = null },
-            onSave = { label, sizeMb ->
-                onUpdateTargetSizePreset(preset.id, label, sizeMb)
+            onDismiss = {
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                editingTargetSizePreset = null
+            },
+            onSave = { label, mb ->
+                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                onUpdateTargetSizePreset(preset.id, label, mb)
                 editingTargetSizePreset = null
             }
         )
     }
 
-    // Confirmation Dialog for Resetting Target Size Presets
+    // Dialog: Reset Target Size Presets Confirm
     if (showResetTargetSizeConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showResetTargetSizeConfirmDialog = false },
             title = { Text(stringResource(R.string.reset_presets_confirm_title), fontWeight = FontWeight.Bold) },
-            text = { Text(stringResource(R.string.reset_presets_confirm_message), fontWeight = FontWeight.SemiBold) },
+            text = { Text(stringResource(R.string.reset_presets_confirm_message)) },
             confirmButton = {
                 TextButton(
                     onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                         onResetTargetSizePresets()
                         showResetTargetSizeConfirmDialog = false
                     }
                 ) {
-                    Text(stringResource(R.string.reset_to_default), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+                    Text(stringResource(R.string.reset_to_default), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showResetTargetSizeConfirmDialog = false }) {
+                TextButton(
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        showResetTargetSizeConfirmDialog = false
+                    }
+                ) {
                     Text(stringResource(R.string.cancel), fontWeight = FontWeight.Bold)
                 }
             }
@@ -177,7 +197,10 @@ fun PresetsSettingsScreen(
                 navigationIcon = {
                     Box(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         IconButton(
-                            onClick = onBack,
+                            onClick = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onBack()
+                            },
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
@@ -220,7 +243,12 @@ fun PresetsSettingsScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(onClick = onResetQualityPresets) {
+                TextButton(
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onResetQualityPresets()
+                    }
+                ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(stringResource(R.string.reset_to_default), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -238,19 +266,28 @@ fun PresetsSettingsScreen(
                     QualityPresetRow(
                         name = stringResource(R.string.preset_high),
                         config = state.highPresetConfig,
-                        onClick = { editingQualityPreset = QualityPreset.HIGH }
+                        onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            editingQualityPreset = QualityPreset.HIGH
+                        }
                     )
                     HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
                         name = stringResource(R.string.preset_medium),
                         config = state.mediumPresetConfig,
-                        onClick = { editingQualityPreset = QualityPreset.MEDIUM }
+                        onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            editingQualityPreset = QualityPreset.MEDIUM
+                        }
                     )
                     HorizontalDivider(modifier = Modifier.padding(start = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
                         name = stringResource(R.string.preset_low),
                         config = state.lowPresetConfig,
-                        onClick = { editingQualityPreset = QualityPreset.LOW }
+                        onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            editingQualityPreset = QualityPreset.LOW
+                        }
                     )
                 }
             }
@@ -269,7 +306,12 @@ fun PresetsSettingsScreen(
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold
                 )
-                TextButton(onClick = { showAddTargetSizeDialog = true }) {
+                TextButton(
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        showAddTargetSizeDialog = true
+                    }
+                ) {
                     Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(stringResource(R.string.add_preset), style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.Bold)
@@ -285,71 +327,94 @@ fun PresetsSettingsScreen(
             ) {
                 Column {
                     state.targetSizePresets.forEachIndexed { index, preset ->
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable { editingTargetSizePreset = preset }
-                                .padding(horizontal = 20.dp, vertical = 14.dp),
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Box(
-                                modifier = Modifier
-                                    .clip(RoundedCornerShape(12.dp))
-                                    .background(MaterialTheme.colorScheme.secondaryContainer)
-                                    .padding(horizontal = 10.dp, vertical = 6.dp)
+                        androidx.compose.runtime.key(preset.id) {
+                            AnimatedVisibility(
+                                visible = true,
+                                enter = androidx.compose.animation.expandVertically() + androidx.compose.animation.fadeIn(),
+                                exit = androidx.compose.animation.shrinkVertically() + androidx.compose.animation.fadeOut()
                             ) {
-                                val unitGb = stringResource(R.string.unit_gb)
-                                val unitMb = stringResource(R.string.unit_mb)
-                                val formattedSize = if (preset.sizeMb >= 1024) {
-                                    val valGb = preset.sizeMb / 1024f
-                                    val str = if (valGb % 1f == 0f) "${valGb.toInt()}" else String.format(Locale.US, "%.1f", valGb)
-                                    "$str $unitGb"
-                                } else {
-                                    val str = if (preset.sizeMb % 1f == 0f) "${preset.sizeMb.toInt()}" else String.format(Locale.US, "%.1f", preset.sizeMb)
-                                    "$str $unitMb"
+                                Column {
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                                editingTargetSizePreset = preset
+                                            }
+                                            .padding(horizontal = 20.dp, vertical = 14.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Box(
+                                            modifier = Modifier
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .background(MaterialTheme.colorScheme.secondaryContainer)
+                                                .padding(horizontal = 10.dp, vertical = 6.dp)
+                                        ) {
+                                            val unitGb = stringResource(R.string.unit_gb)
+                                            val unitMb = stringResource(R.string.unit_mb)
+                                            val formattedSize = if (preset.sizeMb >= 1024) {
+                                                val valGb = preset.sizeMb / 1024f
+                                                val str = if (valGb % 1f == 0f) "${valGb.toInt()}" else String.format(Locale.US, "%.1f", valGb)
+                                                "$str $unitGb"
+                                            } else {
+                                                val str = if (preset.sizeMb % 1f == 0f) "${preset.sizeMb.toInt()}" else String.format(Locale.US, "%.1f", preset.sizeMb)
+                                                "$str $unitMb"
+                                            }
+                                            Text(
+                                                text = formattedSize,
+                                                style = MaterialTheme.typography.labelLarge,
+                                                fontWeight = FontWeight.Bold,
+                                                color = MaterialTheme.colorScheme.onSecondaryContainer
+                                            )
+                                        }
+
+                                        Spacer(modifier = Modifier.width(16.dp))
+
+                                        Text(
+                                            text = preset.label,
+                                            style = MaterialTheme.typography.titleMedium,
+                                            fontWeight = FontWeight.Bold,
+                                            color = MaterialTheme.colorScheme.onSurface,
+                                            modifier = Modifier.weight(1f)
+                                        )
+
+                                        IconButton(
+                                            onClick = {
+                                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                                editingTargetSizePreset = preset
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Edit,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+
+                                        IconButton(
+                                            onClick = {
+                                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                                onDeleteTargetSizePreset(preset.id)
+                                            }
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Delete,
+                                                contentDescription = null,
+                                                tint = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
+                                                modifier = Modifier.size(18.dp)
+                                            )
+                                        }
+                                    }
+
+                                    if (index < state.targetSizePresets.size - 1) {
+                                        HorizontalDivider(
+                                            modifier = Modifier.padding(start = 20.dp),
+                                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                                        )
+                                    }
                                 }
-                                Text(
-                                    text = formattedSize,
-                                    style = MaterialTheme.typography.labelLarge,
-                                    fontWeight = FontWeight.Bold,
-                                    color = MaterialTheme.colorScheme.onSecondaryContainer
-                                )
                             }
-
-                            Spacer(modifier = Modifier.width(16.dp))
-
-                            Text(
-                                text = preset.label,
-                                style = MaterialTheme.typography.titleMedium,
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.onSurface,
-                                modifier = Modifier.weight(1f)
-                            )
-
-                            IconButton(onClick = { editingTargetSizePreset = preset }) {
-                                Icon(
-                                    imageVector = Icons.Default.Edit,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-
-                            IconButton(onClick = { onDeleteTargetSizePreset(preset.id) }) {
-                                Icon(
-                                    imageVector = Icons.Default.Delete,
-                                    contentDescription = null,
-                                    tint = MaterialTheme.colorScheme.error.copy(alpha = 0.8f),
-                                    modifier = Modifier.size(18.dp)
-                                )
-                            }
-                        }
-
-                        if (index < state.targetSizePresets.size - 1) {
-                            HorizontalDivider(
-                                modifier = Modifier.padding(start = 20.dp),
-                                color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
-                            )
                         }
                     }
                 }
@@ -357,7 +422,10 @@ fun PresetsSettingsScreen(
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedButton(
-                    onClick = { showResetTargetSizeConfirmDialog = true },
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        showResetTargetSizeConfirmDialog = true
+                    },
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -445,28 +513,14 @@ private fun <T> SelectionChipRow(
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         options.forEach { (value, label) ->
-            val isSelected = value == selected
-            Surface(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable { onSelect(value) },
-                shape = CircleShape,
-                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary) else null
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                )
-            }
+            compress.joshattic.us.ui.components.SelectionChip(
+                selected = value == selected,
+                onClick = { onSelect(value) },
+                label = label
+            )
         }
     }
 }

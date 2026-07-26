@@ -54,6 +54,7 @@ fun VideoSettingsScreen(
     onUpdateVideoConfig: (DefaultVideoConfig) -> Unit,
     onResetVideoConfig: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val videoConfig = state.defaultVideoConfig
 
@@ -71,7 +72,10 @@ fun VideoSettingsScreen(
                 navigationIcon = {
                     Box(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         IconButton(
-                            onClick = onBack,
+                            onClick = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onBack()
+                            },
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
@@ -204,7 +208,10 @@ fun VideoSettingsScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Slider(
                             value = videoConfig.defaultSizeRatio,
-                            onValueChange = { onUpdateVideoConfig(videoConfig.copy(defaultSizeRatio = it)) },
+                            onValueChange = {
+                                onUpdateVideoConfig(videoConfig.copy(defaultSizeRatio = it))
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                            },
                             valueRange = 0.1f..0.9f,
                             steps = 15
                         )
@@ -216,7 +223,10 @@ fun VideoSettingsScreen(
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedButton(
-                    onClick = onResetVideoConfig,
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onResetVideoConfig()
+                    },
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -241,28 +251,14 @@ private fun <T> SelectionChipRow(
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         options.forEach { (value, label) ->
-            val isSelected = value == selected
-            Surface(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable { onSelect(value) },
-                shape = CircleShape,
-                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary) else null
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                )
-            }
+            compress.joshattic.us.ui.components.SelectionChip(
+                selected = value == selected,
+                onClick = { onSelect(value) },
+                label = label
+            )
         }
     }
 }

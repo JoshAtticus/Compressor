@@ -145,22 +145,19 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             ) {
                 val supported = state.supportedCodecs
                 supported.forEach { codec ->
-                    val interactionSource = remember { MutableInteractionSource() }
                     val labelText = when (codec) {
                         androidx.media3.common.MimeTypes.VIDEO_AV1 -> stringResource(R.string.av1_high_efficiency)
                         androidx.media3.common.MimeTypes.VIDEO_H265 -> stringResource(R.string.h265_efficient)
                         androidx.media3.common.MimeTypes.VIDEO_H264 -> stringResource(R.string.h264_compat)
                         else -> codec.substringAfter("/").uppercase()
                     }
-                    FilterChip(
+                    compress.joshattic.us.ui.components.SelectionChip(
                         selected = state.videoCodec == codec,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             viewModel.setVideoCodec(codec) 
                         },
-                        interactionSource = interactionSource,
-                        label = { Text(labelText, fontWeight = FontWeight.Bold) },
-                        modifier = Modifier.expressiveScale(interactionSource)
+                        label = labelText
                     )
                 }
             }
@@ -216,29 +213,23 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         .distinctBy { it.first }
                 }
 
-                Row(modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                     val interactionSource = remember { MutableInteractionSource() }
-                     FilterChip(
+                Row(modifier = Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    compress.joshattic.us.ui.components.SelectionChip(
                         selected = state.targetResolutionHeight == state.originalHeight || state.targetResolutionHeight == 0,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                             viewModel.setResolution(originalShortSide)
                         }, 
-                        interactionSource = interactionSource,
-                        label = { Text(stringResource(R.string.original) + " • ${originalShortSide}p", fontWeight = FontWeight.Bold) },
-                        modifier = Modifier.padding(end = 8.dp).expressiveScale(interactionSource)
+                        label = stringResource(R.string.original) + " • ${originalShortSide}p"
                     )
                     options.forEach { (res, label) ->
-                         val itemInteractionSource = remember { MutableInteractionSource() }
-                         FilterChip(
+                        compress.joshattic.us.ui.components.SelectionChip(
                             selected = currentShortSide == res,
                             onClick = { 
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                 viewModel.setResolution(res) 
                             }, 
-                            interactionSource = itemInteractionSource,
-                            label = { Text(label, fontWeight = FontWeight.Bold) },
-                            modifier = Modifier.padding(end = 8.dp).expressiveScale(itemInteractionSource)
+                            label = label
                         )
                     }
                 }
@@ -251,40 +242,36 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 style = MaterialTheme.typography.labelLarge,
                 fontWeight = FontWeight.Bold
             )
-            Row(modifier = Modifier.padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                 val iSource1 = remember { MutableInteractionSource() }
-                 FilterChip(
+            Row(
+                modifier = Modifier
+                    .padding(top = 8.dp)
+                    .horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                compress.joshattic.us.ui.components.SelectionChip(
                     selected = state.targetFps == 0,
                     onClick = { 
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.setFps(0) 
                     },
-                    interactionSource = iSource1,
-                    label = { Text(stringResource(R.string.original) + " • ${state.originalFps.toInt()}", fontWeight = FontWeight.Bold) },
-                    modifier = Modifier.expressiveScale(iSource1)
+                    label = stringResource(R.string.original) + " • ${state.originalFps.toInt()}"
                 )
-                val iSource2 = remember { MutableInteractionSource() }
-                FilterChip(
+                compress.joshattic.us.ui.components.SelectionChip(
                     selected = state.targetFps == 60,
                     onClick = { 
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.setFps(60) 
                     },
-                    interactionSource = iSource2,
-                    label = { Text(stringResource(R.string.fps_60), fontWeight = FontWeight.Bold) },
-                    enabled = state.originalFps >= 50f,
-                    modifier = Modifier.expressiveScale(iSource2)
+                    label = stringResource(R.string.fps_60),
+                    enabled = state.originalFps >= 50f
                 )
-                val iSource3 = remember { MutableInteractionSource() }
-                FilterChip(
+                compress.joshattic.us.ui.components.SelectionChip(
                     selected = state.targetFps == 30,
                     onClick = { 
                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                         viewModel.setFps(30) 
                     },
-                    interactionSource = iSource3,
-                    label = { Text(stringResource(R.string.fps_30), fontWeight = FontWeight.Bold) },
-                    modifier = Modifier.expressiveScale(iSource3)
+                    label = stringResource(R.string.fps_30)
                 )
             }
             

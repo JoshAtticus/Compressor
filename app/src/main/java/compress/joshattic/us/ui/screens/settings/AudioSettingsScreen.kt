@@ -54,6 +54,7 @@ fun AudioSettingsScreen(
     onUpdateAudioConfig: (DefaultAudioConfig) -> Unit,
     onResetAudioConfig: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
     val audioConfig = state.defaultAudioConfig
 
@@ -71,7 +72,10 @@ fun AudioSettingsScreen(
                 navigationIcon = {
                     Box(modifier = Modifier.padding(start = 12.dp, end = 12.dp)) {
                         IconButton(
-                            onClick = onBack,
+                            onClick = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onBack()
+                            },
                             modifier = Modifier
                                 .size(40.dp)
                                 .clip(CircleShape)
@@ -142,7 +146,10 @@ fun AudioSettingsScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { onUpdateAudioConfig(audioConfig.copy(defaultRemoveAudio = !audioConfig.defaultRemoveAudio)) }
+                            .clickable {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onUpdateAudioConfig(audioConfig.copy(defaultRemoveAudio = !audioConfig.defaultRemoveAudio))
+                            }
                             .padding(horizontal = 20.dp, vertical = 16.dp),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
@@ -164,7 +171,10 @@ fun AudioSettingsScreen(
                         Spacer(modifier = Modifier.width(16.dp))
                         Switch(
                             checked = audioConfig.defaultRemoveAudio,
-                            onCheckedChange = { onUpdateAudioConfig(audioConfig.copy(defaultRemoveAudio = it)) }
+                            onCheckedChange = {
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                onUpdateAudioConfig(audioConfig.copy(defaultRemoveAudio = it))
+                            }
                         )
                     }
 
@@ -181,7 +191,10 @@ fun AudioSettingsScreen(
                         Spacer(modifier = Modifier.height(4.dp))
                         Slider(
                             value = audioConfig.defaultAudioVolume,
-                            onValueChange = { onUpdateAudioConfig(audioConfig.copy(defaultAudioVolume = it)) },
+                            onValueChange = {
+                                onUpdateAudioConfig(audioConfig.copy(defaultAudioVolume = it))
+                                haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.TextHandleMove)
+                            },
                             valueRange = 0.0f..2.0f,
                             steps = 19
                         )
@@ -193,7 +206,10 @@ fun AudioSettingsScreen(
 
             Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
                 OutlinedButton(
-                    onClick = onResetAudioConfig,
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onResetAudioConfig()
+                    },
                     shape = RoundedCornerShape(24.dp)
                 ) {
                     Icon(Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -218,28 +234,14 @@ private fun <T> SelectionChipRow(
             .fillMaxWidth()
             .horizontalScroll(rememberScrollState())
             .padding(vertical = 4.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         options.forEach { (value, label) ->
-            val isSelected = value == selected
-            Surface(
-                modifier = Modifier
-                    .clip(CircleShape)
-                    .clickable { onSelect(value) },
-                shape = CircleShape,
-                color = if (isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surfaceContainerHigh,
-                border = if (isSelected) androidx.compose.foundation.BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary) else null
-            ) {
-                Text(
-                    text = label,
-                    style = MaterialTheme.typography.labelMedium,
-                    fontWeight = FontWeight.Bold,
-                    color = if (isSelected) MaterialTheme.colorScheme.onPrimaryContainer else MaterialTheme.colorScheme.onSurfaceVariant,
-                    maxLines = 1,
-                    softWrap = false,
-                    modifier = Modifier.padding(horizontal = 14.dp, vertical = 8.dp)
-                )
-            }
+            compress.joshattic.us.ui.components.SelectionChip(
+                selected = value == selected,
+                onClick = { onSelect(value) },
+                label = label
+            )
         }
     }
 }
