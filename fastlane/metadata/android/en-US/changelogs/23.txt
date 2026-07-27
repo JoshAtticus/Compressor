@@ -1,5 +1,6 @@
 Compressor 1.6.0 is a major overhaul, adding the following features:
 
+- Awesome new icon from @3r1-s (https://eris.cafe)
 - Fresh new Google Sans font & light UI changes
 - Info has been replaced with the all new Settings screen
 - Compressed videos are now automatically saved by default (Android 10+ only, disable in Settings)
