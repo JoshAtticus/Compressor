@@ -28,14 +28,18 @@ fun EmptyScreen(
     showStorageSaved: Boolean = true,
     onPick: () -> Unit
 ) {
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             FilledTonalIconButton(
-                onClick = onPick,
-                modifier = Modifier.size(96.dp).scaleOnPress(onPick)
+                onClick = {
+                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    onPick()
+                },
+                modifier = Modifier.size(96.dp)
             ) {
                 Icon(Icons.Default.Add, contentDescription = stringResource(R.string.add_video_desc), modifier = Modifier.size(48.dp))
             }

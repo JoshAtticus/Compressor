@@ -300,7 +300,11 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                     containerColor = MaterialTheme.colorScheme.background
                                 ),
                                 actions = {
-                                    IconButton(onClick = { currentSettingsDestination = SettingsDestination.MAIN }) {
+                                    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+                                    IconButton(onClick = {
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        currentSettingsDestination = SettingsDestination.MAIN
+                                    }) {
                                         Icon(
                                             imageVector = Icons.Outlined.Settings,
                                             contentDescription = stringResource(R.string.settings_content_desc),

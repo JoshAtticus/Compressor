@@ -54,6 +54,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
     val context = LocalContext.current
     val clipboardManager = LocalClipboardManager.current
     val uriHandler = LocalUriHandler.current
+    val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
 
     if (showReportDialog) {
         val errorLogs = remember(state) {
@@ -98,12 +99,14 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         TextButton(onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                             clipboardManager.setText(AnnotatedString(errorLogs))
                         }) {
                             Text(stringResource(R.string.copy_logs), fontWeight = FontWeight.Bold)
                         }
                         
                         TextButton(onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                             val sendIntent = Intent().apply {
                                 action = Intent.ACTION_SEND
                                 putExtra(Intent.EXTRA_TEXT, errorLogs)
@@ -118,6 +121,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                     
                     TextButton(
                         onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                             uriHandler.openUri("https://github.com/JoshAtticus/Compressor/issues")
                         },
                         modifier = Modifier.fillMaxWidth()
@@ -127,7 +131,10 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                 }
             },
             confirmButton = {
-                TextButton(onClick = { showReportDialog = false }) {
+                TextButton(onClick = {
+                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    showReportDialog = false
+                }) {
                     Text(stringResource(android.R.string.ok), fontWeight = FontWeight.Bold)
                 }
             }
@@ -193,7 +200,10 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
                 Spacer(modifier = Modifier.height(12.dp))
                 
                 TextButton(
-                    onClick = onSaveAnyway,
+                    onClick = {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onSaveAnyway()
+                    },
                     shape = RoundedCornerShape(28.dp),
                 ) {
                     Text(
@@ -208,6 +218,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             
             TextButton(
                 onClick = {
+                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                     if (state.allCodecsEnabled) {
                         Toast.makeText(context, "Disable all codecs first", Toast.LENGTH_SHORT).show()
                     } else {

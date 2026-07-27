@@ -152,7 +152,12 @@ fun ResultScreen(
                         }
                     },
                     confirmButton = {
-                        TextButton(onClick = { showWarningDialog = false }) {
+                        TextButton(
+                            onClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                showWarningDialog = false
+                            }
+                        ) {
                             Text(stringResource(R.string.dismiss), fontWeight = FontWeight.Bold)
                         }
                     }
@@ -216,14 +221,22 @@ fun ResultScreen(
         
         Spacer(modifier = Modifier.height(16.dp))
 
-        TextButton(onClick = onCompressAnother) {
+        TextButton(
+            onClick = {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                onCompressAnother()
+            }
+        ) {
             Text(stringResource(R.string.compress_another_video), fontWeight = FontWeight.Bold)
         }
         
         Spacer(modifier = Modifier.height(24.dp))
         
         TextButton(
-            onClick = { uriHandler.openUri("https://buymeacoffee.com/joshatticus") }
+            onClick = {
+                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                uriHandler.openUri("https://buymeacoffee.com/joshatticus")
+            }
         ) {
              Text(
                 stringResource(R.string.buy_coffee),

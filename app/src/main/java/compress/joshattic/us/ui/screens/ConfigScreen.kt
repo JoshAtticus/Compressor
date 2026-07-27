@@ -3,6 +3,7 @@ package compress.joshattic.us.ui.screens
 import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
@@ -13,21 +14,23 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.MusicNote
+import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
-import androidx.compose.material3.Tab
-import androidx.compose.material3.TabRow
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
@@ -83,22 +86,31 @@ fun ConfigScreen(
                     Spacer(Modifier.weight(1f))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 0,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(0) } },
-                        icon = { Icon(Icons.Default.Settings, contentDescription = null) },
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            scope.launch { pagerState.animateScrollToPage(0) }
+                        },
+                        icon = { Icon(Icons.Outlined.BookmarkBorder, contentDescription = null) },
                         label = { Text(stringResource(R.string.tab_presets), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 1,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(1) } },
-                        icon = { Icon(Icons.Default.PlayArrow, contentDescription = null) },
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            scope.launch { pagerState.animateScrollToPage(1) }
+                        },
+                        icon = { Icon(Icons.Default.Movie, contentDescription = null) },
                         label = { Text(stringResource(R.string.tab_video), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.height(12.dp))
                     NavigationRailItem(
                         selected = pagerState.currentPage == 2,
-                        onClick = { scope.launch { pagerState.animateScrollToPage(2) } },
-                        icon = { Icon(Icons.Default.Star, contentDescription = null) },
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            scope.launch { pagerState.animateScrollToPage(2) }
+                        },
+                        icon = { Icon(Icons.Default.MusicNote, contentDescription = null) },
                         label = { Text(stringResource(R.string.tab_audio), fontWeight = FontWeight.Bold) }
                     )
                     Spacer(Modifier.weight(1f))
@@ -194,13 +206,58 @@ fun ConfigScreen(
                         InfoCard(state)
                     }
                     
-                    TabRow(selectedTabIndex = pagerState.currentPage) {
-                        tabs.forEachIndexed { index, title ->
-                            Tab(
-                                selected = pagerState.currentPage == index,
-                                onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                                text = { Text(title, fontWeight = FontWeight.Bold) }
-                            )
+                    Surface(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                        shape = CircleShape,
+                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
+                        tonalElevation = 2.dp
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(4.dp),
+                            horizontalArrangement = Arrangement.SpaceEvenly,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            tabs.forEachIndexed { index, title ->
+                                val selected = pagerState.currentPage == index
+                                val tabIcon = when (index) {
+                                    0 -> Icons.Outlined.BookmarkBorder
+                                    1 -> Icons.Default.Movie
+                                    else -> Icons.Default.MusicNote
+                                }
+
+                                Surface(
+                                    onClick = {
+                                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                        scope.launch { pagerState.animateScrollToPage(index) }
+                                    },
+                                    modifier = Modifier.weight(1f),
+                                    shape = CircleShape,
+                                    color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+                                    contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                                ) {
+                                    Row(
+                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        horizontalArrangement = Arrangement.Center,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Icon(
+                                            imageVector = tabIcon,
+                                            contentDescription = null,
+                                            modifier = Modifier.size(18.dp)
+                                        )
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = title,
+                                            style = MaterialTheme.typography.labelLarge,
+                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold
+                                        )
+                                    }
+                                }
+                            }
                         }
                     }
                     
