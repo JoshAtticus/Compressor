@@ -79,6 +79,7 @@
 
     <string name="unit_gb">جيجابايت</string>
     <string name="unit_mb">ميجابايت</string>
+    <string name="unit_kb">كيلوبايت</string>
 
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>

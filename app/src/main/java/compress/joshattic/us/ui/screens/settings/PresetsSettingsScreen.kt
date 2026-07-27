@@ -357,13 +357,22 @@ fun PresetsSettingsScreen(
                                         ) {
                                             val unitGb = stringResource(R.string.unit_gb)
                                             val unitMb = stringResource(R.string.unit_mb)
-                                            val formattedSize = if (preset.sizeMb >= 1024) {
-                                                val valGb = preset.sizeMb / 1024f
-                                                val str = if (valGb % 1f == 0f) "${valGb.toInt()}" else String.format(Locale.US, "%.1f", valGb)
-                                                "$str $unitGb"
-                                            } else {
-                                                val str = if (preset.sizeMb % 1f == 0f) "${preset.sizeMb.toInt()}" else String.format(Locale.US, "%.1f", preset.sizeMb)
-                                                "$str $unitMb"
+                                            val unitKb = stringResource(R.string.unit_kb)
+                                            val formattedSize = when {
+                                                preset.sizeMb >= 1024f -> {
+                                                    val valGb = preset.sizeMb / 1024f
+                                                    val str = if (valGb % 1f == 0f) "${valGb.toInt()}" else String.format(Locale.US, "%.1f", valGb)
+                                                    "$str $unitGb"
+                                                }
+                                                preset.sizeMb < 1f -> {
+                                                    val valKb = preset.sizeMb * 1024f
+                                                    val str = if (valKb % 1f == 0f) "${valKb.toInt()}" else String.format(Locale.US, "%.0f", valKb)
+                                                    "$str $unitKb"
+                                                }
+                                                else -> {
+                                                    val str = if (preset.sizeMb % 1f == 0f) "${preset.sizeMb.toInt()}" else String.format(Locale.US, "%.1f", preset.sizeMb)
+                                                    "$str $unitMb"
+                                                }
                                             }
                                             Text(
                                                 text = formattedSize,

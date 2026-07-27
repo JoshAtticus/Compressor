@@ -33,6 +33,7 @@ private val LightColorScheme = lightColorScheme(
     surface                = Android16LightSurface,
     surfaceContainer       = Android16LightSurfaceContainer,
     surfaceContainerHigh   = Android16LightSurfaceContainerHigh,
+    surfaceContainerHighest= Android16LightSurfaceContainerHighest,
     surfaceContainerLow    = Android16LightSurfaceContainerLow,
     onBackground           = Android16LightOnSurface,
     onSurface              = Android16LightOnSurface,

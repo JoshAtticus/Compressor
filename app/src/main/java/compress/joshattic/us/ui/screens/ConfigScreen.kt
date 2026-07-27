@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui.screens
 
 import android.content.Context
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
@@ -209,16 +210,18 @@ fun ConfigScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 24.dp, vertical = 6.dp),
+                            .height(52.dp)
+                            .padding(horizontal = 20.dp),
                         shape = CircleShape,
-                        color = MaterialTheme.colorScheme.surfaceContainerHigh,
-                        tonalElevation = 2.dp
+                        color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+                        shadowElevation = 1.dp
                     ) {
                         Row(
                             modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(4.dp),
-                            horizontalArrangement = Arrangement.SpaceEvenly,
+                                .fillMaxSize()
+                                .padding(5.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
                             verticalAlignment = Alignment.CenterVertically
                         ) {
                             tabs.forEachIndexed { index, title ->
@@ -234,20 +237,22 @@ fun ConfigScreen(
                                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                         scope.launch { pagerState.animateScrollToPage(index) }
                                     },
-                                    modifier = Modifier.weight(1f),
+                                    modifier = Modifier
+                                        .weight(1f)
+                                        .fillMaxHeight(),
                                     shape = CircleShape,
                                     color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
                                     contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
                                 ) {
                                     Row(
-                                        modifier = Modifier.padding(vertical = 10.dp),
+                                        modifier = Modifier.fillMaxSize(),
                                         horizontalArrangement = Arrangement.Center,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(
                                             imageVector = tabIcon,
                                             contentDescription = null,
-                                            modifier = Modifier.size(18.dp)
+                                            modifier = Modifier.size(19.dp)
                                         )
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Text(

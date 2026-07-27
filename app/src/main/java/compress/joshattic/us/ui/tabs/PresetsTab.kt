@@ -170,8 +170,14 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                                 val unitGb = stringResource(R.string.unit_gb)
                                 val unitMb = stringResource(R.string.unit_mb)
+                                val unitKb = stringResource(R.string.unit_kb)
+                                val formattedSize = when {
+                                    preset.sizeMb >= 1024f -> "${(preset.sizeMb / 1024f).toInt()} $unitGb"
+                                    preset.sizeMb < 1f -> "${(preset.sizeMb * 1024f).toInt()} $unitKb"
+                                    else -> "${preset.sizeMb.toInt()} $unitMb"
+                                }
                                 Text(
-                                    if (preset.sizeMb >= 1024) "${(preset.sizeMb/1024).toInt()} $unitGb" else "${preset.sizeMb.toInt()} $unitMb", 
+                                    formattedSize, 
                                     style = MaterialTheme.typography.labelLarge,
                                     fontWeight = FontWeight.Bold
                                 )
