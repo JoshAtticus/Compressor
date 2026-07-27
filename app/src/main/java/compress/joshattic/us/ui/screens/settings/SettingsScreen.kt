@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -48,9 +49,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -60,8 +63,6 @@ import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.model.SearchableSetting
 import compress.joshattic.us.model.filterSearchableSettings
 import compress.joshattic.us.model.rememberSearchableSettings
-import compress.joshattic.us.ui.theme.A16BadgeAppGreen
-import compress.joshattic.us.ui.theme.A16BadgeAppGreenOnBadge
 import compress.joshattic.us.ui.theme.getCategoryBadgeColors
 import compress.joshattic.us.utils.scaleOnPress
 
@@ -290,14 +291,20 @@ fun SettingsScreen(
                             modifier = Modifier
                                 .size(44.dp)
                                 .clip(CircleShape)
-                                .background(A16BadgeAppGreen),
+                                .background(
+                                    brush = Brush.verticalGradient(
+                                        colors = listOf(
+                                            colorResource(id = R.color.ic_launcher_gradient_start_default),
+                                            colorResource(id = R.color.ic_launcher_gradient_end_default)
+                                        )
+                                    )
+                                ),
                             contentAlignment = Alignment.Center
                         ) {
-                            Icon(
+                            Image(
                                 painter = painterResource(id = R.drawable.ic_launcher_foreground),
                                 contentDescription = null,
-                                tint = A16BadgeAppGreenOnBadge,
-                                modifier = Modifier.size(96.dp)
+                                modifier = Modifier.size(80.dp)
                             )
                         }
 

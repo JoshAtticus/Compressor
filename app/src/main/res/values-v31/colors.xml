@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- On Android 12+, use the System Accent Color -->
-    <color name="ic_launcher_background">@android:color/system_accent1_500</color>
+    <!-- On Android 12+, use System Accent / Wallpaper colors for Launcher Icon Gradient -->
+    <color name="ic_launcher_gradient_start">@android:color/system_accent1_300</color>
+    <color name="ic_launcher_gradient_end">@android:color/system_accent1_700</color>
 </resources>

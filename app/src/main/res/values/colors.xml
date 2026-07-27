@@ -7,4 +7,12 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- App Launcher Icon Gradient Colors (Fallback for Android < 31) -->
+    <color name="ic_launcher_gradient_start">#FF16F976</color>
+    <color name="ic_launcher_gradient_end">#FF01A848</color>
+
+    <!-- App Launcher Icon Default Brand Colors for Settings -->
+    <color name="ic_launcher_gradient_start_default">#FF16F976</color>
+    <color name="ic_launcher_gradient_end_default">#FF01A848</color>
 </resources>
