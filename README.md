@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="96" alt="ic_launcher-playstore" src="https://github.com/user-attachments/assets/9a2e0de5-1b6e-4110-81f1-b4616a31da6b" />
+  <img width="96" alt="ic_launcher-playstore" src="assets/logo.png" />
 
 # Compressor
 
@@ -47,7 +47,7 @@ You can also donate with crypto:
 - No third party libraries
 - No invasive permissions (no storage, no internet etc)
 - Ad free
-- Super lightweight (< 10MB)
+- Super lightweight (< 20MB)
 - Completely native Kotlin (no React Native slop here)
 - Simple, clean UI
 - Works on Android 7.0 and up
