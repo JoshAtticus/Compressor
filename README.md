@@ -206,6 +206,8 @@ Compressor wouldn't be possible without these amazing people
 
 [@sirtoaks](https://github.com/sirtoaks) - Provided funding to get Compressor on Google Play
 
+[@3r1s-s](https://github.com/3r1s-s) - Created Compressor's new logo
+
 [@AhmedRX20](https://github.com/AhmedRX20) - Translated into Arabic
 
 I would like to acknowledge that Compressor has used AI language models to assist in translation. Should you find any issues in translation, please open a bug report or a pull request so they can be fixed.
