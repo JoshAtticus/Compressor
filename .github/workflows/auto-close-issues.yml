@@ -80,6 +80,25 @@ jobs:
                 body: reasonComment
               });
 
+              // Update labels: remove enhancement, triage, bug; add invalid, wontfix, and optionally "this person can't read"
+              const currentLabels = (issue.labels || []).map(l => (typeof l === 'string' ? l : l.name));
+              const labelsToRemove = new Set(['enhancement', 'triage', 'bug']);
+              let updatedLabels = currentLabels.filter(name => !labelsToRemove.has(name));
+
+              updatedLabels.push('invalid', 'wontfix');
+              if (referencesIssue3) {
+                updatedLabels.push("this person can't read");
+              }
+
+              updatedLabels = Array.from(new Set(updatedLabels));
+
+              await github.rest.issues.setLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                labels: updatedLabels
+              });
+
               // Close issue as not_planned
               await github.rest.issues.update({
                 owner: context.repo.owner,
@@ -89,5 +108,5 @@ jobs:
                 state_reason: 'not_planned'
               });
 
-              console.log(`Closed issue #${issue.number} as not_planned.`);
+              console.log(`Closed issue #${issue.number} as not_planned with labels: ${updatedLabels.join(', ')}.`);
             }
