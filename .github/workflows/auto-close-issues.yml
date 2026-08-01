@@ -23,13 +23,44 @@ jobs:
             // Check 1: Unchecked checkboxes (- [ ])
             const hasUncheckedCheckboxes = /- \[\s*\]/.test(body);
 
-            // Check 2: References to issue #3 outside of standard template checkbox labels
+            // Check 2: Direct reference or topic match for items listed in issue #3
             const bodyWithoutTemplateLabels = body
               .replace(/I have read https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '')
               .replace(/My issue is not listed in https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '')
               .replace(/https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '');
 
-            const referencesIssue3 = /#3\b|issue\s*#?3\b|issues\/3\b/i.test(bodyWithoutTemplateLabels);
+            const issue3TopicPatterns = [
+              /#3\b|issue\s*#?3\b|issues\/3\b/i,
+              // OEM-related WontFix
+              /in-app\s*(file\s*)?picker/i,
+              /file\s*browser/i,
+              /background\s*compress/i,
+              /background\s*encod/i,
+              /screen[\s-]off\s*encod/i,
+              /compress\s*(in\s*)?(the\s*)?background/i,
+              /save\s*to\s*photos/i,
+              /muxer\s*error/i,
+              // Out-of-scope features
+              /image\s*compress/i,
+              /photo\s*compress/i,
+              /compress(ing)?\s*(an?\s*)?(image|photo)s?/i,
+              /audio\s*compress/i,
+              /audio\s*extract/i,
+              /extract(ing)?\s*audio/i,
+              /compress(ing)?\s*audio/i,
+              /batch\s*(video\s*)?compress/i,
+              /bulk\s*(video\s*)?compress/i,
+              /compress(ing)?\s*multiple\s*video/i,
+              /video\s*to\s*gif/i,
+              /gif\s*convers/i,
+              /convert\s*(video\s*)?to\s*gif/i,
+              /crop(ping)?\s*video/i,
+              /trim(ming)?\s*video/i,
+              /video\s*crop/i,
+              /video\s*trim/i
+            ];
+
+            const referencesIssue3 = issue3TopicPatterns.some(pattern => pattern.test(bodyWithoutTemplateLabels));
 
             if (hasUncheckedCheckboxes || referencesIssue3) {
               let reasonComment = 'This issue has been automatically closed as not planned because:\n';
@@ -37,7 +68,7 @@ jobs:
                 reasonComment += '- Not all checkboxes in the prerequisites/disclaimer checklist were checked.\n';
               }
               if (referencesIssue3) {
-                reasonComment += '- It references or relates to issue #3.\n';
+                reasonComment += '- It references or requests a topic listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) (OEM limitations / out-of-scope features).\n';
               }
               reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting.';
 
