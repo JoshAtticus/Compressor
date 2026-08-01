@@ -1,0 +1,14 @@
+name: Misc
+description: My issue doesn't fall under any of these categories
+title: "[MISC] "
+labels: ["low-priority", "triage"]
+assignees:
+  - JoshAtticus
+body:
+  - type: textarea
+    id: issue_content
+    attributes:
+      label: "Issue Content"
+      description: "Please update the issue title and include your issue content below."
+    validations:
+      required: true

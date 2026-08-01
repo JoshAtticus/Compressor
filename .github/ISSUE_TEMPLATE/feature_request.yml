@@ -1,0 +1,46 @@
+name: Feature Request
+description: I'd like to see a new feature in Compressor
+title: "[FEAT] "
+labels: ["enhancement", "low-priority", "triage"]
+assignees:
+  - JoshAtticus
+body:
+  - type: textarea
+    id: feature_request
+    attributes:
+      label: "Feature Request"
+      description: "Describe the feature you'd like added to Compressor"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current_behaviour
+    attributes:
+      label: "Current Behaviour"
+      description: "If applicable, describe what currently happens in Compressor"
+    validations:
+      required: false
+
+  - type: textarea
+    id: device_info
+    attributes:
+      label: "Device Info"
+      description: "Please fill out the required fields (marked with an asterisk *), this will help us determine whether this is a feature needed because of your device or a feature that should be added to Compressor"
+      value: |
+        - Device Model* (e.g. Galaxy S10): 
+        - Android Version* (e.g. 12): 
+        - Device Chipset (e.g. Exynos 9820): 
+        - Device Model Number (e.g. SM-G973F): 
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: disclaimer
+    attributes:
+      label: "Disclaimer"
+      description: "By opening this issue, I agree that:"
+      options:
+        - label: "I have read https://github.com/JoshAtticus/Compressor/issues/3 and my issue is not listed there"
+          required: true
+        - label: "I am adding a valid title to my issue"
+          required: true

@@ -1,0 +1,62 @@
+name: Auto Close Invalid Issues
+
+on:
+  issues:
+    types: [opened, edited]
+
+permissions:
+  issues: write
+
+jobs:
+  check-issue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate Issue Form and Content
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const issue = context.payload.issue;
+            if (!issue || issue.pull_request) return;
+
+            const body = issue.body || '';
+
+            // Check 1: Unchecked checkboxes (- [ ])
+            const hasUncheckedCheckboxes = /- \[\s*\]/.test(body);
+
+            // Check 2: References to issue #3 outside of standard template checkbox labels
+            const bodyWithoutTemplateLabels = body
+              .replace(/I have read https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '')
+              .replace(/My issue is not listed in https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '')
+              .replace(/https:\/\/github\.com\/JoshAtticus\/Compressor\/issues\/3/gi, '');
+
+            const referencesIssue3 = /#3\b|issue\s*#?3\b|issues\/3\b/i.test(bodyWithoutTemplateLabels);
+
+            if (hasUncheckedCheckboxes || referencesIssue3) {
+              let reasonComment = 'This issue has been automatically closed as not planned because:\n';
+              if (hasUncheckedCheckboxes) {
+                reasonComment += '- Not all checkboxes in the prerequisites/disclaimer checklist were checked.\n';
+              }
+              if (referencesIssue3) {
+                reasonComment += '- It references or relates to issue #3.\n';
+              }
+              reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting.';
+
+              // Post comment explaining closure
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                body: reasonComment
+              });
+
+              // Close issue as not_planned
+              await github.rest.issues.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: issue.number,
+                state: 'closed',
+                state_reason: 'not_planned'
+              });
+
+              console.log(`Closed issue #${issue.number} as not_planned.`);
+            }
