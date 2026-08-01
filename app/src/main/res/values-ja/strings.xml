@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">共有</string>
     <string name="saved">保存済み</string>
+    <string name="saving">保存中…</string>
     <string name="save_to_photos">写真に保存</string>
     <string name="compress_another_video">別の動画を圧縮</string>
     <string name="buy_coffee">☕ Compressorを気に入っていただけましたか？コーヒーを一杯奢る</string>

@@ -29,6 +29,7 @@ import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -187,11 +188,32 @@ fun ResultScreen(
             FilledTonalButton(
                 onClick = onSave,
                 modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onSave),
-                enabled = !state.saveSuccess,
+                enabled = !state.saveSuccess && !state.isSaving,
+                colors = if (state.isSaving) {
+                    ButtonDefaults.filledTonalButtonColors(
+                        disabledContainerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        disabledContentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                } else {
+                    ButtonDefaults.filledTonalButtonColors()
+                },
                 contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
-                if (state.saveSuccess) {
+                if (state.isSaving) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(18.dp),
+                        strokeWidth = 2.dp,
+                        color = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        stringResource(R.string.saving),
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 12.5.sp,
+                        maxLines = 1
+                    )
+                } else if (state.saveSuccess) {
                     Icon(Icons.Default.Check, contentDescription = null, modifier = Modifier.size(18.dp))
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(

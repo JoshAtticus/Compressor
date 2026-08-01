@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">مشاركة</string>
     <string name="saved">تم الحفظ</string>
+    <string name="saving">جاري الحفظ…</string>
     <string name="save_to_photos">حفظ في الصور</string>
     <string name="compress_another_video">ضغط فيديو آخر</string>
     <string name="buy_coffee">☕ راضٍ عن Compressor؟ اشترِ لي قهوة!</string>

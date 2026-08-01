@@ -391,6 +391,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     error = null,
                     errorLog = null,
                     saveSuccess = false,
+                    isSaving = false,
                     hasShared = false
                 ).autoAdjust(defaultTargetMb)
             }
@@ -913,6 +914,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 errorLog = null,
                 compressedUri = null,
                 saveSuccess = false,
+                isSaving = false,
                 warnings = plan.warnings
             )
         }
@@ -1368,7 +1370,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     fun saveToUri(context: Context, targetUri: Uri) {
         val currentState = _uiState.value
+        if (currentState.isSaving) return
         val compressedUri = currentState.compressedUri ?: return
+
+        _uiState.update { it.copy(isSaving = true) }
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1387,13 +1392,18 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             } catch (e: Exception) {
                 e.printStackTrace()
                 _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
             }
         }
     }
 
     private fun saveToCustomTree(context: Context, treeUri: Uri) {
         val currentState = _uiState.value
+        if (currentState.isSaving) return
         val compressedUri = currentState.compressedUri ?: return
+
+        _uiState.update { it.copy(isSaving = true) }
 
         viewModelScope.launch(Dispatchers.IO) {
             try {
@@ -1438,14 +1448,19 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 _uiState.update {
                     it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message))
                 }
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
             }
         }
     }
 
     fun saveToGallery(context: Context) {
         val currentState = _uiState.value
+        if (currentState.isSaving) return
         val compressedUri = currentState.compressedUri ?: return
         
+        _uiState.update { it.copy(isSaving = true) }
+
         viewModelScope.launch(Dispatchers.IO) {
             try {
                 val file = File(compressedUri.path!!)
@@ -1502,6 +1517,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             } catch (e: Exception) {
                 e.printStackTrace()
                 _uiState.update { it.copy(error = getApplication<Application>().getString(R.string.error_save_failed, e.message)) }
+            } finally {
+                _uiState.update { it.copy(isSaving = false) }
             }
         }
     }

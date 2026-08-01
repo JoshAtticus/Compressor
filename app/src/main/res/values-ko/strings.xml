@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">공유</string>
     <string name="saved">저장됨</string>
+    <string name="saving">저장 중…</string>
     <string name="save_to_photos">사진에 저장</string>
     <string name="compress_another_video">다른 비디오 압축</string>
     <string name="buy_coffee">☕ Compressor가 마음에 드시나요? 커피 한 잔 사주기!</string>

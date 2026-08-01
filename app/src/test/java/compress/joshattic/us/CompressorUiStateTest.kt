@@ -135,4 +135,13 @@ class CompressorUiStateTest {
         assertEquals("content://test/tree", resetState.customOutputTreeUri)
         assertEquals("TestFolder", resetState.customOutputFolderName)
     }
+
+    @Test
+    fun testIsSavingDefaultState() {
+        val defaultState = CompressorUiState()
+        org.junit.Assert.assertFalse("isSaving should default to false", defaultState.isSaving)
+
+        val savingState = defaultState.copy(isSaving = true)
+        assertTrue("isSaving should be true when copy sets isSaving", savingState.isSaving)
+    }
 }

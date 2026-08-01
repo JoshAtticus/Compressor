@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">Compartir</string>
     <string name="saved">Guardado</string>
+    <string name="saving">Guardando…</string>
     <string name="save_to_photos">Guardar en Fotos</string>
     <string name="compress_another_video">Comprimir otro video</string>
     <string name="buy_coffee">☕ ¿Te gusta Compressor? ¡Invítame a un café!</string>

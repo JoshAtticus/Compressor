@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">Share</string>
     <string name="saved">Saved</string>
+    <string name="saving">Saving…</string>
     <string name="save_action">Save</string>
     <string name="save_to_photos">Save to Photos</string>
     <string name="compress_another_video">Compress Another Video</string>

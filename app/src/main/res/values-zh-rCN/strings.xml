@@ -3,6 +3,7 @@
     <string name="title_compressor">Compressor</string>
     <string name="share">分享</string>
     <string name="saved">已保存</string>
+    <string name="saving">保存中…</string>
     <string name="save_to_photos">保存到相册</string>
     <string name="compress_another_video">压缩另一个视频</string>
     <string name="buy_coffee">☕ 喜欢 Compressor？请我喝杯咖啡！</string>

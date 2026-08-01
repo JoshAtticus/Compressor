@@ -37,6 +37,7 @@ data class CompressorUiState(
     val error: String? = null,
     val errorLog: String? = null,
     val saveSuccess: Boolean = false,
+    val isSaving: Boolean = false,
     
     // Configuration
     val activePreset: QualityPreset = QualityPreset.CUSTOM,
