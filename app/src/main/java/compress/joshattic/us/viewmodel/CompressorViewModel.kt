@@ -877,12 +877,17 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 useMbps = useMbps,
                 showStorageSaved = current.showStorageSaved,
                 showTargetSizePreset = current.showTargetSizePreset,
+                autoSaveToPhotos = current.autoSaveToPhotos,
+                customOutputTreeUri = current.customOutputTreeUri,
+                customOutputFolderName = current.customOutputFolderName,
                 allCodecsEnabled = current.allCodecsEnabled,
                 allCodecsUnlocked = current.allCodecsUnlocked,
                 highPresetConfig = current.highPresetConfig,
                 mediumPresetConfig = current.mediumPresetConfig,
                 lowPresetConfig = current.lowPresetConfig,
                 targetSizePresets = current.targetSizePresets,
+                defaultVideoConfig = current.defaultVideoConfig,
+                defaultAudioConfig = current.defaultAudioConfig,
                 videoCodec = defaultCodec,
                 useH265 = useH265
             )

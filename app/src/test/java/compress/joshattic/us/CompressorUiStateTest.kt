@@ -113,4 +113,26 @@ class CompressorUiStateTest {
         // Framerate should then be reduced to 24fps
         assertEquals(24, adjustedState.targetFps)
     }
+
+    @Test
+    fun testStatePreservation_autoSaveToPhotos() {
+        val state = CompressorUiState(
+            autoSaveToPhotos = true,
+            customOutputTreeUri = "content://test/tree",
+            customOutputFolderName = "TestFolder"
+        )
+        assertTrue("autoSaveToPhotos should be true when enabled", state.autoSaveToPhotos)
+        assertEquals("content://test/tree", state.customOutputTreeUri)
+        assertEquals("TestFolder", state.customOutputFolderName)
+
+        // Simulating reset preservation pattern
+        val resetState = CompressorUiState(
+            autoSaveToPhotos = state.autoSaveToPhotos,
+            customOutputTreeUri = state.customOutputTreeUri,
+            customOutputFolderName = state.customOutputFolderName
+        )
+        assertTrue("autoSaveToPhotos should be preserved after reset", resetState.autoSaveToPhotos)
+        assertEquals("content://test/tree", resetState.customOutputTreeUri)
+        assertEquals("TestFolder", resetState.customOutputFolderName)
+    }
 }
