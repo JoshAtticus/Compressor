@@ -27,9 +27,54 @@ val Android16LightOnSurfaceVariant     = Color(0xFF43474E)
 val Android16LightOutline              = Color(0xFF73777F)
 val Android16LightOutlineVariant       = Color(0xFFC3C7D0)
 
-// ── App Icon Color ───────────────────────────────────────────────────────────
+// ── App Icon & Brand Colors ──────────────────────────────────────────────────
 val A16BadgeAppGreen        = Color(0xFF6FA450)   // Exact #6FA450 requested
 val A16BadgeAppGreenOnBadge = Color(0xFFFFFFFF)   // Clean white icon on green
+
+// ── Harmonized Green Theme Color Tokens (Fallback for non-dynamic / Android <= 11) ──
+val CompressorLightGreenBackground           = Color(0xFFEFF4ED)
+val CompressorLightGreenSurface              = Color(0xFFEFF4ED)
+val CompressorLightGreenSurfaceContainerLow  = Color(0xFFF5F9F3)
+val CompressorLightGreenSurfaceContainer     = Color(0xFFE4EDE1)
+val CompressorLightGreenSurfaceContainerHigh = Color(0xFFDAE5D6)
+val CompressorLightGreenSurfaceContainerHighest = Color(0xFFCFDCCB)
+val CompressorLightGreenOnSurface            = Color(0xFF171D15)
+val CompressorLightGreenOnSurfaceVariant     = Color(0xFF41493E)
+val CompressorLightGreenOutline              = Color(0xFF71796E)
+val CompressorLightGreenOutlineVariant       = Color(0xFFC1C9BD)
+
+val CompressorDarkGreenBackground            = Color(0xFF111411)
+val CompressorDarkGreenSurface               = Color(0xFF111411)
+val CompressorDarkGreenSurfaceContainerLow   = Color(0xFF191C18)
+val CompressorDarkGreenSurfaceContainer      = Color(0xFF1D211C)
+val CompressorDarkGreenSurfaceContainerHigh  = Color(0xFF282B26)
+val CompressorDarkGreenOnSurface             = Color(0xFFE1E4DC)
+val CompressorDarkGreenOnSurfaceVariant      = Color(0xFFC1C9BD)
+val CompressorDarkGreenOutline               = Color(0xFF8B9388)
+val CompressorDarkGreenOutlineVariant        = Color(0xFF41493E)
+
+val CompressorLightPrimaryContainer      = Color(0xFFDCECCF)
+val CompressorLightOnPrimaryContainer    = Color(0xFF193112)
+val CompressorLightSecondary             = Color(0xFF55634E)
+val CompressorLightOnSecondary           = Color(0xFFFFFFFF)
+val CompressorLightSecondaryContainer    = Color(0xFFDCE8D5)
+val CompressorLightOnSecondaryContainer  = Color(0xFF14290F)
+val CompressorLightTertiary              = Color(0xFF3B6554)
+val CompressorLightOnTertiary            = Color(0xFFFFFFFF)
+val CompressorLightTertiaryContainer     = Color(0xFFBDEDE0)
+val CompressorLightOnTertiaryContainer    = Color(0xFF002117)
+
+val CompressorDarkPrimaryContainer       = Color(0xFF2E4C20)
+val CompressorDarkOnPrimaryContainer     = Color(0xFFDCECCF)
+val CompressorDarkSecondary              = Color(0xFFB9CCA9)
+val CompressorDarkOnSecondary            = Color(0xFF26341D)
+val CompressorDarkSecondaryContainer     = Color(0xFF2A3D24)
+val CompressorDarkOnSecondaryContainer   = Color(0xFFD4E6C9)
+val CompressorDarkTertiary               = Color(0xFFA1D0C3)
+val CompressorDarkOnTertiary             = Color(0xFF073728)
+val CompressorDarkTertiaryContainer      = Color(0xFF234E40)
+val CompressorDarkOnTertiaryContainer     = Color(0xFFBDEDE0)
+
 
 // ── Android 16 Expressive Category Badges (Theme Aware) ──────────────────────
 // Display (Amber / Orange)
