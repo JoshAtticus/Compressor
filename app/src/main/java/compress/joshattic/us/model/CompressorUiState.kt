@@ -5,6 +5,11 @@ import androidx.media3.common.MimeTypes
 import compress.joshattic.us.utils.formatFileSize
 import java.util.Locale
 
+sealed class FilenameSegment {
+    data class Text(val value: String) : FilenameSegment()
+    data class Token(val key: String) : FilenameSegment()
+}
+
 val defaultTargetSizePresets = listOf(
     TargetSizePreset("discord", 10f, "Discord • GitHub"),
     TargetSizePreset("email", 25f, "Email"),
@@ -72,7 +77,14 @@ data class CompressorUiState(
     val lowPresetConfig: QualityPresetConfig = QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000),
     val targetSizePresets: List<TargetSizePreset> = defaultTargetSizePresets,
     val defaultVideoConfig: DefaultVideoConfig = DefaultVideoConfig(),
-    val defaultAudioConfig: DefaultAudioConfig = DefaultAudioConfig()
+    val defaultAudioConfig: DefaultAudioConfig = DefaultAudioConfig(),
+    val filenameSegments: List<FilenameSegment> = listOf(
+        FilenameSegment.Text(""),
+        FilenameSegment.Token("original_name"),
+        FilenameSegment.Text(""),
+        FilenameSegment.Token("compressed"),
+        FilenameSegment.Text("")
+    )
 ) {
     private val minBitrate: Long
         get() {

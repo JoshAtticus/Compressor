@@ -163,6 +163,32 @@
     <string name="output_location_reset_subtitle">Speicherort auf Filme/Compressor zurücksetzen</string>
     <string name="save_to_folder">Speichern</string>
 
+    <string name="filename_builder_title">Dateinameneditor</string>
+    <string name="filename_builder_subtitle">Chips per Drag &amp; Drop neu anordnen, hinzufügen und entfernen.</string>
+    <string name="filename_placeholder_prefix">Präfix…</string>
+    <string name="filename_placeholder_suffix">Suffix…</string>
+    <string name="filename_drag_release_remove">Außerhalb loslassen, um Chip zu entfernen</string>
+    <string name="filename_drag_over_reorder">Über Position ziehen zum Neu-Anordnen</string>
+    <string name="filename_drag_release_add">Loslassen, um Chip hier hinzuzufügen</string>
+    <string name="filename_drag_into_area">Chip in diesen Bereich ziehen</string>
+    <string name="filename_available_chips_title">Verfügbare dynamische Chips (In den oberen Bereich ziehen)</string>
+    <string name="filename_all_chips_added">Alle verfügbaren Chips wurden hinzugefügt.</string>
+    <string name="filename_preview_label">Vorschau:</string>
+    <string name="filename_reset_button">Format zurücksetzen</string>
+
+    <string name="token_original_name">Originalname</string>
+    <string name="token_compressed">Komprimiert</string>
+    <string name="token_date">Datum</string>
+    <string name="token_time">Uhrzeit</string>
+    <string name="token_random">Zufallszahl</string>
+    <string name="token_resolution">Auflösung</string>
+    <string name="token_framerate">Bildrate</string>
+    <string name="token_bitrate">Video-Bitrate</string>
+    <string name="token_audio_bitrate">Audio-Bitrate</string>
+    <string name="token_encoding">Kodierung</string>
+    <string name="token_audio_status">Audio-Status</string>
+    <string name="token_preset">Voreinstellung</string>
+
     <string name="preset_summary_format">%1$s • %2$s • %3$s Größe • %4$s Audio</string>
 
     <string name="placeholder_video_desc">Standardoptionen für Videokomprimierung und Codec kommen bald in einem zukünftigen Update.</string>

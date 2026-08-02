@@ -156,6 +156,32 @@
     <string name="output_location_reset_subtitle">Сбросить место сохранения на Фильмы/Compressor</string>
     <string name="save_to_folder">Сохранить</string>
 
+    <string name="filename_builder_title">Конструктор имени файла</string>
+    <string name="filename_builder_subtitle">Перетаскивайте чипы для сортировки, добавления и удаления.</string>
+    <string name="filename_placeholder_prefix">префикс…</string>
+    <string name="filename_placeholder_suffix">суффикс…</string>
+    <string name="filename_drag_release_remove">Отпустите снаружи рамки, чтобы удалить чип</string>
+    <string name="filename_drag_over_reorder">Перетащите на позицию для изменения порядка</string>
+    <string name="filename_drag_release_add">Отпустите, чтобы добавить чип сюда</string>
+    <string name="filename_drag_into_area">Перетащите чип в эту область</string>
+    <string name="filename_available_chips_title">Доступные динамические чипы (Перетащите в область выше)</string>
+    <string name="filename_all_chips_added">Все доступные чипы добавлены.</string>
+    <string name="filename_preview_label">Предпросмотр:</string>
+    <string name="filename_reset_button">Сбросить формат имени</string>
+
+    <string name="token_original_name">Исходное имя</string>
+    <string name="token_compressed">Сжатый</string>
+    <string name="token_date">Дата</string>
+    <string name="token_time">Время</string>
+    <string name="token_random">Случайное число</string>
+    <string name="token_resolution">Разрешение</string>
+    <string name="token_framerate">Частота кадров</string>
+    <string name="token_bitrate">Битрейт видео</string>
+    <string name="token_audio_bitrate">Битрейт аудио</string>
+    <string name="token_encoding">Кодирование</string>
+    <string name="token_audio_status">Статус аудио</string>
+    <string name="token_preset">Пресет</string>
+
     <string name="preset_summary_format">%1$s • %2$s • размер %3$s • аудио %4$s</string>
 
     <string name="placeholder_video_desc">Параметры видео по умолчанию появятся в будущем обновлении.</string>

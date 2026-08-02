@@ -157,8 +157,34 @@
     <string name="output_location_default">사진 (Movies/Compressor)</string>
     <string name="output_location_subtitle">압축된 비디오가 기본으로 저장되는 위치</string>
     <string name="output_location_reset_title">기본값 사용 (사진)</string>
-    <string name="output_location_reset_subtitle">저장 위치를 Movies/Compressor로 초기화</string>
+    <string name="output_location_reset_subtitle">저장 위치를 Movies/Compressor로 재설정</string>
     <string name="save_to_folder">저장</string>
+
+    <string name="filename_builder_title">파일 이름 작성기</string>
+    <string name="filename_builder_subtitle">칩을 드래그 앤 드롭하여 재정렬, 추가 및 제거합니다.</string>
+    <string name="filename_placeholder_prefix">접두사…</string>
+    <string name="filename_placeholder_suffix">접미사…</string>
+    <string name="filename_drag_release_remove">상자 밖에서 놓아 칩 제거</string>
+    <string name="filename_drag_over_reorder">위치 위로 드래그하여 순서 변경</string>
+    <string name="filename_drag_release_add">놓아서 여기에 칩 추가</string>
+    <string name="filename_drag_into_area">이 영역으로 칩 드래그</string>
+    <string name="filename_available_chips_title">사용 가능한 동적 칩 (위 영역으로 드래그 앤 드롭)</string>
+    <string name="filename_all_chips_added">사용 가능한 모든 칩이 추가되었습니다.</string>
+    <string name="filename_preview_label">미리보기:</string>
+    <string name="filename_reset_button">파일 이름 형식 재설정</string>
+
+    <string name="token_original_name">원본 이름</string>
+    <string name="token_compressed">압축됨</string>
+    <string name="token_date">날짜</string>
+    <string name="token_time">시간</string>
+    <string name="token_random">난수</string>
+    <string name="token_resolution">해상도</string>
+    <string name="token_framerate">프레임 레이트</string>
+    <string name="token_bitrate">비디오 비트레이트</string>
+    <string name="token_audio_bitrate">오디오 비트레이트</string>
+    <string name="token_encoding">인코딩</string>
+    <string name="token_audio_status">오디오 상태</string>
+    <string name="token_preset">프리셋</string>
 
     <string name="preset_summary_format">%1$s • %2$s • 크기 %3$s • 오디오 %4$s</string>
 

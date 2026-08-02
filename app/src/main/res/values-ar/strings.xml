@@ -157,8 +157,34 @@
     <string name="output_location_default">الصور (Movies/Compressor)</string>
     <string name="output_location_subtitle">أين تُحفظ الفيديوهات المضغوطة افتراضيًا</string>
     <string name="output_location_reset_title">استخدام الافتراضي (الصور)</string>
-    <string name="output_location_reset_subtitle">إعادة ضبط موقع الحفظ إلى Movies/Compressor</string>
+    <string name="output_location_reset_subtitle">إعادة ضبط موقع الحفظ إلى الأفلام/Compressor</string>
     <string name="save_to_folder">حفظ</string>
+
+    <string name="filename_builder_title">مُنشئ اسم الملف</string>
+    <string name="filename_builder_subtitle">قم بسحب وإسقاط الشرائح لإعادة الترتيب والإضافة والإزالة.</string>
+    <string name="filename_placeholder_prefix">سابقة…</string>
+    <string name="filename_placeholder_suffix">لاحقة…</string>
+    <string name="filename_drag_release_remove">حَرِّر خارج الصندوق لإزالة الشريحة</string>
+    <string name="filename_drag_over_reorder">اسحب فوق الموضع لإعادة الترتيب</string>
+    <string name="filename_drag_release_add">حَرِّر لإضافة الشريحة هنا</string>
+    <string name="filename_drag_into_area">اسحب الشريحة إلى هذه المنطقة</string>
+    <string name="filename_available_chips_title">الشرائح الديناميكية المتاحة (اسحب وأسقط في المنطقة أعلاه)</string>
+    <string name="filename_all_chips_added">تمت إضافة جميع الشرائح المتاحة.</string>
+    <string name="filename_preview_label">معاينة:</string>
+    <string name="filename_reset_button">إعادة ضبط تنسيق اسم الملف</string>
+
+    <string name="token_original_name">الاسم الأصلي</string>
+    <string name="token_compressed">مضغوط</string>
+    <string name="token_date">التاريخ</string>
+    <string name="token_time">الوقت</string>
+    <string name="token_random">رقم عشوائي</string>
+    <string name="token_resolution">الدقة</string>
+    <string name="token_framerate">معدل الإطارات</string>
+    <string name="token_bitrate">معدل بت الفيديو</string>
+    <string name="token_audio_bitrate">معدل بت الصوت</string>
+    <string name="token_encoding">الترميز</string>
+    <string name="token_audio_status">حالة الصوت</string>
+    <string name="token_preset">الإعداد المسبق</string>
 
     <string name="preset_summary_format">%1$s • %2$s • الحجم %3$s • الصوت %4$s</string>
 

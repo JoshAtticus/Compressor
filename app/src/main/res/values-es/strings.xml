@@ -159,8 +159,34 @@
     <string name="output_location_default">Fotos (Movies/Compressor)</string>
     <string name="output_location_subtitle">Dónde se guardan los videos comprimidos por defecto</string>
     <string name="output_location_reset_title">Usar predeterminado (Fotos)</string>
-    <string name="output_location_reset_subtitle">Restablecer ubicación de guardado a Movies/Compressor</string>
+    <string name="output_location_reset_subtitle">Restablecer la ubicación de guardado a Películas/Compressor</string>
     <string name="save_to_folder">Guardar</string>
+
+    <string name="filename_builder_title">Generador de nombre de archivo</string>
+    <string name="filename_builder_subtitle">Arrastre y suelte etiquetas para reorganizar, agregar y quitar.</string>
+    <string name="filename_placeholder_prefix">prefijo…</string>
+    <string name="filename_placeholder_suffix">sufijo…</string>
+    <string name="filename_drag_release_remove">Suelte fuera para eliminar la etiqueta</string>
+    <string name="filename_drag_over_reorder">Arrastre sobre la posición para reordenar</string>
+    <string name="filename_drag_release_add">Suelte para agregar la etiqueta aquí</string>
+    <string name="filename_drag_into_area">Arrastre la etiqueta a esta área</string>
+    <string name="filename_available_chips_title">Etiquetas dinámicas disponibles (Arrastre al área superior)</string>
+    <string name="filename_all_chips_added">Se han agregado todas las etiquetas disponibles.</string>
+    <string name="filename_preview_label">Vista previa:</string>
+    <string name="filename_reset_button">Restablecer formato</string>
+
+    <string name="token_original_name">Nombre original</string>
+    <string name="token_compressed">Comprimido</string>
+    <string name="token_date">Fecha</string>
+    <string name="token_time">Hora</string>
+    <string name="token_random">Número aleatorio</string>
+    <string name="token_resolution">Resolución</string>
+    <string name="token_framerate">Tasa de fotogramas</string>
+    <string name="token_bitrate">Tasa de bits de video</string>
+    <string name="token_audio_bitrate">Tasa de bits de audio</string>
+    <string name="token_encoding">Codificación</string>
+    <string name="token_audio_status">Estado de audio</string>
+    <string name="token_preset">Ajuste predeterminado</string>
 
     <string name="preset_summary_format">%1$s • %2$s • tamaño %3$s • audio %4$s</string>
 

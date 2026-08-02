@@ -256,7 +256,13 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                 onToggleShowBitrate = { viewModel.toggleShowBitrate() },
                                 onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
                                 onToggleShowStorageSaved = { viewModel.toggleShowStorageSaved() },
-                                onToggleShowTargetSizePreset = { viewModel.toggleShowTargetSizePreset() }
+                                onToggleShowTargetSizePreset = { viewModel.toggleShowTargetSizePreset() },
+                                onUpdateFilenameSegments = { viewModel.updateFilenameSegments(it) },
+                                onInsertFilenameTokenAt = { index, key -> viewModel.insertFilenameTokenAt(index, key) },
+                                onRemoveFilenameSegmentAt = { viewModel.removeFilenameSegmentAt(it) },
+                                onMoveFilenameSegment = { from, to -> viewModel.moveFilenameSegment(from, to) },
+                                onResetFilenamePattern = { viewModel.resetFilenamePattern() },
+                                previewFileName = viewModel.generatePreviewFileName(state)
                             )
                             SettingsDestination.PRESETS -> compress.joshattic.us.ui.screens.settings.PresetsSettingsScreen(
                                 state = state,

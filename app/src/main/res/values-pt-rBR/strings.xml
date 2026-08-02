@@ -157,8 +157,34 @@
     <string name="output_location_default">Fotos (Filmes/Compressor)</string>
     <string name="output_location_subtitle">Onde os vídeos comprimidos são salvos por padrão</string>
     <string name="output_location_reset_title">Usar padrão (Fotos)</string>
-    <string name="output_location_reset_subtitle">Redefinir local para Filmes/Compressor</string>
+    <string name="output_location_reset_subtitle">Redefinir local de salvamento para Filmes/Compressor</string>
     <string name="save_to_folder">Salvar</string>
+
+    <string name="filename_builder_title">Construtor de nome de arquivo</string>
+    <string name="filename_builder_subtitle">Arraste e solte chips para reordenar, adicionar e remover.</string>
+    <string name="filename_placeholder_prefix">prefixo…</string>
+    <string name="filename_placeholder_suffix">sufixo…</string>
+    <string name="filename_drag_release_remove">Solte fora da caixa para remover o chip</string>
+    <string name="filename_drag_over_reorder">Arraste sobre a posição para reordenar</string>
+    <string name="filename_drag_release_add">Solte para adicionar o chip aqui</string>
+    <string name="filename_drag_into_area">Arraste o chip para esta área</string>
+    <string name="filename_available_chips_title">Chips dinâmicos disponíveis (Arraste para a área acima)</string>
+    <string name="filename_all_chips_added">Todos os chips disponíveis foram adicionados.</string>
+    <string name="filename_preview_label">Pré-visualização:</string>
+    <string name="filename_reset_button">Redefinir formato</string>
+
+    <string name="token_original_name">Nome original</string>
+    <string name="token_compressed">Comprimido</string>
+    <string name="token_date">Data</string>
+    <string name="token_time">Hora</string>
+    <string name="token_random">Número aleatório</string>
+    <string name="token_resolution">Resolução</string>
+    <string name="token_framerate">Taxa de quadros</string>
+    <string name="token_bitrate">Taxa de bits de vídeo</string>
+    <string name="token_audio_bitrate">Taxa de bits de áudio</string>
+    <string name="token_encoding">Codificação</string>
+    <string name="token_audio_status">Status do áudio</string>
+    <string name="token_preset">Predefinição</string>
 
     <string name="preset_summary_format">%1$s • %2$s • tamanho %3$s • áudio %4$s</string>
 

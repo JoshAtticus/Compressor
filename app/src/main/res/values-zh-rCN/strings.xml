@@ -152,9 +152,35 @@
     <string name="output_location_title">保存位置</string>
     <string name="output_location_default">相册 (Movies/Compressor)</string>
     <string name="output_location_subtitle">压缩后的视频默认保存目录</string>
-    <string name="output_location_reset_title">使用默认位置 (相册)</string>
-    <string name="output_location_reset_subtitle">重置保存位置为 Movies/Compressor</string>
+    <string name="output_location_reset_title">使用默认（照片）</string>
+    <string name="output_location_reset_subtitle">重置保存位置为 电影/Compressor</string>
     <string name="save_to_folder">保存</string>
+
+    <string name="filename_builder_title">文件名生成器</string>
+    <string name="filename_builder_subtitle">拖放标签进行重新排序、添加和移除。</string>
+    <string name="filename_placeholder_prefix">前缀…</string>
+    <string name="filename_placeholder_suffix">后缀…</string>
+    <string name="filename_drag_release_remove">在框外释放以移除标签</string>
+    <string name="filename_drag_over_reorder">拖动到目标位置以重新排序</string>
+    <string name="filename_drag_release_add">释放以在此处添加标签</string>
+    <string name="filename_drag_into_area">将标签拖入此区域</string>
+    <string name="filename_available_chips_title">可用动态标签（拖放到上方区域）</string>
+    <string name="filename_all_chips_added">所有可用标签均已添加。</string>
+    <string name="filename_preview_label">预览：</string>
+    <string name="filename_reset_button">重置文件名格式</string>
+
+    <string name="token_original_name">原文件名</string>
+    <string name="token_compressed">已压缩</string>
+    <string name="token_date">日期</string>
+    <string name="token_time">时间</string>
+    <string name="token_random">随机数</string>
+    <string name="token_resolution">分辨率</string>
+    <string name="token_framerate">帧率</string>
+    <string name="token_bitrate">视频码率</string>
+    <string name="token_audio_bitrate">音频码率</string>
+    <string name="token_encoding">编码</string>
+    <string name="token_audio_status">音频状态</string>
+    <string name="token_preset">预设</string>
 
     <string name="preset_summary_format">%1$s • %2$s • 大小 %3$s • 音频 %4$s</string>
 

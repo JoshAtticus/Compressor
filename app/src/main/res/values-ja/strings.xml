@@ -157,8 +157,34 @@
     <string name="output_location_default">写真 (Movies/Compressor)</string>
     <string name="output_location_subtitle">圧縮した動画のデフォルト保存先</string>
     <string name="output_location_reset_title">デフォルトを使用 (写真)</string>
-    <string name="output_location_reset_subtitle">保存先を Movies/Compressor にリセット</string>
+    <string name="output_location_reset_subtitle">保存場所を Movies/Compressor にリセット</string>
     <string name="save_to_folder">保存</string>
+
+    <string name="filename_builder_title">ファイル名ビルダー</string>
+    <string name="filename_builder_subtitle">チップをドラッグ＆ドロップして並べ替え、追加、削除します。</string>
+    <string name="filename_placeholder_prefix">接頭辞…</string>
+    <string name="filename_placeholder_suffix">接尾辞…</string>
+    <string name="filename_drag_release_remove">枠外で離してチップを削除</string>
+    <string name="filename_drag_over_reorder">位置の上にドラッグして並べ替え</string>
+    <string name="filename_drag_release_add">離してここにチップを追加</string>
+    <string name="filename_drag_into_area">このエリアにチップをドラッグ</string>
+    <string name="filename_available_chips_title">利用可能な動的チップ (上のエリアにドラッグ＆ドロップ)</string>
+    <string name="filename_all_chips_added">すべての利用可能なチップが追加されました。</string>
+    <string name="filename_preview_label">プレビュー:</string>
+    <string name="filename_reset_button">ファイル名フォーマットをリセット</string>
+
+    <string name="token_original_name">元の名前</string>
+    <string name="token_compressed">圧縮済み</string>
+    <string name="token_date">日付</string>
+    <string name="token_time">時刻</string>
+    <string name="token_random">乱数</string>
+    <string name="token_resolution">解像度</string>
+    <string name="token_framerate">フレームレート</string>
+    <string name="token_bitrate">動画ビットレート</string>
+    <string name="token_audio_bitrate">音声ビットレート</string>
+    <string name="token_encoding">エンコード</string>
+    <string name="token_audio_status">音声ステータス</string>
+    <string name="token_preset">プリセット</string>
 
     <string name="preset_summary_format">%1$s • %2$s • サイズ %3$s • 音声 %4$s</string>
 

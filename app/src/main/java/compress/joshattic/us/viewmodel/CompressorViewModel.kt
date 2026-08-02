@@ -13,6 +13,9 @@ import android.os.Build
 import android.os.Environment
 import android.provider.DocumentsContract
 import android.provider.MediaStore
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import androidx.annotation.OptIn
 import androidx.core.content.edit
 import androidx.documentfile.provider.DocumentFile
@@ -37,6 +40,7 @@ import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
+import compress.joshattic.us.model.FilenameSegment
 import compress.joshattic.us.model.DefaultAudioConfig
 import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.QualityPreset
@@ -81,6 +85,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
         private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
+        private const val PREF_FILENAME_SEGMENTS = "filename_segments_v2"
+        private const val DEFAULT_FILENAME_SEGMENTS = "token:original_name|token:compressed"
         private const val CURRENT_VERSION_CODE = 23
         private const val PERSIST_URI_FLAGS =
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
@@ -92,8 +98,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val useMbps = prefs.getBoolean("use_mbps", false)
         val showStorageSaved = prefs.getBoolean("show_storage_saved", true)
         val showTargetSizePreset = prefs.getBoolean("show_target_size_preset", true)
-        // Auto-save relies on MediaStore scoped inserts (API 29+) or needs a prior SAF folder;
-        // on Android 7–9 the default path is unreliable without storage permissions, so keep it off.
         val autoSaveSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         val autoSaveToPhotos = autoSaveSupported && prefs.getBoolean("auto_save_photos", true)
         val customOutputTreeUri = prefs.getString(PREF_CUSTOM_OUTPUT_TREE_URI, null)
@@ -104,6 +108,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val sizePresetsList = loadTargetSizePresets()
         val defaultVideo = loadDefaultVideoConfig()
         val defaultAudio = loadDefaultAudioConfig()
+        val filenameSegments = deserializeSegments(
+            prefs.getString(PREF_FILENAME_SEGMENTS, DEFAULT_FILENAME_SEGMENTS) ?: DEFAULT_FILENAME_SEGMENTS
+        )
 
         val savedVersionCode = prefs.getInt(PREF_SAVED_VERSION_CODE, -1)
         val showWhatsNew = if (savedVersionCode != -1) {
@@ -131,6 +138,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             targetSizePresets = sizePresetsList,
             defaultVideoConfig = defaultVideo,
             defaultAudioConfig = defaultAudio,
+            filenameSegments = filenameSegments,
             showWhatsNewDialog = showWhatsNew
         ) }
         checkSupportedCodecs()
@@ -529,6 +537,200 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         prefs.edit().remove("default_audio_config").apply()
     }
 
+    private fun normalizeSegments(segments: List<FilenameSegment>): List<FilenameSegment> {
+        val result = mutableListOf<FilenameSegment>()
+        var currentText = ""
+        for (seg in segments) {
+            when (seg) {
+                is FilenameSegment.Text -> {
+                    currentText += seg.value
+                }
+                is FilenameSegment.Token -> {
+                    result.add(FilenameSegment.Text(currentText))
+                    currentText = ""
+                    result.add(seg)
+                }
+            }
+        }
+        result.add(FilenameSegment.Text(currentText))
+        return result
+    }
+
+    fun updateFilenameSegments(segments: List<FilenameSegment>) {
+        val normalized = normalizeSegments(segments)
+        _uiState.update { it.copy(filenameSegments = normalized) }
+        prefs.edit().putString(PREF_FILENAME_SEGMENTS, serializeSegments(normalized)).apply()
+    }
+
+    fun insertFilenameTokenAt(index: Int, tokenKey: String) {
+        val current = _uiState.value.filenameSegments
+        // Each token can only be added once
+        if (current.any { it is FilenameSegment.Token && it.key == tokenKey }) return
+        val newList = current.toMutableList()
+        val clampedIndex = index.coerceIn(0, newList.size)
+        newList.add(clampedIndex, FilenameSegment.Token(tokenKey))
+        updateFilenameSegments(newList)
+    }
+
+    fun removeFilenameSegmentAt(index: Int) {
+        val current = _uiState.value.filenameSegments.toMutableList()
+        if (index in current.indices) {
+            current.removeAt(index)
+            updateFilenameSegments(current)
+        }
+    }
+
+    fun moveFilenameSegment(fromIndex: Int, toIndex: Int) {
+        val current = _uiState.value.filenameSegments.toMutableList()
+        if (fromIndex in current.indices && toIndex in current.indices) {
+            val item = current.removeAt(fromIndex)
+            current.add(toIndex, item)
+            updateFilenameSegments(current)
+        }
+    }
+
+    fun resetFilenamePattern() {
+        val defaultSegments = listOf(
+            FilenameSegment.Token("original_name"),
+            FilenameSegment.Token("compressed")
+        )
+        updateFilenameSegments(defaultSegments)
+    }
+
+    private fun serializeSegments(segments: List<FilenameSegment>): String {
+        return segments
+            .filter { it !is FilenameSegment.Text || it.value.isNotEmpty() }
+            .joinToString("|") { seg ->
+                when (seg) {
+                    is FilenameSegment.Text -> "text:${seg.value}"
+                    is FilenameSegment.Token -> "token:${seg.key}"
+                }
+            }
+    }
+
+    private fun deserializeSegments(raw: String): List<FilenameSegment> {
+        if (raw.isBlank()) return normalizeSegments(emptyList())
+        val parsed = raw.split("|").mapNotNull { part ->
+            when {
+                part.startsWith("text:") -> {
+                    val value = part.removePrefix("text:")
+                    if (value.isNotEmpty()) FilenameSegment.Text(value) else null
+                }
+                part.startsWith("token:") -> {
+                    val key = part.removePrefix("token:")
+                    if (key.isNotEmpty()) FilenameSegment.Token(key) else null
+                }
+                else -> null
+            }
+        }
+        return normalizeSegments(parsed)
+    }
+
+    fun generatePreviewFileName(state: CompressorUiState): String {
+        return compressedOutputFileName(state)
+    }
+
+    fun compressedOutputFileName(state: CompressorUiState): String {
+        val dateStr by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()) }
+        val timeStr by lazy { SimpleDateFormat("HH-mm-ss", Locale.US).format(Date()) }
+        val randomStr by lazy { String.format(Locale.US, "%06d", (0..999999).random()) }
+
+        val resStr by lazy {
+            val h = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
+            if (h > 0) "${h}p" else "1080p"
+        }
+
+        val fpsStr by lazy {
+            val fps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
+            if (fps > 0) "${fps}fps" else "30fps"
+        }
+
+        val videoBitrateStr by lazy {
+            val calcBitrate = state.targetBitrate
+            if (calcBitrate > 0) {
+                if (state.useMbps) {
+                    val mbps = calcBitrate / 1_000_000f
+                    String.format(Locale.US, "Video_%.1fMbps", mbps)
+                } else {
+                    val kbps = calcBitrate / 1000
+                    "Video_${kbps}kbps"
+                }
+            } else {
+                "Video_5Mbps"
+            }
+        }
+
+        val audioBitrateStr by lazy {
+            if (state.removeAudio) {
+                "NoAudio"
+            } else {
+                val kbps = if (state.audioBitrate > 0) state.audioBitrate / 1000 else 128
+                "Audio_${kbps}kbps"
+            }
+        }
+
+        val encodingStr by lazy {
+            when (state.videoCodec) {
+                MimeTypes.VIDEO_H265 -> "H265"
+                MimeTypes.VIDEO_H264 -> "H264"
+                MimeTypes.VIDEO_AV1 -> "AV1"
+                MimeTypes.VIDEO_VP9 -> "VP9"
+                else -> state.videoCodec.substringAfterLast("/").uppercase(Locale.US)
+            }
+        }
+
+        val audioStatusStr by lazy {
+            if (state.removeAudio) "NoAudio" else "WithAudio"
+        }
+
+        val presetStr by lazy {
+            when (state.activePreset) {
+                QualityPreset.HIGH -> "High"
+                QualityPreset.MEDIUM -> "Medium"
+                QualityPreset.LOW -> "Low"
+                QualityPreset.CUSTOM -> "Custom"
+            }
+        }
+
+        val originalNameStr by lazy {
+            state.originalName?.substringBeforeLast(".")?.takeIf { it.isNotBlank() } ?: "Compressed"
+        }
+
+        val parts = mutableListOf<String>()
+        for (segment in state.filenameSegments) {
+            val evaluated = when (segment) {
+                is FilenameSegment.Text -> segment.value.trim()
+                is FilenameSegment.Token -> when (segment.key) {
+                    "original_name" -> originalNameStr
+                    "compressed" -> "Compressed"
+                    "date" -> dateStr
+                    "time" -> timeStr
+                    "random" -> randomStr
+                    "resolution" -> resStr
+                    "framerate", "fps" -> fpsStr
+                    "bitrate" -> videoBitrateStr
+                    "audio_bitrate" -> audioBitrateStr
+                    "encoding", "codec" -> encodingStr
+                    "audio_status" -> audioStatusStr
+                    "preset" -> presetStr
+                    else -> segment.key
+                }
+            }
+            if (evaluated.isNotBlank()) {
+                parts.add(evaluated)
+            }
+        }
+
+        val rawName = parts.joinToString("_")
+        val sanitized = rawName
+            .replace(Regex("[\\\\/:*?\"<>|]"), "_")
+            .replace(Regex("_+"), "_")
+            .trim('_')
+
+        val finalStem = if (sanitized.isBlank()) "Compressed_${System.currentTimeMillis()}" else sanitized
+        return "$finalStem.mp4"
+    }
+
     private fun saveDefaultVideoConfig(config: DefaultVideoConfig) {
         val obj = JSONObject().apply {
             put("defaultVideoCodec", config.defaultVideoCodec)
@@ -773,15 +975,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             }
         } catch (_: Exception) {
             getApplication<Application>().getString(R.string.output_location_default)
-        }
-    }
-
-    private fun compressedOutputFileName(state: CompressorUiState): String {
-        return if (state.originalName != null) {
-            val nameWithoutExt = state.originalName.substringBeforeLast(".")
-            "${nameWithoutExt}_Compressed.mp4"
-        } else {
-            "Compressed_${System.currentTimeMillis()}.mp4"
         }
     }
 

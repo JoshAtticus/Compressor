@@ -166,6 +166,36 @@
     <string name="output_location_subtitle">Where compressed videos are saved by default</string>
     <string name="output_location_reset_title">Use default (Photos)</string>
     <string name="output_location_reset_subtitle">Reset save location to Movies/Compressor</string>
+
+    <string name="filename_builder_title">Filename builder</string>
+    <string name="filename_builder_subtitle">Drag and drop chips to rearrange, add and remove.</string>
+    <string name="filename_placeholder_prefix">prefix…</string>
+    <string name="filename_placeholder_suffix">suffix…</string>
+    <string name="filename_drag_release_remove">Release outside box to remove chip</string>
+    <string name="filename_drag_over_reorder">Drag over position to reorder</string>
+    <string name="filename_drag_release_add">Release to add chip here</string>
+    <string name="filename_drag_into_area">Drag chip into this area</string>
+    <string name="filename_available_chips_title">Available dynamic chips (Drag &amp; drop into the area above)</string>
+    <string name="filename_all_chips_added">All available chips have been added.</string>
+    <string name="filename_prefix_label">Prefix</string>
+    <string name="filename_prefix_placeholder">Enter prefix...</string>
+    <string name="filename_active_tokens_title">Selected tokens</string>
+    <string name="filename_available_tokens_title">Tap to add token</string>
+    <string name="filename_preview_label">Preview:</string>
+    <string name="filename_reset_button">Reset filename format</string>
+
+    <string name="token_original_name">Original Name</string>
+    <string name="token_compressed">Compressed</string>
+    <string name="token_date">Date</string>
+    <string name="token_time">Time</string>
+    <string name="token_random">Random #</string>
+    <string name="token_resolution">Resolution</string>
+    <string name="token_framerate">Framerate</string>
+    <string name="token_bitrate">Video Bitrate</string>
+    <string name="token_audio_bitrate">Audio Bitrate</string>
+    <string name="token_encoding">Encoding</string>
+    <string name="token_audio_status">Audio Status</string>
+    <string name="token_preset">Preset</string>
     <string name="save_to_folder">Save</string>
     <string name="show_bitrate_subtitle">Show bitrate values on original and estimated sizes</string>
     <string name="bitrate_unit_mbps_subtitle">Display bitrate in Mbps</string>
