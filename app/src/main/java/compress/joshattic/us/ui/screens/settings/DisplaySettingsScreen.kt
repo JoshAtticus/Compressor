@@ -360,7 +360,7 @@ fun DisplaySettingsScreen(
                             ) {
                                 Column(modifier = Modifier.padding(12.dp)) {
                                     FlowRow(
-                                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                                        horizontalArrangement = Arrangement.spacedBy(1.dp),
                                         verticalArrangement = Arrangement.spacedBy(6.dp),
                                         modifier = Modifier.fillMaxWidth()
                                     ) {
@@ -391,8 +391,8 @@ fun DisplaySettingsScreen(
                                                         modifier = Modifier
                                                             .widthIn(
                                                                 min = if (segment.value.isEmpty()) {
-                                                                    if (placeholderText.isNotEmpty()) 45.dp else 8.dp
-                                                                } else 20.dp,
+                                                                    if (placeholderText.isNotEmpty()) 45.dp else 0.dp
+                                                                } else 12.dp,
                                                                 max = 200.dp
                                                             )
                                                             .width(IntrinsicSize.Min)
@@ -476,10 +476,11 @@ fun DisplaySettingsScreen(
 
                                                         if (index < state.filenameSegments.lastIndex) {
                                                             Text(
-                                                                text = " _ ",
+                                                                text = "_",
                                                                 style = MaterialTheme.typography.bodyMedium,
-                                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.5f),
-                                                                fontWeight = FontWeight.Bold
+                                                                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f),
+                                                                fontWeight = FontWeight.Bold,
+                                                                modifier = Modifier.padding(horizontal = 2.dp)
                                                             )
                                                         }
                                                     }
