@@ -38,6 +38,7 @@ import androidx.media3.transformer.ExportException
 import androidx.media3.transformer.ExportResult
 import androidx.media3.transformer.Transformer
 import androidx.media3.transformer.VideoEncoderSettings
+import compress.joshattic.us.BuildConfig
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.model.FilenameSegment
@@ -87,7 +88,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
         private const val PREF_FILENAME_SEGMENTS = "filename_segments_v2"
         private const val DEFAULT_FILENAME_SEGMENTS = "token:original_name|token:compressed"
-        private const val CURRENT_VERSION_CODE = 23
+        private val CURRENT_VERSION_CODE = BuildConfig.VERSION_CODE
         private const val PERSIST_URI_FLAGS =
             Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
     }

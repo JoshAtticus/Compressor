@@ -38,6 +38,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     dependenciesInfo {
         includeInBundle = false

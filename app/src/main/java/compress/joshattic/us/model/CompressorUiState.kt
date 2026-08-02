@@ -2,6 +2,7 @@ package compress.joshattic.us.model
 
 import android.net.Uri
 import androidx.media3.common.MimeTypes
+import compress.joshattic.us.BuildConfig
 import compress.joshattic.us.utils.formatFileSize
 import java.util.Locale
 
@@ -55,7 +56,7 @@ data class CompressorUiState(
     val totalSavedBytes: Long = 0L,
     
     val supportedCodecs: List<String> = emptyList(),
-    val appInfoVersion: String = "1.6.0",
+    val appInfoVersion: String = BuildConfig.VERSION_NAME,
     val showWhatsNewDialog: Boolean = false,
     val showBitrate: Boolean = false,
     val useMbps: Boolean = false,

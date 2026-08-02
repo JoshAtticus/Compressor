@@ -46,7 +46,7 @@ import compress.joshattic.us.R
 
 @Composable
 fun WhatsNewDialog(
-    versionName: String = "1.6.0",
+    versionName: String,
     onDismiss: () -> Unit
 ) {
     val haptics = LocalHapticFeedback.current
