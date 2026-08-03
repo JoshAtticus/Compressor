@@ -12,6 +12,10 @@ media3 = "1.5.0"
 animation = "1.10.1"
 ui = "1.10.1"
 documentfile = "1.0.1"
+mockito = "5.5.0"
+mockito-kotlin = "5.1.0"
+robolectric = "4.11.1"
+androidxTestCore = "1.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -37,6 +41,10 @@ androidx-compose-material-icons-extended = { group = "androidx.compose.material"
 androidx-compose-animation = { group = "androidx.compose.animation", name = "animation", version.ref = "animation" }
 androidx-compose-ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts" }
 androidx-ui = { group = "androidx.compose.ui", name = "ui", version.ref = "ui" }
+mockito-core = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockito-kotlin" }
+robolectric = { group = "org.robolectric", name = "robolectric", version.ref = "robolectric" }
+androidx-testcore = { group = "androidx.test", name = "core", version.ref = "androidxTestCore" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -205,4 +205,50 @@ class CompressorUiStateTest {
         val savingState = defaultState.copy(isSaving = true)
         assertTrue("isSaving should be true when copy sets isSaving", savingState.isSaving)
     }
+
+    @Test
+    fun testTargetBitrate_h264VsH265() {
+        val stateH265 = CompressorUiState(
+            durationMs = 10_000L,
+            targetSizeMb = 10f,
+            videoCodec = androidx.media3.common.MimeTypes.VIDEO_H265
+        )
+        val stateH264 = CompressorUiState(
+            durationMs = 10_000L,
+            targetSizeMb = 10f,
+            videoCodec = androidx.media3.common.MimeTypes.VIDEO_H264
+        )
+        
+        // H265 should have a lower minBitrate than H264 (based on the 0.7x multiplier in code)
+        // Which might result in different targetBitrate if calculated bitrate is low.
+        // But for 10MB/10s, calculated bitrate is high.
+        
+        assertTrue("H265 minBitrate should be lower than H264", stateH265.minimumSizeMb < stateH264.minimumSizeMb)
+    }
+
+    @Test
+    fun testTargetBitrate_removeAudio() {
+        val stateWithAudio = CompressorUiState(
+            durationMs = 10_000L,
+            targetSizeMb = 5f,
+            audioBitrate = 128_000,
+            removeAudio = false
+        )
+        val stateNoAudio = CompressorUiState(
+            durationMs = 10_000L,
+            targetSizeMb = 5f,
+            removeAudio = true
+        )
+        
+        assertTrue("Bitrate with no audio should be higher for video", stateNoAudio.targetBitrate > stateWithAudio.targetBitrate)
+    }
+
+    @Test
+    fun testMinimumSizeMb_increasesWithDuration() {
+        val state1 = CompressorUiState(durationMs = 10_000L)
+        val state2 = CompressorUiState(durationMs = 60_000L)
+        
+        assertTrue("Minimum size should increase with duration", state2.minimumSizeMb > state1.minimumSizeMb)
+    }
 }
+

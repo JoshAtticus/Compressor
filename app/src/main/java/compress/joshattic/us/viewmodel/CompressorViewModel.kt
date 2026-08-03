@@ -152,7 +152,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update { it.copy(showWhatsNewDialog = false) }
     }
     
-    private fun checkSupportedCodecs() {
+    internal fun checkSupportedCodecs() {
         val allCodecsEnabled = prefs.getBoolean("all_codecs_enabled", false)
         val allCodecsUnlocked = prefs.getBoolean("all_codecs_unlocked", false)
         val supported = mutableListOf<String>()
@@ -189,7 +189,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    private fun getDeviceEncoders(): List<String> {
+    internal fun getDeviceEncoders(): List<String> {
         val codecs = mutableSetOf<String>()
         try {
             val list = MediaCodecList(MediaCodecList.ALL_CODECS)
@@ -260,7 +260,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         checkSupportedCodecs()
     }
 
-    private fun hasEncoder(mimeType: String): Boolean {
+    internal fun hasEncoder(mimeType: String): Boolean {
         try {
             val list = MediaCodecList(MediaCodecList.ALL_CODECS)
             for (info in list.codecInfos) {
@@ -545,7 +545,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         prefs.edit().remove("default_audio_config").apply()
     }
 
-    private fun normalizeSegments(segments: List<FilenameSegment>): List<FilenameSegment> {
+    internal fun normalizeSegments(segments: List<FilenameSegment>): List<FilenameSegment> {
         val result = mutableListOf<FilenameSegment>()
         var currentText = ""
         for (seg in segments) {
@@ -605,7 +605,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         updateFilenameSegments(defaultSegments)
     }
 
-    private fun serializeSegments(segments: List<FilenameSegment>): String {
+    internal fun serializeSegments(segments: List<FilenameSegment>): String {
         return segments
             .filter { it !is FilenameSegment.Text || it.value.isNotEmpty() }
             .joinToString("|") { seg ->
@@ -616,7 +616,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             }
     }
 
-    private fun deserializeSegments(raw: String): List<FilenameSegment> {
+    internal fun deserializeSegments(raw: String): List<FilenameSegment> {
         if (raw.isBlank()) return normalizeSegments(emptyList())
         val parsed = raw.split("|").mapNotNull { part ->
             when {
@@ -638,7 +638,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         return compressedOutputFileName(state)
     }
 
-    fun compressedOutputFileName(state: CompressorUiState): String {
+    internal fun compressedOutputFileName(state: CompressorUiState): String {
         val dateStr by lazy { SimpleDateFormat("yyyy-MM-dd", Locale.US).format(Date()) }
         val timeStr by lazy { SimpleDateFormat("HH-mm-ss", Locale.US).format(Date()) }
         val randomStr by lazy { String.format(Locale.US, "%06d", (0..999999).random()) }

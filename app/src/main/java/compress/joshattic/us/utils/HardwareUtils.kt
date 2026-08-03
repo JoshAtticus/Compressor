@@ -161,9 +161,10 @@ object HardwareUtils {
         }
     }
 
-    private fun capitalizeWords(str: String): String {
+    internal fun capitalizeWords(str: String): String {
         return str.split(" ").joinToString(" ") { word ->
-            if (word.lowercase(Locale.US) in listOf("sm", "mt", "qcom")) word.uppercase(Locale.US)
+            val lower = word.lowercase(Locale.US)
+            if (lower in listOf("sm", "mt", "qcom") || lower.startsWith("sm") || lower.startsWith("mt")) word.uppercase(Locale.US)
             else word.replaceFirstChar { if (it.isLowerCase()) it.titlecase(Locale.US) else it.toString() }
         }
     }
