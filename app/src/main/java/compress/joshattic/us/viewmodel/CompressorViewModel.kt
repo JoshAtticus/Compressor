@@ -47,6 +47,7 @@ import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.QualityPreset
 import compress.joshattic.us.model.QualityPresetConfig
 import compress.joshattic.us.model.TargetSizePreset
+import compress.joshattic.us.utils.VolumeAudioProcessor
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
@@ -1281,7 +1282,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         
         val mediaItem = MediaItem.fromUri(inputUri)
         val audioProcessors: List<androidx.media3.common.audio.AudioProcessor> = if (!currentState.removeAudio) {
-            listOf(androidx.media3.common.audio.SonicAudioProcessor())
+            val volumeProcessor = VolumeAudioProcessor().apply { setVolume(currentState.audioVolume) }
+            listOf(volumeProcessor, androidx.media3.common.audio.SonicAudioProcessor())
         } else {
             emptyList()
         }
