@@ -51,6 +51,12 @@
     <string name="warning_hdr_tone_mapped">O vídeo HDR foi convertido para SDR para evitar problemas de compatibilidade de codificador. Use AV1 se precisar manter o HDR.</string>
     <string name="warning_details">Detalhes do Aviso</string>
     <string name="dismiss">Fechar</string>
+    <string name="target_size_warning">Tamanho alvo não possível, toque para informações</string>
+    <string name="target_size_warning_title">O tamanho alvo pode não ser possível</string>
+    <string name="target_size_warning_details">Algumas configurações devem ser reduzidas para atingir o tamanho alvo solicitado.</string>
+    <string name="accept_suggestion">Aceitar sugestão</string>
+    <string name="accept_all">Aceitar tudo</string>
+    <string name="close">Fechar</string>
 
     <string name="error_prefix">Erro: %1$s</string>
     <string name="select_video">Selecione um vídeo para comprimir</string>
@@ -67,6 +73,16 @@
 
     <string name="error_file_lost">Arquivo perdido</string>
     <string name="error_export_failed">Falha na exportação: %1$s</string>
+    <string name="error_save_failed">Falha ao salvar: %1$s</string>
+    <string name="error_gallery_entry">Não foi possível criar entrada na galeria</string>
+    <string name="error_unknown">Erro desconhecido</string>
+    <string name="error_codec_unsupported">Este codec de vídeo não é suportado pelo hardware do seu dispositivo.</string>
+    <string name="error_decoder_config_unsupported">Este dispositivo não consegue decodificar esta configuração de vídeo de origem.</string>
+    <string name="error_encoder_config_unsupported">Este dispositivo não consegue codificar a configuração de saída selecionada.</string>
+    <string name="error_decoder_config_unsupported_details">Este dispositivo não consegue decodificar esta configuração de vídeo de origem (%1$dx%2$d @ %3$.1ffps, %4$s)."</string>
+    <string name="error_encoder_config_unsupported_details">Este dispositivo não consegue codificar as configurações de saída selecionadas. Tentado: %1$s.</string>
+    <string name="warning_codec_fallback_h264">O codec selecionado não é suportado para esta saída neste dispositivo. Voltando para H.264 por compatibilidade.</string>
+    <string name="warning_quality_fallback">Este dispositivo não consegue codificar suas configurações selecionadas. Voltando para H.264 em %1$dp e %2$dfps.</string>
 
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">E-mail</string>
@@ -94,6 +110,8 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">Falha na Compressão</string>
+    <string name="compression_larger_error">O vídeo comprimido é maior que o original.\nO vídeo pode já estar altamente comprimido ou ter uma taxa de bits muito baixa.</string>
+    <string name="error_huawei_muxer">Este problema pode ser causado pelo seu dispositivo específico. Por favor, tente reiniciar seu dispositivo.</string>
     <string name="try_again">Tentar Novamente</string>
     <string name="save_anyway">Salvar de Qualquer Forma</string>
 
@@ -170,6 +188,10 @@
     <string name="filename_drag_into_area">Arraste o chip para esta área</string>
     <string name="filename_available_chips_title">Chips dinâmicos disponíveis (Arraste para a área acima)</string>
     <string name="filename_all_chips_added">Todos os chips disponíveis foram adicionados.</string>
+    <string name="filename_prefix_label">Prefixo</string>
+    <string name="filename_prefix_placeholder">Inserir prefixo…</string>
+    <string name="filename_active_tokens_title">Etiquetas selecionadas</string>
+    <string name="filename_available_tokens_title">Toque para adicionar etiqueta</string>
     <string name="filename_preview_label">Pré-visualização:</string>
     <string name="filename_reset_button">Redefinir formato</string>
 

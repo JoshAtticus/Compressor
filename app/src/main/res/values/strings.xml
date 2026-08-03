@@ -54,6 +54,12 @@
     <string name="warning_hdr_tone_mapped">HDR video was tone-mapped to SDR to avoid encoder compatibility issues on this device. Use AV1 if you need to preserve HDR.</string>
     <string name="warning_details">Warning Details</string>
     <string name="dismiss">Dismiss</string>
+    <string name="target_size_warning">Target size not possible, tap for info</string>
+    <string name="target_size_warning_title">Target size may not be possible</string>
+    <string name="target_size_warning_details">Some settings must be reduced to reach the requested target size.</string>
+    <string name="accept_suggestion">Accept suggestion</string>
+    <string name="accept_all">Accept All</string>
+    <string name="close">Close</string>
 
     <string name="error_prefix">Error: %1$s</string>
     <string name="select_video">Select a video to compress</string>

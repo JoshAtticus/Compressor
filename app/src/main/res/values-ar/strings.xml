@@ -51,6 +51,12 @@
     <string name="warning_hdr_tone_mapped">تم تحويل فيديو HDR إلى SDR لتجنب مشاكل توافق الترميز. استخدم AV1 إذا كنت بحاجة للحفاظ على HDR.</string>
     <string name="warning_details">تفاصيل التحذير</string>
     <string name="dismiss">إغلاق</string>
+    <string name="target_size_warning">الحجم المستهدف غير ممكن، اضغط للمعلومات</string>
+    <string name="target_size_warning_title">قد لا يكون الحجم المستهدف ممكناً</string>
+    <string name="target_size_warning_details">يجب تقليل بعض الإعدادات للوصول إلى الحجم المستهدف المطلوب.</string>
+    <string name="accept_suggestion">قبول الاقتراح</string>
+    <string name="accept_all">قبول الكل</string>
+    <string name="close">إغلاق</string>
 
     <string name="error_prefix">خطأ: %1$s</string>
     <string name="select_video">حدد فيديو لضغطه</string>
@@ -67,6 +73,16 @@
 
     <string name="error_file_lost">ملف مفقود</string>
     <string name="error_export_failed">فشل التصدير: %1$s</string>
+    <string name="error_save_failed">فشل الحفظ: %1$s</string>
+    <string name="error_gallery_entry">تعذر إنشاء إدخال في المعرض</string>
+    <string name="error_unknown">خطأ غير معروف</string>
+    <string name="error_codec_unsupported">ترميز الفيديو هذا غير مدعوم من قبل أجهزة جهازك.</string>
+    <string name="error_decoder_config_unsupported">لا يمكن لهذا الجهاز فك ترميز تكوين فيديو المصدر هذا.</string>
+    <string name="error_encoder_config_unsupported">لا يمكن لهذا الجهاز ترميز تكوين المخرجات المحدد.</string>
+    <string name="error_decoder_config_unsupported_details">لا يمكن لهذا الجهاز فك ترميز تكوين فيديو المصدر هذا (%1$dx%2$d @ %3$.1ffps، %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">لا يمكن لهذا الجهاز ترميز إعدادات المخرجات المحددة. جربت: %1$s.</string>
+    <string name="warning_codec_fallback_h264">الترميز المحدد غير مدعوم لهذا المخرج على هذا الجهاز. الرجوع إلى H.264 للتوافق.</string>
+    <string name="warning_quality_fallback">لا يمكن لهذا الجهاز ترميز الإعدادات المحددة. الرجوع إلى H.264 بدقة %1$dp و %2$dfps.</string>
 
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">البريد الإلكتروني</string>
@@ -94,6 +110,8 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">فشل الضغط</string>
+    <string name="compression_larger_error">الفيديو المضغوط أكبر من الأصلي.\nقد يكون الفيديو مضغوطاً بالفعل بشكل كبير أو بمعدل بت منخفض جداً.</string>
+    <string name="error_huawei_muxer">قد تكون هذه المشكلة ناتجة عن جهازك المحدد. يرجى محاولة إعادة تشغيل جهازك.</string>
     <string name="try_again">إعادة المحاولة</string>
     <string name="save_anyway">الحفظ على أي حال</string>
 
@@ -170,6 +188,10 @@
     <string name="filename_drag_into_area">اسحب الشريحة إلى هذه المنطقة</string>
     <string name="filename_available_chips_title">الشرائح الديناميكية المتاحة (اسحب وأسقط في المنطقة أعلاه)</string>
     <string name="filename_all_chips_added">تمت إضافة جميع الشرائح المتاحة.</string>
+    <string name="filename_prefix_label">سابقة</string>
+    <string name="filename_prefix_placeholder">أدخل السابقة…</string>
+    <string name="filename_active_tokens_title">العناصر المختارة</string>
+    <string name="filename_available_tokens_title">اضغط لإضافة عنصر</string>
     <string name="filename_preview_label">معاينة:</string>
     <string name="filename_reset_button">إعادة ضبط تنسيق اسم الملف</string>
 

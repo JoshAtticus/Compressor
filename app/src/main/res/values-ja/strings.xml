@@ -51,6 +51,12 @@
     <string name="warning_hdr_tone_mapped">エンコーダーの互換性問題を回避するため、HDR動画はSDRにトーンマッピングされました。HDRを維持する場合はAV1を使用してください。</string>
     <string name="warning_details">警告の詳細</string>
     <string name="dismiss">閉じる</string>
+    <string name="target_size_warning">目標サイズに到達できません。タップして詳細を表示</string>
+    <string name="target_size_warning_title">目標サイズに到達できない可能性があります</string>
+    <string name="target_size_warning_details">目標サイズに到達するには、いくつかの設定を下げる必要があります。</string>
+    <string name="accept_suggestion">提案を受け入れる</string>
+    <string name="accept_all">すべて受け入れる</string>
+    <string name="close">閉じる</string>
 
     <string name="error_prefix">エラー: %1$s</string>
     <string name="select_video">圧縮する動画を選択</string>
@@ -67,6 +73,16 @@
 
     <string name="error_file_lost">ファイルが見つかりません</string>
     <string name="error_export_failed">エクスポート失敗: %1$s</string>
+    <string name="error_save_failed">保存に失敗しました: %1$s</string>
+    <string name="error_gallery_entry">ギャラリーのエントリを作成できませんでした</string>
+    <string name="error_unknown">不明なエラー</string>
+    <string name="error_codec_unsupported">このビデオコーデックはお使いの端末のハードウェアでサポートされていません。</string>
+    <string name="error_decoder_config_unsupported">この端末はこのソースビデオ設定をデコードできません。</string>
+    <string name="error_encoder_config_unsupported">この端末は選択された出力設定をエンコードできません。</string>
+    <string name="error_decoder_config_unsupported_details">この端末はこのソースビデオ設定（%1$dx%2$d @ %3$.1ffps, %4$s）をデコードできません。</string>
+    <string name="error_encoder_config_unsupported_details">この端末は選択された出力設定をエンコードできません。試行： %1$s。</string>
+    <string name="warning_codec_fallback_h264">選択されたコーデックはこの端末の出力でサポートされていません。互換性のためにH.264にフォールバックします。</string>
+    <string name="warning_quality_fallback">お使いの端末は選択された設定をエンコードできません。%1$dp、%2$dfpsのH.264にフォールバックします。</string>
 
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">メール</string>
@@ -94,6 +110,8 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">圧縮に失敗しました</string>
+    <string name="compression_larger_error">圧縮後のビデオが元のビデオより大きくなっています。\nビデオがすでに高度に圧縮されているか、ビットレートが非常に低い可能性があります。</string>
+    <string name="error_huawei_muxer">この問題は、お使いの特定の端末が原因である可能性があります。端末を再起動してみてください。</string>
     <string name="try_again">再試行</string>
     <string name="save_anyway">強制保存</string>
 
@@ -170,6 +188,10 @@
     <string name="filename_drag_into_area">このエリアにチップをドラッグ</string>
     <string name="filename_available_chips_title">利用可能な動的チップ (上のエリアにドラッグ＆ドロップ)</string>
     <string name="filename_all_chips_added">すべての利用可能なチップが追加されました。</string>
+    <string name="filename_prefix_label">接頭辞</string>
+    <string name="filename_prefix_placeholder">接頭辞を入力…</string>
+    <string name="filename_active_tokens_title">選択されたチップ</string>
+    <string name="filename_available_tokens_title">タップしてチップを追加</string>
     <string name="filename_preview_label">プレビュー:</string>
     <string name="filename_reset_button">ファイル名フォーマットをリセット</string>
 

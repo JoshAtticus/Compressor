@@ -4,6 +4,7 @@
     <string name="share">Поделиться</string>
     <string name="saved">Сохранено</string>
     <string name="saving">Сохранение…</string>
+    <string name="save_action">Сохранить</string>
     <string name="save_to_photos">Сохранить в Фото</string>
     <string name="compress_another_video">Сжать другое видео</string>
     <string name="buy_coffee">☕ Нравится Compressor? Купите мне кофе!</string>
@@ -20,6 +21,7 @@
     <string name="preset_low_desc">720p • 30 кадров/с</string>
 
     <string name="quality_preset">Качество</string>
+    <string name="header_quality_presets">Пресеты качества</string>
     <string name="target_size_limits">Ограничения размера</string>
     <string name="advanced_options">Расширенные настройки</string>
     <string name="target_size">Целевой размер</string>
@@ -50,7 +52,6 @@
     <string name="start_compression">Начать сжатие</string>
     <string name="warning_hdr_tone_mapped">HDR-видео было преобразовано в SDR во избежание проблем совместимости кодировщика. Используйте AV1 для сохранения HDR.</string>
     <string name="warning_details">Подробности предупреждения</string>
-    <string name="dismiss">Закрыть</string>
 
     <string name="error_prefix">Ошибка: %1$s</string>
     <string name="select_video">Выберите видео для сжатия</string>
@@ -67,6 +68,16 @@
 
     <string name="error_file_lost">Файл потерян</string>
     <string name="error_export_failed">Ошибка экспорта: %1$s</string>
+    <string name="error_save_failed">Ошибка сохранения: %1$s</string>
+    <string name="error_gallery_entry">Не удалось создать запись в галерее</string>
+    <string name="error_unknown">Неизвестная ошибка</string>
+    <string name="error_codec_unsupported">Этот видеокодек не поддерживается аппаратным обеспечением вашего устройства.</string>
+    <string name="error_decoder_config_unsupported">Это устройство не может декодировать данную конфигурацию исходного видео.</string>
+    <string name="error_encoder_config_unsupported">Это устройство не может закодировать выбранную конфигурацию вывода.</string>
+    <string name="error_decoder_config_unsupported_details">Это устройство не может декодировать данную конфигурацию исходного видео (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">Это устройство не может закодировать выбранные настройки вывода. Попытка: %1$s.</string>
+    <string name="warning_codec_fallback_h264">Выбранный кодек не поддерживается для этого вывода на данном устройстве. Возврат к H.264 для совместимости.</string>
+    <string name="warning_quality_fallback">Это устройство не может закодировать выбранные настройки. Возврат к H.264 при %1$dp и %2$dfps.</string>
 
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">Эл. почта</string>
@@ -94,6 +105,8 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">Сжатие не удалось</string>
+    <string name="compression_larger_error">Сжатое видео больше оригинала.\nВозможно, видео уже сильно сжато или имеет очень низкий битрейт.</string>
+    <string name="error_huawei_muxer">Эта проблема может быть вызвана особенностями вашего устройства. Пожалуйста, попробуйте перезагрузить его.</string>
     <string name="try_again">Повторить</string>
     <string name="save_anyway">Сохранить всё равно</string>
 
@@ -102,6 +115,13 @@
     <string name="copy_logs">Скопировать логи</string>
     <string name="open_issue_tracker">Открыть трекер ошибок</string>
     <string name="view_on_github">Посмотреть на GitHub</string>
+    <string name="dismiss">Закрыть</string>
+    <string name="target_size_warning">Целевой размер недостижим, нажмите для инфо</string>
+    <string name="target_size_warning_title">Целевой размер может быть недостижим</string>
+    <string name="target_size_warning_details">Некоторые настройки должны быть уменьшены для достижения желаемого целевого размера.</string>
+    <string name="accept_suggestion">Принять предложение</string>
+    <string name="accept_all">Принять все</string>
+    <string name="close">Закрыть</string>
     <string name="buy_me_a_coffee">Купить мне кофе</string>
 
     <!-- Settings Screen & i18n -->
@@ -113,6 +133,7 @@
     <string name="about_compressor_title">О приложении Compressor</string>
     <string name="basic_info_header">Основная информация</string>
     <string name="display_settings_title">Экран</string>
+    <string name="general_settings_title">Общие</string>
     <string name="settings_content_desc">Настройки</string>
     <string name="back">Назад</string>
 
@@ -140,7 +161,10 @@
     <string name="enable_all_codecs">Включить все кодеки</string>
     <string name="software_encoding">Программное кодирование</string>
     
+    <string name="header_general_options">Общие параметры</string>
     <string name="header_display_options">Параметры экрана</string>
+    <string name="auto_save_photos_title">Автосохранение</string>
+    <string name="auto_save_photos_subtitle">Автоматически сохранять сжатые видео после завершения</string>
     <string name="show_bitrate_subtitle">Показывать значения битрейта для исходного и сжатого размеров</string>
     <string name="bitrate_unit_mbps_subtitle">Отображать битрейт в Мбит/с</string>
     <string name="bitrate_unit_kbps_subtitle">Отображать битрейт в Кбит/с</string>
@@ -166,6 +190,10 @@
     <string name="filename_drag_into_area">Перетащите чип в эту область</string>
     <string name="filename_available_chips_title">Доступные динамические чипы (Перетащите в область выше)</string>
     <string name="filename_all_chips_added">Все доступные чипы добавлены.</string>
+    <string name="filename_prefix_label">Префикс</string>
+    <string name="filename_prefix_placeholder">Введите префикс…</string>
+    <string name="filename_active_tokens_title">Выбранные элементы</string>
+    <string name="filename_available_tokens_title">Нажмите, чтобы добавить</string>
     <string name="filename_preview_label">Предпросмотр:</string>
     <string name="filename_reset_button">Сбросить формат имени</string>
 
@@ -204,6 +232,32 @@
     <string name="tab_presets">Пресеты</string>
     <string name="tab_video">Видео</string>
     <string name="tab_audio">Аудио</string>
+
+    <!-- Presets Management Keys -->
+    <string name="reset_to_default">Сбросить до настроек по умолчанию</string>
+    <string name="add_preset">Добавить пресет</string>
+    <string name="reset_presets_to_default">Сбросить пресеты размера</string>
+    <string name="reset_presets_confirm_title">Сбросить пресеты целевого размера?</string>
+    <string name="reset_presets_confirm_message">Это восстановит все пресеты размера по умолчанию и удалит пользовательские.</string>
+    <string name="add_size_preset_title">Добавить пресет размера</string>
+    <string name="edit_size_preset_title">Изменить пресет размера</string>
+    <string name="preset_label_hint">Название пресета (напр., Discord, Email)</string>
+    <string name="target_size_mb_hint">Целевой размер (в МБ)</string>
+
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">Параметры видео по умолчанию</string>
+    <string name="header_default_audio_options">Параметры аудио по умолчанию</string>
+    <string name="default_video_codec">Видеокодек по умолчанию</string>
+    <string name="default_video_codec_desc">Выберите видеокодер по умолчанию для новых сжатий</string>
+    <string name="default_resolution">Разрешение по умолчанию</string>
+    <string name="default_framerate">Частота кадров по умолчанию</string>
+    <string name="default_size_ratio">Коэффициент целевого размера по умолчанию</string>
+    <string name="default_audio_bitrate">Битрейт аудио по умолчанию</string>
+    <string name="default_mute_audio">Без звука по умолчанию</string>
+    <string name="default_mute_audio_desc">Автоматически удалять аудиодорожки из новых видео</string>
+    <string name="default_audio_volume">Громкость звука по умолчанию</string>
+    <string name="reset_video_defaults">Сбросить видео по умолчанию</string>
+    <string name="reset_audio_defaults">Сбросить аудио по умолчанию</string>
 
     <!-- What's New Dialog -->
     <string name="whats_new_title">Что нового в Compressor</string>

@@ -387,11 +387,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     targetSizeMb = defaultTargetMb,
                     targetResolutionHeight = targetHeight,
                     targetFps = targetFpsVal,
-                    videoCodec = preferredCodec,
-                    useH265 = preferredCodec == MimeTypes.VIDEO_H265,
-                    activePreset = QualityPreset.CUSTOM,
-                    audioBitrate = audioConfig.defaultAudioBitrate,
-                    removeAudio = audioConfig.defaultRemoveAudio,
+                     videoCodec = preferredCodec,
+                     useH265 = preferredCodec == MimeTypes.VIDEO_H265,
+                     activePreset = QualityPreset.CUSTOM,
+                     audioBitrate = audioConfig.defaultAudioBitrate,
+                     audioBitrateLocked = false,
+                     targetResolutionLocked = false,
+                     targetFpsLocked = false,
+                     removeAudio = audioConfig.defaultRemoveAudio,
                     audioVolume = audioConfig.defaultAudioVolume,
                     isCompressing = false,
                     progress = 0f,
@@ -451,6 +454,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     targetFps = targetFpsVal,
                     targetSizeMb = targetMb,
                     audioBitrate = config.audioBitrate,
+                    audioBitrateLocked = true,
+                    targetResolutionLocked = true,
+                    targetFpsLocked = true,
                     removeAudio = false
                 ).autoAdjust(targetMb, lockAudioBitrate = true, allowUpward = false)
             }
@@ -1003,7 +1009,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     fun setAudioBitrate(bitrate: Int) {
         _uiState.update {
-            val temp = it.copy(audioBitrate = bitrate, activePreset = QualityPreset.CUSTOM)
+            val temp = it.copy(
+                audioBitrate = bitrate,
+                audioBitrateLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
             temp.autoAdjust(temp.targetSizeMb, lockAudioBitrate = true)
         }
     }
@@ -1025,12 +1035,66 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             } else {
                 height
             }
-            it.copy(targetResolutionHeight = mappedHeight, activePreset = QualityPreset.CUSTOM)
+            it.copy(
+                targetResolutionHeight = mappedHeight,
+                targetResolutionLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
         }
     }
 
     fun setFps(fps: Int) {
-        _uiState.update { it.copy(targetFps = fps, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update {
+            it.copy(targetFps = fps, targetFpsLocked = true, activePreset = QualityPreset.CUSTOM)
+        }
+    }
+
+    fun acceptSuggestedResolution() {
+        _uiState.update { state ->
+            val suggestion = state.suggestedForTarget()
+            state.copy(
+                targetResolutionHeight = suggestion.targetResolutionHeight,
+                targetResolutionLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
+        }
+    }
+
+    fun acceptSuggestedFps() {
+        _uiState.update { state ->
+            val suggestion = state.suggestedForTarget()
+            state.copy(
+                targetFps = suggestion.targetFps,
+                targetFpsLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
+        }
+    }
+
+    fun acceptSuggestedAudioBitrate() {
+        _uiState.update { state ->
+            val suggestion = state.suggestedForTarget()
+            state.copy(
+                audioBitrate = suggestion.audioBitrate,
+                audioBitrateLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
+        }
+    }
+
+    fun acceptAllSuggestions() {
+        _uiState.update { state ->
+            val suggestion = state.suggestedForTarget()
+            state.copy(
+                audioBitrate = suggestion.audioBitrate,
+                targetResolutionHeight = suggestion.targetResolutionHeight,
+                targetFps = suggestion.targetFps,
+                audioBitrateLocked = true,
+                targetResolutionLocked = true,
+                targetFpsLocked = true,
+                activePreset = QualityPreset.CUSTOM
+            )
+        }
     }
     
     fun cancelCompression() {

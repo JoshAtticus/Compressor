@@ -50,6 +50,7 @@ import androidx.compose.ui.unit.sp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.ui.components.InfoCard
+import compress.joshattic.us.ui.components.TargetSizeWarning
 import compress.joshattic.us.ui.tabs.AudioOptionsTab
 import compress.joshattic.us.ui.tabs.PresetsTab
 import compress.joshattic.us.ui.tabs.VideoOptionsTab
@@ -122,19 +123,22 @@ fun ConfigScreen(
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
                 
-                Box(
+                         Box(
                     modifier = Modifier
                         .fillMaxHeight()
                         .weight(1f)
                 ) {
-                    Column(modifier = Modifier.fillMaxSize()) {
-                        Box(
+                     Column(
+                         modifier = Modifier.fillMaxSize(),
+                         horizontalAlignment = Alignment.CenterHorizontally
+                     ) {
+                     Column(
                             modifier = Modifier
                                 .padding(horizontal = 24.dp)
                                 .padding(top = 24.dp, bottom = 12.dp)
-                        ) {
-                            InfoCard(state)
-                        }
+                         ) {
+                             InfoCard(state)
+                         }
                         
                         Box(modifier = Modifier.weight(1f)) {
                              HorizontalPager(
@@ -153,8 +157,8 @@ fun ConfigScreen(
                         Spacer(modifier = Modifier.height(100.dp))
                     }
                     
-                    Box(
-                        modifier = Modifier
+                     Column(
+                         modifier = Modifier
                             .fillMaxWidth()
                             .align(Alignment.BottomCenter)
                             .background(
@@ -165,12 +169,16 @@ fun ConfigScreen(
                                 )
                             )
                     ) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                                .padding(24.dp)
-                        ) {
+                          Column(
+                              modifier = Modifier
+                                  .fillMaxWidth()
+                                  .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                                 .padding(24.dp),
+                              horizontalAlignment = Alignment.CenterHorizontally
+                          ) {
+                             if (state.targetSizeWarning) {
+                                 TargetSizeWarning(state, viewModel)
+                             }
                              val interactionSource = remember { MutableInteractionSource() }
                              Button(
                                 onClick = { 
@@ -196,16 +204,17 @@ fun ConfigScreen(
                  modifier = Modifier.fillMaxSize(),
                  contentAlignment = Alignment.TopCenter
             ) {
-                Column(
-                    modifier = Modifier.fillMaxSize()
-                ) {
-                    Box(
+                 Column(
+                     modifier = Modifier.fillMaxSize(),
+                     horizontalAlignment = Alignment.CenterHorizontally
+                 ) {
+                    Column(
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
                             .padding(top = 24.dp, bottom = 12.dp)
-                    ) {
-                        InfoCard(state)
-                    }
+                     ) {
+                          InfoCard(state)
+                     }
                     
                     Surface(
                         modifier = Modifier
@@ -292,13 +301,16 @@ fun ConfigScreen(
                             )
                         )
                 ) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                            .padding(24.dp),
-                        contentAlignment = Alignment.Center
-                    ) {
+                     Column(
+                         modifier = Modifier
+                             .fillMaxWidth()
+                             .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
+                             .padding(24.dp),
+                         horizontalAlignment = Alignment.CenterHorizontally
+                     ) {
+                         if (state.targetSizeWarning) {
+                             TargetSizeWarning(state, viewModel)
+                         }
                          val interactionSource = remember { MutableInteractionSource() }
                          Button(
                             onClick = { 

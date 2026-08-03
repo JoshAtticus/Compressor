@@ -94,6 +94,67 @@ class CompressorUiStateTest {
     }
 
     @Test
+    fun testAutoAdjust_respectsUserLockedSettings() {
+        val initialState = CompressorUiState(
+            originalWidth = 3840,
+            originalHeight = 2160,
+            originalFps = 60f,
+            durationMs = 600_000L,
+            targetResolutionHeight = 2160,
+            targetFps = 60,
+            audioBitrate = 320_000,
+            audioBitrateLocked = true,
+            targetResolutionLocked = true,
+            targetFpsLocked = true
+        )
+
+        val adjustedState = initialState.autoAdjust(1f)
+
+        assertEquals(320_000, adjustedState.audioBitrate)
+        assertEquals(2160, adjustedState.targetResolutionHeight)
+        assertEquals(60, adjustedState.targetFps)
+        assertTrue(adjustedState.targetSizeWarning)
+    }
+
+    @Test
+    fun testSuggestedForTarget_releasesLocksWithoutChangingCurrentState() {
+        val initialState = CompressorUiState(
+            originalWidth = 3840,
+            originalHeight = 2160,
+            originalFps = 60f,
+            durationMs = 600_000L,
+            targetResolutionHeight = 2160,
+            targetFps = 60,
+            audioBitrate = 320_000,
+            audioBitrateLocked = true,
+            targetResolutionLocked = true,
+            targetFpsLocked = true
+        )
+
+        val suggestion = initialState.suggestedForTarget()
+
+        assertEquals(2160, initialState.targetResolutionHeight)
+        assertTrue(suggestion.targetResolutionHeight < initialState.targetResolutionHeight)
+        assertTrue(suggestion.audioBitrate < initialState.audioBitrate)
+    }
+
+    @Test
+    fun testAutoAdjust_portraitVideoUsesShortSideForResolution() {
+        val initialState = CompressorUiState(
+            originalWidth = 1080,
+            originalHeight = 1920,
+            originalFps = 60f,
+            durationMs = 60_000L,
+            targetResolutionHeight = 1920,
+            audioBitrate = 128_000
+        )
+
+        val adjustedState = initialState.autoAdjust(initialState.minimumSizeMb - 1f)
+
+        assertEquals("720p portrait should use a 1280px height", 1280, adjustedState.targetResolutionHeight)
+    }
+
+    @Test
     fun testAutoAdjust_onlyReducesFramerateWhenResolutionIsMin() {
         // Given a video with high fps where target size is lower than minimum size at lowest resolution (240p)
         val initialState = CompressorUiState(

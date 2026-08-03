@@ -25,3 +25,4 @@ output-metadata.json
 *.log
 app/release/baselineProfiles/0/app-release.dm
 app/release/baselineProfiles/0/app-release.dm
+/.artifacts

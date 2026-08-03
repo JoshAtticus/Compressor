@@ -4,6 +4,7 @@
     <string name="share">分享</string>
     <string name="saved">已儲存</string>
     <string name="saving">儲存中…</string>
+    <string name="save_action">儲存</string>
     <string name="save_to_photos">儲存至相片</string>
     <string name="compress_another_video">壓縮另一個影片</string>
     <string name="buy_coffee">☕ 喜歡 Compressor？請我喝杯咖啡！</string>
@@ -20,6 +21,7 @@
     <string name="preset_low_desc">720p • 30fps</string>
 
     <string name="quality_preset">畫質預設</string>
+    <string name="header_quality_presets">畫質預設</string>
     <string name="target_size_limits">大小限制預設</string>
     <string name="advanced_options">進階選項</string>
     <string name="target_size">目標大小</string>
@@ -51,6 +53,12 @@
     <string name="warning_hdr_tone_mapped">HDR 影片已轉換為 SDR，以避免此裝置上的編碼器相容性問題。如需保留 HDR，請使用 AV1。</string>
     <string name="warning_details">警告詳情</string>
     <string name="dismiss">關閉</string>
+    <string name="target_size_warning">無法達到目標大小，點擊查看詳情</string>
+    <string name="target_size_warning_title">可能無法達到目標大小</string>
+    <string name="target_size_warning_details">必須降低某些設定才能達到請求的目標大小。</string>
+    <string name="accept_suggestion">接受建議</string>
+    <string name="accept_all">全部接受</string>
+    <string name="close">關閉</string>
 
     <string name="error_prefix">錯誤：%1$s</string>
     <string name="select_video">選擇要壓縮的影片</string>
@@ -67,6 +75,16 @@
 
     <string name="error_file_lost">檔案遺失</string>
     <string name="error_export_failed">匯出失敗：%1$s</string>
+    <string name="error_save_failed">儲存失敗：%1$s</string>
+    <string name="error_gallery_entry">無法建立相簿項目</string>
+    <string name="error_unknown">未知錯誤</string>
+    <string name="error_codec_unsupported">此影片編解碼器不受您的裝置硬體支援。</string>
+    <string name="error_decoder_config_unsupported">此裝置無法解碼此源影片設定。</string>
+    <string name="error_encoder_config_unsupported">此裝置無法編碼選定的輸出設定。</string>
+    <string name="error_decoder_config_unsupported_details">此裝置無法解碼此源影片設定（%1$dx%2$d @ %3$.1ffps, %4$s）。</string>
+    <string name="error_encoder_config_unsupported_details">此裝置無法編碼選定的輸出設定。嘗試了：%1$s。</string>
+    <string name="warning_codec_fallback_h264">您選定的編解碼器在此裝置的此輸出中不受支援。正在回退到 H.264 以保證相容性。</string>
+    <string name="warning_quality_fallback">此裝置無法編碼您選定的設定。正在回退到 %1$dp 和 %2$dfps 的 H.264。</string>
 
     <string name="size_discord">Discord • GitHub</string>
     <string name="size_email">電子郵件</string>
@@ -94,6 +112,8 @@
     <string name="res_quarter">¼</string>
 
     <string name="compression_failed_title">壓縮失敗</string>
+    <string name="compression_larger_error">壓縮後的影片比原影片大。\n該影片可能已經高度壓縮，或者位元率非常低。</string>
+    <string name="error_huawei_muxer">此問題可能是由您的特定裝置引起的。請嘗試重啟裝置。</string>
     <string name="try_again">重試</string>
     <string name="save_anyway">仍要儲存</string>
 
@@ -113,6 +133,7 @@
     <string name="about_compressor_title">關於 Compressor</string>
     <string name="basic_info_header">基本資訊</string>
     <string name="display_settings_title">顯示</string>
+    <string name="general_settings_title">一般</string>
     <string name="settings_content_desc">設定</string>
     <string name="back">返回</string>
 
@@ -140,7 +161,10 @@
     <string name="enable_all_codecs">開啟所有編解碼器</string>
     <string name="software_encoding">軟體編碼</string>
     
+    <string name="header_general_options">一般選項</string>
     <string name="header_display_options">顯示選項</string>
+    <string name="auto_save_photos_title">自動儲存</string>
+    <string name="auto_save_photos_subtitle">壓縮完成後自動儲存影片</string>
     <string name="show_bitrate_subtitle">在原影片與預估大小處顯示位元率數值</string>
     <string name="bitrate_unit_mbps_subtitle">以 Mbps 為單位顯示位元率</string>
     <string name="bitrate_unit_kbps_subtitle">以 kbps 為單位顯示位元率</string>
@@ -166,6 +190,10 @@
     <string name="filename_drag_into_area">將標籤拖入此區域</string>
     <string name="filename_available_chips_title">可用動態標籤（拖放到上方區域）</string>
     <string name="filename_all_chips_added">所有可用標籤均已新增。</string>
+    <string name="filename_prefix_label">前綴</string>
+    <string name="filename_prefix_placeholder">輸入前綴…</string>
+    <string name="filename_active_tokens_title">已選標籤</string>
+    <string name="filename_available_tokens_title">點擊添加標籤</string>
     <string name="filename_preview_label">預覽：</string>
     <string name="filename_reset_button">重置檔名格式</string>
 
@@ -204,6 +232,32 @@
     <string name="tab_presets">預設</string>
     <string name="tab_video">影片</string>
     <string name="tab_audio">音訊</string>
+
+    <!-- Presets Management Keys -->
+    <string name="reset_to_default">恢復預設設定</string>
+    <string name="add_preset">添加預設</string>
+    <string name="reset_presets_to_default">重置大小預設</string>
+    <string name="reset_presets_confirm_title">重置目標大小預設？</string>
+    <string name="reset_presets_confirm_message">這將恢復所有預設目標大小預設並刪除自定義預設。</string>
+    <string name="add_size_preset_title">添加大小預設</string>
+    <string name="edit_size_preset_title">編輯大小預設</string>
+    <string name="preset_label_hint">預設標籤（如 Discord, Email）</string>
+    <string name="target_size_mb_hint">目標大小（單位：MB）</string>
+
+    <!-- Video & Audio Settings Keys -->
+    <string name="header_default_video_options">預設影片選項</string>
+    <string name="header_default_audio_options">預設音訊選項</string>
+    <string name="default_video_codec">預設影片編解碼器</string>
+    <string name="default_video_codec_desc">為新壓縮選擇預設影片編碼器</string>
+    <string name="default_resolution">預設解析度</string>
+    <string name="default_framerate">預設幀率</string>
+    <string name="default_size_ratio">預設目標大小比例</string>
+    <string name="default_audio_bitrate">預設音訊位元率</string>
+    <string name="default_mute_audio">預設靜音</string>
+    <string name="default_mute_audio_desc">自動從新影片中移除音軌</string>
+    <string name="default_audio_volume">預設音量</string>
+    <string name="reset_video_defaults">重置影片預設值</string>
+    <string name="reset_audio_defaults">重置音訊預設值</string>
 
     <!-- What's New Dialog -->
     <string name="whats_new_title">Compressor 新功能</string>

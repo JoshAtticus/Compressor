@@ -52,6 +52,9 @@ data class CompressorUiState(
     val videoCodec: String = MimeTypes.VIDEO_H265,
     val targetResolutionHeight: Int = 0, // 0 means original
     val targetFps: Int = 0, // 0 means original
+    val audioBitrateLocked: Boolean = false,
+    val targetResolutionLocked: Boolean = false,
+    val targetFpsLocked: Boolean = false,
     
     val totalSavedBytes: Long = 0L,
     
@@ -87,6 +90,27 @@ data class CompressorUiState(
         FilenameSegment.Text("")
     )
 ) {
+    val targetSizeWarning: Boolean
+        get() = durationMs > 0 && targetSizeMb < minimumSizeMb
+
+    /** Returns the settings autoAdjust would choose if user locks were released. */
+    fun suggestedForTarget(): CompressorUiState {
+        var suggestion = copy(
+            audioBitrateLocked = false,
+            targetResolutionLocked = false,
+            targetFpsLocked = false
+        )
+
+        // Dropping to 30fps often preserves more spatial detail than dropping
+        // to the next resolution tier, especially for portrait video.
+        val currentFps = if (suggestion.targetFps > 0) suggestion.targetFps else suggestion.originalFps.toInt()
+        if (currentFps > 30) {
+            suggestion = suggestion.copy(targetFps = 30)
+        }
+
+        return suggestion.autoAdjust(targetSizeMb, lockAudioBitrate = false, allowUpward = false)
+    }
+
     private val minBitrate: Long
         get() {
             val h = if (targetResolutionHeight > 0) targetResolutionHeight else originalHeight
@@ -191,6 +215,24 @@ data class CompressorUiState(
 
     fun autoAdjust(targetMb: Float, lockAudioBitrate: Boolean = false, allowUpward: Boolean = true): CompressorUiState {
         var state = this
+        val audioLocked = lockAudioBitrate || audioBitrateLocked
+        val isVertical = originalHeight > originalWidth
+
+        fun shortSideForHeight(height: Int): Int = if (
+            isVertical && originalWidth > 0 && originalHeight > 0
+        ) {
+            (height.toLong() * originalWidth / originalHeight).toInt()
+        } else {
+            height
+        }
+
+        fun heightForShortSide(shortSide: Int): Int = if (
+            isVertical && originalWidth > 0 && originalHeight > 0
+        ) {
+            (shortSide.toLong() * originalHeight / originalWidth).toInt()
+        } else {
+            shortSide
+        }
         var attempts = 0
         val maxAttempts = 20
 
@@ -198,7 +240,7 @@ data class CompressorUiState(
         while (state.minimumSizeMb > targetMb && attempts < maxAttempts) {
             attempts++
             
-            if (!lockAudioBitrate) {
+            if (!audioLocked) {
                 // 1. Reduce Audio Bitrate to 128k
                 if (state.audioBitrate > 128_000) {
                     state = state.copy(audioBitrate = 128_000)
@@ -208,22 +250,24 @@ data class CompressorUiState(
 
             // 2. Reduce Resolution
             val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
-            val newH = when {
-                currentH > 2160 -> 2160
-                currentH > 1440 -> 1440
-                currentH > 1080 -> 1080
-                currentH > 720 -> 720
-                currentH > 480 -> 480
-                currentH > 360 -> 360
+            val currentShortSide = shortSideForHeight(currentH)
+            val newShortSide = when {
+                currentShortSide > 2160 -> 2160
+                currentShortSide > 1440 -> 1440
+                currentShortSide > 1080 -> 1080
+                currentShortSide > 720 -> 720
+                currentShortSide > 480 -> 480
+                currentShortSide > 360 -> 360
                 else -> 240
             }
+            val newH = heightForShortSide(newShortSide)
             
-            if (newH < currentH) {
+            if (!targetResolutionLocked && newH < currentH) {
                 state = state.copy(targetResolutionHeight = newH)
                 continue
             }
 
-            if (!lockAudioBitrate) {
+            if (!audioLocked) {
                 // 3. Reduce Audio Bitrate to 96k if really needed (big gap)
                 if (state.audioBitrate > 96_000 && state.minimumSizeMb > targetMb * 1.5) {
                     state = state.copy(audioBitrate = 96_000)
@@ -234,13 +278,13 @@ data class CompressorUiState(
             val effectiveFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
 
             // 4. Reduce FPS to 30 if higher
-            if (effectiveFps > 30) {
+            if (!targetFpsLocked && effectiveFps > 30) {
                 state = state.copy(targetFps = 30)
                 continue
             }
             
             // 5. Reduce FPS to 24
-            if (effectiveFps > 24) { 
+            if (!targetFpsLocked && effectiveFps > 24) {
                  state = state.copy(targetFps = 24)
                  continue
             }
@@ -257,18 +301,21 @@ data class CompressorUiState(
             
             // 1. Try to increase Resolution 
             val currentH = if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight
-            if (currentH < state.originalHeight) {
-                val nextH = when {
-                    currentH < 360 -> 360
-                    currentH < 480 -> 480
-                    currentH < 720 -> 720
-                    currentH < 1080 -> 1080
-                    currentH < 1440 -> 1440
-                    currentH < 2160 -> 2160
-                    else -> state.originalHeight
-                }.coerceAtMost(state.originalHeight)
-                
-                val useOriginal = nextH >= state.originalHeight
+            val currentShortSide = shortSideForHeight(currentH)
+            val originalShortSide = shortSideForHeight(state.originalHeight)
+            if (!state.targetResolutionLocked && currentShortSide < originalShortSide) {
+                val nextShortSide = when {
+                    currentShortSide < 360 -> 360
+                    currentShortSide < 480 -> 480
+                    currentShortSide < 720 -> 720
+                    currentShortSide < 1080 -> 1080
+                    currentShortSide < 1440 -> 1440
+                    currentShortSide < 2160 -> 2160
+                    else -> originalShortSide
+                }.coerceAtMost(originalShortSide)
+                val nextH = heightForShortSide(nextShortSide)
+
+                val useOriginal = nextShortSide >= originalShortSide
                 val testState = state.copy(targetResolutionHeight = if (useOriginal) 0 else nextH) 
                 
                 if (testState.minimumSizeMb <= targetMb) {
@@ -280,7 +327,7 @@ data class CompressorUiState(
             
             // 2. Try to increase FPS
             val currentFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
-            if (currentFps < state.originalFps.toInt()) {
+            if (!state.targetFpsLocked && currentFps < state.originalFps.toInt()) {
                  val nextFps = if (currentFps < 30) 30 else state.originalFps.toInt()
                  val useOriginal = nextFps >= state.originalFps.toInt()
                  val testState = state.copy(targetFps = if (useOriginal) 0 else nextFps)
@@ -292,7 +339,7 @@ data class CompressorUiState(
                  }
             }
             
-             if (!lockAudioBitrate) {
+             if (!audioLocked) {
                  // 3. Try to increase Audio Bitrate
                  val maxAudio = if (state.originalAudioBitrate > 0) state.originalAudioBitrate else 320_000
                  if (state.audioBitrate < maxAudio) {

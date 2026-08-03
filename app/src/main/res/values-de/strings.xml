@@ -83,7 +83,11 @@
     <string name="res_2k">2K</string>
     <string name="res_1080p">1080p</string>
     <string name="res_720p">720p</string>
+    <string name="res_540p">540p</string>
     <string name="res_480p">480p</string>
+    <string name="res_three_quarters">¾</string>
+    <string name="res_half">½</string>
+    <string name="res_quarter">¼</string>
     <string name="audio_options">Audio-Optionen</string>
     <string name="audio_bitrate">Audio-Bitrate</string>
     <string name="volume">Lautstärke</string>
@@ -104,6 +108,12 @@
     <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
     <string name="warning_details">Warnungsdetails</string>
     <string name="dismiss">Schließen</string>
+    <string name="target_size_warning">Zielgröße nicht möglich, für Infos tippen</string>
+    <string name="target_size_warning_title">Zielgröße eventuell nicht möglich</string>
+    <string name="target_size_warning_details">Einige Einstellungen müssen reduziert werden, um die gewünschte Zielgröße zu erreichen.</string>
+    <string name="accept_suggestion">Vorschlag annehmen</string>
+    <string name="accept_all">Alle annehmen</string>
+    <string name="close">Schließen</string>
     <string name="view_on_github">Auf GitHub anzeigen</string>
     <string name="buy_me_a_coffee">Kauf mir einen Kaffee</string>
 
@@ -173,6 +183,10 @@
     <string name="filename_drag_into_area">Chip in diesen Bereich ziehen</string>
     <string name="filename_available_chips_title">Verfügbare dynamische Chips (In den oberen Bereich ziehen)</string>
     <string name="filename_all_chips_added">Alle verfügbaren Chips wurden hinzugefügt.</string>
+    <string name="filename_prefix_label">Präfix</string>
+    <string name="filename_prefix_placeholder">Präfix eingeben…</string>
+    <string name="filename_active_tokens_title">Ausgewählte Token</string>
+    <string name="filename_available_tokens_title">Tippen zum Hinzufügen</string>
     <string name="filename_preview_label">Vorschau:</string>
     <string name="filename_reset_button">Format zurücksetzen</string>
 
