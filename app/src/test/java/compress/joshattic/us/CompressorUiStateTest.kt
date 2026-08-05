@@ -8,7 +8,7 @@ import org.junit.Test
 class CompressorUiStateTest {
 
     @Test
-    fun testAutoAdjust_prioritizesReducingResolutionOverFramerate() {
+    fun testAutoAdjust_prioritizesPreservingResolutionOverFramerate() {
         // Given a 1080p 60fps video with 60s duration
         val initialState = CompressorUiState(
             originalWidth = 1920,
@@ -26,15 +26,15 @@ class CompressorUiStateTest {
         val targetMb = minMb1080p60 - 2f
         val adjustedState = initialState.autoAdjust(targetMb)
 
-        // Resolution should be reduced (e.g. 720p or lower) while framerate remains original (targetFps == 0 for original 60fps)
+        // Framerate should be reduced before spatial resolution.
         assertTrue(
-            "Target resolution height should be reduced below original 1080",
-            adjustedState.targetResolutionHeight in 1..720
+            "Framerate should be reduced to 30fps",
+            adjustedState.targetFps == 30
         )
         assertEquals(
-            "Framerate should be preserved (targetFps = 0 for original 60fps)",
+            "Resolution should be preserved",
             0,
-            adjustedState.targetFps
+            adjustedState.targetResolutionHeight
         )
     }
 
@@ -52,8 +52,8 @@ class CompressorUiStateTest {
         val targetMb = initialState.minimumSizeMb - 1f
         val adjustedState = initialState.autoAdjust(targetMb)
 
-        assertEquals("Resolution should drop to 1440p or 1080p", 1440, adjustedState.targetResolutionHeight)
-        assertEquals("Framerate should remain 60fps (targetFps = 0)", 0, adjustedState.targetFps)
+        assertEquals("Resolution should remain original", 0, adjustedState.targetResolutionHeight)
+        assertEquals("Framerate should drop to 30fps", 30, adjustedState.targetFps)
     }
 
     @Test
@@ -90,7 +90,7 @@ class CompressorUiStateTest {
         val adjustedState = initialState.autoAdjust(targetMb, lockAudioBitrate = true)
 
         assertEquals("Locked audio bitrate should not be modified", 320_000, adjustedState.audioBitrate)
-        assertTrue("Resolution should drop instead", adjustedState.targetResolutionHeight in 1..720)
+        assertEquals("Framerate should drop instead", 30, adjustedState.targetFps)
     }
 
     @Test
@@ -149,9 +149,39 @@ class CompressorUiStateTest {
             audioBitrate = 128_000
         )
 
-        val adjustedState = initialState.autoAdjust(initialState.minimumSizeMb - 1f)
+        val targetAt720 = initialState.copy(targetResolutionHeight = 1280, targetFps = 30).minimumSizeMb
+        val targetAt1080 = initialState.copy(targetFps = 30).minimumSizeMb
+        val targetMb = (targetAt720 + targetAt1080) / 2f
+        val adjustedState = initialState.autoAdjust(targetMb)
 
         assertEquals("720p portrait should use a 1280px height", 1280, adjustedState.targetResolutionHeight)
+    }
+
+    @Test
+    fun testAutoAdjust_restoresResolutionAndFpsWhenTargetSizeIncreases() {
+        val initialState = CompressorUiState(
+            originalWidth = 1080,
+            originalHeight = 1920,
+            originalFps = 60f,
+            durationMs = 60_000L,
+            targetResolutionHeight = 1920,
+            audioBitrate = 128_000
+        )
+
+        val smallTarget = initialState
+            .copy(targetResolutionHeight = 1280, targetFps = 30)
+            .minimumSizeMb - 1f
+        val reduced = initialState.autoAdjust(smallTarget)
+
+        assertTrue(reduced.targetFps in 1..30)
+        assertTrue(reduced.targetResolutionHeight in 1 until 1280)
+
+        val targetAt1080p60 = initialState.copy(targetFps = 0).minimumSizeMb
+        val largeTarget = targetAt1080p60 + 1f
+        val restored = reduced.autoAdjust(largeTarget)
+
+        assertEquals("Framerate should be restored", 0, restored.targetFps)
+        assertEquals("Resolution should be restored", 0, restored.targetResolutionHeight)
     }
 
     @Test
@@ -251,4 +281,3 @@ class CompressorUiStateTest {
         assertTrue("Minimum size should increase with duration", state2.minimumSizeMb > state1.minimumSizeMb)
     }
 }
-

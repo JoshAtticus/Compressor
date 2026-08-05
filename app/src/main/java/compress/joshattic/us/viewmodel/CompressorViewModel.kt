@@ -873,8 +873,12 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
+    fun setTargetSizePreview(mb: Float) {
+        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
+    }
+
     fun setTargetSize(mb: Float) {
-        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM).autoAdjust(mb, allowUpward = false) }
+        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM).autoAdjust(mb) }
     }
 
     fun setVideoCodec(codec: String) {

@@ -36,6 +36,7 @@ import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.utils.expressiveScale
 import compress.joshattic.us.viewmodel.CompressorViewModel
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @SuppressLint("DefaultLocale")
@@ -68,6 +69,13 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 }
             }
 
+            LaunchedEffect(sliderValue) {
+                if (isUserInteracting) {
+                    delay(150)
+                    viewModel.setTargetSizePreview(sliderValue)
+                }
+            }
+
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
@@ -88,7 +96,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             
             val originalMb = if (state.originalSize > 0) state.originalSize.toFloat() / (1024f * 1024f) else 100f
             val minSize = (originalMb * 0.05f).coerceAtLeast(0.5f)
-            val maxSize = maxOf(originalMb, state.targetSizeMb, 1f)
+            val maxSize = maxOf(originalMb, sliderValue, state.targetSizeMb, 1f)
             
             val sliderFraction = if (maxSize > minSize) {
                 ((sliderValue - minSize) / (maxSize - minSize)).coerceIn(0f, 1f)
@@ -111,12 +119,13 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
 
                     if (sliderValue != roundedSize) {
                         sliderValue = roundedSize
-                        viewModel.setTargetSize(roundedSize)
                         haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                     }
                 },
                 onValueChangeFinished = {
                     isUserInteracting = false
+                    viewModel.setTargetSize(sliderValue)
+                    haptics.performHapticFeedback(HapticFeedbackType.TextHandleMove)
                 },
                 valueRange = 0f..1f,
                 steps = 0
