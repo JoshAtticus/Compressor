@@ -260,12 +260,12 @@
     <string name="whats_new_title">Was gibt\'s Neues in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Verstanden</string>
-    <string name="whats_new_font_ui_title">Neue Schriftart &amp; UI-Änderungen</string>
-    <string name="whats_new_font_ui_desc">Frische neue Google Sans-Typografie, aktualisiertes Material 3-Design und flüssige Animationen in der gesamten App.</string>
-    <string name="whats_new_settings_title">Info ist raus, Einstellungen sind da</string>
-    <string name="whats_new_settings_desc">Passen Sie alles an – von Anzeigeoptionen bis hin zu Standard-Video/Audio-Einstellungen, Voreinstellungen und App-Verhalten an einem Ort.</string>
-    <string name="whats_new_auto_save_title">Automatisches Speichern</string>
-    <string name="whats_new_auto_save_desc">Komprimierte Videos werden jetzt standardmäßig automatisch in Ihrer Fotobibliothek gespeichert. (Android 10+, in den Einstellungen deaktivierbar)</string>
-    <string name="whats_new_presets_title">Anpassbare Voreinstellungen</string>
-    <string name="whats_new_presets_desc">Erstellen, bearbeiten und löschen Sie benutzerdefinierte Zielgrößen-Voreinstellungen oder passen Sie Qualitätsvoreinstellungen an.</string>
+    <string name="whats_new_1_title">Dateinamen-Generator</string>
+    <string name="whats_new_1_desc">Passen Sie Ihre Dateinamen an – Sie können jetzt mehr Informationen in den Ausgabedateinamen in den Einstellungen hinzufügen (oder entfernen).</string>
+    <string name="whats_new_2_title">Verbesserter Auto-Adjust-Algorithmus</string>
+    <string name="whats_new_2_desc">Automatische Einstellungen funktionieren jetzt noch besser. Geänderte Einstellungen werden beibehalten, und Sie erhalten eine Warnung, wenn die Zielgröße nicht möglich ist.</string>
+    <string name="whats_new_3_title">UI-Verfeinerungen</string>
+    <string name="whats_new_3_desc">Verschiedene Teile der Benutzeroberfläche wurden korrigiert und verfeinert.</string>
+    <string name="whats_new_4_title">Fehlerbehebungen</string>
+    <string name="whats_new_4_desc">Verschiedene Fehler in den Einstellungen wurden behoben + Compressor läuft jetzt als einzelne Instanz, also kein Überfüllen der letzten Apps mehr!</string>
 </resources>

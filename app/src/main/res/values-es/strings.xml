@@ -255,12 +255,12 @@
     <string name="whats_new_title">Novedades en Compressor</string>
     <string name="whats_new_version">Versión %1$s</string>
     <string name="whats_new_button">Entendido</string>
-    <string name="whats_new_font_ui_title">Nueva fuente y cambios de interfaz</string>
-    <string name="whats_new_font_ui_desc">Nueva tipografía Google Sans, diseño Material 3 actualizado y animaciones fluidas en toda la aplicación.</string>
-    <string name="whats_new_settings_title">Adiós Información, hola Ajustes</string>
-    <string name="whats_new_settings_desc">Personaliza todo, desde las opciones de pantalla hasta los ajustes predeterminados de video/audio, preajustes y comportamiento de la app en un solo lugar.</string>
-    <string name="whats_new_auto_save_title">Guardado automático</string>
-    <string name="whats_new_auto_save_desc">Los videos comprimidos ahora se guardan automáticamente en tu galería de Fotos por defecto. (Android 10+, desactivar en Ajustes)</string>
-    <string name="whats_new_presets_title">Preajustes personalizables</string>
-    <string name="whats_new_presets_desc">Crea, edita y elimina preajustes de tamaño objetivo personalizados o ajusta los preajustes de calidad según tus necesidades.</string>
+    <string name="whats_new_1_title">Generador de nombres</string>
+    <string name="whats_new_1_desc">Haz que tus nombres de archivo trabajen para ti; ahora puedes añadir (o quitar) más información en los nombres de archivo de salida en Ajustes.</string>
+    <string name="whats_new_2_title">Algoritmo de autoajuste mejorado</string>
+    <string name="whats_new_2_desc">Los ajustes automáticos ahora funcionan aún mejor; los cambios que realices se mantienen y verás un aviso si el tamaño objetivo no es posible.</string>
+    <string name="whats_new_3_title">Refinamientos de UI</string>
+    <string name="whats_new_3_desc">Se han corregido y refinado varias partes de la interfaz.</string>
+    <string name="whats_new_4_title">Corrección de errores</string>
+    <string name="whats_new_4_desc">Se han corregido varios errores en los ajustes + Compressor es ahora de instancia única, ¡así que no más llenar tus aplicaciones recientes!</string>
 </resources>

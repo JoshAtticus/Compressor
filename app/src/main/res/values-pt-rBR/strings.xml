@@ -261,12 +261,12 @@
     <string name="whats_new_title">Novidades no Compressor</string>
     <string name="whats_new_version">Versão %1$s</string>
     <string name="whats_new_button">Entendi</string>
-    <string name="whats_new_font_ui_title">Nova fonte e mudanças na interface</string>
-    <string name="whats_new_font_ui_desc">Nova tipografia Google Sans, design Material 3 atualizado e animações suaves em todo o aplicativo.</string>
-    <string name="whats_new_settings_title">Sai Informações, entra Configurações</string>
-    <string name="whats_new_settings_desc">Personalize tudo, desde opções de exibição até configurações padrão de vídeo/áudio, pré-definições e comportamento do app em um só lugar.</string>
-    <string name="whats_new_auto_save_title">Salvamento automático</string>
-    <string name="whats_new_auto_save_desc">Os vídeos comprimidos agora são salvos automaticamente na sua galeria de Fotos por padrão. (Android 10+, desative em Configurações)</string>
-    <string name="whats_new_presets_title">Pré-definições personalizáveis</string>
-    <string name="whats_new_presets_desc">Crie, edite e exclua pré-definições de tamanho alvo personalizadas ou ajuste as pré-definições de qualidade conforme suas necessidades.</string>
+    <string name="whats_new_1_title">Construtor de nomes</string>
+    <string name="whats_new_1_desc">Faça seus nomes de arquivo trabalharem para você; agora você pode adicionar (ou remover) mais informações nos nomes de saída nas Configurações.</string>
+    <string name="whats_new_2_title">Algoritmo de autoajuste melhorado</string>
+    <string name="whats_new_2_desc">Os ajustes automáticos agora funcionam ainda melhor; as alterações que você fizer serão mantidas e você verá um aviso se o tamanho alvo não for possível.</string>
+    <string name="whats_new_3_title">Refinamentos de UI</string>
+    <string name="whats_new_3_desc">Várias partes da interface foram corrigidas e refinadas.</string>
+    <string name="whats_new_4_title">Correção de bugs</string>
+    <string name="whats_new_4_desc">Vários bugs nas configurações foram corrigidos + o Compressor agora é instância única, chega de lotar seus apps recentes!</string>
 </resources>

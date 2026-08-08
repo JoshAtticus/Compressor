@@ -263,12 +263,12 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_font_ui_title">全新字体与 UI 界面改进</string>
-    <string name="whats_new_font_ui_desc">全新的 Google Sans 字体、更新的 Material 3 界面设计以及全应用流畅动画。</string>
-    <string name="whats_new_settings_title">信息页退场，全新设置页登场</string>
-    <string name="whats_new_settings_desc">在一个地方统一自定义所有内容：从显示选项、默认音视频设置，到画质预设及应用行为。</string>
-    <string name="whats_new_auto_save_title">自动保存</string>
-    <string name="whats_new_auto_save_desc">压缩后的视频现在默认自动保存至您的系统相册中。(仅限 Android 10+，可在设置中关闭)</string>
-    <string name="whats_new_presets_title">可自定义预设</string>
-    <string name="whats_new_presets_desc">自由创建、编辑和删除自定义目标大小预设，或微调画质预设以满足您的具体需求。</string>
+    <string name="whats_new_1_title">文件名生成器</string>
+    <string name="whats_new_1_desc">让文件名更符合您的需求，现在可以在设置中为输出文件名添加（或移除）更多信息。</string>
+    <string name="whats_new_2_title">改进的自动调整算法</string>
+    <string name="whats_new_2_desc">自动设置调整现在效果更佳，您更改的设置将被锁定，如果目标大小无法实现，您将看到警告。</string>
+    <string name="whats_new_3_title">UI 细节优化</string>
+    <string name="whats_new_3_desc">修复并优化了 UI 的多个部分。</string>
+    <string name="whats_new_4_title">Bug 修复</string>
+    <string name="whats_new_4_desc">修复了设置中的多项 Bug + Compressor 现在采用单实例运行，不再占用您的最近任务列表！</string>
 </resources>

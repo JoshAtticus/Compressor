@@ -261,12 +261,12 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_font_ui_title">新しいフォントとUIの変更</string>
-    <string name="whats_new_font_ui_desc">新しい Google Sans フォント、最新の Material 3 デザイン、アプリ全体でスムーズなアニメーションに対応しました。</string>
-    <string name="whats_new_settings_title">Infoから設定画面へリニューアル</string>
-    <string name="whats_new_settings_desc">表示オプションからデフォルトの動画/音声設定、品質プリセット、アプリの動作まで、すべてを一箇所でカスタマイズできます。</string>
-    <string name="whats_new_auto_save_title">自動保存</string>
-    <string name="whats_new_auto_save_desc">圧縮された動画がデフォルトで写真ライブラリに自動保存されるようになりました。(Android 10以上、設定で無効化可能)</string>
-    <string name="whats_new_presets_title">カスタマイズ可能なプリセット</string>
-    <string name="whats_new_presets_desc">目標サイズのプリセットを新規作成・編集・削除したり、画質プリセットを好みに合わせて調整できます。</string>
+    <string name="whats_new_1_title">ファイル名の作成</string>
+    <string name="whats_new_1_desc">出力ファイル名に含める情報を「設定」から自由に追加・削除できるようになりました。</string>
+    <string name="whats_new_2_title">自動調整アルゴリズムの改善</string>
+    <string name="whats_new_2_desc">自動調整がさらに進化しました。変更した設定は固定され、目標サイズに到達できない場合は警告が表示されます。</string>
+    <string name="whats_new_3_title">UIの洗練</string>
+    <string name="whats_new_3_desc">UIの各部を修正し、より使いやすく洗練させました。</string>
+    <string name="whats_new_4_title">バグ修正</string>
+    <string name="whats_new_4_desc">設定画面の各種バグを修正しました。また、シングルインスタンス化により、最近のタスク履歴を埋め尽くすことがなくなりました！</string>
 </resources>

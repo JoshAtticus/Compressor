@@ -239,12 +239,12 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_font_ui_title">새로운 폰트 및 UI 변경</string>
-    <string name="whats_new_font_ui_desc">새로운 Google Sans 타이포그래피, 최신 Material 3 디자인, 앱 전체의 부드러운 애니메이션이 적용되었습니다.</string>
-    <string name="whats_new_settings_title">정보 대신 새로운 설정 화면 도입</string>
-    <string name="whats_new_settings_desc">화면 표시 옵션부터 기본 비디오/오디오 설정, 화질 프리셋 및 앱 동작까지 모든 것을 한곳에서 맞춤 설정하세요.</string>
-    <string name="whats_new_auto_save_title">자동 저장</string>
-    <string name="whats_new_auto_save_desc">압축된 비디오가 이제 기본적으로 사진 라이브러리에 자동 저장됩니다. (Android 10 이상, 설정에서 비활성화 가능)</string>
-    <string name="whats_new_presets_title">사용자 지정 프리셋</string>
-    <string name="whats_new_presets_desc">목표 크기 프리셋을 새로 생성·편집·삭제하거나 화질 프리셋을 원하는 대로 조정할 수 있습니다.</string>
+    <string name="whats_new_1_title">파일 이름 작성기</string>
+    <string name="whats_new_1_desc">나만의 파일 이름을 만들어보세요. 설정에서 출력 파일 이름에 정보를 추가하거나 제거할 수 있습니다.</string>
+    <string name="whats_new_2_title">자동 조정 알고리즘 개선</string>
+    <string name="whats_new_2_desc">자동 설정 조정 기능이 더욱 향상되었습니다. 변경한 설정은 고정되며, 목표 크기가 불가능할 경우 경고가 표시됩니다.</string>
+    <string name="whats_new_3_title">UI 개선</string>
+    <string name="whats_new_3_desc">UI의 다양한 부분이 수정되고 세련되게 다듬어졌습니다.</string>
+    <string name="whats_new_4_title">버그 수정</string>
+    <string name="whats_new_4_desc">설정의 다양한 버그가 수정되었습니다. 또한, 단일 인스턴스로 실행되어 최근 앱 목록을 가득 채우지 않습니다!</string>
 </resources>
