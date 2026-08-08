@@ -1,5 +1,5 @@
 <div align="center">
-  <img width="96" alt="ic_launcher-playstore" src="assets/logo.png" />
+  <img width="96" alt="ic_launcher-playstore" src="assets/logo.png?v=2" />
 
 # Compressor
 
