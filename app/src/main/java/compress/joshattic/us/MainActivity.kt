@@ -19,6 +19,23 @@ import compress.joshattic.us.viewmodel.CompressorViewModel
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<CompressorViewModel>()
 
+    private fun handleShareIntent(intent: Intent?) {
+        if (intent?.action != Intent.ACTION_SEND || intent.type?.startsWith("video/") != true) {
+            return
+        }
+
+        val uri = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+            intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+        } else {
+            @Suppress("DEPRECATION")
+            intent.getParcelableExtra(Intent.EXTRA_STREAM)
+        }
+
+        if (uri != null) {
+            viewModel.updateSelectedUri(this, uri)
+        }
+    }
+
     @SuppressLint("SourceLockedOrientationActivity")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,19 +47,8 @@ class MainActivity : ComponentActivity() {
         
         enableEdgeToEdge()
 
-        // Handle incoming share intent
-        if (intent?.action == Intent.ACTION_SEND && intent.type?.startsWith("video/") == true) {
-            val uri = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-                intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-            } else {
-                @Suppress("DEPRECATION")
-                intent.getParcelableExtra(Intent.EXTRA_STREAM)
-            }
-            
-            if (uri != null) {
-                viewModel.updateSelectedUri(this, uri)
-            }
-        }
+        // Handle the initial share intent. Later shares arrive through onNewIntent.
+        handleShareIntent(intent)
 
         setContent {
             CompressorTheme {
@@ -54,5 +60,11 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        handleShareIntent(intent)
     }
 }
