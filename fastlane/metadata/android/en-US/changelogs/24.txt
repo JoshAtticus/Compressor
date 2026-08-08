@@ -1,0 +1,6 @@
+Compressor 1.6.1 is a minor update. Here's what's changed:
+
+- Build-a-filename: Add more information (or remove it) from your filenames in Settings
+- Improved Auto-Adjust Algorithm: Automatic settings adjustments now work even better. Settings you change are locked in and you'll see a warning if your target size isn't possible.
+- UI Refinements: Various parts of the UI have been fixed and refined.
+- Bug Fixes: Various bugs in Settings have been fixed + Compressor is now single instance, so no more filling up your recents!
