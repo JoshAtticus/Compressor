@@ -84,7 +84,8 @@
     <string name="warning_codec_fallback_h264">O codec selecionado não é suportado para esta saída neste dispositivo. Voltando para H.264 por compatibilidade.</string>
     <string name="warning_quality_fallback">Este dispositivo não consegue codificar suas configurações selecionadas. Voltando para H.264 em %1$dp e %2$dfps.</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">E-mail</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>

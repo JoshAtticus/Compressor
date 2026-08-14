@@ -12,7 +12,8 @@ sealed class FilenameSegment {
 }
 
 val defaultTargetSizePresets = listOf(
-    TargetSizePreset("discord", 10f, "Discord • GitHub"),
+    TargetSizePreset("github", 10f, "GitHub"),
+    TargetSizePreset("discord", 20f, "Discord"),
     TargetSizePreset("email", 25f, "Email"),
     TargetSizePreset("stories", 50f, "Stories • Nitro Basic"),
     TargetSizePreset("messenger", 100f, "Messenger • BlueSky"),

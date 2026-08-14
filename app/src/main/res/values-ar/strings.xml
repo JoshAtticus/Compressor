@@ -84,7 +84,8 @@
     <string name="warning_codec_fallback_h264">الترميز المحدد غير مدعوم لهذا المخرج على هذا الجهاز. الرجوع إلى H.264 للتوافق.</string>
     <string name="warning_quality_fallback">لا يمكن لهذا الجهاز ترميز الإعدادات المحددة. الرجوع إلى H.264 بدقة %1$dp و %2$dfps.</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">البريد الإلكتروني</string>
     <string name="size_stories">قصص • Nitro الأساسي</string>
     <string name="size_messenger">Messenger • BlueSky</string>

@@ -111,6 +111,7 @@ fun rememberSearchableSettings(
     val headerLinksActions = stringResource(R.string.header_links_actions)
 
     val sizeDiscord = stringResource(R.string.size_discord)
+    val sizeGithub = stringResource(R.string.size_github)
     val sizeEmail = stringResource(R.string.size_email)
     val sizeStories = stringResource(R.string.size_stories)
     val sizeMessenger = stringResource(R.string.size_messenger)
@@ -174,13 +175,14 @@ fun rememberSearchableSettings(
         settings.add(SearchableSetting(presetHigh, headerQualityPresets, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(presetMedium, headerQualityPresets, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(presetLow, headerQualityPresets, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
-        settings.add(SearchableSetting(targetSizeLimits, "Discord (10MB), Email (25MB), Stories (50MB), Twitter/X", presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
+        settings.add(SearchableSetting(targetSizeLimits, "GitHub (10MB), Discord (20MB), Email (25MB), Stories (50MB), Twitter/X", presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(addPreset, targetSizeLimits, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(resetToDefault, "$headerQualityPresets / $targetSizeLimits", presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
 
         state.targetSizePresets.forEach { preset ->
             val presetDisplayTitle = if (preset.isCustom) preset.label else when (preset.id) {
                 "discord" -> sizeDiscord
+                "github" -> sizeGithub
                 "email" -> sizeEmail
                 "stories" -> sizeStories
                 "messenger" -> sizeMessenger

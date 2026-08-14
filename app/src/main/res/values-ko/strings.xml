@@ -68,7 +68,8 @@
     <string name="error_file_lost">파일을 찾을 수 없음</string>
     <string name="error_export_failed">내보내기 실패: %1$s</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">이메일</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>
