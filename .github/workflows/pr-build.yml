@@ -1,0 +1,60 @@
+name: Build PR Debug APK
+
+on:
+  pull_request:
+    branches: [ "main" ]
+    paths-ignore:
+      - '**.md'
+      - 'fastlane/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout PR Code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Build Debug APK
+        id: build_apk
+        shell: bash
+        run: |
+          set -o pipefail
+          ./gradlew assembleDebug --stacktrace | tee build.log
+
+      - name: Upload APK
+        if: success()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compressor-debug-pr-${{ github.event.pull_request.number }}
+          path: app/build/outputs/apk/debug/app-debug.apk
+          retention-days: 5
+
+      - name: Save PR metadata and logs
+        if: always()
+        run: |
+          mkdir -p pr_data
+          echo "${{ github.event.pull_request.number }}" > pr_data/PR_NUMBER
+          echo "${{ job.status }}" > pr_data/STATUS
+          if [ -f build.log ]; then
+            tail -n 150 build.log > pr_data/trimmed_log.txt
+          else
+            echo "Build log not found." > pr_data/trimmed_log.txt
+          fi
+
+      - name: Upload Metadata Artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pr_data
+          path: pr_data/
+          retention-days: 1
