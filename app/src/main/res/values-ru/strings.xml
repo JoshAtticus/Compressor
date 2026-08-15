@@ -79,7 +79,8 @@
     <string name="warning_codec_fallback_h264">Выбранный кодек не поддерживается для этого вывода на данном устройстве. Возврат к H.264 для совместимости.</string>
     <string name="warning_quality_fallback">Это устройство не может закодировать выбранные настройки. Возврат к H.264 при %1$dp и %2$dfps.</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">Эл. почта</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>

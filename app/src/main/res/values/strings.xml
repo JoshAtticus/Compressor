@@ -89,7 +89,8 @@
     <string name="warning_quality_fallback">This device can\'t encode your selected settings. Falling back to H.264 at %1$dp and %2$dfps.</string>
 
     <!-- Size Presets -->
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">Email</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>

@@ -84,7 +84,8 @@
     <string name="warning_codec_fallback_h264">選択されたコーデックはこの端末の出力でサポートされていません。互換性のためにH.264にフォールバックします。</string>
     <string name="warning_quality_fallback">お使いの端末は選択された設定をエンコードできません。%1$dp、%2$dfpsのH.264にフォールバックします。</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">メール</string>
     <string name="size_stories">ストーリーズ • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>
