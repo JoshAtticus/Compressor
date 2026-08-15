@@ -1,7 +1,7 @@
 name: Build PR Debug APK
 
 on:
-  pull_request:
+  pull_request_target:
     branches: [ "main" ]
     paths-ignore:
       - '**.md'
@@ -12,23 +12,26 @@ on:
         description: 'PR Number'
         required: true
 
-# We need permission to write comments on the PR
 permissions:
   contents: read
   pull-requests: write
+  issues: write
 
 jobs:
   build-and-comment:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout PR Code
         uses: actions/checkout@v4
+        with:
+          # Check out the actual head commit of the PR
+          ref: ${{ github.event.pull_request.head.sha || github.ref }}
 
       - name: Determine PR Number
         id: pr_context
         run: |
-          if [ "${{ github.event_name }}" == "pull_request" ]; then
-            echo "PR_NUMBER=${{ github.event.number }}" >> $GITHUB_ENV
+          if [ "${{ github.event_name }}" == "pull_request_target" ] || [ "${{ github.event_name }}" == "pull_request" ]; then
+            echo "PR_NUMBER=${{ github.event.pull_request.number || github.event.number }}" >> $GITHUB_ENV
           else
             echo "PR_NUMBER=${{ inputs.pr_number }}" >> $GITHUB_ENV
           fi
@@ -55,7 +58,6 @@ jobs:
             const { owner, repo } = context.repo;
             const issue_number = parseInt(process.env.PR_NUMBER);
             
-            // Find existing comment
             const comments = await github.rest.issues.listComments({
               owner, repo, issue_number
             });
@@ -79,8 +81,7 @@ jobs:
               });
             }
 
-      # 2. RUN THE BUILD (And capture logs)
-      # We pipe output to a file (build.log) AND to console (tee) so we can read it later
+      # 2. RUN THE BUILD
       - name: Build Debug APK
         id: build_apk
         shell: bash
@@ -97,23 +98,21 @@ jobs:
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 5
 
-      # 4. READ LOGS (Truncate to last 100 lines to fit in comment)
+      # 4. READ LOGS
       - name: Process Logs
-        if: always() # Run even if build failed
+        if: always()
         id: process_logs
         run: |
-          # Get the last 150 lines of the log to avoid comment size limits
           if [ -f build.log ]; then
             tail -n 150 build.log > trimmed_log.txt
           else
             echo "Build log not found. The build step may not have produced output." > trimmed_log.txt
           fi
-          # Read file into variable
           echo "LOG_CONTENT<<EOF" >> $GITHUB_OUTPUT
           cat trimmed_log.txt >> $GITHUB_OUTPUT
           echo "EOF" >> $GITHUB_OUTPUT
 
-      # 5. UPDATE COMMENT WITH RESULT (Success or Failure)
+      # 5. UPDATE COMMENT WITH RESULT
       - name: Update Comment with Result
         if: always()
         continue-on-error: true
@@ -132,7 +131,6 @@ jobs:
             const runUrl = process.env.RUN_URL;
             const status = process.env.STATUS;
             
-            // Find existing comment again
             const comments = await github.rest.issues.listComments({
               owner, repo, issue_number
             });
@@ -142,9 +140,9 @@ jobs:
             let downloadSection = status === 'success' 
               ? `**Debug APK Ready**
                  
-                [Download from Artifacts](${runUrl})
+                 [Download from Artifacts](${runUrl})
                  
-                **Note:** You may need to uninstall the existing version before installing this debug build.`
+                 **Note:** You may need to uninstall the existing version before installing this debug build.`
               : `**The build encountered errors.** See the logs below for details.`;
 
             const body = `${marker}
@@ -158,11 +156,14 @@ jobs:
             \`\`\`text
             ${logs}
             \`\`\`
-            </details>
-            `;
+            </details>`;
 
             if (botComment) {
               await github.rest.issues.updateComment({
                 owner, repo, comment_id: botComment.id, body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner, repo, issue_number, body
               });
             }
