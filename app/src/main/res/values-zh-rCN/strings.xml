@@ -86,7 +86,8 @@
     <string name="warning_codec_fallback_h264">您选定的编解码器在此设备的此输出中不受支持。正在回退到 H.264 以保证兼容性。</string>
     <string name="warning_quality_fallback">此设备无法编码您选定的设置。正在回退到 %1$dp 和 %2$dfps 的 H.264。</string>
 
-    <string name="size_discord">Discord • GitHub</string>
+    <string name="size_discord">Discord</string>
+    <string name="size_github">GitHub</string>
     <string name="size_email">电子邮件</string>
     <string name="size_stories">Stories • Nitro Basic</string>
     <string name="size_messenger">Messenger • BlueSky</string>

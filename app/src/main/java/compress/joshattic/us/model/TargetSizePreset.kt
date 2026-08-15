@@ -16,6 +16,7 @@ fun TargetSizePreset.getLocalizedLabel(): String {
     if (isCustom) return label
     return when (id) {
         "discord" -> stringResource(R.string.size_discord)
+        "github" -> stringResource(R.string.size_github)
         "email" -> stringResource(R.string.size_email)
         "stories" -> stringResource(R.string.size_stories)
         "messenger" -> stringResource(R.string.size_messenger)
