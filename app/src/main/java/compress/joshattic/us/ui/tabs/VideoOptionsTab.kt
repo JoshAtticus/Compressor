@@ -95,11 +95,11 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             }
             
             val originalMb = if (state.originalSize > 0) state.originalSize.toFloat() / (1024f * 1024f) else 100f
-            val minSize = (originalMb * 0.05f).coerceAtLeast(0.5f)
+            val minSize = 0.5f
             val maxSize = maxOf(originalMb, sliderValue, state.targetSizeMb, 1f)
             
-            val sliderFraction = if (maxSize > minSize) {
-                ((sliderValue - minSize) / (maxSize - minSize)).coerceIn(0f, 1f)
+            val sliderFraction = if (maxSize > minSize && sliderValue > 0f) {
+                (kotlin.math.ln(sliderValue.coerceAtLeast(minSize) / minSize) / kotlin.math.ln(maxSize / minSize)).toFloat().coerceIn(0f, 1f)
             } else {
                 0.5f
             }
@@ -108,13 +108,15 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                 value = sliderFraction,
                 onValueChange = { fraction ->
                     isUserInteracting = true
-                    val calculatedSize = minSize + fraction * (maxSize - minSize)
+                    val calculatedSize = minSize * kotlin.math.exp(fraction * kotlin.math.ln(maxSize / minSize)).toFloat()
                     
                     val roundedSize = when {
-                        maxSize > 500f -> kotlin.math.round(calculatedSize / 5f) * 5f
-                        maxSize > 100f -> kotlin.math.round(calculatedSize)
-                        maxSize > 20f -> kotlin.math.round(calculatedSize * 2f) / 2f
-                        else -> kotlin.math.round(calculatedSize * 10f) / 10f
+                        fraction >= 0.995f -> maxSize
+                        calculatedSize < 2.5f -> kotlin.math.round(calculatedSize * 10f) / 10f
+                        calculatedSize < 10f -> kotlin.math.round(calculatedSize * 2f) / 2f
+                        calculatedSize < 50f -> kotlin.math.round(calculatedSize)
+                        calculatedSize < 200f -> kotlin.math.round(calculatedSize / 5f) * 5f
+                        else -> kotlin.math.round(calculatedSize / 10f) * 10f
                     }.coerceIn(minSize, maxSize)
 
                     if (sliderValue != roundedSize) {
