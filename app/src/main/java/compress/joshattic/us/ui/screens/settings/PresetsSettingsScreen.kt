@@ -99,14 +99,15 @@ fun PresetsSettingsScreen(
             QualityPreset.LOW -> state.lowPresetConfig
             else -> state.highPresetConfig
         }
+        val defaultName = when (preset) {
+            QualityPreset.HIGH -> stringResource(R.string.preset_high)
+            QualityPreset.MEDIUM -> stringResource(R.string.preset_medium)
+            QualityPreset.LOW -> stringResource(R.string.preset_low)
+            else -> ""
+        }
 
         EditQualityPresetDialog(
-            presetName = when (preset) {
-                QualityPreset.HIGH -> stringResource(R.string.preset_high)
-                QualityPreset.MEDIUM -> stringResource(R.string.preset_medium)
-                QualityPreset.LOW -> stringResource(R.string.preset_low)
-                else -> ""
-            },
+            presetName = currentConfig.label ?: defaultName,
             config = currentConfig,
             onDismiss = {
                 haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
@@ -269,7 +270,7 @@ fun PresetsSettingsScreen(
             ) {
                 Column {
                     QualityPresetRow(
-                        name = stringResource(R.string.preset_high),
+                        name = state.highPresetConfig.label ?: stringResource(R.string.preset_high),
                         config = state.highPresetConfig,
                         onClick = {
                             haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
@@ -278,7 +279,7 @@ fun PresetsSettingsScreen(
                     )
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
-                        name = stringResource(R.string.preset_medium),
+                        name = state.mediumPresetConfig.label ?: stringResource(R.string.preset_medium),
                         config = state.mediumPresetConfig,
                         onClick = {
                             haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
@@ -287,7 +288,7 @@ fun PresetsSettingsScreen(
                     )
                     HorizontalDivider(modifier = Modifier.padding(horizontal = 20.dp), color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
                     QualityPresetRow(
-                        name = stringResource(R.string.preset_low),
+                        name = state.lowPresetConfig.label ?: stringResource(R.string.preset_low),
                         config = state.lowPresetConfig,
                         onClick = {
                             haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
@@ -552,6 +553,7 @@ private fun EditQualityPresetDialog(
     onDismiss: () -> Unit,
     onSave: (QualityPresetConfig) -> Unit
 ) {
+    var presetLabel by remember { mutableStateOf(presetName) }
     var resHeight by remember { mutableIntStateOf(config.resolutionShortSide) }
     var fps by remember { mutableIntStateOf(config.targetFps) }
     var ratio by remember { mutableFloatStateOf(config.sizeRatio) }
@@ -562,6 +564,16 @@ private fun EditQualityPresetDialog(
         title = { Text("$presetName Preset", fontWeight = FontWeight.Bold) },
         text = {
             Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
+                OutlinedTextField(
+                    value = presetLabel,
+                    onValueChange = { presetLabel = it },
+                    label = { Text(stringResource(R.string.preset_label_hint)) },
+                    singleLine = true,
+                    modifier = Modifier.fillMaxWidth()
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 // Resolution Selection Chips
                 Text(stringResource(R.string.resolution), fontWeight = FontWeight.Bold, style = MaterialTheme.typography.titleSmall)
                 Spacer(modifier = Modifier.height(4.dp))
@@ -621,13 +633,15 @@ private fun EditQualityPresetDialog(
         },
         confirmButton = {
             TextButton(
+                enabled = presetLabel.isNotBlank(),
                 onClick = {
                     onSave(
                         QualityPresetConfig(
                             resolutionShortSide = resHeight,
                             targetFps = fps,
                             sizeRatio = ratio,
-                            audioBitrate = audioBitrate
+                            audioBitrate = audioBitrate,
+                            label = presetLabel.trim().takeIf { it.isNotBlank() }
                         )
                     )
                 }

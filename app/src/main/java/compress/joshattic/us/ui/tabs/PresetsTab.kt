@@ -68,9 +68,9 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
         )
 
         val presets = listOf(
-            Triple(QualityPreset.HIGH, stringResource(R.string.preset_high), stringResource(R.string.preset_high_desc)),
-            Triple(QualityPreset.MEDIUM, stringResource(R.string.preset_medium), stringResource(R.string.preset_medium_desc)),
-            Triple(QualityPreset.LOW, stringResource(R.string.preset_low), stringResource(R.string.preset_low_desc))
+            Triple(QualityPreset.HIGH, state.highPresetConfig.label ?: stringResource(R.string.preset_high), stringResource(R.string.preset_high_desc)),
+            Triple(QualityPreset.MEDIUM, state.mediumPresetConfig.label ?: stringResource(R.string.preset_medium), stringResource(R.string.preset_medium_desc)),
+            Triple(QualityPreset.LOW, state.lowPresetConfig.label ?: stringResource(R.string.preset_low), stringResource(R.string.preset_low_desc))
         )
         
         presets.forEach { (preset, title, sub) ->

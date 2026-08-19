@@ -11,9 +11,29 @@ data class TargetSizePreset(
     val isCustom: Boolean = false
 )
 
+private fun defaultLabelForId(id: String): String? = when (id) {
+    "discord" -> "Discord"
+    "github" -> "GitHub"
+    "email" -> "Email"
+    "stories" -> "Stories • Nitro Basic"
+    "messenger" -> "Messenger • BlueSky"
+    "nitro" -> "Nitro • Reels"
+    "twitter" -> "Twitter/X"
+    "whatsapp" -> "WhatsApp • Telegram"
+    "tg_premium" -> "TG Premium • Feed"
+    "x_premium" -> "X Premium"
+    else -> null
+}
+
 @Composable
 fun TargetSizePreset.getLocalizedLabel(): String {
     if (isCustom) return label
+    // Allow renaming of built-in presets: if stored label differs from the
+    // default English label, treat it as a user-customized name.
+    val defaultLabel = defaultLabelForId(id)
+    if (defaultLabel != null && label != defaultLabel && label.isNotBlank()) {
+        return label
+    }
     return when (id) {
         "discord" -> stringResource(R.string.size_discord)
         "github" -> stringResource(R.string.size_github)
