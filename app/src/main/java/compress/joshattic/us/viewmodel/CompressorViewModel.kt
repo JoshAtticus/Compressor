@@ -839,7 +839,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     private fun loadTargetSizePresets(): List<compress.joshattic.us.model.TargetSizePreset> {
         val str = prefs.getString("target_size_presets", null) ?: return compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
         return try {
-            if (str.startsWith("[")) {
+            val parsedList = if (str.startsWith("[")) {
                 val array = JSONArray(str)
                 val list = mutableListOf<compress.joshattic.us.model.TargetSizePreset>()
                 for (i in 0 until array.length()) {
@@ -853,7 +853,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                         )
                     )
                 }
-                list.ifEmpty { compress.joshattic.us.model.defaultTargetSizePresets }.sortedBy { it.sizeMb }
+                list
             } else {
                 // Legacy split parser fallback
                 str.split(";\n", ";").mapNotNull { itemStr ->
@@ -866,7 +866,32 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                             isCustom = parts[3].trim().toBoolean()
                         )
                     } else null
-                }.ifEmpty { compress.joshattic.us.model.defaultTargetSizePresets }.sortedBy { it.sizeMb }
+                }
+            }
+
+            if (parsedList.isEmpty()) {
+                compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
+            } else {
+                var needsSave = false
+                val migrated = parsedList.map { preset ->
+                    if (preset.id == "discord" && !preset.isCustom && preset.sizeMb == 10f) {
+                        needsSave = true
+                        preset.copy(sizeMb = 20f, label = "Discord")
+                    } else {
+                        preset
+                    }
+                }.toMutableList()
+
+                if (migrated.none { it.id == "github" }) {
+                    migrated.add(compress.joshattic.us.model.TargetSizePreset("github", 10f, "GitHub", isCustom = false))
+                    needsSave = true
+                }
+
+                val result = migrated.sortedBy { it.sizeMb }
+                if (needsSave) {
+                    saveTargetSizePresets(result)
+                }
+                result
             }
         } catch (e: Exception) {
             compress.joshattic.us.model.defaultTargetSizePresets.sortedBy { it.sizeMb }
