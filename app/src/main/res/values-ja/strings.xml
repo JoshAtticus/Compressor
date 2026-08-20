@@ -262,12 +262,12 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_1_title">ファイル名の作成</string>
-    <string name="whats_new_1_desc">出力ファイル名に含める情報を「設定」から自由に追加・削除できるようになりました。</string>
-    <string name="whats_new_2_title">自動調整アルゴリズムの改善</string>
-    <string name="whats_new_2_desc">自動調整がさらに進化しました。変更した設定は固定され、目標サイズに到達できない場合は警告が表示されます。</string>
-    <string name="whats_new_3_title">UIの洗練</string>
-    <string name="whats_new_3_desc">UIの各部を修正し、より使いやすく洗練させました。</string>
+    <string name="whats_new_1_title">新しいプリセット</string>
+    <string name="whats_new_1_desc">内蔵プリセットが更新され、各プラットフォームの変更が反映されました</string>
+    <string name="whats_new_2_title">改善されたターゲットサイズスライダー</string>
+    <string name="whats_new_2_desc">ターゲットサイズスライダーが改善され、希望のサイズをより簡単に選択できるようになりました</string>
+    <string name="whats_new_3_title">コアの更新</string>
+    <string name="whats_new_3_desc">Compressorを駆動するコアのMedia3コンポーネントが最新バージョンに更新されました</string>
     <string name="whats_new_4_title">バグ修正</string>
-    <string name="whats_new_4_desc">設定画面の各種バグを修正しました。また、シングルインスタンス化により、最近のタスク履歴を埋め尽くすことがなくなりました！</string>
+    <string name="whats_new_4_desc">さまざまなバグや問題が修正されました</string>
 </resources>

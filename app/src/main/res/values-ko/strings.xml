@@ -240,12 +240,12 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">파일 이름 작성기</string>
-    <string name="whats_new_1_desc">나만의 파일 이름을 만들어보세요. 설정에서 출력 파일 이름에 정보를 추가하거나 제거할 수 있습니다.</string>
-    <string name="whats_new_2_title">자동 조정 알고리즘 개선</string>
-    <string name="whats_new_2_desc">자동 설정 조정 기능이 더욱 향상되었습니다. 변경한 설정은 고정되며, 목표 크기가 불가능할 경우 경고가 표시됩니다.</string>
-    <string name="whats_new_3_title">UI 개선</string>
-    <string name="whats_new_3_desc">UI의 다양한 부분이 수정되고 세련되게 다듬어졌습니다.</string>
+    <string name="whats_new_1_title">새로운 프리셋</string>
+    <string name="whats_new_1_desc">기본 제공 프리셋이 각 플랫폼의 변경 사항을 반영하여 업데이트되었습니다</string>
+    <string name="whats_new_2_title">개선된 대상 크기 슬라이더</string>
+    <string name="whats_new_2_desc">대상 크기 슬라이더가 개선되어 원하는 크기를 더 쉽게 선택할 수 있습니다</string>
+    <string name="whats_new_3_title">업데이트된 코어</string>
+    <string name="whats_new_3_desc">Compressor를 구동하는 핵심 Media3 구성 요소가 최신 버전으로 업데이트되었습니다</string>
     <string name="whats_new_4_title">버그 수정</string>
-    <string name="whats_new_4_desc">설정의 다양한 버그가 수정되었습니다. 또한, 단일 인스턴스로 실행되어 최근 앱 목록을 가득 채우지 않습니다!</string>
+    <string name="whats_new_4_desc">다양한 버그와 문제가 수정되었습니다</string>
 </resources>

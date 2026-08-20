@@ -256,12 +256,12 @@
     <string name="whats_new_title">Novedades en Compressor</string>
     <string name="whats_new_version">Versión %1$s</string>
     <string name="whats_new_button">Entendido</string>
-    <string name="whats_new_1_title">Generador de nombres</string>
-    <string name="whats_new_1_desc">Haz que tus nombres de archivo trabajen para ti; ahora puedes añadir (o quitar) más información en los nombres de archivo de salida en Ajustes.</string>
-    <string name="whats_new_2_title">Algoritmo de autoajuste mejorado</string>
-    <string name="whats_new_2_desc">Los ajustes automáticos ahora funcionan aún mejor; los cambios que realices se mantienen y verás un aviso si el tamaño objetivo no es posible.</string>
-    <string name="whats_new_3_title">Refinamientos de UI</string>
-    <string name="whats_new_3_desc">Se han corregido y refinado varias partes de la interfaz.</string>
+    <string name="whats_new_1_title">Nuevos ajustes preestablecidos</string>
+    <string name="whats_new_1_desc">Los ajustes preestablecidos integrados se han actualizado para reflejar los cambios en sus respectivas plataformas</string>
+    <string name="whats_new_2_title">Deslizador de tamaño objetivo mejorado</string>
+    <string name="whats_new_2_desc">Se ha mejorado el deslizador de tamaño objetivo para facilitar la selección del tamaño que realmente deseas</string>
+    <string name="whats_new_3_title">Núcleo actualizado</string>
+    <string name="whats_new_3_desc">Los componentes principales de Media3 que impulsan Compressor se han actualizado a la última versión</string>
     <string name="whats_new_4_title">Corrección de errores</string>
-    <string name="whats_new_4_desc">Se han corregido varios errores en los ajustes + Compressor es ahora de instancia única, ¡así que no más llenar tus aplicaciones recientes!</string>
+    <string name="whats_new_4_desc">Se han corregido varios errores y problemas</string>
 </resources>

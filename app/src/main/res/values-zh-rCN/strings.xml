@@ -264,12 +264,12 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">文件名生成器</string>
-    <string name="whats_new_1_desc">让文件名更符合您的需求，现在可以在设置中为输出文件名添加（或移除）更多信息。</string>
-    <string name="whats_new_2_title">改进的自动调整算法</string>
-    <string name="whats_new_2_desc">自动设置调整现在效果更佳，您更改的设置将被锁定，如果目标大小无法实现，您将看到警告。</string>
-    <string name="whats_new_3_title">UI 细节优化</string>
-    <string name="whats_new_3_desc">修复并优化了 UI 的多个部分。</string>
-    <string name="whats_new_4_title">Bug 修复</string>
-    <string name="whats_new_4_desc">修复了设置中的多项 Bug + Compressor 现在采用单实例运行，不再占用您的最近任务列表！</string>
+    <string name="whats_new_1_title">新预设</string>
+    <string name="whats_new_1_desc">内置预设已更新，以反映各自平台的更改</string>
+    <string name="whats_new_2_title">改进的目标尺寸滑块</string>
+    <string name="whats_new_2_desc">目标尺寸滑块已改进，使选择您真正想要的尺寸更加容易</string>
+    <string name="whats_new_3_title">更新的核心</string>
+    <string name="whats_new_3_desc">驱动 Compressor 的核心 Media3 组件已更新至最新版本</string>
+    <string name="whats_new_4_title">错误修复</string>
+    <string name="whats_new_4_desc">修复了各种错误和问题</string>
 </resources>

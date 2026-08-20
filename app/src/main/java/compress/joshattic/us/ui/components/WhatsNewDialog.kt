@@ -21,9 +21,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.Brush
+import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.BugReport
-import androidx.compose.material.icons.filled.DriveFileRenameOutline
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -129,7 +129,7 @@ fun WhatsNewDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         WhatsNewItem(
-                            icon = Icons.Default.DriveFileRenameOutline,
+                            icon = Icons.Default.AutoAwesome,
                             bgColor = if (isDark) Color(0xFF1E3A5F) else Color(0xFFE3F2FD),
                             iconTint = if (isDark) Color(0xFF90CAF9) else Color(0xFF1976D2),
                             title = stringResource(R.string.whats_new_1_title),
@@ -137,7 +137,7 @@ fun WhatsNewDialog(
                         )
 
                         WhatsNewItem(
-                            icon = Icons.Default.AutoAwesome,
+                            icon = Icons.Default.Tune,
                             bgColor = if (isDark) Color(0xFF1B4D2E) else Color(0xFFE8F5E9),
                             iconTint = if (isDark) Color(0xFFA5D6A7) else Color(0xFF388E3C),
                             title = stringResource(R.string.whats_new_2_title),
@@ -145,7 +145,7 @@ fun WhatsNewDialog(
                         )
 
                         WhatsNewItem(
-                            icon = Icons.Default.Brush,
+                            icon = Icons.Default.Build,
                             bgColor = if (isDark) Color(0xFF4A2B00) else Color(0xFFFFF3E0),
                             iconTint = if (isDark) Color(0xFFFFCC80) else Color(0xFFF57C00),
                             title = stringResource(R.string.whats_new_3_title),
