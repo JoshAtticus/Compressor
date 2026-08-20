@@ -85,7 +85,7 @@ jobs:
               const labelsToRemove = new Set(['enhancement', 'triage', 'bug']);
               let updatedLabels = currentLabels.filter(name => !labelsToRemove.has(name));
 
-              updatedLabels.push('invalid', 'wontfix');
+              updatedLabels.push("Invalid", "Won't Fix");
               if (referencesIssue3) {
                 updatedLabels.push("this person can't read");
               }
