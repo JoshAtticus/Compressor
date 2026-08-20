@@ -1,0 +1,4 @@
+- New Presets: The built in presets have been updated to reflect changes to their respective platforms
+- Improved Target Size Slider: The target size slider has been improved to make it easier to select the size you actually want
+- Updated Core: The core Media3 compoments that power Compressor have been updated to the latest version
+- Bug Fixes: Various bugs and issues have been fixed
