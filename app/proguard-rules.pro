@@ -19,3 +19,7 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+# Media3 Transformer ProGuard rules for older Android versions
+-dontwarn android.media.metrics.**
+-keep class android.media.metrics.** { *; }
