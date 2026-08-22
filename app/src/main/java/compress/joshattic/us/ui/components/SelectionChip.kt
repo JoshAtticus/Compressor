@@ -53,7 +53,11 @@ fun SelectionChip(
                 selected -> MaterialTheme.colorScheme.primaryContainer
                 else -> MaterialTheme.colorScheme.surfaceContainerHigh
             },
-            border = if (selected && enabled) BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary) else null
+            border = when {
+                !enabled -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.38f))
+                selected -> BorderStroke(1.5.dp, MaterialTheme.colorScheme.primary)
+                else -> BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant)
+            }
         ) {
             Text(
                 text = label,

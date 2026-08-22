@@ -28,6 +28,7 @@ private val DarkColorScheme = darkColorScheme(
     surface                = CompressorDarkGreenSurface,
     surfaceContainer       = CompressorDarkGreenSurfaceContainer,
     surfaceContainerHigh   = CompressorDarkGreenSurfaceContainerHigh,
+    surfaceContainerHighest= CompressorDarkGreenSurfaceContainerHighest,
     surfaceContainerLow    = CompressorDarkGreenSurfaceContainerLow,
     onBackground           = CompressorDarkGreenOnSurface,
     onSurface              = CompressorDarkGreenOnSurface,
