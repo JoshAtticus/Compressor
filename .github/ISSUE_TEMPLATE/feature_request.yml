@@ -1,7 +1,7 @@
 name: Feature Request
 description: I'd like to see a new feature in Compressor
 title: "[FEAT] "
-labels: ["enhancement", "low-priority", "triage"]
+labels: ["Enhancement", "Triage"]
 assignees:
   - JoshAtticus
 body:
