@@ -1,0 +1,4 @@
+Compressor 1.6.3 is a minor update. Here's what's changed:
+
+- UI Fixes: Parts of the UI have been fixed and refined
+- Bug Fixes: Fixed bugs affecting some users
