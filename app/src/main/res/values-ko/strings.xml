@@ -240,12 +240,8 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">새로운 프리셋</string>
-    <string name="whats_new_1_desc">기본 제공 프리셋이 각 플랫폼의 변경 사항을 반영하여 업데이트되었습니다</string>
-    <string name="whats_new_2_title">개선된 대상 크기 슬라이더</string>
-    <string name="whats_new_2_desc">대상 크기 슬라이더가 개선되어 원하는 크기를 더 쉽게 선택할 수 있습니다</string>
-    <string name="whats_new_3_title">업데이트된 코어</string>
-    <string name="whats_new_3_desc">Compressor를 구동하는 핵심 Media3 구성 요소가 최신 버전으로 업데이트되었습니다</string>
-    <string name="whats_new_4_title">버그 수정</string>
-    <string name="whats_new_4_desc">다양한 버그와 문제가 수정되었습니다</string>
+    <string name="whats_new_1_title">UI 수정</string>
+    <string name="whats_new_1_desc">UI의 일부가 수정되고 개선되었습니다</string>
+    <string name="whats_new_2_title">버그 수정</string>
+    <string name="whats_new_2_desc">일부 사용자에게 영향을 미치던 버그가 수정되었습니다</string>
 </resources>

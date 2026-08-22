@@ -262,12 +262,8 @@
     <string name="whats_new_title">Novidades no Compressor</string>
     <string name="whats_new_version">Versão %1$s</string>
     <string name="whats_new_button">Entendi</string>
-    <string name="whats_new_1_title">Novos predefinidos</string>
-    <string name="whats_new_1_desc">Os predefinidos integrados foram atualizados para refletir as mudanças em suas respectivas plataformas</string>
-    <string name="whats_new_2_title">Controle deslizante de tamanho de destino aprimorado</string>
-    <string name="whats_new_2_desc">O controle deslizante de tamanho de destino foi aprimorado para facilitar a seleção do tamanho que você realmente deseja</string>
-    <string name="whats_new_3_title">Núcleo atualizado</string>
-    <string name="whats_new_3_desc">Os componentes principais do Media3 que alimentam o Compressor foram atualizados para a versão mais recente</string>
-    <string name="whats_new_4_title">Correções de bugs</string>
-    <string name="whats_new_4_desc">Vários bugs e problemas foram corrigidos</string>
+    <string name="whats_new_1_title">Correções de interface</string>
+    <string name="whats_new_1_desc">Partes da interface do usuário foram corrigidas e aprimoradas</string>
+    <string name="whats_new_2_title">Correções de bugs</string>
+    <string name="whats_new_2_desc">Correções de bugs que afetavam alguns usuários</string>
 </resources>

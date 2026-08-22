@@ -264,12 +264,8 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">新預設</string>
-    <string name="whats_new_1_desc">內建預設已更新，以反映各自平台的更改</string>
-    <string name="whats_new_2_title">改進的目標尺寸滑塊</string>
-    <string name="whats_new_2_desc">目標尺寸滑塊已改進，使選擇您真正想要的尺寸更加容易</string>
-    <string name="whats_new_3_title">更新的核心</string>
-    <string name="whats_new_3_desc">驅動 Compressor 的核心 Media3 組件已更新至最新版本</string>
-    <string name="whats_new_4_title">錯誤修復</string>
-    <string name="whats_new_4_desc">修復了各種錯誤和問題</string>
+    <string name="whats_new_1_title">介面修復</string>
+    <string name="whats_new_1_desc">修復並優化了部分介面</string>
+    <string name="whats_new_2_title">錯誤修復</string>
+    <string name="whats_new_2_desc">修復了影響部分使用者的錯誤</string>
 </resources>

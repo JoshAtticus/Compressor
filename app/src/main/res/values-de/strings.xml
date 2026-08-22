@@ -261,12 +261,8 @@
     <string name="whats_new_title">Was gibt\'s Neues in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Verstanden</string>
-    <string name="whats_new_1_title">Neue Voreinstellungen</string>
-    <string name="whats_new_1_desc">Die integrierten Voreinstellungen wurden aktualisiert, um Änderungen auf den jeweiligen Plattformen widerzuspiegeln</string>
-    <string name="whats_new_2_title">Verbesserter Schieberegler für Zielgröße</string>
-    <string name="whats_new_2_desc">Der Schieberegler für die Zielgröße wurde verbessert, um die Auswahl der gewünschten Größe zu erleichtern</string>
-    <string name="whats_new_3_title">Aktualisierter Kern</string>
-    <string name="whats_new_3_desc">Die Media3-Kernkomponenten, die Compressor antreiben, wurden auf die neueste Version aktualisiert</string>
-    <string name="whats_new_4_title">Fehlerbehebungen</string>
-    <string name="whats_new_4_desc">Verschiedene Fehler und Probleme wurden behoben</string>
+    <string name="whats_new_1_title">UI-Korrekturen</string>
+    <string name="whats_new_1_desc">Teile der Benutzeroberfläche wurden korrigiert und verfeinert</string>
+    <string name="whats_new_2_title">Fehlerbehebungen</string>
+    <string name="whats_new_2_desc">Fehler behoben, die einige Benutzer betrafen</string>
 </resources>

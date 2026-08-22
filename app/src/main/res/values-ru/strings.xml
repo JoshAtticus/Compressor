@@ -264,12 +264,8 @@
     <string name="whats_new_title">Что нового в Compressor</string>
     <string name="whats_new_version">Версия %1$s</string>
     <string name="whats_new_button">Понятно</string>
-    <string name="whats_new_1_title">Новые пресеты</string>
-    <string name="whats_new_1_desc">Встроенные пресеты были обновлены с учетом изменений на соответствующих платформах</string>
-    <string name="whats_new_2_title">Улучшенный ползунок целевого размера</string>
-    <string name="whats_new_2_desc">Ползунок целевого размера был улучшен, чтобы было проще выбрать нужный размер</string>
-    <string name="whats_new_3_title">Обновленное ядро</string>
-    <string name="whats_new_3_desc">Основные компоненты Media3, обеспечивающие работу Compressor, были обновлены до последней версии</string>
-    <string name="whats_new_4_title">Исправление ошибок</string>
-    <string name="whats_new_4_desc">Исправлены различные ошибки и проблемы</string>
+    <string name="whats_new_1_title">Исправления интерфейса</string>
+    <string name="whats_new_1_desc">Некоторые элементы интерфейса были исправлены и улучшены</string>
+    <string name="whats_new_2_title">Исправление ошибок</string>
+    <string name="whats_new_2_desc">Исправлены ошибки, затрагивавшие некоторых пользователей</string>
 </resources>

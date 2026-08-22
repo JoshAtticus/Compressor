@@ -262,12 +262,8 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_1_title">新しいプリセット</string>
-    <string name="whats_new_1_desc">内蔵プリセットが更新され、各プラットフォームの変更が反映されました</string>
-    <string name="whats_new_2_title">改善されたターゲットサイズスライダー</string>
-    <string name="whats_new_2_desc">ターゲットサイズスライダーが改善され、希望のサイズをより簡単に選択できるようになりました</string>
-    <string name="whats_new_3_title">コアの更新</string>
-    <string name="whats_new_3_desc">Compressorを駆動するコアのMedia3コンポーネントが最新バージョンに更新されました</string>
-    <string name="whats_new_4_title">バグ修正</string>
-    <string name="whats_new_4_desc">さまざまなバグや問題が修正されました</string>
+    <string name="whats_new_1_title">UIの修正</string>
+    <string name="whats_new_1_desc">UIの一部を修正および洗練しました</string>
+    <string name="whats_new_2_title">バグ修正</string>
+    <string name="whats_new_2_desc">一部のユーザーに影響を与えていたバグを修正しました</string>
 </resources>

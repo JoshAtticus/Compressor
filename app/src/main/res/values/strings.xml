@@ -267,12 +267,8 @@
     <string name="whats_new_title">What\'s new in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Got it</string>
-    <string name="whats_new_1_title">New Presets</string>
-    <string name="whats_new_1_desc">The built in presets have been updated to reflect changes to their respective platforms</string>
-    <string name="whats_new_2_title">Improved Target Size Slider</string>
-    <string name="whats_new_2_desc">The target size slider has been improved to make it easier to select the size you actually want</string>
-    <string name="whats_new_3_title">Updated Core</string>
-    <string name="whats_new_3_desc">The core Media3 components that power Compressor have been updated to the latest version</string>
-    <string name="whats_new_4_title">Bug Fixes</string>
-    <string name="whats_new_4_desc">Various bugs and issues have been fixed</string>
+    <string name="whats_new_1_title">UI Fixes</string>
+    <string name="whats_new_1_desc">Parts of the UI have been fixed and refined</string>
+    <string name="whats_new_2_title">Bug Fixes</string>
+    <string name="whats_new_2_desc">Fixed bugs affecting some users</string>
 </resources>
