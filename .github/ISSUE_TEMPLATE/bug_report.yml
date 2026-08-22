@@ -1,7 +1,7 @@
 name: Bug Report
 description: Something isn't working in Compressor
 title: "[BUG] "
-labels: ["bug", "low-priority", "triage"]
+labels: ["Bug", "Triage"]
 assignees:
   - JoshAtticus
 body:
