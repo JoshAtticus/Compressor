@@ -1,7 +1,7 @@
 name: Misc
 description: My issue doesn't fall under any of these categories
 title: "[MISC] "
-labels: ["low-priority", "triage"]
+labels: ["Misc", "Triage"]
 assignees:
   - JoshAtticus
 body:
