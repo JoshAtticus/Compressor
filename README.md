@@ -50,7 +50,6 @@ You can also donate with crypto:
 - No third party libraries
 - No invasive permissions (no storage, no internet etc)
 - Ad free
-- Super lightweight (< 20MB)
 - Completely native Kotlin (no React Native slop here)
 - Simple, clean UI
 - Works on Android 7.0 and up
@@ -59,23 +58,30 @@ You can also donate with crypto:
 ---
 
 ## Performance
-Below are four benchmarks of Compressor running on various devices. The baseline videos are available underneath all the benchmarks. All devices are running the latest version of Compressor from the Google Play Store at the time (1.5.2).
+Below are four benchmarks of Compressor running on various devices. The baseline videos are available underneath all the benchmarks. All devices are running Compressor **1.6.3**.
+
+> [!NOTE]
+> **Testing Context & Methodology (v1.6.3 vs v1.5.2):**
+> - **Thermal Conditions:** In the 1.5.2 benchmarks, devices were kept chilled in a cooler between runs. For 1.6.3, all tests were run at realistic **ambient room temperature (~21°C)** without active cooling to better reflect real-world use.
+> - **Timing:** Timing was captured manually via stopwatch, so a small margin of error is expected.
+> - **Comparison:** Comparisons against previous 1.5.2 results are included where the same device was re-tested.
 
 <details>
 <summary><b>Testing Devices</b></summary>
 <br>
 The following devices are used for testing where possible:
 
-| Device                      | SoC                     | RAM  |
-|-----------------------------|-------------------------|------|
-| **Google Pixel 8 Pro** | Tensor G3               | 12GB |
-| **Samsung Galaxy S21+** | Exynos 2100             | 8GB  |
-| **Samsung Galaxy S10** | Exynos 9820             | 8GB  |
-| **Samsung Galaxy S9** | Exynos 9810             | 4GB  |
-| **Samsung Galaxy S7** | Exynos 8890             | 4GB  |
-| **Samsung Galaxy A71 4G** | Snapdragon 730          | 6GB  |
-| **Samsung Galaxy A32 4G** | Helio G80               | 6GB  |
-| **Samsung Galaxy A05s** | Snapdragon 680          | 4GB  |
+| Device | SoC | RAM |
+|---|---|---|
+| **Google Pixel 8 Pro** | Tensor G3 | 12GB |
+| **Google Pixel (1st Generation)** | Snapdragon 821 | 4GB |
+| **Samsung Galaxy Z Flip6** | Snapdragon 8 Gen 3 | 12GB |
+| **Samsung Galaxy S21+** | Exynos 2100 | 8GB |
+| **Samsung Galaxy S10** | Exynos 9820 | 8GB |
+| **Samsung Galaxy A05s** | Snapdragon 680 | 4GB |
+| **ZTE Blade A73 5G** | Unisoc T760 | 4GB |
+| **Oppo A5 2020** | Snapdragon 665 | 4GB |
+| **Nokia 7 plus** | Snapdragon 660 | 4GB |
 </details>
 
 <details>
@@ -83,20 +89,21 @@ The following devices are used for testing where possible:
 <br>
 <b>197.3MB 4K 60fps HEVC SDR video compressed using the Medium preset in Compressor.</b>
 
-| Device                      | Speed    | Final Size      |
-|-----------------------------|----------|-----------------|
-| **Google Pixel 8 Pro** | 13s 42ms | 70.1MB (-64%)   |
-| **Samsung Galaxy S21+ (Exynos)**| 16s 50ms | 76.8MB (-61%)   |
-| **Samsung Galaxy S10 (Exynos)** | 21s 24ms | 78.0MB (-60%)   |
-| **Samsung Galaxy S9 (Exynos)** | 35s 77ms | 77.7MB (-60%)   | 
-| **Samsung Galaxy S7 (Exynos)** | 43s 48ms | 77.6MB (-60%)   |
-| **Samsung Galaxy A71 4G** | 64s 19ms | 77.4MB (-60%)   |
+| Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
+|---|---|---|---|
+| **Google Pixel 8 Pro** | 12s 35ms | 13s 42ms | -1s 07ms (~8% faster) |
+| **Google Pixel (1st Generation)** | 24s 49ms | — | New |
+| **Samsung Galaxy Z Flip6** | 9s 89ms | — | New |
+| **Samsung Galaxy S21+ (Exynos)** | 13s 80ms | 16s 50ms | -2s 70ms (~16% faster) |
+| **Samsung Galaxy S10 (Exynos)** | 14s 19ms | 21s 24ms | -7s 05ms (~33% faster) |
 
 The following testing devices were ineligible for this benchmark:
-| Device                      | Reason                                    |
-|-----------------------------|-------------------------------------------|
-| **Samsung Galaxy A32 4G** | Hardware cannot handle this video         |
-| **Samsung Galaxy A05s** | Hardware cannot handle this video         |
+| Device | Reason |
+|---|---|
+| **Samsung Galaxy A05s** | Hardware cannot handle this video |
+| **ZTE Blade A73 5G** | Hardware cannot handle this video |
+| **Oppo A5 2020** | Hardware cannot handle this video |
+| **Nokia 7 plus** | Hardware cannot handle this video |
 </details>
 
 <details>
@@ -104,20 +111,21 @@ The following testing devices were ineligible for this benchmark:
 <br>
 <b>136.8MB 4K 30fps HEVC HDR10+ video compressed using the Medium preset in Compressor.</b>
 
-| Device                      | Speed    | Final Size      |
-|-----------------------------|----------|-----------------|
-| **Google Pixel 8 Pro** | 7s 23ms  | 51.5MB (-60%)   |
-| **Samsung Galaxy S21+ (Exynos)**| 9s 27ms  | 50.6MB (-61%)   |
-| **Samsung Galaxy S10 (Exynos)** | 12s 03ms | 51.2MB (-60%)   |
-| **Samsung Galaxy S9 (Exynos)** | 16s 59ms | 51.7MB (-60%)   | 
-| **Samsung Galaxy A71 4G** | 22s 84ms | 50.7MB (-61%)   |
+| Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
+|---|---|---|---|
+| **Google Pixel 8 Pro** | 7s 64ms | 7s 23ms | +0s 41ms |
+| **Samsung Galaxy Z Flip6** | 5s 79ms | — | New |
+| **Samsung Galaxy S21+ (Exynos)** | 10s 47ms | 9s 27ms | +1s 20ms |
+| **Samsung Galaxy S10 (Exynos)** | 11s 25ms | 12s 03ms | -0s 78ms (~6% faster) |
+| **ZTE Blade A73 5G** | 24s 40ms | — | New |
+| **Oppo A5 2020** | 27s 85ms | — | New |
+| **Nokia 7 plus** | 34s 15ms | — | New |
 
 The following testing devices were ineligible for this benchmark:
-| Device                      | Reason                                    |
-|-----------------------------|-------------------------------------------|
-| **Samsung Galaxy S7 (Exynos)** | Hardware cannot handle HDR10+             |
-| **Samsung Galaxy A32 4G** | Hardware cannot handle this video         |
-| **Samsung Galaxy A05s** | Hardware cannot handle this video         |
+| Device | Reason |
+|---|---|
+| **Google Pixel (1st Generation)** | Codec exception (related to handling of HDR) |
+| **Samsung Galaxy A05s** | Hardware cannot handle this video |
 </details>
 
 <details>
@@ -125,22 +133,23 @@ The following testing devices were ineligible for this benchmark:
 <br>
 <b>266.4MB 8K 24fps HEVC SDR video compressed using the Medium preset in Compressor.</b>
 
-| Device                      | Speed    | Final Size      |
-|-----------------------------|----------|-----------------|
-| **Google Pixel 8 Pro** | 16s 21ms | 99.5MB (-60%)   |
-| **Samsung Galaxy S21+ (Exynos)**| 68s 27ms*| 98.9MB (-61%)   |
-| **Samsung Galaxy S10 (Exynos)** | 38s 07ms | 100.3MB (-60%)  |
+| Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
+|---|---|---|---|
+| **Google Pixel 8 Pro** | 15s 90ms | 16s 21ms | -0s 31ms (~2% faster) |
+| **Samsung Galaxy Z Flip6** | 12s 37ms | — | New |
+| **Samsung Galaxy S21+ (Exynos)** | 41s 19ms* | 68s 27ms* | -27s 08ms (~40% faster) |
+| **Samsung Galaxy S10 (Exynos)** | 21s 61ms | 38s 07ms | -16s 46ms (~43% faster) |
 
-*I'm unsure what happened here, but the S21+ lags significantly when even just playing the original 8K video in the Gallery app and is only able to do 8K playback at 15fps. Perhaps Samsung's Exynos 2100 SoC has a regression in 8K decoding performance? This is an extremely strange result, but it happened across three retries and even when an active cooling source was applied.
+*The Exynos 2100 on the S21+ experiences decoding lag on 8K video playback and compression compared to older and newer SoCs, though performance has notably improved over 1.5.2.
 
 The following testing devices were ineligible for this benchmark:
-| Device                      | Reason                                    |
-|-----------------------------|-------------------------------------------|
-| **Samsung Galaxy S9 (Exynos)** | Hardware cannot handle this video         |
-| **Samsung Galaxy S7 (Exynos)** | Hardware cannot handle this video         |
-| **Samsung Galaxy A71 4G** | Hardware cannot handle this video         |
-| **Samsung Galaxy A32 4G** | Hardware cannot handle this video         |
-| **Samsung Galaxy A05s** | Hardware cannot handle this video         |
+| Device | Reason |
+|---|---|
+| **Google Pixel (1st Generation)** | Hardware cannot handle this video |
+| **Samsung Galaxy A05s** | Hardware cannot handle this video |
+| **ZTE Blade A73 5G** | Hardware cannot handle this video |
+| **Oppo A5 2020** | Hardware cannot handle this video |
+| **Nokia 7 plus** | Hardware cannot handle this video |
 </details>
 
 <details>
@@ -148,38 +157,33 @@ The following testing devices were ineligible for this benchmark:
 <br>
 <b>34.5MB 1080p 60fps HEVC SDR video compressed using the Medium preset in Compressor.</b>
 
-| Device                      | Speed    | Final Size      |
-|-----------------------------|----------|-----------------|
-| **Google Pixel 8 Pro** | 3s 45ms  | 12.7MB (-61%)   |
-| **Samsung Galaxy S21+ (Exynos)**| 4s 73ms  | 98.9MB (-61%)   |
-| **Samsung Galaxy S10 (Exynos)** | 5s 38ms  | 12.9MB (-60%)   |
-| **Samsung Galaxy S9 (Exynos)** | 9s 05ms  | 13.0MB (-60%)   |
-| **Samsung Galaxy S7 (Exynos)** | 17s 02ms | 12.8MB (-61%)   |
-| **Samsung Galaxy A71 4G** | 9s 92ms  | 12.8MB (-61%)   |
-| **Samsung Galaxy A32 4G** | 11s 41ms | 13.1MB (-60%)   |
-| **Samsung Galaxy A05s** | 22s 27ms | 12.8MB (-61%)   |
+| Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
+|---|---|---|---|
+| **Google Pixel 8 Pro** | 5s 72ms | 3s 45ms | +2s 27ms |
+| **Google Pixel (1st Generation)** | 7s 45ms | — | New |
+| **Samsung Galaxy Z Flip6** | 4s 65ms | — | New |
+| **Samsung Galaxy S21+ (Exynos)** | 9s 19ms | 4s 73ms | +4s 46ms |
+| **Samsung Galaxy S10 (Exynos)** | 9s 26ms | 5s 38ms | +3s 88ms |
+| **Samsung Galaxy A05s** | 19s 09ms | 22s 27ms | -3s 18ms (~14% faster) |
+| **ZTE Blade A73 5G** | 7s 25ms | — | New |
+| **Oppo A5 2020** | 10s 64ms | — | New |
+| **Nokia 7 plus** | 14s 94ms | — | New |
 </details>
 
 <details>
-<summary><b>Old Benchmarks</b></summary>
+<summary><b>Old Benchmarks (v1.5.2)</b></summary>
 <br>
-How does Compressor run on different devices? All tests are completed with a 25 second, 200MB 4K video compressed using the Medium preset in Compressor.
 
-| Device                      | Speed    |
-|-----------------------------|----------|
-| **Google Pixel 8 Pro** | 11s 61ms |
-| **Samsung Galaxy S25** | 7s 99ms  |
-| **Samsung Galaxy S10 (Exynos)** | 11s 27ms |
-| **Samsung Galaxy S8+ (Exynos)** | 20s 79ms |
-| **Samsung Galaxy S7 (Exynos)** | 25s 35ms |
-
-And what about Compressor vs Panda Video Compressor, a highly rated video compression app filled with ads with 10M+ downloads. These tests were done using each app on their respective medium presets.
-
-| Device                      | Compressor | Panda Video Compressor |
-|-----------------------------|------------|------------------------|
-| **Google Pixel 8 Pro** | 11s 61ms   |  21m 40s 49ms          |
-
-I ran out of time waiting for my 21 minute video compression so I only ran it on my main phone, my Pixel 8 Pro. Hopefully this gives you an idea of how much faster Compressor is compared to an outdated ffmpeg wrapper using software encoding. To be precise, it's 117x faster.
+| Device | Walk in the Park (4K60) | Challenging Lighting (4K30 HDR) | Ultra High Res (8K24) | Consistent Subject (1080p60) |
+|---|---|---|---|---|
+| **Google Pixel 8 Pro** | 13s 42ms | 7s 23ms | 16s 21ms | 3s 45ms |
+| **Samsung Galaxy S21+ (Exynos)** | 16s 50ms | 9s 27ms | 68s 27ms | 4s 73ms |
+| **Samsung Galaxy S10 (Exynos)** | 21s 24ms | 12s 03ms | 38s 07ms | 5s 38ms |
+| **Samsung Galaxy S9 (Exynos)** | 35s 77ms | 16s 59ms | Unsupported | 9s 05ms |
+| **Samsung Galaxy S7 (Exynos)** | 43s 48ms | Unsupported | Unsupported | 17s 02ms |
+| **Samsung Galaxy A71 4G** | 64s 19ms | 22s 84ms | Unsupported | 9s 92ms |
+| **Samsung Galaxy A32 4G** | Unsupported | Unsupported | Unsupported | 11s 41ms |
+| **Samsung Galaxy A05s** | Unsupported | Unsupported | Unsupported | 22s 27ms |
 </details>
 
 <details>
@@ -192,11 +196,11 @@ You can download them [here](https://l.joshattic.us/mDAc6J)
 
 <br>
 
-*Why are the new benchmarks worse than the old ones?* Glad you asked! The old "benchmark" video was already quite low bitrate. It was simply a video of me violently shaking my phone around for 25 seconds. The new baseline videos are much more complex and contain more detail, creating a much more accurate benchmark for real world use.
+*Why are the benchmarks different between versions?*
+Between v1.5.2 and v1.6.3, the testing methodology shifted from keeping phones in a cooler between rounds to realistic ambient room temperature testing (~21°C). Additionally, timing was recorded manually via stopwatch so minor variations are expected. Despite ambient thermal loads, optimizations across newer versions show substantial improvements on heavy workloads (such as 8K & 4K decoding on Exynos chips and budget devices like the A05s).
 
-*Why have some devices been removed?* I removed the Galaxy S8+ because it was running a custom ROM which may have unfairly affected its score. The Galaxy S25 was removed as I do not have access to it anymore (I got a friend to do the testing for me, and I don't want to bother them to retest). **The Galaxy S21+ will not be included in future tests as it is now broken and I can no longer test on it.**
-
-*Why are there new devices added?* I added the Galaxy S9 and ~~S21+~~ to get a more complete picture of how Compressor performs on older flagships. The Galaxy A71, A32 and A05s were added to see how Compressor performs on older midrange devices and newer budget devices. All three of these categories make up a significant amount of my Play Store users, so I wanted to make sure Compressor performs well on them.
+*Why have some devices changed?*
+New devices (Galaxy Z Flip6, ZTE Blade A73 5G, Oppo A5 2020, Nokia 7 plus, and the Google Pixel 1st Gen) were introduced to provide a broader view spanning modern flagships, budget 5G/4G SoCs, and older legacy hardware.
 
 ---
 
