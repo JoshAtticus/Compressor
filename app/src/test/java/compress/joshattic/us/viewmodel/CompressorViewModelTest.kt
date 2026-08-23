@@ -128,4 +128,24 @@ class CompressorViewModelTest {
         val fileName = viewModel.compressedOutputFileName(state)
         assertEquals("myvideo_720p_Compressed.mp4", fileName)
     }
+
+    @Test
+    fun testCreateMediaItemSequence_withAudio() {
+        val mediaItem = androidx.media3.common.MediaItem.fromUri("file:///test.mp4")
+        val editedMediaItem = androidx.media3.transformer.EditedMediaItem.Builder(mediaItem).build()
+        val sequence = viewModel.createMediaItemSequence(editedMediaItem, shouldIncludeAudio = true)
+        assertNotNull(sequence)
+        assertEquals(1, sequence.editedMediaItems.size)
+    }
+
+    @Test
+    fun testCreateMediaItemSequence_withoutAudio() {
+        val mediaItem = androidx.media3.common.MediaItem.fromUri("file:///test.mp4")
+        val editedMediaItem = androidx.media3.transformer.EditedMediaItem.Builder(mediaItem)
+            .setRemoveAudio(true)
+            .build()
+        val sequence = viewModel.createMediaItemSequence(editedMediaItem, shouldIncludeAudio = false)
+        assertNotNull(sequence)
+        assertEquals(1, sequence.editedMediaItems.size)
+    }
 }

@@ -1426,7 +1426,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
         
         val mediaItem = MediaItem.fromUri(inputUri)
-        val audioProcessors: List<androidx.media3.common.audio.AudioProcessor> = if (!currentState.removeAudio) {
+        val hasAudio = hasAudioTrack(context, inputUri)
+        val shouldIncludeAudio = !currentState.removeAudio && hasAudio
+
+        val audioProcessors: List<androidx.media3.common.audio.AudioProcessor> = if (shouldIncludeAudio) {
             val volumeProcessor = VolumeAudioProcessor().apply { setVolume(currentState.audioVolume) }
             listOf(volumeProcessor, androidx.media3.common.audio.SonicAudioProcessor())
         } else {
@@ -1434,7 +1437,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
         val editedMediaItem = EditedMediaItem.Builder(mediaItem)
             .setEffects(Effects(audioProcessors, effectsList))
-            .setRemoveAudio(currentState.removeAudio)
+            .setRemoveAudio(!shouldIncludeAudio)
             .build()
 
         var hdrMode = Composition.HDR_MODE_KEEP_HDR
@@ -1448,8 +1451,10 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
              }
         }
 
+        val sequence = createMediaItemSequence(editedMediaItem, shouldIncludeAudio)
+
         val composition = Composition.Builder(
-            listOf(EditedMediaItemSequence.withAudioAndVideoFrom(listOf(editedMediaItem)))
+            listOf(sequence)
         )
         .setHdrMode(hdrMode)
         .build()
@@ -1467,6 +1472,36 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 kotlinx.coroutines.delay(200)
             }
         }
+    }
+
+    internal fun createMediaItemSequence(
+        editedMediaItem: EditedMediaItem,
+        shouldIncludeAudio: Boolean
+    ): EditedMediaItemSequence {
+        return if (shouldIncludeAudio) {
+            EditedMediaItemSequence.withAudioAndVideoFrom(listOf(editedMediaItem))
+        } else {
+            EditedMediaItemSequence.withVideoFrom(listOf(editedMediaItem))
+        }
+    }
+
+    internal fun hasAudioTrack(context: Context, uri: Uri): Boolean {
+        val extractor = MediaExtractor()
+        try {
+            extractor.setDataSource(context, uri, null)
+            for (i in 0 until extractor.trackCount) {
+                val format = extractor.getTrackFormat(i)
+                val mime = format.getString(MediaFormat.KEY_MIME)
+                if (mime?.startsWith("audio/") == true) {
+                    return true
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            extractor.release()
+        }
+        return false
     }
 
     private fun getAudioBitrate(context: Context, uri: Uri): Int {
