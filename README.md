@@ -91,7 +91,7 @@ The following devices are used for testing where possible:
 
 | Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
 |---|---|---|---|
-| **Google Pixel 8 Pro** | 12s 35ms | 13s 42ms | -1s 07ms (~8% faster) |
+| **Google Pixel 8 Pro** | 10s 55ms | 13s 42ms | -2s 87ms (~21% faster) |
 | **Google Pixel (1st Generation)** | 24s 49ms | — | New |
 | **Samsung Galaxy Z Flip6** | 9s 89ms | — | New |
 | **Samsung Galaxy S21+ (Exynos)** | 13s 80ms | 16s 50ms | -2s 70ms (~16% faster) |
@@ -113,7 +113,7 @@ The following testing devices were ineligible for this benchmark:
 
 | Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
 |---|---|---|---|
-| **Google Pixel 8 Pro** | 7s 64ms | 7s 23ms | +0s 41ms |
+| **Google Pixel 8 Pro** | 6s 38ms | 7s 23ms | -0s 85ms (~12% faster) |
 | **Samsung Galaxy Z Flip6** | 5s 79ms | — | New |
 | **Samsung Galaxy S21+ (Exynos)** | 10s 47ms | 9s 27ms | +1s 20ms |
 | **Samsung Galaxy S10 (Exynos)** | 11s 25ms | 12s 03ms | -0s 78ms (~6% faster) |
@@ -135,7 +135,7 @@ The following testing devices were ineligible for this benchmark:
 
 | Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
 |---|---|---|---|
-| **Google Pixel 8 Pro** | 15s 90ms | 16s 21ms | -0s 31ms (~2% faster) |
+| **Google Pixel 8 Pro** | 15s 51ms | 16s 21ms | -0s 70ms (~4% faster) |
 | **Samsung Galaxy Z Flip6** | 12s 37ms | — | New |
 | **Samsung Galaxy S21+ (Exynos)** | 41s 19ms* | 68s 27ms* | -27s 08ms (~40% faster) |
 | **Samsung Galaxy S10 (Exynos)** | 21s 61ms | 38s 07ms | -16s 46ms (~43% faster) |
@@ -159,7 +159,7 @@ The following testing devices were ineligible for this benchmark:
 
 | Device | Speed (v1.6.3) | Speed (v1.5.2) | Difference |
 |---|---|---|---|
-| **Google Pixel 8 Pro** | 5s 72ms | 3s 45ms | +2s 27ms |
+| **Google Pixel 8 Pro** | 4s 45ms | 3s 45ms | +1s 00ms |
 | **Google Pixel (1st Generation)** | 7s 45ms | — | New |
 | **Samsung Galaxy Z Flip6** | 4s 65ms | — | New |
 | **Samsung Galaxy S21+ (Exynos)** | 9s 19ms | 4s 73ms | +4s 46ms |

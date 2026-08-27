@@ -25,7 +25,6 @@ import androidx.media3.common.Effect
 import androidx.media3.common.MediaItem
 import androidx.media3.common.MimeTypes
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.effect.FrameDropEffect
 import androidx.media3.effect.Presentation
 import androidx.media3.transformer.AudioEncoderSettings
 import androidx.media3.transformer.Composition
@@ -83,7 +82,24 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         getApplication<Application>().getSharedPreferences("compressor_prefs", Context.MODE_PRIVATE)
     }
 
+    private class TrackProbe(
+        val video: VideoTrackInfo?,
+        val audioMime: String?,
+        val audioBitrate: Int,
+        val aacProfile: Int
+    ) {
+        val hasAudio: Boolean get() = audioMime != null
+    }
+
     companion object {
+        private const val COPY_BUFFER_BYTES = 1024 * 1024
+        private val cachedCodecInfos: List<android.media.MediaCodecInfo> by lazy {
+            try {
+                MediaCodecList(MediaCodecList.ALL_CODECS).codecInfos.toList()
+            } catch (e: Exception) {
+                emptyList()
+            }
+        }
         private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
         private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
@@ -192,8 +208,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     internal fun getDeviceEncoders(): List<String> {
         val codecs = mutableSetOf<String>()
         try {
-            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
-            for (info in list.codecInfos) {
+            for (info in cachedCodecInfos) {
                 if (!info.isEncoder) continue
                 for (type in info.supportedTypes) {
                     if (type.startsWith("video/", ignoreCase = true)) {
@@ -219,10 +234,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     fun isSoftwareCodec(mimeType: String): Boolean {
         try {
-            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
             var hasHardware = false
             var hasSoftware = false
-            for (info in list.codecInfos) {
+            for (info in cachedCodecInfos) {
                 if (!info.isEncoder) continue
                 if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
                     val isSW = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -262,8 +276,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     internal fun hasEncoder(mimeType: String): Boolean {
         try {
-            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
-            for (info in list.codecInfos) {
+            for (info in cachedCodecInfos) {
                 if (!info.isEncoder) continue
 
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -289,6 +302,21 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
     private var compressionJob: Job? = null
     private var activeTransformer: Transformer? = null
+    private var lastProbeUri: Uri? = null
+    private var lastProbeResult: TrackProbe? = null
+
+    private suspend fun probeTracksCached(context: Context, uri: Uri): TrackProbe =
+        withContext(Dispatchers.IO) {
+            val cached = lastProbeResult
+            if (cached != null && lastProbeUri == uri) {
+                cached
+            } else {
+                val fresh = probeTracks(context, uri)
+                lastProbeUri = uri
+                lastProbeResult = fresh
+                fresh
+            }
+        }
 
     fun updateSelectedUri(context: Context, uri: Uri) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -303,12 +331,38 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             var originalName: String? = null
 
             try {
-                audioBitrate = getAudioBitrate(context, uri)
-                val videoInfo = getVideoTrackInfo(context, uri)
-                videoMime = videoInfo?.mimeType
-                context.contentResolver.openFileDescriptor(uri, "r")?.use {
-                    size = it.statSize
+                val probe = probeTracks(context, uri).also {
+                    lastProbeUri = uri
+                    lastProbeResult = it
                 }
+                audioBitrate = probe.audioBitrate
+                videoMime = probe.video?.mimeType
+                val videoInfo = probe.video
+
+                val cursor = context.contentResolver.query(
+                    uri,
+                    arrayOf(android.provider.OpenableColumns.DISPLAY_NAME, android.provider.OpenableColumns.SIZE),
+                    null,
+                    null,
+                    null
+                )
+                if (cursor != null && cursor.moveToFirst()) {
+                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                    if (nameIndex != -1) {
+                        originalName = cursor.getString(nameIndex)
+                    }
+                    val sizeIndex = cursor.getColumnIndex(android.provider.OpenableColumns.SIZE)
+                    if (sizeIndex != -1 && !cursor.isNull(sizeIndex)) {
+                        size = cursor.getLong(sizeIndex)
+                    }
+                    cursor.close()
+                }
+                if (size <= 0L) {
+                    context.contentResolver.openFileDescriptor(uri, "r")?.use {
+                        size = it.statSize
+                    }
+                }
+
                 val retriever = android.media.MediaMetadataRetriever()
                 retriever.setDataSource(context, uri)
 
@@ -332,15 +386,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 }
                 if (fps <= 0f) {
                     fps = 30f
-                }
-
-                val cursor = context.contentResolver.query(uri, null, null, null, null)
-                if (cursor != null && cursor.moveToFirst()) {
-                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex != -1) {
-                        originalName = cursor.getString(nameIndex)
-                    }
-                    cursor.close()
                 }
 
                 retriever.release()
@@ -1183,16 +1228,18 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
     
     private fun clearCache() {
-        try {
-            val context = getApplication<Application>()
-            val outputDir = File(context.cacheDir, "compressed_videos")
-            if (outputDir.exists()) {
-                outputDir.listFiles()?.forEach { 
-                    try { it.delete() } catch(e: Exception) {} 
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val context = getApplication<Application>()
+                val outputDir = File(context.cacheDir, "compressed_videos")
+                if (outputDir.exists()) {
+                    outputDir.listFiles()?.forEach {
+                        try { it.delete() } catch(e: Exception) {}
+                    }
                 }
+            } catch(e: Exception) {
+                 e.printStackTrace()
             }
-        } catch(e: Exception) {
-             e.printStackTrace()
         }
     }
 
@@ -1237,7 +1284,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return@launch
 
-        val plan = withContext(Dispatchers.IO) { buildCompressionPlan(context, currentState, inputUri) }
+        val probe = probeTracksCached(context, inputUri)
+        val plan = withContext(Dispatchers.IO) { buildCompressionPlan(probe, currentState) }
         if (plan.blockingError != null) {
             _uiState.update { it.copy(error = plan.blockingError, errorLog = null, isCompressing = false) }
             return@launch
@@ -1268,13 +1316,26 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val targetBitrate = currentState.targetBitrate.toLong()
 
+        val sourceAudioBitrate = probe.audioBitrate
         val audioBitrateToUse = if (currentState.audioBitrate == 0) {
-            if (currentState.originalAudioBitrate > 0) currentState.originalAudioBitrate else 128_000
+            if (sourceAudioBitrate > 0) sourceAudioBitrate
+            else if (currentState.originalAudioBitrate > 0) currentState.originalAudioBitrate else 128_000
         } else {
             currentState.audioBitrate
         }
 
         val videoMimeType = plan.outputVideoMimeType
+
+        val audioPassthrough = probe.hasAudio &&
+            probe.audioMime == MimeTypes.AUDIO_AAC &&
+            (probe.aacProfile == -1 ||
+                probe.aacProfile == android.media.MediaCodecInfo.CodecProfileLevel.AACObjectLC) &&
+            currentState.audioVolume == 1f &&
+            !currentState.removeAudio &&
+            sourceAudioBitrate > 0 &&
+            (currentState.audioBitrate == 0 || currentState.audioBitrate == sourceAudioBitrate)
+
+        val shouldIncludeAudio = !currentState.removeAudio && probe.hasAudio
 
         val decoderFactory = DefaultDecoderFactory.Builder(context)
             .setEnableDecoderFallback(true)
@@ -1339,13 +1400,18 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 }
             }
 
-            override fun audioNeedsEncoding(): Boolean = primaryEncoderFactory.audioNeedsEncoding()
+            override fun audioNeedsEncoding(): Boolean =
+                !audioPassthrough && primaryEncoderFactory.audioNeedsEncoding()
             override fun videoNeedsEncoding(): Boolean = primaryEncoderFactory.videoNeedsEncoding()
         }
-        
+
         val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
-            .setAudioMimeType(MimeTypes.AUDIO_AAC)
+            .apply {
+                if (!audioPassthrough) {
+                    setAudioMimeType(MimeTypes.AUDIO_AAC)
+                }
+            }
             .setAssetLoaderFactory(androidx.media3.transformer.DefaultAssetLoaderFactory(context, decoderFactory, androidx.media3.common.util.Clock.DEFAULT, null))
             .setEncoderFactory(encoderFactory)
             .addListener(object : Transformer.Listener {
@@ -1407,43 +1473,39 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         activeTransformer = transformer
             
         val effectsList = mutableListOf<Effect>()
-        
+
            if (plan.outputHeight > 0 && plan.outputHeight != currentState.originalHeight) {
              val aspectRatio = if (currentState.originalHeight > 0) currentState.originalWidth.toFloat() / currentState.originalHeight else 16f/9f
                 var width = (plan.outputHeight * aspectRatio).toInt()
                 var height = plan.outputHeight
-              
+
               if (width % 2 != 0) width -= 1
               if (height % 2 != 0) height -= 1
-              
+
               if (width > 0 && height > 0) {
                   effectsList.add(Presentation.createForWidthAndHeight(width, height, Presentation.LAYOUT_SCALE_TO_FIT))
               }
         }
-        
-        if (plan.outputFps > 0 && plan.outputFps.toFloat() < currentState.originalFps) {
-            effectsList.add(FrameDropEffect.createSimpleFrameDropEffect(currentState.originalFps, plan.outputFps.toFloat()))
-        }
-        
-        val mediaItem = MediaItem.fromUri(inputUri)
-        val hasAudio = hasAudioTrack(context, inputUri)
-        val shouldIncludeAudio = !currentState.removeAudio && hasAudio
 
-        val audioProcessors: List<androidx.media3.common.audio.AudioProcessor> = if (shouldIncludeAudio) {
-            val volumeProcessor = VolumeAudioProcessor().apply { setVolume(currentState.audioVolume) }
-            listOf(volumeProcessor, androidx.media3.common.audio.SonicAudioProcessor())
+        val mediaItem = MediaItem.fromUri(inputUri)
+        val audioProcessors: List<androidx.media3.common.audio.AudioProcessor> = if (shouldIncludeAudio && !audioPassthrough) {
+            listOf(VolumeAudioProcessor().apply { setVolume(currentState.audioVolume) })
         } else {
             emptyList()
         }
-        val editedMediaItem = EditedMediaItem.Builder(mediaItem)
+        val editedMediaItemBuilder = EditedMediaItem.Builder(mediaItem)
             .setEffects(Effects(audioProcessors, effectsList))
             .setRemoveAudio(!shouldIncludeAudio)
-            .build()
+        if (plan.outputFps > 0) {
+            editedMediaItemBuilder.setFrameRate(plan.outputFps)
+        }
+        val editedMediaItem = editedMediaItemBuilder.build()
 
         var hdrMode = Composition.HDR_MODE_KEEP_HDR
         if (Build.MANUFACTURER.equals("Google", ignoreCase = true) && Build.MODEL.contains("Pixel 10")) {
              if (videoMimeType == MimeTypes.VIDEO_H265 || videoMimeType == MimeTypes.VIDEO_H264) {
-                 if (isHdr(context, inputUri)) {
+                 val inputIsHdr = withContext(Dispatchers.IO) { isHdr(context, inputUri) }
+                 if (inputIsHdr) {
                       hdrMode = Composition.HDR_MODE_TONE_MAP_HDR_TO_SDR_USING_OPEN_GL
                       val warningMsg = getApplication<Application>().getString(R.string.warning_hdr_tone_mapped)
                       _uiState.update { it.copy(warnings = listOf(warningMsg)) }
@@ -1462,11 +1524,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         transformer.start(composition, outputPath)
         
         compressionJob = viewModelScope.launch {
+            val progressHolder = androidx.media3.transformer.ProgressHolder()
             while (_uiState.value.isCompressing) {
-                val progressHolder = androidx.media3.transformer.ProgressHolder()
                 val state = transformer.getProgress(progressHolder)
                 if (state != Transformer.PROGRESS_STATE_NOT_STARTED) {
-                    val currentSize = if(outputFile.exists()) outputFile.length() else 0L
+                    val currentSize = outputFile.length()
                     _uiState.update { it.copy(progress = progressHolder.progress / 100f, currentOutputSize = currentSize) }
                 }
                 kotlinx.coroutines.delay(200)
@@ -1485,84 +1547,61 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    internal fun hasAudioTrack(context: Context, uri: Uri): Boolean {
+    private fun probeTracks(context: Context, uri: Uri): TrackProbe {
         val extractor = MediaExtractor()
         try {
             extractor.setDataSource(context, uri, null)
+            var video: VideoTrackInfo? = null
+            var audioMime: String? = null
+            var audioBitrate = 0
+            var aacProfile = -1
             for (i in 0 until extractor.trackCount) {
                 val format = extractor.getTrackFormat(i)
-                val mime = format.getString(MediaFormat.KEY_MIME)
-                if (mime?.startsWith("audio/") == true) {
-                    return true
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            extractor.release()
-        }
-        return false
-    }
-
-    private fun getAudioBitrate(context: Context, uri: Uri): Int {
-        val extractor = MediaExtractor()
-        try {
-            extractor.setDataSource(context, uri, null)
-            for (i in 0 until extractor.trackCount) {
-                val format = extractor.getTrackFormat(i)
-                val mime = format.getString(MediaFormat.KEY_MIME)
-                if (mime?.startsWith("audio/") == true) {
-                    if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
-                        return format.getInteger(MediaFormat.KEY_BIT_RATE)
-                    }
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        } finally {
-            extractor.release()
-        }
-        return 0
-    }
-
-    private fun getVideoTrackInfo(context: Context, uri: Uri): VideoTrackInfo? {
-        val extractor = MediaExtractor()
-        try {
-            extractor.setDataSource(context, uri, null)
-            for (i in 0 until extractor.trackCount) {
-                val format = extractor.getTrackFormat(i)
-                val mime = format.getString(MediaFormat.KEY_MIME)
-                if (mime?.startsWith("video/") == true) {
-                    val width = if (format.containsKey(MediaFormat.KEY_WIDTH)) format.getInteger(MediaFormat.KEY_WIDTH) else 0
-                    val height = if (format.containsKey(MediaFormat.KEY_HEIGHT)) format.getInteger(MediaFormat.KEY_HEIGHT) else 0
-                    var frameRate = 0f
-                    if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
-                        try {
-                            frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE).toFloat()
-                        } catch (e: Exception) {
+                val mime = format.getString(MediaFormat.KEY_MIME) ?: continue
+                when {
+                    video == null && mime.startsWith("video/") -> {
+                        val width = if (format.containsKey(MediaFormat.KEY_WIDTH)) format.getInteger(MediaFormat.KEY_WIDTH) else 0
+                        val height = if (format.containsKey(MediaFormat.KEY_HEIGHT)) format.getInteger(MediaFormat.KEY_HEIGHT) else 0
+                        var frameRate = 0f
+                        if (format.containsKey(MediaFormat.KEY_FRAME_RATE)) {
                             try {
-                                frameRate = format.getFloat(MediaFormat.KEY_FRAME_RATE)
-                            } catch (ignored: Exception) {}
+                                frameRate = format.getInteger(MediaFormat.KEY_FRAME_RATE).toFloat()
+                            } catch (e: Exception) {
+                                try {
+                                    frameRate = format.getFloat(MediaFormat.KEY_FRAME_RATE)
+                                } catch (ignored: Exception) {}
+                            }
+                        }
+                        video = VideoTrackInfo(mime, width, height, frameRate)
+                    }
+                    audioMime == null && mime.startsWith("audio/") -> {
+                        audioMime = mime
+                        if (format.containsKey(MediaFormat.KEY_BIT_RATE)) {
+                            audioBitrate = format.getInteger(MediaFormat.KEY_BIT_RATE)
+                        }
+                        if (format.containsKey("aac-profile")) {
+                            aacProfile = format.getInteger("aac-profile")
                         }
                     }
-                    return VideoTrackInfo(mime, width, height, frameRate)
                 }
+                if (video != null && audioMime != null) break
             }
+            return TrackProbe(video, audioMime, audioBitrate, aacProfile)
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
             extractor.release()
         }
-        return null
+        return TrackProbe(null, null, 0, -1)
     }
 
-    private fun buildCompressionPlan(context: Context, state: CompressorUiState, inputUri: Uri): CompressionPlan {
+    private fun buildCompressionPlan(probe: TrackProbe, state: CompressorUiState): CompressionPlan {
         var outputMime = state.videoCodec
         var outputHeight = state.targetResolutionHeight
         var outputFps = state.targetFps
         val warnings = mutableListOf<String>()
 
-        val sourceInfo = getVideoTrackInfo(context, inputUri)
+        val sourceInfo = probe.video
         val sourceMime = sourceInfo?.mimeType ?: state.originalVideoMime
         val sourceWidth = sourceInfo?.width ?: 0
         val sourceHeight = sourceInfo?.height ?: 0
@@ -1677,9 +1716,8 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         encoder: Boolean
     ): Boolean {
         return try {
-            val codecList = MediaCodecList(MediaCodecList.ALL_CODECS)
             val safeFps = kotlin.math.ceil(if (fps > 0f) fps.toDouble() else 30.0)
-            codecList.codecInfos
+            cachedCodecInfos
                 .asSequence()
                 .filter { it.isEncoder == encoder }
                 .filter { info -> info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) } }
@@ -1712,8 +1750,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 return true
             }
 
-            val list = MediaCodecList(MediaCodecList.ALL_CODECS)
-            for (info in list.codecInfos) {
+            for (info in cachedCodecInfos) {
                 if (!info.isEncoder) continue
                 if (info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) }) {
                     val name = info.name.lowercase()
@@ -1761,7 +1798,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 
                 context.contentResolver.openOutputStream(targetUri)?.use { out ->
                     file.inputStream().use { input ->
-                        input.copyTo(out)
+                        input.copyTo(out, COPY_BUFFER_BYTES)
                     }
                 }
                  _uiState.update { it.copy(saveSuccess = true) }
@@ -1809,7 +1846,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                 context.contentResolver.openOutputStream(target.uri)?.use { out ->
                     file.inputStream().use { input ->
-                        input.copyTo(out)
+                        input.copyTo(out, COPY_BUFFER_BYTES)
                     }
                 } ?: run {
                     _uiState.update {
@@ -1876,7 +1913,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 if (itemUri != null) {
                     context.contentResolver.openOutputStream(itemUri).use { out ->
                         file.inputStream().use { input ->
-                            input.copyTo(out!!)
+                            input.copyTo(out!!, COPY_BUFFER_BYTES)
                         }
                     }
                     
