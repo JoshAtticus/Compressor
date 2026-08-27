@@ -263,8 +263,8 @@
     <string name="whats_new_title">ما الجديد في Compressor</string>
     <string name="whats_new_version">الإصدار %1$s</string>
     <string name="whats_new_button">فهمت</string>
-    <string name="whats_new_1_title">إصلاحات واجهة المستخدم</string>
-    <string name="whats_new_1_desc">تم إصلاح وتحسين أجزاء من واجهة المستخدم</string>
-    <string name="whats_new_2_title">إصلاح الأخطاء</string>
-    <string name="whats_new_2_desc">تم إصلاح الأخطاء التي تؤثر على بعض المستخدمين</string>
+    <string name="whats_new_1_title">تحسينات الأداء</string>
+    <string name="whats_new_1_desc">أصبح Compressor أسرع من أي وقت مضى، خاصةً على نظام Android 13+ بفضل تحسينات الأداء الداخلية</string>
+    <string name="whats_new_2_title">إصلاح الأخطاء والتراجعات</string>
+    <string name="whats_new_2_desc">تم إصلاح أخطاء وتراجعات مختلفة من الإصدارات القديمة</string>
 </resources>

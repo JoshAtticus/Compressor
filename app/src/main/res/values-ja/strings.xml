@@ -263,8 +263,8 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_1_title">UIの修正</string>
-    <string name="whats_new_1_desc">UIの一部を修正および洗練しました</string>
-    <string name="whats_new_2_title">バグ修正</string>
-    <string name="whats_new_2_desc">一部のユーザーに影響を与えていたバグを修正しました</string>
+    <string name="whats_new_1_title">パフォーマンスの向上</string>
+    <string name="whats_new_1_desc">内部的なパフォーマンス改善により、特に Android 13 以上で Compressor がこれまで以上に高速になりました</string>
+    <string name="whats_new_2_title">バグとリグレッションの修正</string>
+    <string name="whats_new_2_desc">以前のバージョンから存在したさまざまなバグやリグレッションを修正しました</string>
 </resources>

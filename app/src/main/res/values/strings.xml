@@ -268,8 +268,8 @@
     <string name="whats_new_title">What\'s new in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Got it</string>
-    <string name="whats_new_1_title">UI Fixes</string>
-    <string name="whats_new_1_desc">Parts of the UI have been fixed and refined</string>
-    <string name="whats_new_2_title">Bug Fixes</string>
-    <string name="whats_new_2_desc">Fixed bugs affecting some users</string>
+    <string name="whats_new_1_title">Performance Improvements</string>
+    <string name="whats_new_1_desc">Compressor is now faster than ever, especially on Android 13+ with behind the scenes performance improvements</string>
+    <string name="whats_new_2_title">Bug &amp; Regression Fixes</string>
+    <string name="whats_new_2_desc">Fixed various bugs and regressions from older versions</string>
 </resources>
