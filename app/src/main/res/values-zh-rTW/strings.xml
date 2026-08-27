@@ -124,6 +124,7 @@
     <string name="open_issue_tracker">開啟 Issue 追蹤</string>
     <string name="view_on_github">在 GitHub 上檢視</string>
     <string name="buy_me_a_coffee">請我喝杯咖啡</string>
+    <string name="open_source_licenses">開放原始碼授權條款</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">設定</string>

@@ -124,6 +124,7 @@
     <string name="accept_all">Принять все</string>
     <string name="close">Закрыть</string>
     <string name="buy_me_a_coffee">Купить мне кофе</string>
+    <string name="open_source_licenses">Лицензии открытого кода</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Настройки</string>

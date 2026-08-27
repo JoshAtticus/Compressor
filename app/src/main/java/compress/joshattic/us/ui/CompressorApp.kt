@@ -60,6 +60,7 @@ import compress.joshattic.us.ui.screens.EmptyScreen
 import compress.joshattic.us.ui.screens.ResultScreen
 import compress.joshattic.us.ui.screens.settings.AboutScreen
 import compress.joshattic.us.ui.screens.settings.DisplaySettingsScreen
+import compress.joshattic.us.ui.screens.settings.LicensesScreen
 import compress.joshattic.us.ui.screens.settings.SettingsScreen
 import compress.joshattic.us.utils.ExpressiveSpatialSpring
 import compress.joshattic.us.viewmodel.CompressorViewModel
@@ -67,7 +68,7 @@ import java.io.File
 import kotlinx.coroutines.CancellationException
 
 enum class SettingsDestination {
-    MAIN, ABOUT, DISPLAY, PRESETS, VIDEO, AUDIO
+    MAIN, ABOUT, DISPLAY, PRESETS, VIDEO, AUDIO, LICENSES
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -114,6 +115,8 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         if (isSettingsOpen) {
             if (currentSettingsDestination == SettingsDestination.MAIN) {
                 currentSettingsDestination = null
+            } else if (currentSettingsDestination == SettingsDestination.LICENSES) {
+                currentSettingsDestination = SettingsDestination.ABOUT
             } else {
                 currentSettingsDestination = SettingsDestination.MAIN
             }
@@ -242,7 +245,11 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                 onBack = { currentSettingsDestination = SettingsDestination.MAIN },
                                 onEnableAllCodecs = { viewModel.enableAllCodecsFeature() },
                                 onDisableAllCodecs = { viewModel.disableAllCodecsFeature() },
-                                isSoftwareCodec = { viewModel.isSoftwareCodec(it) }
+                                isSoftwareCodec = { viewModel.isSoftwareCodec(it) },
+                                onOpenLicenses = { currentSettingsDestination = SettingsDestination.LICENSES }
+                            )
+                            SettingsDestination.LICENSES -> LicensesScreen(
+                                onBack = { currentSettingsDestination = SettingsDestination.ABOUT }
                             )
                             SettingsDestination.DISPLAY -> DisplaySettingsScreen(
                                 state = state,

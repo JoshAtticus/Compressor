@@ -112,6 +112,7 @@
     <string name="close">Cerrar</string>
     <string name="view_on_github">Ver en GitHub</string>
     <string name="buy_me_a_coffee">Invítame un café</string>
+    <string name="open_source_licenses">Licencias de código abierto</string>
 
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Ajustes</string>
