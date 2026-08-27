@@ -1,0 +1,4 @@
+Compressor 1.6.4 is a minor update. Here's what's changed: 
+
+- Performance Improvements: Compressor is now faster than ever, especially on Android 13+ with behind the scenes performance improvements
+- Bug & Regression Fixes: Fixed various bugs and regressions from older versions
