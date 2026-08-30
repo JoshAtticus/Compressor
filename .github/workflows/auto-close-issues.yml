@@ -70,7 +70,7 @@ jobs:
               if (referencesIssue3) {
                 reasonComment += '- It references or requests a topic listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) (OEM limitations / out-of-scope features).\n';
               }
-              reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting. If you believe this is a mistake, all automatic closures notify the maintainer and will be reviewed soon.';
+              reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting. **Please do not worry if you think this is a mistake!** Your issue will still be reviewed by a maintainer and re-opened if it was incorrectly closed.';
 
               // Post comment explaining closure
               await github.rest.issues.createComment({
@@ -82,12 +82,13 @@ jobs:
 
               // Update labels: remove enhancement, triage, bug; add invalid, wontfix, and optionally "this person can't read"
               const currentLabels = (issue.labels || []).map(l => (typeof l === 'string' ? l : l.name));
-              const labelsToRemove = new Set(['enhancement', 'triage', 'bug']);
+              const labelsToRemove = new Set(['Enhancement', 'Triage', 'Bug']);
               let updatedLabels = currentLabels.filter(name => !labelsToRemove.has(name));
 
               updatedLabels.push("Invalid", "Won't Fix");
               if (referencesIssue3) {
-                updatedLabels.push("this person can't read");
+                // updatedLabels.push("this person can't read");
+                // temporarily do nothing in this case
               }
 
               updatedLabels = Array.from(new Set(updatedLabels));
