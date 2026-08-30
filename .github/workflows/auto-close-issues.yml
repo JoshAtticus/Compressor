@@ -70,7 +70,7 @@ jobs:
               if (referencesIssue3) {
                 reasonComment += '- It references or requests a topic listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) (OEM limitations / out-of-scope features).\n';
               }
-              reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting. **Please do not worry if you think this is a mistake!** Your issue will still be reviewed by a maintainer and re-opened if it was incorrectly closed.';
+              reasonComment += '\nPlease read the requirements and ensure your issue is not listed in [issue #3](https://github.com/JoshAtticus/Compressor/issues/3) before submitting.\n**Please do not worry if you think this is a mistake!** Your issue will still be reviewed by a maintainer and re-opened if it was incorrectly closed. **Do not open another issue.**';
 
               // Post comment explaining closure
               await github.rest.issues.createComment({
