@@ -1407,6 +1407,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
         val transformerBuilder = Transformer.Builder(context)
             .setVideoMimeType(videoMimeType)
+            .setMaxDelayBetweenMuxerSamplesMs(30_000)
             .apply {
                 if (!audioPassthrough) {
                     setAudioMimeType(MimeTypes.AUDIO_AAC)
