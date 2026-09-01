@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -39,9 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -72,11 +73,18 @@ fun ConfigScreen(
     val originalMb = state.originalSize / (1024f * 1024f)
     val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
     val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
-    
+
+    // At large accessibility font scales the fixed structure (card + tabs + button)
+    // can't all fit — reflow the whole portrait screen into one scrolling column.
+    val largeFontScale = LocalDensity.current.fontScale >= 1.3f
+
     BoxWithConstraints(
         modifier = Modifier.fillMaxSize()
     ) {
-        val useSplitLayout = maxWidth >= 600.dp 
+        val useSplitLayout = maxWidth >= 600.dp
+        // Combined max font + max display size shrinks the dp viewport until the
+        // stacked estimate card leaves no room for options. Compact only then.
+        val cramped = largeFontScale && maxHeight < 720.dp
         
         if (useSplitLayout) {
             Row(modifier = Modifier.fillMaxSize()) {
@@ -122,80 +130,183 @@ fun ConfigScreen(
                     modifier = Modifier.fillMaxHeight(),
                     color = MaterialTheme.colorScheme.outlineVariant
                 )
-                
-                         Box(
+
+                // Content and the compression button are laid out in flow so that
+                // nothing is ever hidden behind an overlay at large font/display sizes.
+                Column(
                     modifier = Modifier
                         .fillMaxHeight()
-                        .weight(1f)
+                        .weight(1f),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                     Column(
-                         modifier = Modifier.fillMaxSize(),
-                         horizontalAlignment = Alignment.CenterHorizontally
-                     ) {
-                     Column(
-                            modifier = Modifier
-                                .padding(horizontal = 24.dp)
-                                .padding(top = 24.dp, bottom = 12.dp)
-                         ) {
-                             InfoCard(state)
-                         }
-                        
-                        Box(modifier = Modifier.weight(1f)) {
-                             HorizontalPager(
-                                 state = pagerState,
-                                 modifier = Modifier.fillMaxSize(),
-                                 userScrollEnabled = false
-                             ) { index ->
-                                 when (index) {
-                                     0 -> PresetsTab(state, viewModel)
-                                     1 -> VideoOptionsTab(state, viewModel)
-                                     2 -> AudioOptionsTab(state, viewModel)
-                                 }
-                             }
-                        }
-                        
-                        Spacer(modifier = Modifier.height(100.dp))
-                    }
-                    
-                     Column(
-                         modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.BottomCenter)
-                            .background(
-                                Brush.verticalGradient(
-                                    colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
-                                    startY = 0f,
-                                    endY = 100f
-                                )
-                            )
+                    Column(
+                        modifier = Modifier
+                            .padding(horizontal = 24.dp)
+                            .padding(top = 24.dp, bottom = 12.dp)
                     ) {
-                          Column(
-                              modifier = Modifier
-                                  .fillMaxWidth()
-                                  .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                                 .padding(24.dp),
-                              horizontalAlignment = Alignment.CenterHorizontally
-                          ) {
-                             if (state.targetSizeWarning) {
-                                 TargetSizeWarning(state, viewModel)
-                             }
-                             val interactionSource = remember { MutableInteractionSource() }
-                             Button(
-                                onClick = { 
-                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                    viewModel.startCompression(context) 
-                                },
-                                enabled = !isLarger,
-                                interactionSource = interactionSource,
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(56.dp)
-                                    .expressiveScale(interactionSource),
-                                shape = RoundedCornerShape(24.dp)
-                            ) {
-                                Text(stringResource(R.string.start_compression), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        InfoCard(state)
+                    }
+
+                    Box(modifier = Modifier.weight(1f)) {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize(),
+                            userScrollEnabled = false
+                        ) { index ->
+                            when (index) {
+                                0 -> PresetsTab(state, viewModel)
+                                1 -> VideoOptionsTab(state, viewModel)
+                                2 -> AudioOptionsTab(state, viewModel)
                             }
                         }
+                    }
+
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (state.targetSizeWarning) {
+                            TargetSizeWarning(state, viewModel)
+                        }
+                        val interactionSource = remember { MutableInteractionSource() }
+                        Button(
+                            onClick = {
+                                haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                viewModel.startCompression(context)
+                            },
+                            enabled = !isLarger,
+                            interactionSource = interactionSource,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(min = 56.dp)
+                                .expressiveScale(interactionSource),
+                            shape = RoundedCornerShape(24.dp)
+                        ) {
+                            Text(stringResource(R.string.start_compression), fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        }
+                    }
+                }
+            }
+        } else if (largeFontScale) {
+            // Large font scale: card, tabs, and Start button are in normal flow so nothing
+            // overlaps. The options pager stays in a bounded weight(1f) slot — its pages
+            // scroll internally, and nesting a pager/verticalScroll inside another
+            // verticalScroll is disallowed (infinite height constraints → crash).
+            Column(
+                modifier = Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = if (cramped) 16.dp else 24.dp)
+                        .padding(top = if (cramped) 4.dp else 12.dp, bottom = if (cramped) 4.dp else 8.dp)
+                ) {
+                    InfoCard(state, compact = cramped)
+                }
+
+                Surface(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = if (cramped) 16.dp else 20.dp),
+                    shape = RoundedCornerShape(50),
+                    color = MaterialTheme.colorScheme.surfaceContainerHighest,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
+                    shadowElevation = 1.dp
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(5.dp),
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        tabs.forEachIndexed { index, title ->
+                            val selected = pagerState.currentPage == index
+                            val tabIcon = when (index) {
+                                0 -> Icons.Outlined.BookmarkBorder
+                                1 -> Icons.Default.Movie
+                                else -> Icons.Default.MusicNote
+                            }
+
+                            Surface(
+                                onClick = {
+                                    haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                                    scope.launch { pagerState.animateScrollToPage(index) }
+                                },
+                                modifier = Modifier.weight(1f),
+                                shape = RoundedCornerShape(50),
+                                color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
+                                contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
+                            ) {
+                                Row(
+                                    modifier = Modifier.padding(horizontal = 8.dp, vertical = 10.dp),
+                                    horizontalArrangement = Arrangement.Center,
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Icon(
+                                        imageVector = tabIcon,
+                                        contentDescription = title,
+                                        modifier = Modifier.size(if (cramped) 22.dp else 19.dp)
+                                    )
+                                    if (!cramped) {
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text(
+                                            text = title,
+                                            style = MaterialTheme.typography.labelLarge,
+                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+                                            maxLines = 1,
+                                            softWrap = false
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                HorizontalPager(
+                    state = pagerState,
+                    modifier = Modifier.weight(1f)
+                ) { index ->
+                    when (index) {
+                        0 -> PresetsTab(state, viewModel)
+                        1 -> VideoOptionsTab(state, viewModel)
+                        2 -> AudioOptionsTab(state, viewModel)
+                    }
+                }
+
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(
+                            horizontal = if (cramped) 16.dp else 24.dp,
+                            vertical = if (cramped) 4.dp else 8.dp
+                        ),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    if (state.targetSizeWarning) {
+                        TargetSizeWarning(state, viewModel)
+                    }
+                    val interactionSource = remember { MutableInteractionSource() }
+                    Button(
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            viewModel.startCompression(context)
+                        },
+                        enabled = !isLarger,
+                        interactionSource = interactionSource,
+                        modifier = Modifier
+                            .widthIn(max = 600.dp)
+                            .fillMaxWidth()
+                            .heightIn(min = 56.dp)
+                            .expressiveScale(interactionSource),
+                        shape = RoundedCornerShape(24.dp)
+                    ) {
+                        Text(stringResource(R.string.start_compression), fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -211,7 +322,7 @@ fun ConfigScreen(
                     Column(
                         modifier = Modifier
                             .padding(horizontal = 24.dp)
-                            .padding(top = 24.dp, bottom = 12.dp)
+                            .padding(top = 12.dp, bottom = 8.dp)
                      ) {
                           InfoCard(state)
                      }
@@ -219,8 +330,8 @@ fun ConfigScreen(
                     Surface(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .height(52.dp)
-                            .padding(horizontal = 20.dp),
+                            .padding(horizontal = 20.dp)
+                            .height(52.dp),
                         shape = CircleShape,
                         color = MaterialTheme.colorScheme.surfaceContainerHighest,
                         border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)),
@@ -229,9 +340,8 @@ fun ConfigScreen(
                         Row(
                             modifier = Modifier
                                 .fillMaxSize()
-                                .padding(5.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                                .padding(4.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
                         ) {
                             tabs.forEachIndexed { index, title ->
                                 val selected = pagerState.currentPage == index
@@ -246,28 +356,27 @@ fun ConfigScreen(
                                         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
                                         scope.launch { pagerState.animateScrollToPage(index) }
                                     },
-                                    modifier = Modifier
-                                        .weight(1f)
-                                        .fillMaxHeight(),
+                                    modifier = Modifier.weight(1f).fillMaxSize(),
                                     shape = CircleShape,
                                     color = if (selected) MaterialTheme.colorScheme.secondaryContainer else Color.Transparent,
                                     contentColor = if (selected) MaterialTheme.colorScheme.onSecondaryContainer else MaterialTheme.colorScheme.onSurfaceVariant
                                 ) {
                                     Row(
-                                        modifier = Modifier.fillMaxSize(),
+                                        modifier = Modifier.fillMaxHeight(),
                                         horizontalArrangement = Arrangement.Center,
                                         verticalAlignment = Alignment.CenterVertically
                                     ) {
                                         Icon(
                                             imageVector = tabIcon,
                                             contentDescription = null,
-                                            modifier = Modifier.size(19.dp)
+                                            modifier = Modifier.size(18.dp)
                                         )
                                         Spacer(modifier = Modifier.width(6.dp))
                                         Text(
                                             text = title,
                                             style = MaterialTheme.typography.labelLarge,
-                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold
+                                            fontWeight = if (selected) FontWeight.Bold else FontWeight.SemiBold,
+                                            maxLines = 1
                                         )
                                     }
                                 }
@@ -275,6 +384,8 @@ fun ConfigScreen(
                         }
                     }
                     
+                    // Options area takes the leftover space; each tab scrolls internally,
+                    // so a large InfoCard or tab bar can never squeeze it into unusability.
                     Box(modifier = Modifier.weight(1f)) {
                          HorizontalPager(
                              state = pagerState,
@@ -287,42 +398,30 @@ fun ConfigScreen(
                              }
                          }
                     }
-                }
-                
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .align(Alignment.BottomCenter)
-                        .background(
-                            Brush.verticalGradient(
-                                colors = listOf(Color.Transparent, MaterialTheme.colorScheme.background),
-                                startY = 0f,
-                                endY = 100f
-                            )
-                        )
-                ) {
-                     Column(
-                         modifier = Modifier
-                             .fillMaxWidth()
-                             .background(MaterialTheme.colorScheme.background.copy(alpha=0.9f))
-                             .padding(24.dp),
-                         horizontalAlignment = Alignment.CenterHorizontally
-                     ) {
-                         if (state.targetSizeWarning) {
-                             TargetSizeWarning(state, viewModel)
-                         }
-                         val interactionSource = remember { MutableInteractionSource() }
-                         Button(
-                            onClick = { 
+
+                    // Compression button in normal layout flow so it never covers options.
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(MaterialTheme.colorScheme.background)
+                            .padding(24.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        if (state.targetSizeWarning) {
+                            TargetSizeWarning(state, viewModel)
+                        }
+                        val interactionSource = remember { MutableInteractionSource() }
+                        Button(
+                            onClick = {
                                 haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                                viewModel.startCompression(context) 
+                                viewModel.startCompression(context)
                             },
                             enabled = !isLarger,
                             interactionSource = interactionSource,
                             modifier = Modifier
                                 .widthIn(max = 600.dp)
                                 .fillMaxWidth()
-                                .height(56.dp)
+                                .heightIn(min = 56.dp)
                                 .expressiveScale(interactionSource),
                             shape = RoundedCornerShape(24.dp)
                         ) {

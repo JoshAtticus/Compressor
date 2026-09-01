@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -171,8 +172,8 @@ fun ResultScreen(
         Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             Button(
                 onClick = onShare,
-                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onShare),
-                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp),
+                modifier = Modifier.weight(1f).heightIn(min = 56.dp).scaleOnPress(onShare),
+                contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 8.dp, vertical = 8.dp),
                 shape = RoundedCornerShape(24.dp)
             ) {
                 Icon(Icons.Default.Share, contentDescription = null, modifier = Modifier.size(18.dp))
@@ -187,7 +188,7 @@ fun ResultScreen(
             
             FilledTonalButton(
                 onClick = onSave,
-                modifier = Modifier.weight(1f).height(56.dp).scaleOnPress(onSave),
+                modifier = Modifier.weight(1f).heightIn(min = 56.dp).scaleOnPress(onSave),
                 enabled = !state.saveSuccess && !state.isSaving,
                 colors = if (state.isSaving) {
                     ButtonDefaults.filledTonalButtonColors(

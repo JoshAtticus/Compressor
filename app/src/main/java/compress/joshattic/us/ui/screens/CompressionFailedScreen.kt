@@ -191,7 +191,7 @@ fun CompressionFailedScreen(state: CompressorUiState, onBack: () -> Unit, onSave
             
             Button(
                 onClick = onBack,
-                modifier = Modifier.fillMaxWidth().height(56.dp).scaleOnPress(onBack)
+                modifier = Modifier.fillMaxWidth().heightIn(min = 56.dp).scaleOnPress(onBack)
             ) {
                 Text(stringResource(R.string.try_again), fontWeight = FontWeight.Bold)
             }

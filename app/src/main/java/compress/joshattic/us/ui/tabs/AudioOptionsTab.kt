@@ -48,7 +48,6 @@ fun AudioOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
             .background(MaterialTheme.colorScheme.background)
             .verticalScroll(scrollState)
             .padding(horizontal = 24.dp, vertical = 24.dp)
-            .padding(bottom = 80.dp)
     ) {
          Text(
             stringResource(R.string.audio_options),
