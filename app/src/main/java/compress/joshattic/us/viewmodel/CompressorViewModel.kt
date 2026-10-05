@@ -1284,7 +1284,12 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 
-    fun startCompression(context: Context) = viewModelScope.launch(Dispatchers.Main) {
+    fun startCompression(
+        context: Context,
+        forcedOutputMimeType: String? = null,
+        additionalWarnings: List<String> = emptyList(),
+        allowHevcMuxerFallback: Boolean = true
+    ): Job = viewModelScope.launch(Dispatchers.Main) {
         val currentState = _uiState.value
         val inputUri = currentState.selectedUri ?: return@launch
 
@@ -1305,7 +1310,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 compressedUri = null,
                 saveSuccess = false,
                 isSaving = false,
-                warnings = plan.warnings
+                warnings = plan.warnings + additionalWarnings
             )
         }
 
@@ -1328,7 +1333,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             currentState.audioBitrate
         }
 
-        val videoMimeType = plan.outputVideoMimeType
+        val videoMimeType = forcedOutputMimeType ?: plan.outputVideoMimeType
 
         val audioPassthrough = probe.hasAudio &&
             probe.audioMime == MimeTypes.AUDIO_AAC &&
@@ -1448,6 +1453,25 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                 override fun onError(composition: Composition, exportResult: ExportResult, exportException: ExportException) {
                     val app = getApplication<Application>()
+                    val errorLog = exportException.stackTraceToString()
+                    val isHevcCsdMuxerFailure = videoMimeType == MimeTypes.VIDEO_H265 &&
+                        errorLog.contains("csd-0", ignoreCase = true) &&
+                        errorLog.contains("hvcC", ignoreCase = true)
+
+                    if (allowHevcMuxerFallback && isHevcCsdMuxerFailure) {
+                        activeTransformer = null
+                        viewModelScope.launch(Dispatchers.Main) {
+                            _uiState.update { it.copy(isCompressing = false) }
+                            startCompression(
+                                context = context,
+                                forcedOutputMimeType = MimeTypes.VIDEO_H264,
+                                additionalWarnings = additionalWarnings + app.getString(R.string.warning_codec_fallback_h264),
+                                allowHevcMuxerFallback = false
+                            )
+                        }
+                        return
+                    }
+
                     _uiState.update { 
                         val isCodecError = exportException.errorCode == ExportException.ERROR_CODE_DECODER_INIT_FAILED ||
                                            exportException.errorCode == ExportException.ERROR_CODE_ENCODER_INIT_FAILED
@@ -1467,7 +1491,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                         it.copy(
                             isCompressing = false, 
                             error = errorMsg,
-                            errorLog = exportException.stackTraceToString()
+                            errorLog = errorLog
                         ) 
                     }
                 }
