@@ -265,8 +265,8 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">效能提升</string>
-    <string name="whats_new_1_desc">得益於幕後的效能改進，Compressor 現在比以往更快速，尤其是在 Android 13 及以上版本上</string>
-    <string name="whats_new_2_title">錯誤與回歸修復</string>
-    <string name="whats_new_2_desc">修復了舊版中的各種錯誤與回歸問題</string>
+    <string name="whats_new_1_title">無障礙性改善</string>
+    <string name="whats_new_1_desc">Compressor 現在可在任何螢幕尺寸或字型大小下都能正常顯示與使用</string>
+    <string name="whats_new_2_title">錯誤修正</string>
+    <string name="whats_new_2_desc">清除了更多錯誤，讓 Compressor 變得前所未有地穩定</string>
 </resources>

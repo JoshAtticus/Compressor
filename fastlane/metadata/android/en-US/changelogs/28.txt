@@ -1,0 +1,4 @@
+Compressor 1.6.5 is a minor update. Sorry for the delay, and here's what's changed:
+
+- Improved Accessibility: Compressor now scales cleanly to work well at any display or font size
+- Bug Fixes: Cleared out more bugs to make Compressor as stable as ever 

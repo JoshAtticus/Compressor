@@ -20,6 +20,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Accessibility
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.BugReport
 import androidx.compose.material3.Button
@@ -127,7 +128,7 @@ fun WhatsNewDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         WhatsNewItem(
-                            icon = Icons.Default.AutoAwesome,
+                            icon = Icons.Default.Accessibility,
                             bgColor = if (isDark) Color(0xFF1E3A5F) else Color(0xFFE3F2FD),
                             iconTint = if (isDark) Color(0xFF90CAF9) else Color(0xFF1976D2),
                             title = stringResource(R.string.whats_new_1_title),

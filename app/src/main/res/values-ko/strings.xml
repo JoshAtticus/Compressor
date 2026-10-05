@@ -241,8 +241,8 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">성능 개선</string>
-    <string name="whats_new_1_desc">내부적인 성능 개선으로 특히 Android 13 이상에서 Compressor가 그 어느 때보다 빨라졌습니다</string>
-    <string name="whats_new_2_title">버그 및 회귀 수정</string>
-    <string name="whats_new_2_desc">이전 버전에서 발생했던 다양한 버그와 회귀 문제를 수정했습니다</string>
+    <string name="whats_new_1_title">접근성 개선</string>
+    <string name="whats_new_1_desc">Compressor는 모든 화면 크기와 글꼴 크기에서 깔끔하게 잘 동작하도록 조정되었습니다</string>
+    <string name="whats_new_2_title">버그 수정</string>
+    <string name="whats_new_2_desc">더 많은 버그를 제거해 Compressor를 그 어느 때보다 안정적으로 만들었습니다</string>
 </resources>
