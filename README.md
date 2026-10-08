@@ -217,7 +217,7 @@ Compressor wouldn't be possible without these amazing people
 
 [@AhmedRX20](https://github.com/AhmedRX20) - Translated into Arabic
 
-I would like to acknowledge that Compressor has used AI language models to assist in translation. Should you find any issues in translation, please open a bug report or a pull request so they can be fixed.
+I would like to acknowledge that Compressor has used AI language models to assist in translation. Should you find any issues in translation, please open a bug report or a pull request so they can be fixed. You can also help translate Compressor on [Crowdin](https://l.joshattic.us/rHkokL)
 
 ---
 
