@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Compressor</string>
     <string name="title_compressor">Compressor</string>
     <string name="share">Teilen</string>
     <string name="saved">Gespeichert</string>
     <string name="saving">Speichere…</string>
+    <string name="save_action">Speichern</string>
     <string name="save_to_photos">In Fotos speichern</string>
     <string name="compress_another_video">Weiteres Video komprimieren</string>
     <string name="buy_coffee">☕ Gefällt dir Compressor? Spendier mir einen Kaffee!</string>
@@ -11,7 +13,6 @@
     <string name="share_error">Teilen nicht möglich: %1$s</string>
     <string name="original">Original</string>
     <string name="estimated">Geschätzt</string>
-
     <!-- Presets -->
     <string name="preset_high">Hoch</string>
     <string name="preset_high_desc">Nur Bitrate optimiert</string>
@@ -19,8 +20,8 @@
     <string name="preset_medium_desc">1080p • 30fps</string>
     <string name="preset_low">Niedrig</string>
     <string name="preset_low_desc">720p • 30fps</string>
-
     <string name="quality_preset">Qualität</string>
+    <string name="header_quality_presets">Qualitäts-Voreinstellungen</string>
     <string name="target_size_limits">Größenbeschränkung</string>
     <string name="advanced_options">Erweiterte Optionen</string>
     <string name="target_size">Zielgröße</string>
@@ -28,20 +29,43 @@
     <string name="av1_high_efficiency">AV1 (Schnell • Effizient)</string>
     <string name="h265_efficient">H.265 (Effizient)</string>
     <string name="h264_compat">H.264 (Kompatibel)</string>
+    <string name="delete_original">Originalvideo löschen</string>
+    <string name="delete_original_success">Video erfolgreich gelöscht</string>
+    <string name="delete_original_failed">Löschen des Videos fehlgeschlagen</string>
+    <string name="delete_confirm_title">Original löschen?</string>
+    <string name="info_title">Geräte- &amp; App-Info</string>
+    <string name="info_copy_clipboard">In die Zwischenablage kopieren</string>
+    <string name="info_copied">In die Zwischenablage kopiert</string>
+    <string name="show_bitrate">Bitrate anzeigen</string>
+    <string name="bitrate_unit_mbps">Mbit/s</string>
     <string name="resolution">Auflösung</string>
+    <string name="audio_options">Audio-Optionen</string>
+    <string name="audio_bitrate">Audio-Bitrate</string>
+    <string name="volume">Lautstärke</string>
     <string name="remove_audio">Audio entfernen</string>
     <string name="framerate">Bildrate</string>
     <string name="fps_60">60fps</string>
     <string name="fps_30">30fps</string>
     <string name="start_compression">Komprimierung starten</string>
+    <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
+    <string name="warning_details">Warnungsdetails</string>
+    <string name="dismiss">Schließen</string>
+    <string name="target_size_warning">Zielgröße nicht möglich, für Infos tippen</string>
+    <string name="target_size_warning_title">Zielgröße eventuell nicht möglich</string>
+    <string name="target_size_warning_details">Einige Einstellungen müssen reduziert werden, um die gewünschte Zielgröße zu erreichen.</string>
+    <string name="accept_suggestion">Vorschlag annehmen</string>
+    <string name="accept_all">Alle annehmen</string>
+    <string name="close">Schließen</string>
     <string name="error_prefix">Fehler: %1$s</string>
     <string name="select_video">Video auswählen</string>
     <string name="add_video_desc">Video hinzufügen</string>
     <string name="total_saved">Du hast %1$s Speicherplatz mit Compressor gespart</string>
+    <string name="slider_less_space">Weniger Platz</string>
+    <string name="slider_balanced">Ausgewogen</string>
+    <string name="slider_high_quality">Höhere Qualität</string>
     <string name="compression_complete">Komprimierung abgeschlossen!</string>
     <string name="compressing_video_label">KOMPRIMIERE VIDEO</string>
     <string name="cancel">Stornieren</string>
-
     <!-- Errors -->
     <string name="error_file_lost">Datei verloren</string>
     <string name="error_export_failed">Export fehlgeschlagen: %1$s</string>
@@ -55,13 +79,6 @@
     <string name="error_encoder_config_unsupported_details">Dieses Gerät kann die gewählten Ausgabeeinstellungen nicht kodieren. Versucht: %1$s.</string>
     <string name="warning_codec_fallback_h264">Der gewählte Codec wird auf diesem Gerät für diese Ausgabe nicht unterstützt. Es wird zur Kompatibilität auf H.264 zurückgegriffen.</string>
     <string name="warning_quality_fallback">Dieses Gerät kann die gewählten Einstellungen nicht kodieren. Es wird auf H.264 mit %1$dp und %2$dfps zurückgegriffen.</string>
-
-    <string name="info_title">Geräte- &amp; App-Info</string>
-    <string name="info_copy_clipboard">In die Zwischenablage kopieren</string>
-    <string name="info_copied">In die Zwischenablage kopiert</string>
-    <string name="show_bitrate">Bitrate anzeigen</string>
-    <string name="bitrate_unit_mbps">Mbit/s</string>
-
     <!-- Size Presets -->
     <string name="size_discord">Discord</string>
     <string name="size_github">GitHub</string>
@@ -73,11 +90,10 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • Feed</string>
     <string name="size_x_premium">X Premium</string>
-
+    <string name="preset_summary_format">%1$s • %2$s • %3$s Größe • %4$s Audio</string>
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
     <string name="unit_kb">KB</string>
-
     <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
@@ -89,36 +105,22 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
-    <string name="audio_options">Audio-Optionen</string>
-    <string name="audio_bitrate">Audio-Bitrate</string>
-    <string name="volume">Lautstärke</string>
-    <string name="slider_less_space">Weniger Platz</string>
-    <string name="slider_balanced">Ausgewogen</string>
-    <string name="slider_high_quality">Höhere Qualität</string>
     <string name="compression_failed_title">Komprimierung fehlgeschlagen</string>
     <string name="compression_larger_error">Das komprimierte Video ist größer als das Original.\nDas Video ist möglicherweise bereits stark komprimiert oder hat eine sehr niedrige Bitrate.</string>
     <string name="error_huawei_muxer">Dieses Problem wird möglicherweise durch Ihr spezielles Gerät verursacht. Bitte versuchen Sie, Ihr Gerät neu zu starten.</string>
     <string name="try_again">Erneut versuchen</string>
     <string name="save_anyway">Trotzdem speichern</string>
-
     <string name="report_error">Fehler melden</string>
     <string name="error_details">Fehlerdetails</string>
     <string name="copy_logs">Protokolle kopieren</string>
     <string name="open_issue_tracker">Issue Tracker öffnen</string>
-
-    <string name="warning_hdr_tone_mapped">HDR-Video wurde in SDR umgewandelt, um Encoder-Kompatibilitätsprobleme auf diesem Gerät zu vermeiden. Verwenden Sie AV1, wenn Sie HDR beibehalten möchten.</string>
-    <string name="warning_details">Warnungsdetails</string>
-    <string name="dismiss">Schließen</string>
-    <string name="target_size_warning">Zielgröße nicht möglich, für Infos tippen</string>
-    <string name="target_size_warning_title">Zielgröße eventuell nicht möglich</string>
-    <string name="target_size_warning_details">Einige Einstellungen müssen reduziert werden, um die gewünschte Zielgröße zu erreichen.</string>
-    <string name="accept_suggestion">Vorschlag annehmen</string>
-    <string name="accept_all">Alle annehmen</string>
-    <string name="close">Schließen</string>
     <string name="view_on_github">Auf GitHub anzeigen</string>
     <string name="buy_me_a_coffee">Kauf mir einen Kaffee</string>
     <string name="open_source_licenses">Open-Source-Lizenzen</string>
-
+    <string name="info_content_desc">Info</string>
+    <string name="tab_presets">Presets</string>
+    <string name="tab_video">Video</string>
+    <string name="tab_audio">Audio</string>
     <!-- Settings Screen & i18n -->
     <string name="settings_title">Einstellungen</string>
     <string name="search_settings_hint">Einstellungen suchen</string>
@@ -131,50 +133,29 @@
     <string name="general_settings_title">Allgemein</string>
     <string name="settings_content_desc">Einstellungen</string>
     <string name="back">Zurück</string>
-
     <string name="category_general_subtitle">Auto-Speichern, Speicherort, Bitrate, Einheiten</string>
     <string name="category_display_subtitle">Auto-Speichern, Speicherort, Bitrate, Einheiten</string>
     <string name="category_presets_subtitle">Konfigurationsoptionen für Voreinstellungen</string>
     <string name="category_video_subtitle">Standard-Videoeinstellungen anpassen</string>
     <string name="category_audio_subtitle">Standard-Audioeinstellungen anpassen</string>
     <string name="version_format">Version %1$s</string>
-    
     <string name="header_basic_info">Basis-Info</string>
     <string name="header_hardware_codecs">Hardware &amp; Codecs</string>
     <string name="header_links_actions">Links &amp; Aktionen</string>
     <string name="info_app_name">App-Name</string>
     <string name="info_app_version">App-Version</string>
-    <string name="info_chipset">Chipsatz / SoC</string>
-    <string name="info_ram">Arbeitsspeicher (RAM)</string>
-    <string name="info_gpu">Grafikprozessor (GPU)</string>
-    <string name="header_device_workarounds">Gerätespezifische Anpassungen</string>
-    <string name="workaround_mediatek_vbr">MediaTek erzwungenes VBR</string>
-    <string name="workaround_pixel10_hdr">Pixel 10 Serie HDR-Tonemapping</string>
-    <string name="workaround_huawei_muxer">Huawei Muxer-Fallback</string>
-    <string name="workaround_none">Keine</string>
     <string name="codecs_supported_count">%1$d Codecs auf diesem Gerät unterstützt</string>
     <string name="enable_all_codecs">Alle Codecs aktivieren</string>
     <string name="software_encoding">Software-Kodierung</string>
-    
     <string name="header_general_options">Allgemeine Optionen</string>
     <string name="header_display_options">Anzeige-Optionen</string>
     <string name="auto_save_photos_title">Automatisch in Fotos speichern</string>
     <string name="auto_save_photos_subtitle">Komprimierte Videos automatisch in der Fotobibliothek speichern</string>
-    <string name="show_bitrate_subtitle">Bitratenwerte bei Original- und geschätzten Größen anzeigen</string>
-    <string name="bitrate_unit_mbps_subtitle">Bitrate in Mbit/s anzeigen</string>
-    <string name="bitrate_unit_kbps_subtitle">Bitrate in kbit/s anzeigen</string>
-    <string name="show_storage_saved_title">Gesparten Speicher auf Hauptseite anzeigen</string>
-    <string name="show_storage_saved_subtitle">Gesamten gesparten Speicherplatz unten auf dem Hauptbildschirm anzeigen</string>
-    <string name="show_target_size_preset_title">Zielgrößen-Voreinstellung anzeigen</string>
-    <string name="show_target_size_preset_subtitle">Registerkarte für Qualitätsvoreinstellungen während der Videoeinrichtung anzeigen</string>
-    
     <string name="output_location_title">Speicherort</string>
     <string name="output_location_default">Fotos (Filme/Compressor)</string>
     <string name="output_location_subtitle">Wo komprimierte Videos standardmäßig gespeichert werden</string>
     <string name="output_location_reset_title">Standard verwenden (Fotos)</string>
     <string name="output_location_reset_subtitle">Speicherort auf Filme/Compressor zurücksetzen</string>
-    <string name="save_to_folder">Speichern</string>
-
     <string name="filename_builder_title">Dateinameneditor</string>
     <string name="filename_builder_subtitle">Chips per Drag &amp; Drop neu anordnen, hinzufügen und entfernen.</string>
     <string name="filename_placeholder_prefix">Präfix…</string>
@@ -191,7 +172,6 @@
     <string name="filename_available_tokens_title">Tippen zum Hinzufügen</string>
     <string name="filename_preview_label">Vorschau:</string>
     <string name="filename_reset_button">Format zurücksetzen</string>
-
     <string name="token_original_name">Originalname</string>
     <string name="token_compressed">Komprimiert</string>
     <string name="token_date">Datum</string>
@@ -204,13 +184,17 @@
     <string name="token_encoding">Kodierung</string>
     <string name="token_audio_status">Audio-Status</string>
     <string name="token_preset">Voreinstellung</string>
-
-    <string name="preset_summary_format">%1$s • %2$s • %3$s Größe • %4$s Audio</string>
-
+    <string name="save_to_folder">Speichern</string>
+    <string name="show_bitrate_subtitle">Bitratenwerte bei Original- und geschätzten Größen anzeigen</string>
+    <string name="bitrate_unit_mbps_subtitle">Bitrate in Mbit/s anzeigen</string>
+    <string name="bitrate_unit_kbps_subtitle">Bitrate in kbit/s anzeigen</string>
+    <string name="show_storage_saved_title">Gesparten Speicher auf Hauptseite anzeigen</string>
+    <string name="show_storage_saved_subtitle">Gesamten gesparten Speicherplatz unten auf dem Hauptbildschirm anzeigen</string>
+    <string name="show_target_size_preset_title">Zielgrößen-Voreinstellung anzeigen</string>
+    <string name="show_target_size_preset_subtitle">Registerkarte für Qualitätsvoreinstellungen während der Videoeinrichtung anzeigen</string>
     <string name="placeholder_video_desc">Standardoptionen für Videokomprimierung und Codec kommen bald in einem zukünftigen Update.</string>
     <string name="placeholder_audio_desc">Standardoptionen für Audio-Bitrate und Kanäle kommen bald in einem zukünftigen Update.</string>
     <string name="placeholder_presets_desc">Standardoptionen für Voreinstellungen kommen bald in einem zukünftigen Update.</string>
-
     <string name="are_you_sure">Bist du sicher?</string>
     <string name="enable_all_codecs_warn_dialog">Das Aktivieren aller Codecs kann zu schlechter Leistung, Kodierungsfehlern, geschmolzenen Akkus und ungewöhnlich warmen Händen führen.</string>
     <string name="warn_battery_life">Ich HASSE gute Akkulaufzeit</string>
@@ -220,19 +204,18 @@
     <string name="warn_bug_reports">Ich werde KEINE Fehlerberichte öffnen, während dies aktiv ist</string>
     <string name="warning_count">%1$d Warnung(en) - Tippen für Details</string>
     <string name="step_away_codecs">Du bist noch %1$d Schritte vom Aktivieren aller Codecs entfernt.</string>
-    <string name="delete_original">Originalvideo löschen</string>
-    <string name="delete_original_success">Video erfolgreich gelöscht</string>
-    <string name="delete_original_failed">Löschen des Videos fehlgeschlagen</string>
-    <string name="delete_confirm_title">Original löschen?</string>
     <string name="info_device">Gerät</string>
     <string name="info_android">Android-Version</string>
+    <string name="info_chipset">Chipsatz / SoC</string>
+    <string name="info_ram">Arbeitsspeicher (RAM)</string>
+    <string name="info_gpu">Grafikprozessor (GPU)</string>
+    <string name="header_device_workarounds">Gerätespezifische Anpassungen</string>
+    <string name="workaround_mediatek_vbr">MediaTek erzwungenes VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 Serie HDR-Tonemapping</string>
+    <string name="workaround_huawei_muxer">Huawei Muxer-Fallback</string>
+    <string name="workaround_none">Keine</string>
     <string name="info_supported_codecs">Unterstützte Codecs</string>
-    <string name="info_content_desc">Info</string>
-    <string name="tab_presets">Presets</string>
-    <string name="tab_video">Video</string>
-    <string name="tab_audio">Audio</string>
     <!-- Presets Management Keys -->
-    <string name="header_quality_presets">Qualitäts-Voreinstellungen</string>
     <string name="reset_to_default">Auf Standard zurücksetzen</string>
     <string name="add_preset">Voreinstellung hinzufügen</string>
     <string name="reset_presets_to_default">Größen-Voreinstellungen zurücksetzen</string>
@@ -242,7 +225,6 @@
     <string name="edit_size_preset_title">Größen-Voreinstellung bearbeiten</string>
     <string name="preset_label_hint">Bezeichnung (z. B. Discord, E-Mail)</string>
     <string name="target_size_mb_hint">Zielgröße (in MB)</string>
-    <string name="save_action">Speichern</string>
     <!-- Video & Audio Settings Keys -->
     <string name="header_default_video_options">Standard-Video-Optionen</string>
     <string name="header_default_audio_options">Standard-Audio-Optionen</string>
@@ -257,7 +239,6 @@
     <string name="default_audio_volume">Standard-Audiolautstärke</string>
     <string name="reset_video_defaults">Video-Standards zurücksetzen</string>
     <string name="reset_audio_defaults">Audio-Standards zurücksetzen</string>
-
     <!-- What's New Dialog -->
     <string name="whats_new_title">Was gibt\'s Neues in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Compressor</string>
     <string name="title_compressor">Compressor</string>
@@ -12,14 +13,13 @@
     <string name="share_error">無法分享：%1$s</string>
     <string name="original">原始影片</string>
     <string name="estimated">預估</string>
-
+    <!-- Presets -->
     <string name="preset_high">高畫質</string>
     <string name="preset_high_desc">僅優化位元率</string>
     <string name="preset_medium">中等</string>
     <string name="preset_medium_desc">1080p • 30fps</string>
     <string name="preset_low">順暢</string>
     <string name="preset_low_desc">720p • 30fps</string>
-
     <string name="quality_preset">畫質預設</string>
     <string name="header_quality_presets">畫質預設</string>
     <string name="target_size_limits">大小限制預設</string>
@@ -29,18 +29,15 @@
     <string name="av1_high_efficiency">AV1 (快速 • 高效)</string>
     <string name="h265_efficient">H.265 (高效)</string>
     <string name="h264_compat">H.264 (相容)</string>
-
     <string name="delete_original">刪除原始影片</string>
     <string name="delete_original_success">原始影片已成功刪除</string>
     <string name="delete_original_failed">刪除影片失敗</string>
     <string name="delete_confirm_title">確認刪除原始影片？</string>
-
     <string name="info_title">裝置與應用程式資訊</string>
     <string name="info_copy_clipboard">複製至剪貼簿</string>
     <string name="info_copied">已複製至剪貼簿</string>
     <string name="show_bitrate">顯示位元率</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-
     <string name="resolution">解析度</string>
     <string name="audio_options">音訊選項</string>
     <string name="audio_bitrate">音訊位元率</string>
@@ -59,20 +56,17 @@
     <string name="accept_suggestion">接受建議</string>
     <string name="accept_all">全部接受</string>
     <string name="close">關閉</string>
-
     <string name="error_prefix">錯誤：%1$s</string>
     <string name="select_video">選擇要壓縮的影片</string>
     <string name="add_video_desc">新增影片</string>
     <string name="total_saved">您已透過 Compressor 節省了 %1$s 儲存空間</string>
-
     <string name="slider_less_space">更小容量</string>
     <string name="slider_balanced">平衡</string>
     <string name="slider_high_quality">更高畫質</string>
-
     <string name="compression_complete">壓縮完成！</string>
     <string name="compressing_video_label">正在壓縮影片</string>
     <string name="cancel">取消</string>
-
+    <!-- Errors -->
     <string name="error_file_lost">檔案遺失</string>
     <string name="error_export_failed">匯出失敗：%1$s</string>
     <string name="error_save_failed">儲存失敗：%1$s</string>
@@ -85,7 +79,7 @@
     <string name="error_encoder_config_unsupported_details">此裝置無法編碼選定的輸出設定。嘗試了：%1$s。</string>
     <string name="warning_codec_fallback_h264">您選定的編解碼器在此裝置的此輸出中不受支援。正在回退到 H.264 以保證相容性。</string>
     <string name="warning_quality_fallback">此裝置無法編碼您選定的設定。正在回退到 %1$dp 和 %2$dfps 的 H.264。</string>
-
+    <!-- Size Presets -->
     <string name="size_discord">Discord</string>
     <string name="size_github">GitHub</string>
     <string name="size_email">電子郵件</string>
@@ -96,11 +90,11 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • 動態</string>
     <string name="size_x_premium">X Premium</string>
-
+    <string name="preset_summary_format">%1$s • %2$s • 大小 %3$s • 音訊 %4$s</string>
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
     <string name="unit_kb">KB</string>
-
+    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
@@ -111,13 +105,11 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
-
     <string name="compression_failed_title">壓縮失敗</string>
     <string name="compression_larger_error">壓縮後的影片比原影片大。\n該影片可能已經高度壓縮，或者位元率非常低。</string>
     <string name="error_huawei_muxer">此問題可能是由您的特定裝置引起的。請嘗試重啟裝置。</string>
     <string name="try_again">重試</string>
     <string name="save_anyway">仍要儲存</string>
-
     <string name="report_error">回報錯誤</string>
     <string name="error_details">錯誤詳情</string>
     <string name="copy_logs">複製紀錄</string>
@@ -125,7 +117,10 @@
     <string name="view_on_github">在 GitHub 上檢視</string>
     <string name="buy_me_a_coffee">請我喝杯咖啡</string>
     <string name="open_source_licenses">開放原始碼授權條款</string>
-
+    <string name="info_content_desc">資訊</string>
+    <string name="tab_presets">預設</string>
+    <string name="tab_video">影片</string>
+    <string name="tab_audio">音訊</string>
     <!-- Settings Screen & i18n -->
     <string name="settings_title">設定</string>
     <string name="search_settings_hint">搜尋設定</string>
@@ -138,50 +133,29 @@
     <string name="general_settings_title">一般</string>
     <string name="settings_content_desc">設定</string>
     <string name="back">返回</string>
-
     <string name="category_general_subtitle">自動儲存、儲存位置、位元率、單位</string>
     <string name="category_display_subtitle">自動儲存、儲存位置、位元率、單位</string>
     <string name="category_presets_subtitle">預設設定選項</string>
     <string name="category_video_subtitle">影片壓縮與編解碼器選項</string>
     <string name="category_audio_subtitle">音訊位元率與聲道選項</string>
     <string name="version_format">版本 %1$s</string>
-    
     <string name="header_basic_info">基本資訊</string>
     <string name="header_hardware_codecs">硬體與編解碼器</string>
     <string name="header_links_actions">連結與操作</string>
     <string name="info_app_name">應用程式名稱</string>
     <string name="info_app_version">應用程式版本</string>
-    <string name="info_chipset">晶片 / SoC</string>
-    <string name="info_ram">記憶體 (RAM)</string>
-    <string name="info_gpu">圖形處理器 (GPU)</string>
-    <string name="header_device_workarounds">特定裝置相容性修正</string>
-    <string name="workaround_mediatek_vbr">聯發科 (MediaTek) 強制 VBR</string>
-    <string name="workaround_pixel10_hdr">Pixel 10 系列 HDR 色彩對映修正</string>
-    <string name="workaround_huawei_muxer">華為 (Huawei) 混流器降級修正</string>
-    <string name="workaround_none">無</string>
     <string name="codecs_supported_count">此裝置支援 %1$d 個編解碼器</string>
     <string name="enable_all_codecs">開啟所有編解碼器</string>
     <string name="software_encoding">軟體編碼</string>
-    
     <string name="header_general_options">一般選項</string>
     <string name="header_display_options">顯示選項</string>
     <string name="auto_save_photos_title">自動儲存</string>
     <string name="auto_save_photos_subtitle">壓縮完成後自動儲存影片</string>
-    <string name="show_bitrate_subtitle">在原影片與預估大小處顯示位元率數值</string>
-    <string name="bitrate_unit_mbps_subtitle">以 Mbps 為單位顯示位元率</string>
-    <string name="bitrate_unit_kbps_subtitle">以 kbps 為單位顯示位元率</string>
-    <string name="show_storage_saved_title">在主頁顯示已節省空間</string>
-    <string name="show_storage_saved_subtitle">在主螢幕底部顯示累計節省的總儲存空間</string>
-    <string name="show_target_size_preset_title">顯示目標大小預設</string>
-    <string name="show_target_size_preset_subtitle">在影片設定期間顯示畫質預設分頁</string>
-    
     <string name="output_location_title">儲存位置</string>
     <string name="output_location_default">相簿 (Movies/Compressor)</string>
     <string name="output_location_subtitle">壓縮後的影片預設儲存目錄</string>
     <string name="output_location_reset_title">使用預設（相片）</string>
     <string name="output_location_reset_subtitle">重置儲存位置為 電影/Compressor</string>
-    <string name="save_to_folder">儲存</string>
-
     <string name="filename_builder_title">檔名建立器</string>
     <string name="filename_builder_subtitle">拖放標籤進行重新排序、新增與移除。</string>
     <string name="filename_placeholder_prefix">前綴…</string>
@@ -198,7 +172,6 @@
     <string name="filename_available_tokens_title">點擊添加標籤</string>
     <string name="filename_preview_label">預覽：</string>
     <string name="filename_reset_button">重置檔名格式</string>
-
     <string name="token_original_name">原檔名</string>
     <string name="token_compressed">已壓縮</string>
     <string name="token_date">日期</string>
@@ -211,13 +184,17 @@
     <string name="token_encoding">編碼</string>
     <string name="token_audio_status">音訊狀態</string>
     <string name="token_preset">預設</string>
-
-    <string name="preset_summary_format">%1$s • %2$s • 大小 %3$s • 音訊 %4$s</string>
-
+    <string name="save_to_folder">儲存</string>
+    <string name="show_bitrate_subtitle">在原影片與預估大小處顯示位元率數值</string>
+    <string name="bitrate_unit_mbps_subtitle">以 Mbps 為單位顯示位元率</string>
+    <string name="bitrate_unit_kbps_subtitle">以 kbps 為單位顯示位元率</string>
+    <string name="show_storage_saved_title">在主頁顯示已節省空間</string>
+    <string name="show_storage_saved_subtitle">在主螢幕底部顯示累計節省的總儲存空間</string>
+    <string name="show_target_size_preset_title">顯示目標大小預設</string>
+    <string name="show_target_size_preset_subtitle">在影片設定期間顯示畫質預設分頁</string>
     <string name="placeholder_video_desc">影片壓縮與編解碼器預設選項將在未來的更新中推出。</string>
     <string name="placeholder_audio_desc">音訊位元率與聲道預設選項將在未来的更新中推出。</string>
     <string name="placeholder_presets_desc">預設設定預設選項將在未來的更新中推出。</string>
-
     <string name="are_you_sure">確定要繼續嗎？</string>
     <string name="enable_all_codecs_warn_dialog">開啟所有編解碼器可能會導致效能下降、編碼失敗、電池發熱嚴重等問題。</string>
     <string name="warn_battery_life">我不介意電池續航降低</string>
@@ -229,12 +206,15 @@
     <string name="step_away_codecs">還需點擊 %1$d 次即可開啟所有編解碼器。</string>
     <string name="info_device">裝置</string>
     <string name="info_android">Android 系統</string>
+    <string name="info_chipset">晶片 / SoC</string>
+    <string name="info_ram">記憶體 (RAM)</string>
+    <string name="info_gpu">圖形處理器 (GPU)</string>
+    <string name="header_device_workarounds">特定裝置相容性修正</string>
+    <string name="workaround_mediatek_vbr">聯發科 (MediaTek) 強制 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 系列 HDR 色彩對映修正</string>
+    <string name="workaround_huawei_muxer">華為 (Huawei) 混流器降級修正</string>
+    <string name="workaround_none">無</string>
     <string name="info_supported_codecs">支援的編解碼器</string>
-    <string name="info_content_desc">資訊</string>
-    <string name="tab_presets">預設</string>
-    <string name="tab_video">影片</string>
-    <string name="tab_audio">音訊</string>
-
     <!-- Presets Management Keys -->
     <string name="reset_to_default">恢復預設設定</string>
     <string name="add_preset">添加預設</string>
@@ -245,7 +225,6 @@
     <string name="edit_size_preset_title">編輯大小預設</string>
     <string name="preset_label_hint">預設標籤（如 Discord, Email）</string>
     <string name="target_size_mb_hint">目標大小（單位：MB）</string>
-
     <!-- Video & Audio Settings Keys -->
     <string name="header_default_video_options">預設影片選項</string>
     <string name="header_default_audio_options">預設音訊選項</string>
@@ -260,7 +239,6 @@
     <string name="default_audio_volume">預設音量</string>
     <string name="reset_video_defaults">重置影片預設值</string>
     <string name="reset_audio_defaults">重置音訊預設值</string>
-
     <!-- What's New Dialog -->
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>

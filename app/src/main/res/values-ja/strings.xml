@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Compressor</string>
     <string name="title_compressor">Compressor</string>
     <string name="share">共有</string>
     <string name="saved">保存済み</string>
     <string name="saving">保存中…</string>
+    <string name="save_action">保存</string>
     <string name="save_to_photos">写真に保存</string>
     <string name="compress_another_video">別の動画を圧縮</string>
     <string name="buy_coffee">☕ Compressorを気に入っていただけましたか？コーヒーを一杯奢る</string>
@@ -11,15 +13,15 @@
     <string name="share_error">共有できません: %1$s</string>
     <string name="original">元サイズ</string>
     <string name="estimated">予想サイズ</string>
-
+    <!-- Presets -->
     <string name="preset_high">高画質</string>
     <string name="preset_high_desc">ビットレートのみ最適化</string>
     <string name="preset_medium">中画質</string>
     <string name="preset_medium_desc">1080p • 30fps</string>
     <string name="preset_low">低画質</string>
     <string name="preset_low_desc">720p • 30fps</string>
-
     <string name="quality_preset">画質プリセット</string>
+    <string name="header_quality_presets">画質プリセット</string>
     <string name="target_size_limits">サイズ制限プリセット</string>
     <string name="advanced_options">詳細設定</string>
     <string name="target_size">目標サイズ</string>
@@ -27,18 +29,15 @@
     <string name="av1_high_efficiency">AV1 (高速 • 高効率)</string>
     <string name="h265_efficient">H.265 (高効率)</string>
     <string name="h264_compat">H.264 (互換性重視)</string>
-
     <string name="delete_original">元の動画を削除</string>
     <string name="delete_original_success">動画を正常に削除しました</string>
     <string name="delete_original_failed">動画の削除に失敗しました</string>
     <string name="delete_confirm_title">元の動画を削除しますか？</string>
-
     <string name="info_title">端末およびアプリ情報</string>
     <string name="info_copy_clipboard">クリップボードにコピー</string>
     <string name="info_copied">クリップボードにコピーしました</string>
     <string name="show_bitrate">ビットレートを表示</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-
     <string name="resolution">解像度</string>
     <string name="audio_options">音声設定</string>
     <string name="audio_bitrate">音声ビットレート</string>
@@ -57,20 +56,17 @@
     <string name="accept_suggestion">提案を受け入れる</string>
     <string name="accept_all">すべて受け入れる</string>
     <string name="close">閉じる</string>
-
     <string name="error_prefix">エラー: %1$s</string>
     <string name="select_video">圧縮する動画を選択</string>
     <string name="add_video_desc">動画を追加</string>
     <string name="total_saved">Compressorで合計 %1$s 節約しました</string>
-
     <string name="slider_less_space">容量重視</string>
     <string name="slider_balanced">バランス</string>
     <string name="slider_high_quality">画質重視</string>
-
     <string name="compression_complete">圧縮完了！</string>
     <string name="compressing_video_label">動画を圧縮中</string>
     <string name="cancel">キャンセル</string>
-
+    <!-- Errors -->
     <string name="error_file_lost">ファイルが見つかりません</string>
     <string name="error_export_failed">エクスポート失敗: %1$s</string>
     <string name="error_save_failed">保存に失敗しました: %1$s</string>
@@ -83,7 +79,7 @@
     <string name="error_encoder_config_unsupported_details">この端末は選択された出力設定をエンコードできません。試行： %1$s。</string>
     <string name="warning_codec_fallback_h264">選択されたコーデックはこの端末の出力でサポートされていません。互換性のためにH.264にフォールバックします。</string>
     <string name="warning_quality_fallback">お使いの端末は選択された設定をエンコードできません。%1$dp、%2$dfpsのH.264にフォールバックします。</string>
-
+    <!-- Size Presets -->
     <string name="size_discord">Discord</string>
     <string name="size_github">GitHub</string>
     <string name="size_email">メール</string>
@@ -94,11 +90,11 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • フィード</string>
     <string name="size_x_premium">X Premium</string>
-
+    <string name="preset_summary_format">%1$s • %2$s • サイズ %3$s • 音声 %4$s</string>
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
     <string name="unit_kb">KB</string>
-
+    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
@@ -109,13 +105,11 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
-
     <string name="compression_failed_title">圧縮に失敗しました</string>
     <string name="compression_larger_error">圧縮後のビデオが元のビデオより大きくなっています。\nビデオがすでに高度に圧縮されているか、ビットレートが非常に低い可能性があります。</string>
     <string name="error_huawei_muxer">この問題は、お使いの特定の端末が原因である可能性があります。端末を再起動してみてください。</string>
     <string name="try_again">再試行</string>
     <string name="save_anyway">強制保存</string>
-
     <string name="report_error">エラーを報告</string>
     <string name="error_details">エラーの詳細</string>
     <string name="copy_logs">ログをコピー</string>
@@ -123,7 +117,10 @@
     <string name="view_on_github">GitHub で見る</string>
     <string name="buy_me_a_coffee">コーヒーをご馳走する</string>
     <string name="open_source_licenses">オープンソースライセンス</string>
-
+    <string name="info_content_desc">情報</string>
+    <string name="tab_presets">プリセット</string>
+    <string name="tab_video">動画</string>
+    <string name="tab_audio">音声</string>
     <!-- Settings Screen & i18n -->
     <string name="settings_title">設定</string>
     <string name="search_settings_hint">設定を検索</string>
@@ -136,50 +133,29 @@
     <string name="general_settings_title">一般</string>
     <string name="settings_content_desc">設定</string>
     <string name="back">戻る</string>
-
     <string name="category_general_subtitle">自動保存、保存先、ビットレート、単位</string>
     <string name="category_display_subtitle">自動保存、保存先、ビットレート、単位</string>
     <string name="category_presets_subtitle">プリセット設定オプション</string>
     <string name="category_video_subtitle">デフォルトの動画設定を調整</string>
     <string name="category_audio_subtitle">デフォルトの音声設定を調整</string>
     <string name="version_format">バージョン %1$s</string>
-    
     <string name="header_basic_info">基本情報</string>
     <string name="header_hardware_codecs">ハードウェアとコーデック</string>
     <string name="header_links_actions">リンクとアクション</string>
     <string name="info_app_name">アプリ名</string>
     <string name="info_app_version">アプリのバージョン</string>
-    <string name="info_chipset">チップセット / SoC</string>
-    <string name="info_ram">RAM</string>
-    <string name="info_gpu">GPU</string>
-    <string name="header_device_workarounds">端末固有の回避策</string>
-    <string name="workaround_mediatek_vbr">MediaTek 強制 VBR</string>
-    <string name="workaround_pixel10_hdr">Pixel 10 シリーズ HDR トーンマップ</string>
-    <string name="workaround_huawei_muxer">Huawei ミキサーフォールバック</string>
-    <string name="workaround_none">なし</string>
     <string name="codecs_supported_count">この端末で %1$d 個のコーデックに対応しています</string>
     <string name="enable_all_codecs">すべてのコーデックを有効化</string>
     <string name="software_encoding">ソフトウェアエンコード</string>
-    
     <string name="header_general_options">一般設定</string>
     <string name="header_display_options">表示設定</string>
     <string name="auto_save_photos_title">写真に自動保存</string>
     <string name="auto_save_photos_subtitle">圧縮された動画を写真ライブラリに自動的に保存します</string>
-    <string name="show_bitrate_subtitle">元サイズと予想サイズにビットレートを表示</string>
-    <string name="bitrate_unit_mbps_subtitle">ビットレートをMbpsで表示</string>
-    <string name="bitrate_unit_kbps_subtitle">ビットレートをkbpsで表示</string>
-    <string name="show_storage_saved_title">メイン画面に節約容量を表示</string>
-    <string name="show_storage_saved_subtitle">メイン画面の下部に節約された合計ストレージ容量を表示</string>
-    <string name="show_target_size_preset_title">目標サイズプリセットを表示</string>
-    <string name="show_target_size_preset_subtitle">動画設定時に画質プリセットタブを表示</string>
-    
     <string name="output_location_title">保存先</string>
     <string name="output_location_default">写真 (Movies/Compressor)</string>
     <string name="output_location_subtitle">圧縮した動画のデフォルト保存先</string>
     <string name="output_location_reset_title">デフォルトを使用 (写真)</string>
     <string name="output_location_reset_subtitle">保存場所を Movies/Compressor にリセット</string>
-    <string name="save_to_folder">保存</string>
-
     <string name="filename_builder_title">ファイル名ビルダー</string>
     <string name="filename_builder_subtitle">チップをドラッグ＆ドロップして並べ替え、追加、削除します。</string>
     <string name="filename_placeholder_prefix">接頭辞…</string>
@@ -196,7 +172,6 @@
     <string name="filename_available_tokens_title">タップしてチップを追加</string>
     <string name="filename_preview_label">プレビュー:</string>
     <string name="filename_reset_button">ファイル名フォーマットをリセット</string>
-
     <string name="token_original_name">元の名前</string>
     <string name="token_compressed">圧縮済み</string>
     <string name="token_date">日付</string>
@@ -209,13 +184,17 @@
     <string name="token_encoding">エンコード</string>
     <string name="token_audio_status">音声ステータス</string>
     <string name="token_preset">プリセット</string>
-
-    <string name="preset_summary_format">%1$s • %2$s • サイズ %3$s • 音声 %4$s</string>
-
+    <string name="save_to_folder">保存</string>
+    <string name="show_bitrate_subtitle">元サイズと予想サイズにビットレートを表示</string>
+    <string name="bitrate_unit_mbps_subtitle">ビットレートをMbpsで表示</string>
+    <string name="bitrate_unit_kbps_subtitle">ビットレートをkbpsで表示</string>
+    <string name="show_storage_saved_title">メイン画面に節約容量を表示</string>
+    <string name="show_storage_saved_subtitle">メイン画面の下部に節約された合計ストレージ容量を表示</string>
+    <string name="show_target_size_preset_title">目標サイズプリセットを表示</string>
+    <string name="show_target_size_preset_subtitle">動画設定時に画質プリセットタブを表示</string>
     <string name="placeholder_video_desc">動画圧縮およびコーデックのデフォルト設定は今後のアップデートで追加予定です。</string>
     <string name="placeholder_audio_desc">音声ビットレートおよびチャンネルのデフォルト設定は今後のアップデートで追加予定です。</string>
     <string name="placeholder_presets_desc">プリセット構成のデフォルト設定は今後のアップデートで追加予定です。</string>
-
     <string name="are_you_sure">本当に実行しますか？</string>
     <string name="enable_all_codecs_warn_dialog">すべてのコーデックを有効にすると、パフォーマンス低下、エンコード失敗、バッテリーの発熱や過度な端末の発熱を引き起こす可能性があります。</string>
     <string name="warn_battery_life">バッテリー持ちが悪くなっても気にしない</string>
@@ -227,13 +206,16 @@
     <string name="step_away_codecs">すべてのコーデックを有効にするまであと %1$d 回タップしてください。</string>
     <string name="info_device">端末</string>
     <string name="info_android">Android</string>
+    <string name="info_chipset">チップセット / SoC</string>
+    <string name="info_ram">RAM</string>
+    <string name="info_gpu">GPU</string>
+    <string name="header_device_workarounds">端末固有の回避策</string>
+    <string name="workaround_mediatek_vbr">MediaTek 強制 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 シリーズ HDR トーンマップ</string>
+    <string name="workaround_huawei_muxer">Huawei ミキサーフォールバック</string>
+    <string name="workaround_none">なし</string>
     <string name="info_supported_codecs">対応コーデック</string>
-    <string name="info_content_desc">情報</string>
-    <string name="tab_presets">プリセット</string>
-    <string name="tab_video">動画</string>
-    <string name="tab_audio">音声</string>
     <!-- Presets Management Keys -->
-    <string name="header_quality_presets">画質プリセット</string>
     <string name="reset_to_default">デフォルトに戻す</string>
     <string name="add_preset">プリセットを追加</string>
     <string name="reset_presets_to_default">サイズプリセットをリセット</string>
@@ -243,7 +225,6 @@
     <string name="edit_size_preset_title">サイズプリセットを編集</string>
     <string name="preset_label_hint">プリセット名 (例: Discord, メール)</string>
     <string name="target_size_mb_hint">目標サイズ (MB)</string>
-    <string name="save_action">保存</string>
     <!-- Video & Audio Settings Keys -->
     <string name="header_default_video_options">デフォルト動画設定</string>
     <string name="header_default_audio_options">デフォルト音声設定</string>
@@ -258,7 +239,6 @@
     <string name="default_audio_volume">デフォルト音量</string>
     <string name="reset_video_defaults">動画デフォルトをリセット</string>
     <string name="reset_audio_defaults">音声デフォルトをリセット</string>
-
     <!-- What's New Dialog -->
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>

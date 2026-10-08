@@ -1,9 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Compressor</string>
     <string name="title_compressor">Compressor</string>
     <string name="share">공유</string>
     <string name="saved">저장됨</string>
     <string name="saving">저장 중…</string>
+    <string name="save_action">저장</string>
     <string name="save_to_photos">사진에 저장</string>
     <string name="compress_another_video">다른 비디오 압축</string>
     <string name="buy_coffee">☕ Compressor가 마음에 드시나요? 커피 한 잔 사주기!</string>
@@ -11,15 +13,15 @@
     <string name="share_error">공유할 수 없음: %1$s</string>
     <string name="original">원본</string>
     <string name="estimated">예상</string>
-
+    <!-- Presets -->
     <string name="preset_high">높음</string>
     <string name="preset_high_desc">비트레이트만 최적화</string>
     <string name="preset_medium">중간</string>
     <string name="preset_medium_desc">1080p • 30fps</string>
     <string name="preset_low">낮음</string>
     <string name="preset_low_desc">720p • 30fps</string>
-
     <string name="quality_preset">화질 프리셋</string>
+    <string name="header_quality_presets">화질 프리셋</string>
     <string name="target_size_limits">목표 크기 프리셋</string>
     <string name="advanced_options">고급 옵션</string>
     <string name="target_size">목표 크기</string>
@@ -27,18 +29,15 @@
     <string name="av1_high_efficiency">AV1 (빠름 • 고효율)</string>
     <string name="h265_efficient">H.265 (고효율)</string>
     <string name="h264_compat">H.264 (호환성)</string>
-
     <string name="delete_original">원본 비디오 삭제</string>
     <string name="delete_original_success">비디오가 성공적으로 삭제되었습니다</string>
     <string name="delete_original_failed">비디오 삭제 실패</string>
     <string name="delete_confirm_title">원본을 삭제하시겠습니까?</string>
-
     <string name="info_title">기기 및 앱 정보</string>
     <string name="info_copy_clipboard">클립보드에 복사</string>
     <string name="info_copied">클립보드에 복사됨</string>
     <string name="show_bitrate">비트레이트 표시</string>
     <string name="bitrate_unit_mbps">Mbps</string>
-
     <string name="resolution">해상도</string>
     <string name="audio_options">오디오 옵션</string>
     <string name="audio_bitrate">오디오 비트레이트</string>
@@ -51,23 +50,20 @@
     <string name="warning_hdr_tone_mapped">이 기기의 인코더 호환성 문제를 방지하기 위해 HDR 비디오가 SDR로 톤 매핑되었습니다. HDR을 유지하려면 AV1을 사용하세요.</string>
     <string name="warning_details">경고 상세 정보</string>
     <string name="dismiss">닫기</string>
-
     <string name="error_prefix">오류: %1$s</string>
     <string name="select_video">압축할 비디오 선택</string>
     <string name="add_video_desc">비디오 추가</string>
     <string name="total_saved">Compressor로 총 %1$s 의 저장 공간을 절약했습니다</string>
-
     <string name="slider_less_space">용량 절약</string>
     <string name="slider_balanced">균형</string>
     <string name="slider_high_quality">고화질</string>
-
     <string name="compression_complete">압축 완료!</string>
     <string name="compressing_video_label">비디오 압축 중</string>
     <string name="cancel">취소</string>
-
+    <!-- Errors -->
     <string name="error_file_lost">파일을 찾을 수 없음</string>
     <string name="error_export_failed">내보내기 실패: %1$s</string>
-
+    <!-- Size Presets -->
     <string name="size_discord">Discord</string>
     <string name="size_github">GitHub</string>
     <string name="size_email">이메일</string>
@@ -78,11 +74,11 @@
     <string name="size_whatsapp">WhatsApp • Telegram</string>
     <string name="size_tg_premium">TG Premium • 피드</string>
     <string name="size_x_premium">X Premium</string>
-
+    <string name="preset_summary_format">%1$s • %2$s • 크기 %3$s • 오디오 %4$s</string>
     <string name="unit_gb">GB</string>
     <string name="unit_mb">MB</string>
     <string name="unit_kb">KB</string>
-
+    <!-- Resolutions -->
     <string name="res_8k">8K</string>
     <string name="res_4k">4K</string>
     <string name="res_2k">2K</string>
@@ -93,11 +89,9 @@
     <string name="res_three_quarters">¾</string>
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
-
     <string name="compression_failed_title">압축 실패</string>
     <string name="try_again">다시 시도</string>
     <string name="save_anyway">강제 저장</string>
-
     <string name="report_error">오류 보고</string>
     <string name="error_details">오류 상세 정보</string>
     <string name="copy_logs">로그 복사</string>
@@ -105,7 +99,10 @@
     <string name="view_on_github">GitHub에서 보기</string>
     <string name="buy_me_a_coffee">커피 한 잔 사주기</string>
     <string name="open_source_licenses">오픈소스 라이선스</string>
-
+    <string name="info_content_desc">정보</string>
+    <string name="tab_presets">프리셋</string>
+    <string name="tab_video">비디오</string>
+    <string name="tab_audio">오디오</string>
     <!-- Settings Screen & i18n -->
     <string name="settings_title">설정</string>
     <string name="search_settings_hint">설정 검색</string>
@@ -118,50 +115,29 @@
     <string name="general_settings_title">일반</string>
     <string name="settings_content_desc">설정</string>
     <string name="back">뒤로</string>
-
     <string name="category_general_subtitle">자동 저장, 저장 위치, 비트레이트, 단위</string>
     <string name="category_display_subtitle">자동 저장, 저장 위치, 비트레이트, 단위</string>
     <string name="category_presets_subtitle">프리셋 구성 옵션</string>
     <string name="category_video_subtitle">기본 비디오 설정 조정</string>
     <string name="category_audio_subtitle">기본 오디오 설정 조정</string>
     <string name="version_format">버전 %1$s</string>
-    
     <string name="header_basic_info">기본 정보</string>
     <string name="header_hardware_codecs">하드웨어 및 코덱</string>
     <string name="header_links_actions">링크 및 작업</string>
     <string name="info_app_name">앱 이름</string>
     <string name="info_app_version">앱 버전</string>
-    <string name="info_chipset">칩셋 / SoC</string>
-    <string name="info_ram">RAM</string>
-    <string name="info_gpu">GPU</string>
-    <string name="header_device_workarounds">기기 전용 패치</string>
-    <string name="workaround_mediatek_vbr">MediaTek 강제 VBR</string>
-    <string name="workaround_pixel10_hdr">Pixel 10 시리즈 HDR 톤 매핑</string>
-    <string name="workaround_huawei_muxer">Huawei 믹서 폴백</string>
-    <string name="workaround_none">없음</string>
     <string name="codecs_supported_count">이 기기에서 %1$d개의 코덱을 지원합니다</string>
     <string name="enable_all_codecs">모든 코덱 활성화</string>
     <string name="software_encoding">소프트웨어 인코딩</string>
-    
     <string name="header_general_options">일반 옵션</string>
     <string name="header_display_options">디스플레이 옵션</string>
     <string name="auto_save_photos_title">사진에 자동으로 저장</string>
     <string name="auto_save_photos_subtitle">압축된 비디오를 사진 라이브러리에 자동으로 저장합니다</string>
-    <string name="show_bitrate_subtitle">원본 및 예상 크기에 비트레이트 값 표시</string>
-    <string name="bitrate_unit_mbps_subtitle">비트레이트를 Mbps 단위로 표시</string>
-    <string name="bitrate_unit_kbps_subtitle">비트레이트를 kbps 단위로 표시</string>
-    <string name="show_storage_saved_title">메인 페이지에 절약 용량 표시</string>
-    <string name="show_storage_saved_subtitle">메인 화면 하단에 총 절약된 저장 공간 표시</string>
-    <string name="show_target_size_preset_title">목표 크기 프리셋 표시</string>
-    <string name="show_target_size_preset_subtitle">비디오 설정 중 화질 프리셋 탭 표시</string>
-    
     <string name="output_location_title">저장 위치</string>
     <string name="output_location_default">사진 (Movies/Compressor)</string>
     <string name="output_location_subtitle">압축된 비디오가 기본으로 저장되는 위치</string>
     <string name="output_location_reset_title">기본값 사용 (사진)</string>
     <string name="output_location_reset_subtitle">저장 위치를 Movies/Compressor로 재설정</string>
-    <string name="save_to_folder">저장</string>
-
     <string name="filename_builder_title">파일 이름 작성기</string>
     <string name="filename_builder_subtitle">칩을 드래그 앤 드롭하여 재정렬, 추가 및 제거합니다.</string>
     <string name="filename_placeholder_prefix">접두사…</string>
@@ -174,7 +150,6 @@
     <string name="filename_all_chips_added">사용 가능한 모든 칩이 추가되었습니다.</string>
     <string name="filename_preview_label">미리보기:</string>
     <string name="filename_reset_button">파일 이름 형식 재설정</string>
-
     <string name="token_original_name">원본 이름</string>
     <string name="token_compressed">압축됨</string>
     <string name="token_date">날짜</string>
@@ -187,13 +162,17 @@
     <string name="token_encoding">인코딩</string>
     <string name="token_audio_status">오디오 상태</string>
     <string name="token_preset">프리셋</string>
-
-    <string name="preset_summary_format">%1$s • %2$s • 크기 %3$s • 오디오 %4$s</string>
-
+    <string name="save_to_folder">저장</string>
+    <string name="show_bitrate_subtitle">원본 및 예상 크기에 비트레이트 값 표시</string>
+    <string name="bitrate_unit_mbps_subtitle">비트레이트를 Mbps 단위로 표시</string>
+    <string name="bitrate_unit_kbps_subtitle">비트레이트를 kbps 단위로 표시</string>
+    <string name="show_storage_saved_title">메인 페이지에 절약 용량 표시</string>
+    <string name="show_storage_saved_subtitle">메인 화면 하단에 총 절약된 저장 공간 표시</string>
+    <string name="show_target_size_preset_title">목표 크기 프리셋 표시</string>
+    <string name="show_target_size_preset_subtitle">비디오 설정 중 화질 프리셋 탭 표시</string>
     <string name="placeholder_video_desc">비디오 압축 및 코덱 기본 옵션은 향후 업데이트에 제공될 예정입니다.</string>
     <string name="placeholder_audio_desc">오디오 비트레이트 및 채널 기본 옵션은 향후 업데이트에 제공될 예정입니다.</string>
     <string name="placeholder_presets_desc">프리셋 구성 기본 옵션은 향후 업데이트에 제공될 예정입니다.</string>
-
     <string name="are_you_sure">진짜 실행하시겠습니까?</string>
     <string name="enable_all_codecs_warn_dialog">모든 코덱을 활성화하면 성능 저하, 인코딩 실패, 배터리 소모 및 기기 발열이 발생할 수 있습니다.</string>
     <string name="warn_battery_life">배터리 수명이 줄어들어도 상관없음</string>
@@ -205,13 +184,16 @@
     <string name="step_away_codecs">모든 코덱을 활성화하려면 %1$d번 더 탭하세요.</string>
     <string name="info_device">기기</string>
     <string name="info_android">Android</string>
+    <string name="info_chipset">칩셋 / SoC</string>
+    <string name="info_ram">RAM</string>
+    <string name="info_gpu">GPU</string>
+    <string name="header_device_workarounds">기기 전용 패치</string>
+    <string name="workaround_mediatek_vbr">MediaTek 강제 VBR</string>
+    <string name="workaround_pixel10_hdr">Pixel 10 시리즈 HDR 톤 매핑</string>
+    <string name="workaround_huawei_muxer">Huawei 믹서 폴백</string>
+    <string name="workaround_none">없음</string>
     <string name="info_supported_codecs">지원 코덱</string>
-    <string name="info_content_desc">정보</string>
-    <string name="tab_presets">프리셋</string>
-    <string name="tab_video">비디오</string>
-    <string name="tab_audio">오디오</string>
     <!-- Presets Management Keys -->
-    <string name="header_quality_presets">화질 프리셋</string>
     <string name="reset_to_default">기본값으로 초기화</string>
     <string name="add_preset">프리셋 추가</string>
     <string name="reset_presets_to_default">크기 프리셋 초기화</string>
@@ -221,7 +203,6 @@
     <string name="edit_size_preset_title">크기 프리셋 편집</string>
     <string name="preset_label_hint">프리셋 이름 (예: Discord, 이메일)</string>
     <string name="target_size_mb_hint">목표 크기 (MB 단위)</string>
-    <string name="save_action">저장</string>
     <!-- Video & Audio Settings Keys -->
     <string name="header_default_video_options">기본 비디오 옵션</string>
     <string name="header_default_audio_options">기본 오디오 옵션</string>
@@ -236,7 +217,6 @@
     <string name="default_audio_volume">기본 오디오 볼륨</string>
     <string name="reset_video_defaults">비디오 기본값 초기화</string>
     <string name="reset_audio_defaults">오디오 기본값 초기화</string>
-
     <!-- What's New Dialog -->
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
