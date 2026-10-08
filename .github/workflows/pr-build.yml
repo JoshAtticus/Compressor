@@ -6,6 +6,12 @@ on:
     paths-ignore:
       - '**.md'
       - 'fastlane/**'
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: "Pull request number"
+        required: true
+        type: string
 
 jobs:
   build:
@@ -35,7 +41,7 @@ jobs:
         if: success()
         uses: actions/upload-artifact@v4
         with:
-          name: compressor-debug-pr-${{ github.event.pull_request.number }}
+          name: compressor-debug-pr-${{ github.event.inputs.pr_number || github.event.pull_request.number }}
           path: app/build/outputs/apk/debug/app-debug.apk
           retention-days: 5
 
@@ -43,7 +49,7 @@ jobs:
         if: always()
         run: |
           mkdir -p pr_data
-          echo "${{ github.event.pull_request.number }}" > pr_data/PR_NUMBER
+          echo "${{ github.event.inputs.pr_number || github.event.pull_request.number }}" > pr_data/PR_NUMBER
           echo "${{ job.status }}" > pr_data/STATUS
           if [ -f build.log ]; then
             tail -n 150 build.log > pr_data/trimmed_log.txt

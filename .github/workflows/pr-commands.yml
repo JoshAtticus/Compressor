@@ -55,11 +55,11 @@ jobs:
 
             console.log(`Triggering rebuild for branch: ${pr.head.ref}`);
 
-            // 4. Trigger the main android.yml workflow
+            // 4. Trigger the PR build workflow
             await github.rest.actions.createWorkflowDispatch({
               owner,
               repo: context.repo.repo,
-              workflow_id: 'android.yml',
+              workflow_id: 'pr-build.yml',
               ref: pr.head.ref, // IMPORTANT: Run on the PR's branch
               inputs: {
                 pr_number: context.issue.number.toString()
