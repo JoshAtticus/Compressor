@@ -50,6 +50,12 @@
     <string name="warning_hdr_tone_mapped">이 기기의 인코더 호환성 문제를 방지하기 위해 HDR 비디오가 SDR로 톤 매핑되었습니다. HDR을 유지하려면 AV1을 사용하세요.</string>
     <string name="warning_details">경고 상세 정보</string>
     <string name="dismiss">닫기</string>
+    <string name="target_size_warning">목표 크기 설정 불가, 정보를 보려면 탭하세요</string>
+    <string name="target_size_warning_title">목표 크기는 달성이 불가능할 수도 있습니다</string>
+    <string name="target_size_warning_details">요청된 목표 크기를 맞추려면 일부 설정을 낮춰야 합니다.</string>
+    <string name="accept_suggestion">제안 수락</string>
+    <string name="accept_all">전체 승인</string>
+    <string name="close">닫기</string>
     <string name="error_prefix">오류: %1$s</string>
     <string name="select_video">압축할 비디오 선택</string>
     <string name="add_video_desc">비디오 추가</string>
@@ -63,6 +69,16 @@
     <!-- Errors -->
     <string name="error_file_lost">파일을 찾을 수 없음</string>
     <string name="error_export_failed">내보내기 실패: %1$s</string>
+    <string name="error_save_failed">저장 실패: %1$s</string>
+    <string name="error_gallery_entry">갤러리 항목을 생성할 수 없습니다</string>
+    <string name="error_unknown">알 수 없는 오류</string>
+    <string name="error_codec_unsupported">이 기기의 하드웨어에서 이 코덱을 지원하지 않습니다.</string>
+    <string name="error_decoder_config_unsupported">이 기기는 해당 원본 영상 구성을 디코딩할 수 없습니다.</string>
+    <string name="error_encoder_config_unsupported">이 장치는 선택된 출력 구성을 인코딩할 수 없습니다.</string>
+    <string name="error_decoder_config_unsupported_details">이 기기는 해당 원본 영상 구성을 디코딩할 수 없습니다 (%1$dx%2$d @ %3$.1ffps, %4$s).</string>
+    <string name="error_encoder_config_unsupported_details">이 기기는 선택된 출력 설정으로 인코딩할 수 없습니다. 시도한 설정: %1$s.</string>
+    <string name="warning_codec_fallback_h264">선택하신 코덱은 이 기기에서 해당 출력 형식으로 사용할 수 없습니다. 호환성을 위해 H.264 코덱으로 전환합니다.</string>
+    <string name="warning_quality_fallback">이 기기에서는 선택하신 설정으로 인코딩할 수 없습니다. %1$dp 해상도 및 %2$dfps 프레임 레이트의 H.264 형식으로 전환합니다.</string>
     <!-- Size Presets -->
     <string name="size_discord">Discord</string>
     <string name="size_github">GitHub</string>
@@ -90,6 +106,8 @@
     <string name="res_half">½</string>
     <string name="res_quarter">¼</string>
     <string name="compression_failed_title">압축 실패</string>
+    <string name="compression_larger_error">압축된 영상이 원본보다 더 큽니다.\n해당 영상은 이미 고도로 압축되어 있거나 비트레이트가 매우 낮을 수 있습니다.</string>
+    <string name="error_huawei_muxer">이 문제는 사용 중인 기기에서 비롯된 것일 수 있습니다. 기기를 다시 시작해 보시기 바랍니다.</string>
     <string name="try_again">다시 시도</string>
     <string name="save_anyway">강제 저장</string>
     <string name="report_error">오류 보고</string>
@@ -148,6 +166,10 @@
     <string name="filename_drag_into_area">이 영역으로 칩 드래그</string>
     <string name="filename_available_chips_title">사용 가능한 동적 칩 (위 영역으로 드래그 앤 드롭)</string>
     <string name="filename_all_chips_added">사용 가능한 모든 칩이 추가되었습니다.</string>
+    <string name="filename_prefix_label">접두사</string>
+    <string name="filename_prefix_placeholder">접두사를 입력하세요...</string>
+    <string name="filename_active_tokens_title">선택된 토큰</string>
+    <string name="filename_available_tokens_title">탭하여 토큰 추가</string>
     <string name="filename_preview_label">미리보기:</string>
     <string name="filename_reset_button">파일 이름 형식 재설정</string>
     <string name="token_original_name">원본 이름</string>
