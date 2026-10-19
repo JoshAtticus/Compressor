@@ -39,6 +39,9 @@ android {
     }
     // Built-in Kotlin derives the Kotlin jvmTarget from compileOptions, so the
     // deprecated kotlinOptions block is no longer needed.
+    testOptions {
+        unitTests.isIncludeAndroidResources = true
+    }
     buildFeatures {
         compose = true
         buildConfig = true

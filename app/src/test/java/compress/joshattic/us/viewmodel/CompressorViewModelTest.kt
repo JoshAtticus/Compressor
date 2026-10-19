@@ -1,6 +1,7 @@
 package compress.joshattic.us.viewmodel
 
 import android.app.Application
+import android.media.MediaCodecList
 import androidx.media3.common.MimeTypes
 import androidx.test.core.app.ApplicationProvider
 import compress.joshattic.us.model.CompressorUiState
@@ -108,6 +109,53 @@ class CompressorViewModelTest {
         assertEquals(MimeTypes.VIDEO_H264, viewModel.uiState.value.videoCodec)
         assertFalse(viewModel.uiState.value.useH265)
         assertEquals(QualityPreset.CUSTOM, viewModel.uiState.value.activePreset)
+    }
+
+    @Test
+    fun dolbyVisionWithoutAdvertisedDecoderReachesOutputPlanning() {
+        val error = planWithNoAdvertisedCodecs(MimeTypes.VIDEO_DOLBY_VISION)
+        assertTrue(error.startsWith("This device can't encode"))
+    }
+
+    @Test
+    fun unsupportedHevcStillReportsDecoderFailure() {
+        val error = planWithNoAdvertisedCodecs(MimeTypes.VIDEO_H265)
+        assertEquals(
+            application.getString(
+                compress.joshattic.us.R.string.error_decoder_config_unsupported_details,
+                3840, 2160, 60f, "hevc"
+            ),
+            error
+        )
+    }
+
+    private fun planWithNoAdvertisedCodecs(sourceMime: String): String {
+        // With no advertised decoders, Dolby Vision should still reach output
+        // planning so Media3 can later validate the profile and try HEVC fallback.
+        assertTrue(MediaCodecList(MediaCodecList.ALL_CODECS).codecInfos.isEmpty())
+        val videoInfoClass = CompressorViewModel::class.java.declaredClasses
+            .single { it.simpleName == "VideoTrackInfo" }
+        val videoInfo = videoInfoClass.getDeclaredConstructor(
+            String::class.java, Int::class.javaPrimitiveType,
+            Int::class.javaPrimitiveType, Float::class.javaPrimitiveType
+        ).apply { isAccessible = true }.newInstance(sourceMime, 3840, 2160, 60f)
+        val probeClass = CompressorViewModel::class.java.declaredClasses
+            .single { it.simpleName == "TrackProbe" }
+        val probe = probeClass.getDeclaredConstructor(
+            videoInfoClass, String::class.java,
+            Int::class.javaPrimitiveType, Int::class.javaPrimitiveType
+        ).apply { isAccessible = true }.newInstance(videoInfo, null, 0, -1)
+        val method = CompressorViewModel::class.java.getDeclaredMethod(
+            "buildCompressionPlan", probeClass, CompressorUiState::class.java
+        ).apply { isAccessible = true }
+        val state = CompressorUiState(
+            originalVideoMime = sourceMime, originalWidth = 3840,
+            originalHeight = 2160, originalFps = 60f,
+            targetResolutionHeight = 2160, targetFps = 0
+        )
+        val plan = method.invoke(viewModel, probe, state)
+        return plan.javaClass.getDeclaredMethod("getBlockingError")
+            .apply { isAccessible = true }.invoke(plan) as String
     }
 
     @Test
