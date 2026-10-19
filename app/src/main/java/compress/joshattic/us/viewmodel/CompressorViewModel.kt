@@ -1636,7 +1636,14 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val sourceHeight = sourceInfo?.height ?: 0
         val sourceFps = if ((sourceInfo?.frameRate ?: 0f) > 0f) sourceInfo!!.frameRate else state.originalFps
 
-        if (!sourceMime.isNullOrBlank() && sourceWidth > 0 && sourceHeight > 0) {
+        // Dolby Vision may have an HEVC-compatible base layer even when the device
+        // advertises no video/dolby-vision decoder. Let Media3 inspect the actual
+        // profile and select a compatible decoder; an exact MIME check here would
+        // reject the file before DefaultDecoderFactory can try that fallback.
+        // Keep the original format intact so Media3 can validate compatibility.
+        if (!sourceMime.isNullOrBlank() && sourceWidth > 0 && sourceHeight > 0 &&
+            sourceMime != MimeTypes.VIDEO_DOLBY_VISION
+        ) {
             val decoderSupported = isCodecConfigurationSupported(
                 mimeType = sourceMime,
                 width = sourceWidth,
