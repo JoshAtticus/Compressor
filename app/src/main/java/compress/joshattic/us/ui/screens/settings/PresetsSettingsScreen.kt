@@ -72,6 +72,7 @@ import java.util.Locale
 fun PresetsSettingsScreen(
     state: CompressorUiState,
     onBack: () -> Unit,
+    onSetDefaultPreset: (QualityPreset) -> Unit,
     onUpdateHighPreset: (QualityPresetConfig) -> Unit,
     onUpdateMediumPreset: (QualityPresetConfig) -> Unit,
     onUpdateLowPreset: (QualityPresetConfig) -> Unit,
@@ -235,6 +236,46 @@ fun PresetsSettingsScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 16.dp, vertical = 8.dp)
         ) {
+            // Default Preset Section Header
+            Text(
+                text = stringResource(R.string.default_preset_title),
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(start = 20.dp, bottom = 8.dp)
+            )
+
+            Surface(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                shape = RoundedCornerShape(32.dp),
+                color = MaterialTheme.colorScheme.surfaceContainer
+            ) {
+                Column(modifier = Modifier.padding(horizontal = 20.dp, vertical = 16.dp)) {
+                    Text(
+                        text = stringResource(R.string.default_preset_desc),
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.SemiBold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    SelectionChipRow(
+                        options = listOf(
+                            QualityPreset.CUSTOM to stringResource(R.string.default_preset_none),
+                            QualityPreset.HIGH to (state.highPresetConfig.label ?: stringResource(R.string.preset_high)),
+                            QualityPreset.MEDIUM to (state.mediumPresetConfig.label ?: stringResource(R.string.preset_medium)),
+                            QualityPreset.LOW to (state.lowPresetConfig.label ?: stringResource(R.string.preset_low))
+                        ),
+                        selected = state.defaultPreset,
+                        onSelect = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            onSetDefaultPreset(it)
+                        }
+                    )
+                }
+            }
+
             // Quality Presets Section Header
             Row(
                 modifier = Modifier

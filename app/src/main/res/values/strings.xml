@@ -239,6 +239,9 @@
     <string name="info_supported_codecs">Supported Codecs</string>
 
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">Default Preset</string>
+    <string name="default_preset_desc">Automatically apply this preset when you select a video</string>
+    <string name="default_preset_none">None</string>
     <string name="reset_to_default">Reset to Default</string>
     <string name="add_preset">Add Preset</string>
     <string name="reset_presets_to_default">Reset Presets to Default</string>

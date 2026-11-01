@@ -91,6 +91,14 @@ fun rememberSearchableSettings(
     val targetSizeLimits = stringResource(R.string.target_size_limits)
     val addPreset = stringResource(R.string.add_preset)
     val resetToDefault = stringResource(R.string.reset_to_default)
+    val defaultPresetTitle = stringResource(R.string.default_preset_title)
+    val defaultPresetNone = stringResource(R.string.default_preset_none)
+    val defaultPresetSummary = when (state.defaultPreset) {
+        QualityPreset.HIGH -> state.highPresetConfig.label ?: presetHigh
+        QualityPreset.MEDIUM -> state.mediumPresetConfig.label ?: presetMedium
+        QualityPreset.LOW -> state.lowPresetConfig.label ?: presetLow
+        QualityPreset.CUSTOM -> defaultPresetNone
+    }
 
     val infoAppName = stringResource(R.string.info_app_name)
     val appName = stringResource(R.string.app_name)
@@ -125,6 +133,10 @@ fun rememberSearchableSettings(
         state.appInfoVersion,
         state.supportedCodecs.size,
         state.targetSizePresets,
+        state.defaultPreset,
+        state.highPresetConfig.label,
+        state.mediumPresetConfig.label,
+        state.lowPresetConfig.label,
         displayTitle,
         presetsTitle,
         videoTitle,
@@ -170,6 +182,7 @@ fun rememberSearchableSettings(
         settings.add(SearchableSetting(resetAudioDefaults, categoryAudioSubtitle, audioTitle, "audio", Icons.Default.MusicNote, onNavigateToAudio))
 
         // 5. Presets
+        settings.add(SearchableSetting(defaultPresetTitle, defaultPresetSummary, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(headerQualityPresets, qualityPreset, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(qualityPreset, presetSummary, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))
         settings.add(SearchableSetting(presetHigh, headerQualityPresets, presetsTitle, "presets", Icons.Outlined.BookmarkBorder, onNavigateToPresets))

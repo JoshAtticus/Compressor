@@ -102,6 +102,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         }
         private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
+        private const val PREF_DEFAULT_PRESET = "default_quality_preset"
         private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
         private const val PREF_FILENAME_SEGMENTS = "filename_segments_v2"
         private const val DEFAULT_FILENAME_SEGMENTS = "token:original_name|token:compressed"
@@ -120,6 +121,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val autoSaveToPhotos = autoSaveSupported && prefs.getBoolean("auto_save_photos", true)
         val customOutputTreeUri = prefs.getString(PREF_CUSTOM_OUTPUT_TREE_URI, null)
         val customOutputFolderName = prefs.getString(PREF_CUSTOM_OUTPUT_FOLDER_NAME, null)
+        val defaultPreset = prefs.getString(PREF_DEFAULT_PRESET, null)
+            ?.let { stored -> runCatching { QualityPreset.valueOf(stored) }.getOrNull() }
+            ?: QualityPreset.CUSTOM
         val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
         val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
         val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))
@@ -150,6 +154,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             autoSaveToPhotos = autoSaveToPhotos,
             customOutputTreeUri = customOutputTreeUri,
             customOutputFolderName = customOutputFolderName,
+            defaultPreset = defaultPreset,
             highPresetConfig = highConfig,
             mediumPresetConfig = mediumConfig,
             lowPresetConfig = lowConfig,
@@ -457,6 +462,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     hasShared = false
                 ).autoAdjust(defaultTargetMb)
             }
+
+            val defaultPreset = _uiState.value.defaultPreset
+            if (defaultPreset != QualityPreset.CUSTOM) {
+                applyPreset(defaultPreset)
+            }
         }
     }
     
@@ -510,6 +520,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 ).autoAdjust(targetMb, lockAudioBitrate = true, allowUpward = false)
             }
         }
+    }
+
+    fun setDefaultPreset(preset: QualityPreset) {
+        prefs.edit { putString(PREF_DEFAULT_PRESET, preset.name) }
+        _uiState.update { it.copy(defaultPreset = preset) }
     }
 
     fun updateHighPresetConfig(config: QualityPresetConfig) {
@@ -1278,6 +1293,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 targetSizePresets = current.targetSizePresets,
                 defaultVideoConfig = current.defaultVideoConfig,
                 defaultAudioConfig = current.defaultAudioConfig,
+                defaultPreset = current.defaultPreset,
                 videoCodec = defaultCodec,
                 useH265 = useH265
             )

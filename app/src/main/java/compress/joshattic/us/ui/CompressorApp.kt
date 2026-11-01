@@ -275,6 +275,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                             SettingsDestination.PRESETS -> compress.joshattic.us.ui.screens.settings.PresetsSettingsScreen(
                                 state = state,
                                 onBack = { currentSettingsDestination = SettingsDestination.MAIN },
+                                onSetDefaultPreset = { viewModel.setDefaultPreset(it) },
                                 onUpdateHighPreset = { viewModel.updateHighPresetConfig(it) },
                                 onUpdateMediumPreset = { viewModel.updateMediumPresetConfig(it) },
                                 onUpdateLowPreset = { viewModel.updateLowPresetConfig(it) },

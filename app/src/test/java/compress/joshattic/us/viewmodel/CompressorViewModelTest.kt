@@ -97,6 +97,27 @@ class CompressorViewModelTest {
     }
 
     @Test
+    fun testDefaultPresetDefaultsToCustom() {
+        assertEquals(QualityPreset.CUSTOM, viewModel.uiState.value.defaultPreset)
+    }
+
+    @Test
+    fun testSetDefaultPresetPersists() {
+        viewModel.setDefaultPreset(QualityPreset.MEDIUM)
+        assertEquals(QualityPreset.MEDIUM, viewModel.uiState.value.defaultPreset)
+
+        val reloaded = CompressorViewModel(application)
+        assertEquals(QualityPreset.MEDIUM, reloaded.uiState.value.defaultPreset)
+    }
+
+    @Test
+    fun testResetKeepsDefaultPreset() {
+        viewModel.setDefaultPreset(QualityPreset.LOW)
+        viewModel.reset()
+        assertEquals(QualityPreset.LOW, viewModel.uiState.value.defaultPreset)
+    }
+
+    @Test
     fun testSetTargetSize() {
         viewModel.setTargetSize(25f)
         assertEquals(25f, viewModel.uiState.value.targetSizeMb, 0.01f)

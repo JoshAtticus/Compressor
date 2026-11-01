@@ -48,6 +48,7 @@ data class CompressorUiState(
     
     // Configuration
     val activePreset: QualityPreset = QualityPreset.CUSTOM,
+    val defaultPreset: QualityPreset = QualityPreset.CUSTOM,
     val targetSizeMb: Float = 10f,
     val useH265: Boolean = true,
     val videoCodec: String = MimeTypes.VIDEO_H265,
