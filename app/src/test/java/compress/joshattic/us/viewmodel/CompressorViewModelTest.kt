@@ -125,6 +125,46 @@ class CompressorViewModelTest {
     }
 
     @Test
+    fun testSelectTargetSizePreset_clearsPresetLocks() {
+        viewModel.applyPreset(QualityPreset.HIGH)
+        assertTrue(viewModel.uiState.value.targetResolutionLocked)
+        assertTrue(viewModel.uiState.value.targetFpsLocked)
+        assertTrue(viewModel.uiState.value.audioBitrateLocked)
+
+        viewModel.selectTargetSizePreset(20f)
+        val state = viewModel.uiState.value
+        assertEquals(20f, state.targetSizeMb, 0.01f)
+        assertEquals(QualityPreset.CUSTOM, state.activePreset)
+        assertFalse(state.targetResolutionLocked)
+        assertFalse(state.targetFpsLocked)
+        assertFalse(state.audioBitrateLocked)
+    }
+
+    @Test
+    fun testSetTargetSize_clearsPresetLocksWhenComingFromPreset() {
+        viewModel.applyPreset(QualityPreset.HIGH)
+        assertTrue(viewModel.uiState.value.targetResolutionLocked)
+
+        viewModel.setTargetSize(15f)
+        val state = viewModel.uiState.value
+        assertEquals(15f, state.targetSizeMb, 0.01f)
+        assertEquals(QualityPreset.CUSTOM, state.activePreset)
+        assertFalse(state.targetResolutionLocked)
+    }
+
+    @Test
+    fun testSetTargetSizePreview_updatesTargetSizeAndRunsAutoAdjust() {
+        viewModel.applyPreset(QualityPreset.HIGH)
+        assertTrue(viewModel.uiState.value.targetResolutionLocked)
+
+        viewModel.setTargetSizePreview(10f)
+        val state = viewModel.uiState.value
+        assertEquals(10f, state.targetSizeMb, 0.01f)
+        assertEquals(QualityPreset.CUSTOM, state.activePreset)
+        assertFalse(state.targetResolutionLocked)
+    }
+
+    @Test
     fun testSetVideoCodec() {
         viewModel.setVideoCodec(MimeTypes.VIDEO_H264)
         assertEquals(MimeTypes.VIDEO_H264, viewModel.uiState.value.videoCodec)

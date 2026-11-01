@@ -70,7 +70,7 @@ fun VideoOptionsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
 
             LaunchedEffect(sliderValue) {
                 if (isUserInteracting) {
-                    delay(150)
+                    delay(80)
                     viewModel.setTargetSizePreview(sliderValue)
                 }
             }

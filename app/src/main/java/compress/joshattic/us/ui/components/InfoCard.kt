@@ -98,7 +98,7 @@ fun InfoCard(state: CompressorUiState, compact: Boolean = false) {
 @Composable
 private fun CompactInfo(state: CompressorUiState, expanded: Boolean) {
     val originalMb = state.originalSize / (1024f * 1024f)
-    val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
+    val actualEst = state.targetSizeMb
     val pct = if (originalMb > 0) (1f - (actualEst / originalMb)) * 100f else 0f
     val pctInt = pct.toInt()
     val pctText = when {
@@ -219,7 +219,7 @@ private fun EstimatedInfo(
         }
 
         val originalMb = state.originalSize / (1024f * 1024f)
-        val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
+        val actualEst = state.targetSizeMb
         val pct = if (originalMb > 0) (1f - (actualEst / originalMb)) * 100f else 0f
         val pctInt = pct.toInt()
 

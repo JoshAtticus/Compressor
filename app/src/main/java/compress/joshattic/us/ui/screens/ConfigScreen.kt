@@ -71,7 +71,7 @@ fun ConfigScreen(
     val haptics = LocalHapticFeedback.current
 
     val originalMb = state.originalSize / (1024f * 1024f)
-    val actualEst = maxOf(state.targetSizeMb, state.minimumSizeMb)
+    val actualEst = state.targetSizeMb
     val isLarger = originalMb > 0 && actualEst > (originalMb + 0.01f)
 
     // At large accessibility font scales the fixed structure (card + tabs + button)

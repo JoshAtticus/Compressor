@@ -1013,11 +1013,43 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun setTargetSizePreview(mb: Float) {
-        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM) }
+        _uiState.update { current ->
+            val fromPreset = current.activePreset != QualityPreset.CUSTOM
+            val state = current.copy(
+                targetSizeMb = mb,
+                activePreset = QualityPreset.CUSTOM,
+                targetResolutionLocked = if (fromPreset) false else current.targetResolutionLocked,
+                targetFpsLocked = if (fromPreset) false else current.targetFpsLocked,
+                audioBitrateLocked = if (fromPreset) false else current.audioBitrateLocked
+            )
+            state.autoAdjust(mb)
+        }
     }
 
     fun setTargetSize(mb: Float) {
-        _uiState.update { it.copy(targetSizeMb = mb, activePreset = QualityPreset.CUSTOM).autoAdjust(mb) }
+        _uiState.update { current ->
+            val fromPreset = current.activePreset != QualityPreset.CUSTOM
+            val state = current.copy(
+                targetSizeMb = mb,
+                activePreset = QualityPreset.CUSTOM,
+                targetResolutionLocked = if (fromPreset) false else current.targetResolutionLocked,
+                targetFpsLocked = if (fromPreset) false else current.targetFpsLocked,
+                audioBitrateLocked = if (fromPreset) false else current.audioBitrateLocked
+            )
+            state.autoAdjust(mb)
+        }
+    }
+
+    fun selectTargetSizePreset(mb: Float) {
+        _uiState.update { current ->
+            current.copy(
+                targetSizeMb = mb,
+                activePreset = QualityPreset.CUSTOM,
+                targetResolutionLocked = false,
+                targetFpsLocked = false,
+                audioBitrateLocked = false
+            ).autoAdjust(mb)
+        }
     }
 
     fun setVideoCodec(codec: String) {
@@ -1366,21 +1398,6 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             .setEnableDecoderFallback(true)
             .build()
 
-        val cbrEncoderFactory = DefaultEncoderFactory.Builder(context)
-            .setEnableFallback(true)
-            .setRequestedVideoEncoderSettings(
-                VideoEncoderSettings.Builder()
-                    .setBitrate(targetBitrate.toInt())
-                    .setBitrateMode(android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR)
-                    .build()
-            )
-            .setRequestedAudioEncoderSettings(
-                AudioEncoderSettings.Builder()
-                    .setBitrate(audioBitrateToUse)
-                    .build()
-            )
-            .build()
-
         val vbrEncoderFactory = DefaultEncoderFactory.Builder(context)
             .setEnableFallback(true)
             .setRequestedVideoEncoderSettings(
@@ -1396,9 +1413,31 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             )
             .build()
 
+        val supportsCbr = isBitrateModeSupported(videoMimeType, android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR)
         val isMediaTek = isMediaTekDeviceOrEncoder(videoMimeType)
-        val primaryEncoderFactory = if (isMediaTek) vbrEncoderFactory else cbrEncoderFactory
-        val fallbackEncoderFactory = if (isMediaTek) cbrEncoderFactory else vbrEncoderFactory
+        val shouldUseCbr = supportsCbr && !isMediaTek
+
+        val cbrEncoderFactory = if (shouldUseCbr) {
+            DefaultEncoderFactory.Builder(context)
+                .setEnableFallback(false)
+                .setRequestedVideoEncoderSettings(
+                    VideoEncoderSettings.Builder()
+                        .setBitrate(targetBitrate.toInt())
+                        .setBitrateMode(android.media.MediaCodecInfo.EncoderCapabilities.BITRATE_MODE_CBR)
+                        .build()
+                )
+                .setRequestedAudioEncoderSettings(
+                    AudioEncoderSettings.Builder()
+                        .setBitrate(audioBitrateToUse)
+                        .build()
+                )
+                .build()
+        } else {
+            vbrEncoderFactory
+        }
+
+        val primaryEncoderFactory = if (shouldUseCbr) cbrEncoderFactory else vbrEncoderFactory
+        val fallbackEncoderFactory = vbrEncoderFactory
             
         val encoderFactory = object : androidx.media3.transformer.Codec.EncoderFactory {
             @Throws(androidx.media3.transformer.ExportException::class)
@@ -1413,6 +1452,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 if (targetFps > 0f) {
                     modifiedFormatBuilder.setFrameRate(targetFps)
                 }
+                modifiedFormatBuilder.setAverageBitrate(targetBitrate.toInt())
                 if (format.colorInfo == null || !androidx.media3.common.ColorInfo.isTransferHdr(format.colorInfo)) {
                      modifiedFormatBuilder.setColorInfo(null)
                 }
@@ -1420,7 +1460,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
 
                 return try {
                     primaryEncoderFactory.createForVideoEncoding(modifiedFormat, logSessionId)
-                } catch (e: androidx.media3.transformer.ExportException) {
+                } catch (e: Exception) {
                     fallbackEncoderFactory.createForVideoEncoding(modifiedFormat, logSessionId)
                 }
             }
@@ -1815,6 +1855,26 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             e.printStackTrace()
         }
         return false
+    }
+
+    private fun isBitrateModeSupported(mimeType: String, bitrateMode: Int): Boolean {
+        return try {
+            cachedCodecInfos
+                .asSequence()
+                .filter { it.isEncoder }
+                .filter { info -> info.supportedTypes.any { it.equals(mimeType, ignoreCase = true) } }
+                .any { info ->
+                    try {
+                        val capabilities = info.getCapabilitiesForType(mimeType)
+                        val encoderCaps = capabilities.encoderCapabilities ?: return@any false
+                        encoderCaps.isBitrateModeSupported(bitrateMode)
+                    } catch (_: Exception) {
+                        false
+                    }
+                }
+        } catch (_: Exception) {
+            false
+        }
     }
 
     private fun isHdr(context: Context, uri: Uri): Boolean {

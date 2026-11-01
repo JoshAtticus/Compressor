@@ -113,16 +113,22 @@ data class CompressorUiState(
         return suggestion.autoAdjust(targetSizeMb, lockAudioBitrate = false, allowUpward = false)
     }
 
-    private val minBitrate: Long
+    val minBitrate: Long
         get() {
+            val isVertical = originalHeight > originalWidth
             val h = if (targetResolutionHeight > 0) targetResolutionHeight else originalHeight
+            val effectiveShortSide = if (isVertical && originalWidth > 0 && originalHeight > 0) {
+                (h.toLong() * originalWidth / originalHeight).toInt()
+            } else {
+                h
+            }
             var base = when {
-                h >= 2160 -> 4_000_000L
-                h >= 1440 -> 2_500_000L
-                h >= 1080 -> 1_500_000L
-                h >= 720 -> 1_000_000L
-                h >= 480 -> 500_000L
-                h >= 360 -> 350_000L
+                effectiveShortSide >= 2160 -> 4_000_000L
+                effectiveShortSide >= 1440 -> 2_500_000L
+                effectiveShortSide >= 1080 -> 1_500_000L
+                effectiveShortSide >= 720 -> 1_000_000L
+                effectiveShortSide >= 480 -> 500_000L
+                effectiveShortSide >= 360 -> 350_000L
                 else -> 200_000L
             }
             
@@ -133,7 +139,11 @@ data class CompressorUiState(
             }
             
             val fpsVal = if (targetFps > 0) targetFps.toFloat() else originalFps
-            val multiplier = if (fpsVal > 45) 1.5f else 1.0f
+            val multiplier = when {
+                fpsVal > 45 -> 1.5f
+                fpsVal in 1f..25f -> 0.85f
+                else -> 1.0f
+            }
             return (base * multiplier).toLong()
         }
 
@@ -152,17 +162,15 @@ data class CompressorUiState(
         }
 
     val estimatedSize: String
-        get() {
-            val actualTarget = targetSizeMb.coerceAtLeast(minimumSizeMb)
-            return String.format(Locale.US, "%.1f MB", actualTarget)
-        }
+        get() = String.format(Locale.US, "%.1f MB", targetSizeMb)
     
     val targetBitrate: Int
         get() {
              val durationSec = if (durationMs > 0) durationMs / 1000.0 else 0.0
              if (durationSec <= 0) return 2_000_000
              
-             val targetBits = targetSizeMb * 8 * 1024 * 1024
+             // Target 96% of requested size as a safety cushion against hardware encoder bitrate overshoot
+             val targetBits = targetSizeMb * 8 * 1024 * 1024 * 0.96
              
              val audioBits = if (removeAudio) 0.0 else {
                  val rate = if (audioBitrate == 0) 256_000.0 else audioBitrate.toDouble()
@@ -178,7 +186,7 @@ data class CompressorUiState(
              val calculated = (availableVideoBits / durationSec).toLong()
              
              val original = if (originalBitrate > 0) originalBitrate.toLong() else Long.MAX_VALUE
-             val final = calculated.coerceAtLeast(minBitrate).coerceAtMost(original)
+             val final = calculated.coerceAtLeast(100_000L).coerceAtMost(original)
              return final.toInt()
         }
 
@@ -239,9 +247,16 @@ data class CompressorUiState(
         var attempts = 0
         val maxAttempts = 20
 
+        val durationSec = if (durationMs > 0) durationMs / 1000.0 else 1.0
+        val targetBits = targetMb * 8 * 1024 * 1024
+
         // Downward adjustment (Reduce quality to fit target)
-        while (state.minimumSizeMb > targetMb && attempts < maxAttempts) {
+        while (attempts < maxAttempts) {
             attempts++
+            
+            val audioTooHeavy = !audioLocked && !state.removeAudio && (state.audioBitrate * durationSec > targetBits * 0.35)
+            val needsReduction = state.minimumSizeMb > targetMb || audioTooHeavy
+            if (!needsReduction) break
             
             if (!audioLocked) {
                 // 1. Reduce Audio Bitrate to 128k
@@ -280,8 +295,8 @@ data class CompressorUiState(
             }
 
             if (!audioLocked) {
-                // 4. Reduce Audio Bitrate to 96k if really needed (big gap)
-                if (state.audioBitrate > 96_000 && state.minimumSizeMb > targetMb * 1.5) {
+                // 4. Reduce Audio Bitrate to 96k if really needed (big gap or audio taking too much)
+                if (state.audioBitrate > 96_000 && (state.minimumSizeMb > targetMb * 1.5 || state.audioBitrate * durationSec > targetBits * 0.30)) {
                     state = state.copy(audioBitrate = 96_000)
                     continue
                 }
@@ -329,10 +344,13 @@ data class CompressorUiState(
                 }
             }
             
-            // 2. Try to increase FPS
+            // 2. Try to increase FPS (prefer preserving bits per frame unless resolution is restored)
+            val currentShort = shortSideForHeight(if (state.targetResolutionHeight > 0) state.targetResolutionHeight else state.originalHeight)
+            val origShort = shortSideForHeight(state.originalHeight)
+            val maxAllowedFps = if (currentShort < origShort) minOf(30, state.originalFps.toInt()) else state.originalFps.toInt()
             val currentFps = if (state.targetFps > 0) state.targetFps else state.originalFps.toInt()
-            if (!state.targetFpsLocked && currentFps < state.originalFps.toInt()) {
-                 val nextFps = if (currentFps < 30) 30 else state.originalFps.toInt()
+            if (!state.targetFpsLocked && currentFps < maxAllowedFps) {
+                 val nextFps = if (currentFps < 30) minOf(30, maxAllowedFps) else maxAllowedFps
                  val useOriginal = nextFps >= state.originalFps.toInt()
                  val testState = state.copy(targetFps = if (useOriginal) 0 else nextFps)
                  

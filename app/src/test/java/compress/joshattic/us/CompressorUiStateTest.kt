@@ -280,4 +280,41 @@ class CompressorUiStateTest {
         
         assertTrue("Minimum size should increase with duration", state2.minimumSizeMb > state1.minimumSizeMb)
     }
+
+    @Test
+    fun testMinBitrate_portraitMatchesLandscape() {
+        val landscape1080p = CompressorUiState(
+            originalWidth = 1920,
+            originalHeight = 1080,
+            originalFps = 30f,
+            durationMs = 60_000L
+        )
+        val portrait1080p = CompressorUiState(
+            originalWidth = 1080,
+            originalHeight = 1920,
+            originalFps = 30f,
+            durationMs = 60_000L
+        )
+
+        assertEquals("Landscape and portrait 1080p should have the same minimum bitrate",
+            landscape1080p.minBitrate,
+            portrait1080p.minBitrate
+        )
+    }
+
+    @Test
+    fun testTargetBitrate_includesHeadroomSafetyMargin() {
+        val state = CompressorUiState(
+            targetSizeMb = 100f,
+            durationMs = 100_000L,
+            removeAudio = true
+        )
+        val durationSec = 100.0
+        val targetBitsDirect = 100.0 * 8 * 1024 * 1024
+        val overheadBits = (targetBitsDirect * 0.96 * 0.02) + (50 * 1024 * 8)
+        val expectedVideoBits = (targetBitsDirect * 0.96) - overheadBits
+        val expectedBitrate = (expectedVideoBits / durationSec).toInt()
+
+        assertEquals(expectedBitrate, state.targetBitrate)
+    }
 }

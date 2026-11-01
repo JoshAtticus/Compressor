@@ -26,3 +26,4 @@ output-metadata.json
 app/release/baselineProfiles/0/app-release.dm
 app/release/baselineProfiles/0/app-release.dm
 /.artifacts
+.commandcode/taste/taste.md

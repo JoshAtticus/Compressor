@@ -162,7 +162,7 @@ fun PresetsTab(state: CompressorUiState, viewModel: CompressorViewModel) {
                         selected = state.targetSizeMb == preset.sizeMb,
                         onClick = { 
                             haptics.performHapticFeedback(HapticFeedbackType.LongPress)
-                            viewModel.setTargetSize(preset.sizeMb) 
+                            viewModel.selectTargetSizePreset(preset.sizeMb) 
                         },
                         interactionSource = interactionSource,
                         label = { 
