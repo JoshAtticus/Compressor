@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -20,9 +21,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Accessibility
+import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.AutoAwesome
-import androidx.compose.material.icons.filled.BugReport
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -34,6 +38,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalHapticFeedback
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -48,6 +53,7 @@ fun WhatsNewDialog(
     onDismiss: () -> Unit
 ) {
     val haptics = LocalHapticFeedback.current
+    val uriHandler = LocalUriHandler.current
     val isDark = isSystemInDarkTheme()
 
     Dialog(
@@ -128,19 +134,36 @@ fun WhatsNewDialog(
                         verticalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         WhatsNewItem(
-                            icon = Icons.Default.Accessibility,
+                            icon = Icons.Default.Translate,
                             bgColor = if (isDark) Color(0xFF1E3A5F) else Color(0xFFE3F2FD),
                             iconTint = if (isDark) Color(0xFF90CAF9) else Color(0xFF1976D2),
                             title = stringResource(R.string.whats_new_1_title),
-                            description = stringResource(R.string.whats_new_1_desc)
+                            description = stringResource(R.string.whats_new_1_desc),
+                            onClick = { uriHandler.openUri("https://l.joshattic.us/rHkokL") }
                         )
 
                         WhatsNewItem(
-                            icon = Icons.Default.BugReport,
-                            bgColor = if (isDark) Color(0xFF4A1C1D) else Color(0xFFFFEBEE),
-                            iconTint = if (isDark) Color(0xFFEF9A9A) else Color(0xFFD32F2F),
+                            icon = Icons.Default.Movie,
+                            bgColor = if (isDark) Color(0xFF1B4D2E) else Color(0xFFE8F5E9),
+                            iconTint = if (isDark) Color(0xFFA5D6A7) else Color(0xFF388E3C),
                             title = stringResource(R.string.whats_new_2_title),
                             description = stringResource(R.string.whats_new_2_desc)
+                        )
+
+                        WhatsNewItem(
+                            icon = Icons.Default.Tune,
+                            bgColor = if (isDark) Color(0xFF4A2B00) else Color(0xFFFFF3E0),
+                            iconTint = if (isDark) Color(0xFFFFCC80) else Color(0xFFF57C00),
+                            title = stringResource(R.string.whats_new_3_title),
+                            description = stringResource(R.string.whats_new_3_desc)
+                        )
+
+                        WhatsNewItem(
+                            icon = Icons.Default.Favorite,
+                            bgColor = if (isDark) Color(0xFF4A1C1D) else Color(0xFFFFEBEE),
+                            iconTint = if (isDark) Color(0xFFEF9A9A) else Color(0xFFD32F2F),
+                            title = stringResource(R.string.whats_new_4_title),
+                            description = stringResource(R.string.whats_new_4_desc)
                         )
                     }
 
@@ -183,10 +206,21 @@ private fun WhatsNewItem(
     bgColor: Color,
     iconTint: Color,
     title: String,
-    description: String
+    description: String,
+    onClick: (() -> Unit)? = null
 ) {
+    val haptics = LocalHapticFeedback.current
     Surface(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (onClick != null) {
+                    Modifier.clickable {
+                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                        onClick()
+                    }
+                } else Modifier
+            ),
         shape = RoundedCornerShape(24.dp),
         color = MaterialTheme.colorScheme.surfaceContainer
     ) {
@@ -224,6 +258,16 @@ private fun WhatsNewItem(
                     text = description,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            if (onClick != null) {
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.OpenInNew,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(18.dp)
                 )
             }
         }

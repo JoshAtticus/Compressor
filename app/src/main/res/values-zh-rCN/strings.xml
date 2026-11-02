@@ -243,8 +243,17 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">无障碍性改进</string>
-    <string name="whats_new_1_desc">Compressor 现在可以在任何屏幕尺寸或字体大小下都能正常显示和使用</string>
-    <string name="whats_new_2_title">错误修复</string>
-    <string name="whats_new_2_desc">清除了更多错误，让 Compressor 变得前所未有地稳定</string>
+    <string name="whats_new_1_title">帮助翻译 Compressor！</string>
+    <string name="whats_new_1_desc">想看到您的语言版本？发现了翻译错误？欢迎前往 Crowdin 参与翻译</string>
+    <string name="whats_new_2_title">兼容性一如既往</string>
+    <string name="whats_new_2_desc">Compressor 支持更多视频源，现已包括杜比视界 (Dolby Vision) 视频</string>
+    <string name="default_preset_title">默认预设</string>
+    <string name="default_preset_desc">选择视频时自动应用此预设</string>
+    <string name="default_preset_none">无</string>
+    <string name="whats_new_3_title">选择默认设置</string>
+    <string name="whats_new_3_desc">现在可以在视频设置中选择默认预设</string>
+    <string name="whats_new_4_title">持续改进</string>
+    <string name="whats_new_4_desc">修复了多处错误，进一步提升了压缩质量与使用体验</string>
+    <string name="extra_size_cushion_title">额外大小缓冲</string>
+    <string name="extra_size_cushion_desc">如果视频未压缩到目标大小，则压缩到更小的目标大小。启用此设置会降低画质。</string>
 </resources>

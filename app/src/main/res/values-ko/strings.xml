@@ -243,8 +243,17 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">접근성 개선</string>
-    <string name="whats_new_1_desc">Compressor는 모든 화면 크기와 글꼴 크기에서 깔끔하게 잘 동작하도록 조정되었습니다</string>
-    <string name="whats_new_2_title">버그 수정</string>
-    <string name="whats_new_2_desc">더 많은 버그를 제거해 Compressor를 그 어느 때보다 안정적으로 만들었습니다</string>
+    <string name="whats_new_1_title">Compressor 번역에 참여해보세요!</string>
+    <string name="whats_new_1_desc">원하는 언어로 Compressor를 보고 싶거나 번역 오류를 찾으셨나요? Crowdin에서 번역에 참여해보세요</string>
+    <string name="whats_new_2_title">더 폭넓은 호환성</string>
+    <string name="whats_new_2_desc">이제 Dolby Vision 비디오를 포함해 더 다양한 소스를 지원합니다</string>
+    <string name="default_preset_title">기본 프리셋</string>
+    <string name="default_preset_desc">비디오를 선택할 때 이 프리셋을 자동으로 적용합니다</string>
+    <string name="default_preset_none">없음</string>
+    <string name="whats_new_3_title">기본 설정 선택</string>
+    <string name="whats_new_3_desc">이제 비디오 설정에서 기본 프리셋을 선택할 수 있습니다</string>
+    <string name="whats_new_4_title">지속적인 개선</string>
+    <string name="whats_new_4_desc">여러 버그를 수정하고 압축 품질과 사용성을 개선했습니다</string>
+    <string name="extra_size_cushion_title">추가 크기 여유 공간</string>
+    <string name="extra_size_cushion_desc">비디오가 목표 크기로 압축되지 않을 때 더 작은 크기로 압축합니다. 켜면 화질이 낮아집니다.</string>
 </resources>
