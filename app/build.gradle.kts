@@ -18,8 +18,8 @@ android {
         applicationId = "compress.joshattic.us"
         minSdk = 24
         targetSdk = 37
-        versionCode = 28
-        versionName = "1.6.5"
+        versionCode = 29
+        versionName = "1.6.6"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
