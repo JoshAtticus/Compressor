@@ -216,6 +216,9 @@
     <string name="workaround_none">Keine</string>
     <string name="info_supported_codecs">Unterstützte Codecs</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">Standard-Preset</string>
+    <string name="default_preset_desc">Dieses Preset automatisch anwenden, wenn ein Video ausgewählt wird</string>
+    <string name="default_preset_none">Keines</string>
     <string name="reset_to_default">Auf Standard zurücksetzen</string>
     <string name="add_preset">Voreinstellung hinzufügen</string>
     <string name="reset_presets_to_default">Größen-Voreinstellungen zurücksetzen</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">Möchtest du Compressor in deiner Sprache sehen? Übersetzungsfehler gefunden? Hilf mit auf Crowdin</string>
     <string name="whats_new_2_title">Kompatibel wie eh und je</string>
     <string name="whats_new_2_desc">Compressor funktioniert mit noch mehr Quellen, jetzt inklusive Dolby Vision-Videos</string>
-    <string name="default_preset_title">Standard-Preset</string>
-    <string name="default_preset_desc">Dieses Preset automatisch anwenden, wenn ein Video ausgewählt wird</string>
-    <string name="default_preset_none">Keines</string>
     <string name="whats_new_3_title">Wähle deine Standards</string>
     <string name="whats_new_3_desc">Du kannst jetzt in den Video-Einstellungen ein Standard-Preset auswählen</string>
     <string name="whats_new_4_title">Stetig verbessert</string>
     <string name="whats_new_4_desc">Dieses Update behebt mehrere Fehler und verbessert Komprimierungsqualität und Benutzererlebnis</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Zusätzlicher Größenpuffer</string>
     <string name="extra_size_cushion_desc">Komprimiert auf eine noch kleinere Zielgröße, wenn Videos die gewünschte Größe nicht erreichen. Aktivieren verringert die Qualität.</string>
 </resources>

@@ -216,6 +216,9 @@
     <string name="workaround_none">Нет</string>
     <string name="info_supported_codecs">Поддерживаемые кодеки</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">Пресет по умолчанию</string>
+    <string name="default_preset_desc">Автоматически применять этот пресет при выборе видео</string>
+    <string name="default_preset_none">Нет</string>
     <string name="reset_to_default">Сбросить до настроек по умолчанию</string>
     <string name="add_preset">Добавить пресет</string>
     <string name="reset_presets_to_default">Сбросить пресеты размера</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">Хотите видеть Compressor на своём языке? Нашли ошибку в переводе? Помогите с переводом на Crowdin</string>
     <string name="whats_new_2_title">Совместим как никогда</string>
     <string name="whats_new_2_desc">Compressor работает с ещё большим количеством источников, включая видео Dolby Vision</string>
-    <string name="default_preset_title">Пресет по умолчанию</string>
-    <string name="default_preset_desc">Автоматически применять этот пресет при выборе видео</string>
-    <string name="default_preset_none">Нет</string>
     <string name="whats_new_3_title">Настройки по умолчанию</string>
     <string name="whats_new_3_desc">Теперь вы можете выбрать пресет по умолчанию в настройках видео</string>
     <string name="whats_new_4_title">Постоянные улучшения</string>
     <string name="whats_new_4_desc">Этот выпуск исправляет множество ошибок, улучшает качество сжатия и удобство использования</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Дополнительный запас размера</string>
     <string name="extra_size_cushion_desc">Сжимает до ещё меньшего размера, если видео не укладывается в целевой размер. Включение снижает качество.</string>
 </resources>
