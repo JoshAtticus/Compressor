@@ -289,7 +289,8 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                 state = state,
                                 onBack = { currentSettingsDestination = SettingsDestination.MAIN },
                                 onUpdateVideoConfig = { viewModel.updateDefaultVideoConfig(it) },
-                                onResetVideoConfig = { viewModel.resetDefaultVideoConfig() }
+                                onResetVideoConfig = { viewModel.resetDefaultVideoConfig() },
+                                onToggleExtraSizeCushion = { viewModel.toggleExtraSizeCushion() }
                             )
                             SettingsDestination.AUDIO -> compress.joshattic.us.ui.screens.settings.AudioSettingsScreen(
                                 state = state,

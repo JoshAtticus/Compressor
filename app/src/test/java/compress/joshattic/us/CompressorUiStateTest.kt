@@ -317,4 +317,68 @@ class CompressorUiStateTest {
 
         assertEquals(expectedBitrate, state.targetBitrate)
     }
+    @Test
+    fun testTargetBitrate_withExtraSizeCushion_reducesBitrateFurther() {
+        val standardState = CompressorUiState(
+            targetSizeMb = 100f,
+            durationMs = 100_000L,
+            removeAudio = true,
+            extraSizeCushion = false
+        )
+        val cushionedState = standardState.copy(extraSizeCushion = true)
+
+        assertTrue(
+            "Extra size cushion should produce lower target bitrate",
+            cushionedState.targetBitrate < standardState.targetBitrate
+        )
+
+        val durationSec = 100.0
+        val targetBitsDirect = 100.0 * 8 * 1024 * 1024
+        val overheadBits = (targetBitsDirect * 0.88 * 0.02) + (50 * 1024 * 8)
+        val expectedVideoBits = (targetBitsDirect * 0.88) - overheadBits
+        val expectedBitrate = (expectedVideoBits / durationSec).toInt()
+
+        assertEquals(expectedBitrate, cushionedState.targetBitrate)
+    }
+
+    @Test
+    fun testAutoAdjust_withExtraSizeCushion_triggersDownscaleEarlier() {
+        val baseState = CompressorUiState(
+            originalWidth = 1920,
+            originalHeight = 1080,
+            originalFps = 30f,
+            durationMs = 90_000L,
+            audioBitrate = 128_000
+        )
+        val minMb = baseState.minimumSizeMb
+        val targetMb = minMb + 0.5f
+
+        val adjustedStandard = baseState.copy(extraSizeCushion = false).autoAdjust(targetMb)
+        val adjustedCushioned = baseState.copy(extraSizeCushion = true).autoAdjust(targetMb)
+
+        assertEquals("Standard should keep original resolution", 0, adjustedStandard.targetResolutionHeight)
+        assertTrue(
+            "Cushioned should downscale resolution or fps or audio",
+            adjustedCushioned.targetResolutionHeight > 0 || adjustedCushioned.targetFps in 1..24 || adjustedCushioned.audioBitrate < 128_000
+        )
+    }
+
+    @Test
+    fun testTargetSizeWarning_withExtraSizeCushion_accountsForCushion() {
+        val state = CompressorUiState(
+            originalWidth = 1920,
+            originalHeight = 1080,
+            originalFps = 30f,
+            durationMs = 60_000L,
+            audioBitrate = 128_000
+        )
+        val minMb = state.minimumSizeMb
+        val targetMb = minMb + 0.1f
+
+        val standardState = state.copy(targetSizeMb = targetMb, extraSizeCushion = false)
+        val cushionedState = state.copy(targetSizeMb = targetMb, extraSizeCushion = true)
+
+        assertTrue(!standardState.targetSizeWarning)
+        assertTrue(cushionedState.targetSizeWarning)
+    }
 }

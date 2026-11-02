@@ -257,4 +257,17 @@ class CompressorViewModelTest {
         assertNotNull(sequence)
         assertEquals(1, sequence.editedMediaItems.size)
     }
+    @Test
+    fun testToggleExtraSizeCushion() {
+        assertFalse(viewModel.uiState.value.extraSizeCushion)
+        viewModel.toggleExtraSizeCushion()
+        assertTrue(viewModel.uiState.value.extraSizeCushion)
+
+        val prefs = application.getSharedPreferences("compressor_prefs", android.content.Context.MODE_PRIVATE)
+        assertTrue(prefs.getBoolean("extra_size_cushion", false))
+
+        viewModel.toggleExtraSizeCushion()
+        assertFalse(viewModel.uiState.value.extraSizeCushion)
+        assertFalse(prefs.getBoolean("extra_size_cushion", false))
+    }
 }

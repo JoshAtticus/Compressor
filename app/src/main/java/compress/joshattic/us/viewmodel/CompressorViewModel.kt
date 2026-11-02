@@ -100,6 +100,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 emptyList()
             }
         }
+        private const val PREF_EXTRA_SIZE_CUSHION = "extra_size_cushion"
         private const val PREF_CUSTOM_OUTPUT_TREE_URI = "custom_output_tree_uri"
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
         private const val PREF_DEFAULT_PRESET = "default_quality_preset"
@@ -117,6 +118,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val useMbps = prefs.getBoolean("use_mbps", false)
         val showStorageSaved = prefs.getBoolean("show_storage_saved", true)
         val showTargetSizePreset = prefs.getBoolean("show_target_size_preset", true)
+        val extraSizeCushion = prefs.getBoolean(PREF_EXTRA_SIZE_CUSHION, false)
         val autoSaveSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
         val autoSaveToPhotos = autoSaveSupported && prefs.getBoolean("auto_save_photos", true)
         val customOutputTreeUri = prefs.getString(PREF_CUSTOM_OUTPUT_TREE_URI, null)
@@ -151,6 +153,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             useMbps = useMbps,
             showStorageSaved = showStorageSaved,
             showTargetSizePreset = showTargetSizePreset,
+            extraSizeCushion = extraSizeCushion,
             autoSaveToPhotos = autoSaveToPhotos,
             customOutputTreeUri = customOutputTreeUri,
             customOutputFolderName = customOutputFolderName,
@@ -1101,6 +1104,19 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             val newValue = !it.autoSaveToPhotos
             prefs.edit { putBoolean("auto_save_photos", newValue) }
             it.copy(autoSaveToPhotos = newValue)
+        }
+    }
+
+    fun toggleExtraSizeCushion() {
+        _uiState.update { current ->
+            val newValue = !current.extraSizeCushion
+            prefs.edit { putBoolean(PREF_EXTRA_SIZE_CUSHION, newValue) }
+            val updated = current.copy(extraSizeCushion = newValue)
+            if (updated.durationMs > 0) {
+                updated.autoAdjust(updated.targetSizeMb)
+            } else {
+                updated
+            }
         }
     }
 

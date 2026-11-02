@@ -275,4 +275,7 @@
     <string name="whats_new_1_desc">Compressor now scales cleanly to work well at any display or font size</string>
     <string name="whats_new_2_title">Bug Fixes</string>
     <string name="whats_new_2_desc">Cleared out more bugs to make Compressor as stable as ever</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">Extra size cushion</string>
+    <string name="extra_size_cushion_desc">Compresses to an even smaller target size if videos are not compressing to your target size. Enabling this setting reduces quality.</string>
 </resources>

@@ -57,6 +57,7 @@ data class CompressorUiState(
     val audioBitrateLocked: Boolean = false,
     val targetResolutionLocked: Boolean = false,
     val targetFpsLocked: Boolean = false,
+    val extraSizeCushion: Boolean = false,
     
     val totalSavedBytes: Long = 0L,
     
@@ -93,7 +94,10 @@ data class CompressorUiState(
     )
 ) {
     val targetSizeWarning: Boolean
-        get() = durationMs > 0 && targetSizeMb < minimumSizeMb
+        get() {
+            val cushionRatio = if (extraSizeCushion) (0.88f / 0.96f) else 1.0f
+            return durationMs > 0 && (targetSizeMb * cushionRatio) < minimumSizeMb
+        }
 
     /** Returns the settings autoAdjust would choose if user locks were released. */
     fun suggestedForTarget(): CompressorUiState {
@@ -169,8 +173,10 @@ data class CompressorUiState(
              val durationSec = if (durationMs > 0) durationMs / 1000.0 else 0.0
              if (durationSec <= 0) return 2_000_000
              
-             // Target 96% of requested size as a safety cushion against hardware encoder bitrate overshoot
-             val targetBits = targetSizeMb * 8 * 1024 * 1024 * 0.96
+             // Target 96% of requested size as a safety cushion against hardware encoder bitrate overshoot,
+             // or 88% if extra size cushion is enabled
+             val cushionFactor = if (extraSizeCushion) 0.88 else 0.96
+             val targetBits = targetSizeMb * 8 * 1024 * 1024 * cushionFactor
              
              val audioBits = if (removeAudio) 0.0 else {
                  val rate = if (audioBitrate == 0) 256_000.0 else audioBitrate.toDouble()
@@ -248,14 +254,16 @@ data class CompressorUiState(
         val maxAttempts = 20
 
         val durationSec = if (durationMs > 0) durationMs / 1000.0 else 1.0
-        val targetBits = targetMb * 8 * 1024 * 1024
+        val cushionFactor = if (state.extraSizeCushion) 0.88f else 0.96f
+        val effectiveTargetMb = targetMb * (cushionFactor / 0.96f)
+        val targetBits = targetMb * 8 * 1024 * 1024 * cushionFactor
 
         // Downward adjustment (Reduce quality to fit target)
         while (attempts < maxAttempts) {
             attempts++
             
             val audioTooHeavy = !audioLocked && !state.removeAudio && (state.audioBitrate * durationSec > targetBits * 0.35)
-            val needsReduction = state.minimumSizeMb > targetMb || audioTooHeavy
+            val needsReduction = state.minimumSizeMb > effectiveTargetMb || audioTooHeavy
             if (!needsReduction) break
             
             if (!audioLocked) {
@@ -296,7 +304,7 @@ data class CompressorUiState(
 
             if (!audioLocked) {
                 // 4. Reduce Audio Bitrate to 96k if really needed (big gap or audio taking too much)
-                if (state.audioBitrate > 96_000 && (state.minimumSizeMb > targetMb * 1.5 || state.audioBitrate * durationSec > targetBits * 0.30)) {
+                if (state.audioBitrate > 96_000 && (state.minimumSizeMb > effectiveTargetMb * 1.5 || state.audioBitrate * durationSec > targetBits * 0.30)) {
                     state = state.copy(audioBitrate = 96_000)
                     continue
                 }
@@ -337,7 +345,7 @@ data class CompressorUiState(
                 val useOriginal = nextShortSide >= originalShortSide
                 val testState = state.copy(targetResolutionHeight = if (useOriginal) 0 else nextH) 
                 
-                if (testState.minimumSizeMb <= targetMb) {
+                if (testState.minimumSizeMb <= effectiveTargetMb) {
                     state = testState
                     changed = true
                     continue
@@ -354,7 +362,7 @@ data class CompressorUiState(
                  val useOriginal = nextFps >= state.originalFps.toInt()
                  val testState = state.copy(targetFps = if (useOriginal) 0 else nextFps)
                  
-                 if (testState.minimumSizeMb <= targetMb) {
+                 if (testState.minimumSizeMb <= effectiveTargetMb) {
                     state = testState
                     changed = true
                     continue
@@ -380,7 +388,7 @@ data class CompressorUiState(
                      }.coerceAtMost(maxAudio)
                      
                      val testState = state.copy(audioBitrate = nextAudio)
-                     if (testState.minimumSizeMb <= targetMb) {
+                     if (testState.minimumSizeMb <= effectiveTargetMb) {
                          state = testState
                          changed = true
                          continue
