@@ -216,6 +216,9 @@
     <string name="workaround_none">なし</string>
     <string name="info_supported_codecs">対応コーデック</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">デフォルトプリセット</string>
+    <string name="default_preset_desc">動画を選択した際にこのプリセットを自動適用します</string>
+    <string name="default_preset_none">なし</string>
     <string name="reset_to_default">デフォルトに戻す</string>
     <string name="add_preset">プリセットを追加</string>
     <string name="reset_presets_to_default">サイズプリセットをリセット</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">あなたの言語で Compressor を使いたい、または誤訳を見つけましたか？Crowdin での翻訳にご協力ください</string>
     <string name="whats_new_2_title">さらに高い互換性</string>
     <string name="whats_new_2_desc">Dolby Vision 動画を含む、さらに多くの動画ソースに対応しました</string>
-    <string name="default_preset_title">デフォルトプリセット</string>
-    <string name="default_preset_desc">動画を選択した際にこのプリセットを自動適用します</string>
-    <string name="default_preset_none">なし</string>
     <string name="whats_new_3_title">デフォルト設定の選択</string>
     <string name="whats_new_3_desc">動画設定でデフォルトのプリセットを選択できるようになりました</string>
     <string name="whats_new_4_title">継続的な改善</string>
     <string name="whats_new_4_desc">複数の不具合を修正し、圧縮品質とユーザー体験を向上させました</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">追加のサイズ余白</string>
     <string name="extra_size_cushion_desc">動画が目標サイズに収まらない場合にさらに小さなサイズに圧縮します。有効にすると画質が低下します。</string>
 </resources>

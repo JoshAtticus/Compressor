@@ -216,6 +216,9 @@
     <string name="workaround_none">Ninguno</string>
     <string name="info_supported_codecs">Códecs compatibles</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">Ajuste predeterminado</string>
+    <string name="default_preset_desc">Aplica este ajuste automáticamente al seleccionar un video</string>
+    <string name="default_preset_none">Ninguno</string>
     <string name="reset_to_default">Restablecer valores predeterminados</string>
     <string name="add_preset">Añadir ajuste</string>
     <string name="reset_presets_to_default">Restablecer ajustes de tamaño</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">¿Quieres ver Compressor en tu idioma? ¿Ves algún error de traducción? Ayuda a traducir Compressor en Crowdin</string>
     <string name="whats_new_2_title">Tan compatible como siempre</string>
     <string name="whats_new_2_desc">Compressor funciona con aún más fuentes, incluyendo ahora videos con Dolby Vision</string>
-    <string name="default_preset_title">Ajuste predeterminado</string>
-    <string name="default_preset_desc">Aplica este ajuste automáticamente al seleccionar un video</string>
-    <string name="default_preset_none">Ninguno</string>
     <string name="whats_new_3_title">Elige tus preferencias</string>
     <string name="whats_new_3_desc">Ahora puedes seleccionar un ajuste predeterminado en los ajustes de video</string>
     <string name="whats_new_4_title">Mejorando constantemente</string>
     <string name="whats_new_4_desc">Esta versión corrige varios errores y mejora la calidad de compresión y la experiencia de usuario</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Margen de tamaño adicional</string>
     <string name="extra_size_cushion_desc">Comprime a un tamaño aún menor si los videos no alcanzan el tamaño objetivo. Activar esta opción reduce la calidad.</string>
 </resources>

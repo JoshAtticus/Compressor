@@ -216,6 +216,9 @@
     <string name="workaround_none">لا يوجد</string>
     <string name="info_supported_codecs">الترميزات المدعومة</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">الإعداد المسبق الافتراضي</string>
+    <string name="default_preset_desc">تطبيق هذا الإعداد المسبق تلقائيًا عند تحديد مقطع فيديو</string>
+    <string name="default_preset_none">بلا</string>
     <string name="reset_to_default">إعادة الضبط إلى الافتراضي</string>
     <string name="add_preset">إضافة إعداد مسبق</string>
     <string name="reset_presets_to_default">إعادة ضبط إعدادات الحجم المسبقة</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">هل تريد رؤية Compressor بلغتك؟ هل لاحظت خطأ في الترجمة؟ ساعد في ترجمة Compressor على Crowdin</string>
     <string name="whats_new_2_title">متوافق كما هو دائمًا</string>
     <string name="whats_new_2_desc">يعمل Compressor مع المزيد من المصادر، بما في ذلك الآن مقاطع فيديو Dolby Vision</string>
-    <string name="default_preset_title">الإعداد المسبق الافتراضي</string>
-    <string name="default_preset_desc">تطبيق هذا الإعداد المسبق تلقائيًا عند تحديد مقطع فيديو</string>
-    <string name="default_preset_none">بلا</string>
     <string name="whats_new_3_title">اختر إعداداتك الافتراضية</string>
     <string name="whats_new_3_desc">يمكنك الآن تحديد إعداد مسبق افتراضي في إعدادات الفيديو</string>
     <string name="whats_new_4_title">تحسينات مستمرة</string>
     <string name="whats_new_4_desc">يعالج هذا الإصدار العديد من الأخطاء ويحسن جودة الضغط وتجربة المستخدم</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">هامش حجم إضافي</string>
     <string name="extra_size_cushion_desc">يضغط إلى حجم أصغر إذا لم تكن مقاطع الفيديو تنضغط إلى الحجم المستهدف. تفعيل هذا الخيار يقلل من الجودة.</string>
 </resources>

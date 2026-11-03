@@ -216,6 +216,9 @@
     <string name="workaround_none">無</string>
     <string name="info_supported_codecs">支援的編解碼器</string>
     <!-- Presets Management Keys -->
+    <string name="default_preset_title">預設畫質設定</string>
+    <string name="default_preset_desc">選取影片時自動套用此預設設定</string>
+    <string name="default_preset_none">無</string>
     <string name="reset_to_default">恢復預設設定</string>
     <string name="add_preset">添加預設</string>
     <string name="reset_presets_to_default">重置大小預設</string>
@@ -247,13 +250,11 @@
     <string name="whats_new_1_desc">想看到您的語言版本？發現了翻譯錯誤？歡迎前往 Crowdin 協助翻譯</string>
     <string name="whats_new_2_title">相容性一如既往</string>
     <string name="whats_new_2_desc">Compressor 支援更多影片來源，現已包含杜比視界 (Dolby Vision) 影片</string>
-    <string name="default_preset_title">預設畫質設定</string>
-    <string name="default_preset_desc">選取影片時自動套用此預設設定</string>
-    <string name="default_preset_none">無</string>
     <string name="whats_new_3_title">選擇預設設定</string>
     <string name="whats_new_3_desc">現在可以在影片設定中選取預設畫質設定</string>
     <string name="whats_new_4_title">持續改進</string>
     <string name="whats_new_4_desc">修正了多處錯誤，進一步提升了壓縮品質與使用體驗</string>
+    <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">額外大小緩衝</string>
     <string name="extra_size_cushion_desc">如果影片未壓縮到目標大小，則壓縮到更小的目標大小。啟用此設定會降低畫質。</string>
 </resources>
