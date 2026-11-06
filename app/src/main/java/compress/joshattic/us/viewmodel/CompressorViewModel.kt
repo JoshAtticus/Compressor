@@ -1311,41 +1311,50 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
     }
 
     fun reset() {
-        val current = _uiState.value
-        val savedBytes = current.totalSavedBytes
-        val supportedCodecs = current.supportedCodecs
-        val showBitrate = current.showBitrate
-        val useMbps = current.useMbps
-        
         clearCache()
 
-        val defaultCodec = if (supportedCodecs.contains(MimeTypes.VIDEO_H265)) MimeTypes.VIDEO_H265 else MimeTypes.VIDEO_H264
+        val defaultCodec = if (_uiState.value.supportedCodecs.contains(MimeTypes.VIDEO_H265)) {
+            MimeTypes.VIDEO_H265
+        } else {
+            MimeTypes.VIDEO_H264
+        }
         val useH265 = defaultCodec == MimeTypes.VIDEO_H265
         
         _uiState.update {
-            CompressorUiState(
-                totalSavedBytes = savedBytes,
-                supportedCodecs = supportedCodecs,
-                showBitrate = showBitrate,
-                useMbps = useMbps,
-                showStorageSaved = current.showStorageSaved,
-                showTargetSizePreset = current.showTargetSizePreset,
-                extraSizeCushion = current.extraSizeCushion,
-                autoSaveToPhotos = current.autoSaveToPhotos,
-                customOutputTreeUri = current.customOutputTreeUri,
-                customOutputFolderName = current.customOutputFolderName,
-                allCodecsEnabled = current.allCodecsEnabled,
-                allCodecsUnlocked = current.allCodecsUnlocked,
-                highPresetConfig = current.highPresetConfig,
-                mediumPresetConfig = current.mediumPresetConfig,
-                lowPresetConfig = current.lowPresetConfig,
-                targetSizePresets = current.targetSizePresets,
-                defaultVideoConfig = current.defaultVideoConfig,
-                defaultAudioConfig = current.defaultAudioConfig,
-                defaultPreset = current.defaultPreset,
-                filenameSegments = current.filenameSegments,
+            it.copy(
+                selectedUri = null,
+                originalSize = 0L,
+                originalWidth = 0,
+                originalHeight = 0,
+                originalBitrate = 0,
+                originalAudioBitrate = 0,
+                originalFps = 30f,
+                originalVideoMime = null,
+                durationMs = 0L,
+                originalName = null,
+                isCompressing = false,
+                progress = 0f,
+                compressedUri = null,
+                compressedSize = 0L,
+                currentOutputSize = 0L,
+                error = null,
+                errorLog = null,
+                saveSuccess = false,
+                isSaving = false,
+                activePreset = QualityPreset.CUSTOM,
+                targetSizeMb = 10f,
                 videoCodec = defaultCodec,
-                useH265 = useH265
+                useH265 = useH265,
+                targetResolutionHeight = 0,
+                targetFps = 0,
+                audioBitrateLocked = false,
+                targetResolutionLocked = false,
+                targetFpsLocked = false,
+                removeAudio = false,
+                audioBitrate = 128_000,
+                audioVolume = 1.0f,
+                warnings = emptyList(),
+                hasShared = false
             )
         }
     }

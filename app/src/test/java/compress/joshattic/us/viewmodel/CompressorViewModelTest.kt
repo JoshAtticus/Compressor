@@ -5,8 +5,11 @@ import android.media.MediaCodecList
 import androidx.media3.common.MimeTypes
 import androidx.test.core.app.ApplicationProvider
 import compress.joshattic.us.model.CompressorUiState
+import compress.joshattic.us.model.DefaultAudioConfig
+import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.FilenameSegment
 import compress.joshattic.us.model.QualityPreset
+import compress.joshattic.us.model.QualityPresetConfig
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -141,6 +144,92 @@ class CompressorViewModelTest {
         viewModel.reset()
 
         assertTrue(viewModel.uiState.value.extraSizeCushion)
+    }
+
+    @Test
+    fun testResetKeepsAllPersistentSettings() {
+        viewModel.toggleShowBitrate()
+        viewModel.toggleBitrateUnit()
+        viewModel.toggleShowStorageSaved()
+        viewModel.toggleShowTargetSizePreset()
+        viewModel.toggleAutoSaveToPhotos()
+        viewModel.toggleExtraSizeCushion()
+        viewModel.setDefaultPreset(QualityPreset.HIGH)
+        viewModel.updateHighPresetConfig(
+            QualityPresetConfig(
+                resolutionShortSide = 1440,
+                targetFps = 60,
+                sizeRatio = 0.65f,
+                audioBitrate = 256_000,
+                label = "Custom High"
+            )
+        )
+        viewModel.updateMediumPresetConfig(
+            QualityPresetConfig(
+                resolutionShortSide = 900,
+                targetFps = 24,
+                sizeRatio = 0.35f,
+                audioBitrate = 160_000,
+                label = "Custom Medium"
+            )
+        )
+        viewModel.updateLowPresetConfig(
+            QualityPresetConfig(
+                resolutionShortSide = 540,
+                targetFps = 24,
+                sizeRatio = 0.18f,
+                audioBitrate = 96_000,
+                label = "Custom Low"
+            )
+        )
+        viewModel.updateDefaultVideoConfig(
+            DefaultVideoConfig(
+                defaultVideoCodec = MimeTypes.VIDEO_H264,
+                defaultTargetResolutionHeight = 720,
+                defaultTargetFps = 30,
+                defaultSizeRatio = 0.5f
+            )
+        )
+        viewModel.updateDefaultAudioConfig(
+            DefaultAudioConfig(
+                defaultAudioBitrate = 96_000,
+                defaultRemoveAudio = true,
+                defaultAudioVolume = 0.75f
+            )
+        )
+        viewModel.updateFilenameSegments(
+            listOf(
+                FilenameSegment.Token("original_name"),
+                FilenameSegment.Text("-saved"),
+                FilenameSegment.Token("date")
+            )
+        )
+        val customTargetPresetLabel = "Custom test preset"
+        viewModel.addTargetSizePreset(customTargetPresetLabel, 17f)
+
+        val beforeReset = viewModel.uiState.value
+        viewModel.reset()
+        val afterReset = viewModel.uiState.value
+
+        assertEquals(beforeReset.totalSavedBytes, afterReset.totalSavedBytes)
+        assertEquals(beforeReset.showBitrate, afterReset.showBitrate)
+        assertEquals(beforeReset.useMbps, afterReset.useMbps)
+        assertEquals(beforeReset.showStorageSaved, afterReset.showStorageSaved)
+        assertEquals(beforeReset.showTargetSizePreset, afterReset.showTargetSizePreset)
+        assertEquals(beforeReset.extraSizeCushion, afterReset.extraSizeCushion)
+        assertEquals(beforeReset.autoSaveToPhotos, afterReset.autoSaveToPhotos)
+        assertEquals(beforeReset.customOutputTreeUri, afterReset.customOutputTreeUri)
+        assertEquals(beforeReset.customOutputFolderName, afterReset.customOutputFolderName)
+        assertEquals(beforeReset.defaultPreset, afterReset.defaultPreset)
+        assertEquals(beforeReset.highPresetConfig, afterReset.highPresetConfig)
+        assertEquals(beforeReset.mediumPresetConfig, afterReset.mediumPresetConfig)
+        assertEquals(beforeReset.lowPresetConfig, afterReset.lowPresetConfig)
+        assertEquals(beforeReset.targetSizePresets, afterReset.targetSizePresets)
+        assertEquals(beforeReset.defaultVideoConfig, afterReset.defaultVideoConfig)
+        assertEquals(beforeReset.defaultAudioConfig, afterReset.defaultAudioConfig)
+        assertEquals(beforeReset.filenameSegments, afterReset.filenameSegments)
+        assertEquals(beforeReset.allCodecsEnabled, afterReset.allCodecsEnabled)
+        assertEquals(beforeReset.allCodecsUnlocked, afterReset.allCodecsUnlocked)
     }
 
     @Test
