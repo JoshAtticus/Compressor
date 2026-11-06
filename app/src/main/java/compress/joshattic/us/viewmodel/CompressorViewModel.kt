@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.IntentSender
 import android.content.SharedPreferences
 import android.media.MediaCodecList
 import android.media.MediaExtractor
@@ -46,7 +47,11 @@ import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.QualityPreset
 import compress.joshattic.us.model.QualityPresetConfig
 import compress.joshattic.us.model.TargetSizePreset
+import compress.joshattic.us.utils.DeleteMediaResult
 import compress.joshattic.us.utils.VolumeAudioProcessor
+import compress.joshattic.us.utils.deleteMediaUri
+import compress.joshattic.us.utils.queryFileName
+import compress.joshattic.us.utils.resolveOriginalMediaStore
 import org.json.JSONArray
 import org.json.JSONObject
 import kotlinx.coroutines.Dispatchers
@@ -137,15 +142,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         )
 
         val savedVersionCode = prefs.getInt(PREF_SAVED_VERSION_CODE, -1)
-        val showWhatsNew = if (savedVersionCode != -1) {
-            CURRENT_VERSION_CODE > savedVersionCode
-        } else {
-            val isExistingUser = prefs.all.isNotEmpty()
-            if (!isExistingUser) {
-                prefs.edit().putInt(PREF_SAVED_VERSION_CODE, CURRENT_VERSION_CODE).apply()
-            }
-            isExistingUser
-        }
+        val showWhatsNew = savedVersionCode == -1 || CURRENT_VERSION_CODE > savedVersionCode
 
         _uiState.update { it.copy(
             totalSavedBytes = saved, 
@@ -341,6 +338,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             var videoMime: String? = null
             var duration = 0L
             var originalName: String? = null
+            var originalMediaUri: Uri? = null
 
             try {
                 val probe = probeTracks(context, uri).also {
@@ -351,18 +349,22 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 videoMime = probe.video?.mimeType
                 val videoInfo = probe.video
 
+                val resolvedMedia = resolveOriginalMediaStore(context, uri)
+                originalMediaUri = resolvedMedia?.first
+                originalName = resolvedMedia?.second ?: queryFileName(context, uri)
+                if (!originalName.isNullOrBlank() && !originalName.contains(".")) {
+                    val ext = videoMime?.substringAfterLast('/')?.takeIf { it.isNotBlank() } ?: "mp4"
+                    originalName = "$originalName.$ext"
+                }
+
                 val cursor = context.contentResolver.query(
                     uri,
-                    arrayOf(android.provider.OpenableColumns.DISPLAY_NAME, android.provider.OpenableColumns.SIZE),
+                    arrayOf(android.provider.OpenableColumns.SIZE),
                     null,
                     null,
                     null
                 )
                 if (cursor != null && cursor.moveToFirst()) {
-                    val nameIndex = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
-                    if (nameIndex != -1) {
-                        originalName = cursor.getString(nameIndex)
-                    }
                     val sizeIndex = cursor.getColumnIndex(android.provider.OpenableColumns.SIZE)
                     if (sizeIndex != -1 && !cursor.isNull(sizeIndex)) {
                         size = cursor.getLong(sizeIndex)
@@ -432,6 +434,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             _uiState.update { state ->
                 state.copy(
                     selectedUri = uri,
+                    originalMediaUri = originalMediaUri,
                     originalSize = size,
                     originalWidth = width,
                     originalHeight = height,
@@ -462,6 +465,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                     errorLog = null,
                     saveSuccess = false,
                     isSaving = false,
+                    isOriginalDeleted = false,
+                    isDeletingOriginal = false,
+                    deleteOriginalError = null,
                     hasShared = false
                 ).autoAdjust(defaultTargetMb)
             }
@@ -1287,6 +1293,68 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             )
         }
     }
+
+    fun deleteOriginalVideo(
+        context: Context,
+        onRequiresIntentSender: (IntentSender) -> Unit
+    ) {
+        val state = _uiState.value
+        val uri = state.originalMediaUri
+            ?: resolveOriginalMediaStore(context, state.selectedUri ?: return)?.first
+            ?: state.selectedUri
+            ?: return
+        viewModelScope.launch(Dispatchers.IO) {
+            _uiState.update { it.copy(isDeletingOriginal = true, deleteOriginalError = null) }
+            when (val result = deleteMediaUri(context, uri)) {
+                is DeleteMediaResult.Success -> {
+                    _uiState.update {
+                        it.copy(
+                            isOriginalDeleted = true,
+                            isDeletingOriginal = false,
+                            deleteOriginalError = null
+                        )
+                    }
+                }
+                is DeleteMediaResult.RequiresUserConsent -> {
+                    withContext(Dispatchers.Main) {
+                        _uiState.update { it.copy(isDeletingOriginal = false) }
+                        onRequiresIntentSender(result.intentSender)
+                    }
+                }
+                is DeleteMediaResult.Failed -> {
+                    _uiState.update {
+                        it.copy(
+                            isDeletingOriginal = false,
+                            deleteOriginalError = result.error
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    fun onOriginalDeleted() {
+        _uiState.update {
+            it.copy(
+                isOriginalDeleted = true,
+                isDeletingOriginal = false,
+                deleteOriginalError = null
+            )
+        }
+    }
+
+    fun onDeleteConsentFailed(error: String? = null) {
+        _uiState.update {
+            it.copy(
+                isDeletingOriginal = false,
+                deleteOriginalError = error
+            )
+        }
+    }
+
+    fun clearDeleteOriginalError() {
+        _uiState.update { it.copy(deleteOriginalError = null) }
+    }
     
     fun cancelCompression() {
         activeTransformer?.cancel()
@@ -1323,6 +1391,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         _uiState.update {
             it.copy(
                 selectedUri = null,
+                originalMediaUri = null,
                 originalSize = 0L,
                 originalWidth = 0,
                 originalHeight = 0,
@@ -1341,6 +1410,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 errorLog = null,
                 saveSuccess = false,
                 isSaving = false,
+                isOriginalDeleted = false,
+                isDeletingOriginal = false,
+                deleteOriginalError = null,
                 activePreset = QualityPreset.CUSTOM,
                 targetSizeMb = 10f,
                 videoCodec = defaultCodec,

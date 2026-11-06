@@ -385,4 +385,27 @@ class CompressorViewModelTest {
         assertFalse(viewModel.uiState.value.extraSizeCushion)
         assertFalse(prefs.getBoolean("extra_size_cushion", false))
     }
+
+    @Test
+    fun testDeleteOriginalVideoState() {
+        assertFalse(viewModel.uiState.value.isOriginalDeleted)
+        assertFalse(viewModel.uiState.value.isDeletingOriginal)
+        assertNull(viewModel.uiState.value.deleteOriginalError)
+
+        viewModel.onOriginalDeleted()
+        assertTrue(viewModel.uiState.value.isOriginalDeleted)
+        assertFalse(viewModel.uiState.value.isDeletingOriginal)
+
+        viewModel.onDeleteConsentFailed("User denied")
+        assertEquals("User denied", viewModel.uiState.value.deleteOriginalError)
+        assertFalse(viewModel.uiState.value.isDeletingOriginal)
+
+        viewModel.clearDeleteOriginalError()
+        assertNull(viewModel.uiState.value.deleteOriginalError)
+
+        viewModel.reset()
+        assertFalse(viewModel.uiState.value.isOriginalDeleted)
+        assertFalse(viewModel.uiState.value.isDeletingOriginal)
+        assertNull(viewModel.uiState.value.deleteOriginalError)
+    }
 }

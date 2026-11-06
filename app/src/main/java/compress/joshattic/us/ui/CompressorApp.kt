@@ -1,16 +1,20 @@
 package compress.joshattic.us.ui
 
 import compress.joshattic.us.ui.components.WhatsNewDialog
+import android.app.Activity
 import android.content.Intent
 import android.net.Uri
+import android.provider.MediaStore
 import android.view.WindowManager
 import android.widget.Toast
 import androidx.activity.BackEventCompat
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.PredictiveBackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import compress.joshattic.us.utils.hasVideoPermission
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
@@ -149,6 +153,37 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     val pickMedia = rememberLauncherForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             viewModel.updateSelectedUri(context, uri)
+        }
+    }
+
+    val videoPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+    }
+
+    val whatsNewPermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) { _ ->
+        // Permission request from What's New dialog finished
+    }
+
+    val galleryPickLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartActivityForResult()
+    ) { result ->
+        val uri = result.data?.data
+        if (uri != null) {
+            viewModel.updateSelectedUri(context, uri)
+        }
+    }
+
+    val deleteIntentSenderLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            viewModel.onOriginalDeleted()
+        } else {
+            viewModel.onDeleteConsentFailed()
         }
     }
 
@@ -351,7 +386,31 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                     0 -> EmptyScreen(
                                         totalSaved = state.formattedTotalSaved,
                                         showStorageSaved = state.showStorageSaved,
-                                        onPick = { pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly)) }
+                                        onPick = {
+                                            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
+                                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                                                    !hasVideoPermission(context)
+                                                ) {
+                                                    videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
+                                                } else {
+                                                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                                                }
+                                            } else {
+                                                // When the system photo picker isn't available (e.g. Android 12 or earlier),
+                                                // launch the device's native Gallery app directly instead of the system Documents UI
+                                                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
+                                                    type = "video/*"
+                                                }
+                                                try {
+                                                    galleryPickLauncher.launch(galleryIntent)
+                                                } catch (_: Exception) {
+                                                    val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                        type = "video/*"
+                                                    }
+                                                    galleryPickLauncher.launch(fallbackIntent)
+                                                }
+                                            }
+                                        }
                                     )
                                     2 -> {
                                         if (state.error != null) {
@@ -385,6 +444,13 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                                         createDocumentLauncher.launch(fileName)
                                                     }
                                                 },
+                                                onDeleteOriginal = {
+                                                    viewModel.deleteOriginalVideo(context) { intentSender ->
+                                                        deleteIntentSenderLauncher.launch(
+                                                            IntentSenderRequest.Builder(intentSender).build()
+                                                        )
+                                                    }
+                                                },
                                                 onCompressAnother = { viewModel.reset() },
                                                 onBack = { viewModel.reset() }
                                             )
@@ -403,6 +469,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     if (state.showWhatsNewDialog) {
         WhatsNewDialog(
             versionName = state.appInfoVersion,
+            onRequestPermission = {
+                viewModel.dismissWhatsNewDialog()
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                    whatsNewPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
+                }
+            },
             onDismiss = { viewModel.dismissWhatsNewDialog() }
         )
     }

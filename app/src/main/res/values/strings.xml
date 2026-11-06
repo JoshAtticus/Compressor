@@ -35,6 +35,11 @@
     <string name="delete_original_success">Video deleted successfully</string>
     <string name="delete_original_failed">Failed to delete video</string>
     <string name="delete_confirm_title">Delete Original?</string>
+    <string name="delete_action">Delete</string>
+    <string name="deleting_original">Deleting original…</string>
+    <string name="original_deleted">Original Deleted</string>
+    <string name="delete_original_confirm_message">Are you sure you want to permanently delete the original video? This action cannot be undone.</string>
+    <string name="delete_original_confirm_unsaved_message">You have not saved or shared your compressed video yet. Are you sure you want to permanently delete the original video?</string>
     
     <string name="info_title">Device &amp; App Info</string>
     <string name="info_copy_clipboard">Copy to Clipboard</string>
@@ -271,6 +276,18 @@
     <string name="whats_new_title">What\'s new in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Got it</string>
+    <string name="next">Next</string>
+    <string name="permission_screen_title">Compressor uses permissions to do more</string>
+    <string name="permission_screen_subtitle">This release includes new features like deleting the original video and keeping the original file name which needs your permission to work.</string>
+    <string name="permission_card_videos_title">Access Gallery</string>
+    <string name="permission_card_videos_desc">Only accesses video metadata to identify original file names and delete original videos when you ask.</string>
+    <string name="permission_card_storage_title">Still can\'t access your phone\'s storage</string>
+    <string name="permission_card_storage_desc">Compressor has no access to your personal photos, documents, downloads, or any other files.</string>
+    <string name="permission_card_network_title">Still doesn\'t access the internet</string>
+    <string name="permission_card_network_desc">Compressor has no network access. Everything happens 100% offline and privately on your device.</string>
+    <string name="permission_screen_footer">You don\'t have to grant permission if you don\'t want to. If you choose not to, Compressor will continue working like it did before. You can always change this in Settings.</string>
+    <string name="grant_permission">Grant permission</string>
+    <string name="decline_permission">Decline</string>
     <string name="whats_new_1_title">Help Translate Compressor!</string>
     <string name="whats_new_1_desc">Want to see Compressor in your language? See a mistake in the translations? Help translate Compressor on Crowdin</string>
     <string name="whats_new_2_title">Compatible as ever</string>

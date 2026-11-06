@@ -19,16 +19,23 @@ import compress.joshattic.us.viewmodel.CompressorViewModel
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<CompressorViewModel>()
 
-    private fun handleShareIntent(intent: Intent?) {
-        if (intent?.action != Intent.ACTION_SEND || intent.type?.startsWith("video/") != true) {
-            return
-        }
-
-        val uri = if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
-            intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
-        } else {
-            @Suppress("DEPRECATION")
-            intent.getParcelableExtra(Intent.EXTRA_STREAM)
+    private fun handleIncomingIntent(intent: Intent?) {
+        if (intent == null) return
+        val uri: Uri? = when (intent.action) {
+            Intent.ACTION_SEND -> {
+                if (intent.type?.startsWith("video/") == true) {
+                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU) {
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM, Uri::class.java)
+                    } else {
+                        @Suppress("DEPRECATION")
+                        intent.getParcelableExtra(Intent.EXTRA_STREAM)
+                    }
+                } else null
+            }
+            Intent.ACTION_VIEW -> {
+                intent.data
+            }
+            else -> null
         }
 
         if (uri != null) {
@@ -47,8 +54,8 @@ class MainActivity : ComponentActivity() {
         
         enableEdgeToEdge()
 
-        // Handle the initial share intent. Later shares arrive through onNewIntent.
-        handleShareIntent(intent)
+        // Handle initial incoming intent (share or open). Later intents arrive through onNewIntent.
+        handleIncomingIntent(intent)
 
         setContent {
             CompressorTheme {
@@ -65,6 +72,6 @@ class MainActivity : ComponentActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         setIntent(intent)
-        handleShareIntent(intent)
+        handleIncomingIntent(intent)
     }
 }

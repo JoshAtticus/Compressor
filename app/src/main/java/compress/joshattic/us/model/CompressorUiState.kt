@@ -26,6 +26,7 @@ val defaultTargetSizePresets = listOf(
 
 data class CompressorUiState(
     val selectedUri: Uri? = null,
+    val originalMediaUri: Uri? = null,
     val originalSize: Long = 0L,
     val originalWidth: Int = 0,
     val originalHeight: Int = 0,
@@ -45,6 +46,9 @@ data class CompressorUiState(
     val errorLog: String? = null,
     val saveSuccess: Boolean = false,
     val isSaving: Boolean = false,
+    val isOriginalDeleted: Boolean = false,
+    val isDeletingOriginal: Boolean = false,
+    val deleteOriginalError: String? = null,
     
     // Configuration
     val activePreset: QualityPreset = QualityPreset.CUSTOM,

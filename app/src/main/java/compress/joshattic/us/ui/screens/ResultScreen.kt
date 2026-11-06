@@ -2,8 +2,11 @@ package compress.joshattic.us.ui.screens
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.spring
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,6 +29,7 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Share
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -63,13 +67,36 @@ fun ResultScreen(
     state: CompressorUiState, 
     onShare: () -> Unit,
     onSave: () -> Unit,
+    onDeleteOriginal: () -> Unit,
     onCompressAnother: () -> Unit,
     onBack: () -> Unit
 ) {
     val uriHandler = LocalUriHandler.current
     val haptics = LocalHapticFeedback.current
+    val context = androidx.compose.ui.platform.LocalContext.current
+
     LaunchedEffect(Unit) {
         haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+    }
+
+    LaunchedEffect(state.isOriginalDeleted) {
+        if (state.isOriginalDeleted) {
+            android.widget.Toast.makeText(
+                context,
+                context.getString(R.string.delete_original_success),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    LaunchedEffect(state.deleteOriginalError) {
+        if (state.deleteOriginalError != null) {
+            android.widget.Toast.makeText(
+                context,
+                context.getString(R.string.delete_original_failed),
+                android.widget.Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
@@ -240,6 +267,135 @@ fun ResultScreen(
                     )
                 }
             }
+        }
+        
+        val canShowDelete = (state.saveSuccess || state.hasShared || state.isOriginalDeleted) && state.selectedUri != null
+        var showDeleteConfirmDialog by remember { mutableStateOf(false) }
+
+        AnimatedVisibility(
+            visible = canShowDelete,
+            enter = fadeIn(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f)) +
+                    expandVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f)),
+            exit = fadeOut(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f)) +
+                   shrinkVertically(animationSpec = spring(dampingRatio = 0.8f, stiffness = 350f))
+        ) {
+            Column(modifier = Modifier.fillMaxWidth()) {
+                Spacer(modifier = Modifier.height(12.dp))
+
+                OutlinedButton(
+                    onClick = {
+                        haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                        showDeleteConfirmDialog = true
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .heightIn(min = 52.dp),
+                    enabled = !state.isOriginalDeleted && !state.isDeletingOriginal && state.selectedUri != null,
+                    colors = ButtonDefaults.outlinedButtonColors(
+                        contentColor = MaterialTheme.colorScheme.error
+                    ),
+                    border = BorderStroke(
+                        1.dp,
+                        if (state.isOriginalDeleted) MaterialTheme.colorScheme.outlineVariant
+                        else MaterialTheme.colorScheme.error.copy(alpha = 0.5f)
+                    ),
+                    shape = RoundedCornerShape(24.dp)
+                ) {
+                    if (state.isDeletingOriginal) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(18.dp),
+                            strokeWidth = 2.dp,
+                            color = MaterialTheme.colorScheme.error
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.deleting_original),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    } else if (state.isOriginalDeleted) {
+                        Icon(
+                            Icons.Default.Check,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                            tint = MaterialTheme.colorScheme.primary
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.original_deleted),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        Icon(
+                            Icons.Outlined.Delete,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            stringResource(R.string.delete_original),
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 14.sp
+                        )
+                    }
+                }
+            }
+        }
+
+        if (showDeleteConfirmDialog) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirmDialog = false },
+                icon = {
+                    Icon(
+                        Icons.Outlined.Delete,
+                        contentDescription = null,
+                        tint = MaterialTheme.colorScheme.error
+                    )
+                },
+                title = {
+                    Text(
+                        stringResource(R.string.delete_confirm_title),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Text(
+                        stringResource(
+                            if (state.saveSuccess || state.hasShared) {
+                                R.string.delete_original_confirm_message
+                            } else {
+                                R.string.delete_original_confirm_unsaved_message
+                            }
+                        )
+                    )
+                },
+                confirmButton = {
+                    TextButton(
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showDeleteConfirmDialog = false
+                            onDeleteOriginal()
+                        },
+                        colors = ButtonDefaults.textButtonColors(
+                            contentColor = MaterialTheme.colorScheme.error
+                        )
+                    ) {
+                        Text(stringResource(R.string.delete_action), fontWeight = FontWeight.Bold)
+                    }
+                },
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            haptics.performHapticFeedback(HapticFeedbackType.LongPress)
+                            showDeleteConfirmDialog = false
+                        }
+                    ) {
+                        Text(stringResource(R.string.cancel), fontWeight = FontWeight.Bold)
+                    }
+                }
+            )
         }
         
         Spacer(modifier = Modifier.height(16.dp))
