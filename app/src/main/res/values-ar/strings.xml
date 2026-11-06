@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">هامش حجم إضافي</string>
     <string name="extra_size_cushion_desc">يضغط إلى حجم أصغر إذا لم تكن مقاطع الفيديو تنضغط إلى الحجم المستهدف. تفعيل هذا الخيار يقلل من الجودة.</string>
+    <string name="delete_action">حذف</string>
+    <string name="deleting_original">جارٍ حذف الأصل…</string>
+    <string name="original_deleted">تم حذف الأصل</string>
+    <string name="delete_original_confirm_message">هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="delete_original_confirm_unsaved_message">لم تقم بحفظ أو مشاركة الفيديو المضغوط بعد. هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟</string>
+    <string name="next">التالي</string>
+    <string name="permission_screen_title">يستخدم Compressor الأذونات لفعل المزيد</string>
+    <string name="permission_screen_subtitle">يتضمن هذا الإصدار ميزات جديدة مثل حذف الفيديو الأصلي والاحتفاظ باسم الملف الأصلي، والتي تحتاج إلى إذنك لكي تعمل.</string>
+    <string name="permission_card_videos_title">الوصول إلى المعرض</string>
+    <string name="permission_card_videos_desc">يصل فقط إلى بيانات الفيديو الوصفية لتحديد أسماء الملفات الأصلية وحذف الفيديوهات الأصلية عندما تطلب ذلك.</string>
+    <string name="permission_card_storage_title">لا يزال لا يمكنه الوصول إلى تخزين هاتفك</string>
+    <string name="permission_card_storage_desc">ليس لدى Compressor أي وصول إلى صورك الشخصية أو مستنداتك أو التنزيلات أو أي ملفات أخرى.</string>
+    <string name="permission_card_network_title">لا يزال لا يصل إلى الإنترنت</string>
+    <string name="permission_card_network_desc">ليس لدى Compressor أي وصول إلى الشبكة. يحدث كل شيء بنسبة 100% دون اتصال وبشكل خاص على جهازك.</string>
+    <string name="permission_screen_footer">لست مضطرًا لمنح الإذن إذا لم ترغب في ذلك. إذا اخترت عدم منحه، فسيستمر Compressor في العمل كما كان من قبل. يمكنك دائمًا تغيير ذلك في الإعدادات.</string>
+    <string name="grant_permission">منح الإذن</string>
+    <string name="decline_permission">رفض</string>
+    <string name="video_picker_setting_title">منتقي الفيديو</string>
+    <string name="video_picker_setting_subtitle">اختر كيفية تحديد الفيديوهات</string>
+    <string name="video_picker_dialog_title">تحديد منتقي الفيديو</string>
+    <string name="video_picker_mode_photo_picker">منتقي صور Android</string>
+    <string name="video_picker_mode_photo_picker_desc">استخدام منتقي الصور المدمج في نظام Android</string>
+    <string name="video_picker_mode_gallery_app">تطبيقات المعرض</string>
+    <string name="video_picker_mode_gallery_app_desc">اختر تطبيق المعرض المراد استخدامه لتحديد الفيديوهات</string>
+    <string name="video_picker_mode_unsupported">غير مدعوم على هذا الجهاز</string>
+    <string name="select_gallery_app">تحديد تطبيق المعرض</string>
 </resources>

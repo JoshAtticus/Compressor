@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">額外大小緩衝</string>
     <string name="extra_size_cushion_desc">如果影片未壓縮到目標大小，則壓縮到更小的目標大小。啟用此設定會降低畫質。</string>
+    <string name="delete_action">刪除</string>
+    <string name="deleting_original">正在刪除原始影片…</string>
+    <string name="original_deleted">原始影片已刪除</string>
+    <string name="delete_original_confirm_message">您確定要永久刪除原始影片嗎？此動作無法復原。</string>
+    <string name="delete_original_confirm_unsaved_message">您尚未儲存或分享壓縮後的影片。您確定要永久刪除原始影片嗎？</string>
+    <string name="next">下一步</string>
+    <string name="permission_screen_title">Compressor 使用權限來實現更多功能</string>
+    <string name="permission_screen_subtitle">此版本包含刪除原始影片及保留原始檔名等新功能，這些功能需要您的授權才能運作。</string>
+    <string name="permission_card_videos_title">存取媒體庫</string>
+    <string name="permission_card_videos_desc">僅存取影片中繼資料，以識別原始檔名並在您要求時刪除原始影片。</string>
+    <string name="permission_card_storage_title">仍無法存取手機儲存空間</string>
+    <string name="permission_card_storage_desc">Compressor 無法存取您的個人相片、文件、下載內容或任何其他檔案。</string>
+    <string name="permission_card_network_title">仍無法存取網際網路</string>
+    <string name="permission_card_network_desc">Compressor 沒有網路存取權。所有作業都在您的裝置上以 100% 離線且私密的方式進行。</string>
+    <string name="permission_screen_footer">如果您不願意，無需授予權限。如果您選擇不授予，Compressor 將繼續像以前一樣運作。您隨時可以在設定中變更。</string>
+    <string name="grant_permission">授予權限</string>
+    <string name="decline_permission">拒絕</string>
+    <string name="video_picker_setting_title">影片選擇器</string>
+    <string name="video_picker_setting_subtitle">選擇選擇影片的方式</string>
+    <string name="video_picker_dialog_title">選擇影片選擇器</string>
+    <string name="video_picker_mode_photo_picker">Android 相片選擇器</string>
+    <string name="video_picker_mode_photo_picker_desc">使用 Android 內建的系統相片選擇器</string>
+    <string name="video_picker_mode_gallery_app">媒體庫應用程式</string>
+    <string name="video_picker_mode_gallery_app_desc">選擇使用哪個媒體庫應用程式來選擇影片</string>
+    <string name="video_picker_mode_unsupported">此裝置不支援</string>
+    <string name="select_gallery_app">選擇媒體庫應用程式</string>
 </resources>

@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">追加のサイズ余白</string>
     <string name="extra_size_cushion_desc">動画が目標サイズに収まらない場合にさらに小さなサイズに圧縮します。有効にすると画質が低下します。</string>
+    <string name="delete_action">削除</string>
+    <string name="deleting_original">元の動画を削除中…</string>
+    <string name="original_deleted">元の動画を削除しました</string>
+    <string name="delete_original_confirm_message">元の動画を完全に削除してもよろしいですか？この操作は元に戻せません。</string>
+    <string name="delete_original_confirm_unsaved_message">圧縮した動画をまだ保存または共有していません。元の動画を完全に削除してもよろしいですか？</string>
+    <string name="next">次へ</string>
+    <string name="permission_screen_title">Compressor は権限を使ってさらに多くのことを実現します</string>
+    <string name="permission_screen_subtitle">このリリースには、元の動画の削除や元のファイル名の保持など、権限が必要な新機能が含まれています。</string>
+    <string name="permission_card_videos_title">ギャラリーへのアクセス</string>
+    <string name="permission_card_videos_desc">元のファイル名を特定し、リクエストに応じて元の動画を削除するために、動画のメタデータにのみアクセスします。</string>
+    <string name="permission_card_storage_title">スマートフォンのストレージにはアクセスしません</string>
+    <string name="permission_card_storage_desc">Compressor は、個人の写真、ドキュメント、ダウンロード、その他のファイルにアクセスできません。</string>
+    <string name="permission_card_network_title">インターネットにはアクセスしません</string>
+    <string name="permission_card_network_desc">Compressor にはネットワークアクセスがありません。すべてがデバイス上で100%オフラインかつプライベートに行われます。</string>
+    <string name="permission_screen_footer">権限を許可したくない場合は許可する必要はありません。許可しない場合でも、Compressor はこれまで通り動作します。設定でいつでも変更できます。</string>
+    <string name="grant_permission">権限を許可</string>
+    <string name="decline_permission">拒否</string>
+    <string name="video_picker_setting_title">動画ピッカー</string>
+    <string name="video_picker_setting_subtitle">動画の選択方法を選択</string>
+    <string name="video_picker_dialog_title">動画ピッカーを選択</string>
+    <string name="video_picker_mode_photo_picker">Android フォトピッカー</string>
+    <string name="video_picker_mode_photo_picker_desc">Android の組み込みシステムフォトピッカーを使用</string>
+    <string name="video_picker_mode_gallery_app">ギャラリーアプリ</string>
+    <string name="video_picker_mode_gallery_app_desc">動画を選択するために使用するギャラリーアプリを選択</string>
+    <string name="video_picker_mode_unsupported">このデバイスではサポートされていません</string>
+    <string name="select_gallery_app">ギャラリーアプリを選択</string>
 </resources>

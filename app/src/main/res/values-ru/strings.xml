@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Дополнительный запас размера</string>
     <string name="extra_size_cushion_desc">Сжимает до ещё меньшего размера, если видео не укладывается в целевой размер. Включение снижает качество.</string>
+    <string name="delete_action">Удалить</string>
+    <string name="deleting_original">Удаление оригинала…</string>
+    <string name="original_deleted">Оригинал удалён</string>
+    <string name="delete_original_confirm_message">Вы уверены, что хотите навсегда удалить оригинальное видео? Это действие нельзя отменить.</string>
+    <string name="delete_original_confirm_unsaved_message">Вы ещё не сохранили и не поделились сжатым видео. Вы уверены, что хотите навсегда удалить оригинальное видео?</string>
+    <string name="next">Далее</string>
+    <string name="permission_screen_title">Compressor использует разрешения, чтобы делать больше</string>
+    <string name="permission_screen_subtitle">В этом выпуске появились новые функции, такие как удаление оригинального видео и сохранение исходного имени файла, для которых требуется ваше разрешение.</string>
+    <string name="permission_card_videos_title">Доступ к галерее</string>
+    <string name="permission_card_videos_desc">Обращается только к метаданным видео, чтобы определить исходные имена файлов и удалить оригинальные видео по вашему запросу.</string>
+    <string name="permission_card_storage_title">По-прежнему без доступа к хранилищу телефона</string>
+    <string name="permission_card_storage_desc">Compressor не имеет доступа к вашим личным фотографиям, документам, загрузкам и любым другим файлам.</string>
+    <string name="permission_card_network_title">По-прежнему без доступа к интернету</string>
+    <string name="permission_card_network_desc">Compressor не имеет доступа к сети. Всё происходит на 100% офлайн и конфиденциально на вашем устройстве.</string>
+    <string name="permission_screen_footer">Вы не обязаны предоставлять разрешение, если не хотите. Если вы решите не предоставлять его, Compressor будет работать как раньше. Вы всегда можете изменить это в настройках.</string>
+    <string name="grant_permission">Предоставить разрешение</string>
+    <string name="decline_permission">Отклонить</string>
+    <string name="video_picker_setting_title">Выбор видео</string>
+    <string name="video_picker_setting_subtitle">Выберите способ выбора видео</string>
+    <string name="video_picker_dialog_title">Выбрать способ выбора видео</string>
+    <string name="video_picker_mode_photo_picker">Средство выбора фото Android</string>
+    <string name="video_picker_mode_photo_picker_desc">Использовать встроенное системное средство выбора фото Android</string>
+    <string name="video_picker_mode_gallery_app">Приложения галереи</string>
+    <string name="video_picker_mode_gallery_app_desc">Выберите, какое приложение галереи использовать для выбора видео</string>
+    <string name="video_picker_mode_unsupported">Не поддерживается на этом устройстве</string>
+    <string name="select_gallery_app">Выбрать приложение галереи</string>
 </resources>

@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">추가 크기 여유 공간</string>
     <string name="extra_size_cushion_desc">비디오가 목표 크기로 압축되지 않을 때 더 작은 크기로 압축합니다. 켜면 화질이 낮아집니다.</string>
+    <string name="delete_action">삭제</string>
+    <string name="deleting_original">원본 삭제 중…</string>
+    <string name="original_deleted">원본 삭제됨</string>
+    <string name="delete_original_confirm_message">원본 동영상을 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
+    <string name="delete_original_confirm_unsaved_message">아직 압축된 동영상을 저장하거나 공유하지 않았습니다. 원본 동영상을 영구적으로 삭제하시겠습니까?</string>
+    <string name="next">다음</string>
+    <string name="permission_screen_title">Compressor는 권한을 사용하여 더 많은 기능을 제공합니다</string>
+    <string name="permission_screen_subtitle">이 릴리스에는 원본 동영상 삭제 및 원본 파일 이름 유지와 같은 새 기능이 포함되어 있으며, 작동하려면 권한이 필요합니다.</string>
+    <string name="permission_card_videos_title">갤러리 접근</string>
+    <string name="permission_card_videos_desc">원본 파일 이름을 식별하고 요청 시 원본 동영상을 삭제하기 위해 동영상 메타데이터에만 접근합니다.</string>
+    <string name="permission_card_storage_title">여전히 휴대폰 저장소에 접근할 수 없음</string>
+    <string name="permission_card_storage_desc">Compressor는 개인 사진, 문서, 다운로드 또는 기타 파일에 접근할 수 없습니다.</string>
+    <string name="permission_card_network_title">여전히 인터넷에 접근하지 않음</string>
+    <string name="permission_card_network_desc">Compressor는 네트워크 접근 권한이 없습니다. 모든 작업은 기기에서 100% 오프라인 및 비공개로 이루어집니다.</string>
+    <string name="permission_screen_footer">원하지 않으시면 권한을 부여하지 않아도 됩니다. 부여하지 않기로 선택하더라도 Compressor는 이전과 동일하게 작동합니다. 언제든지 설정에서 변경할 수 있습니다.</string>
+    <string name="grant_permission">권한 부여</string>
+    <string name="decline_permission">거부</string>
+    <string name="video_picker_setting_title">동영상 선택기</string>
+    <string name="video_picker_setting_subtitle">동영상 선택 방법 선택</string>
+    <string name="video_picker_dialog_title">동영상 선택기 선택</string>
+    <string name="video_picker_mode_photo_picker">Android 사진 선택기</string>
+    <string name="video_picker_mode_photo_picker_desc">Android 기본 시스템 사진 선택기 사용</string>
+    <string name="video_picker_mode_gallery_app">갤러리 앱</string>
+    <string name="video_picker_mode_gallery_app_desc">동영상을 선택하는 데 사용할 갤러리 앱 선택</string>
+    <string name="video_picker_mode_unsupported">이 기기에서 지원되지 않음</string>
+    <string name="select_gallery_app">갤러리 앱 선택</string>
 </resources>

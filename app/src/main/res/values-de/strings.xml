@@ -257,4 +257,30 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Zusätzlicher Größenpuffer</string>
     <string name="extra_size_cushion_desc">Komprimiert auf eine noch kleinere Zielgröße, wenn Videos die gewünschte Größe nicht erreichen. Aktivieren verringert die Qualität.</string>
+    <string name="delete_action">Löschen</string>
+    <string name="deleting_original">Original wird gelöscht…</string>
+    <string name="original_deleted">Original gelöscht</string>
+    <string name="delete_original_confirm_message">Möchtest du das Originalvideo wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_original_confirm_unsaved_message">Du hast dein komprimiertes Video noch nicht gespeichert oder geteilt. Möchtest du das Originalvideo wirklich dauerhaft löschen?</string>
+    <string name="next">Weiter</string>
+    <string name="permission_screen_title">Compressor nutzt Berechtigungen, um mehr zu bieten</string>
+    <string name="permission_screen_subtitle">Diese Version enthält neue Funktionen wie das Löschen des Originalvideos und das Beibehalten des ursprünglichen Dateinamens, die deine Berechtigung benötigen.</string>
+    <string name="permission_card_videos_title">Galeriezugriff</string>
+    <string name="permission_card_videos_desc">Greift nur auf Video-Metadaten zu, um ursprüngliche Dateinamen zu ermitteln und Originalvideos auf deine Anfrage zu löschen.</string>
+    <string name="permission_card_storage_title">Kein Zugriff auf den Gerätespeicher</string>
+    <string name="permission_card_storage_desc">Compressor hat keinen Zugriff auf deine persönlichen Fotos, Dokumente, Downloads oder andere Dateien.</string>
+    <string name="permission_card_network_title">Kein Internetzugriff</string>
+    <string name="permission_card_network_desc">Compressor hat keinen Netzwerkzugriff. Alles geschieht zu 100 % offline und privat auf deinem Gerät.</string>
+    <string name="permission_screen_footer">Du musst keine Berechtigung erteilen, wenn du nicht möchtest. Ohne Berechtigung funktioniert Compressor wie zuvor. Du kannst dies jederzeit in den Einstellungen ändern.</string>
+    <string name="grant_permission">Berechtigung erteilen</string>
+    <string name="decline_permission">Ablehnen</string>
+    <string name="video_picker_setting_title">Videoauswahl</string>
+    <string name="video_picker_setting_subtitle">Wähle, wie Videos ausgewählt werden</string>
+    <string name="video_picker_dialog_title">Videoauswahl festlegen</string>
+    <string name="video_picker_mode_photo_picker">Android Fotoauswahl</string>
+    <string name="video_picker_mode_photo_picker_desc">Systemeigene Fotoauswahl von Android verwenden</string>
+    <string name="video_picker_mode_gallery_app">Galerie-Apps</string>
+    <string name="video_picker_mode_gallery_app_desc">Wähle, welche Galerie-App zum Auswählen von Videos verwendet wird</string>
+    <string name="video_picker_mode_unsupported">Auf diesem Gerät nicht unterstützt</string>
+    <string name="select_gallery_app">Galerie-App auswählen</string>
 </resources>
