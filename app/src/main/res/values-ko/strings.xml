@@ -33,6 +33,11 @@
     <string name="delete_original_success">비디오가 성공적으로 삭제되었습니다</string>
     <string name="delete_original_failed">비디오 삭제 실패</string>
     <string name="delete_confirm_title">원본을 삭제하시겠습니까?</string>
+    <string name="delete_action">삭제</string>
+    <string name="deleting_original">원본 삭제 중…</string>
+    <string name="original_deleted">원본 삭제됨</string>
+    <string name="delete_original_confirm_message">원본 동영상을 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
+    <string name="delete_original_confirm_unsaved_message">아직 압축된 동영상을 저장하거나 공유하지 않았습니다. 원본 동영상을 영구적으로 삭제하시겠습니까?</string>
     <string name="info_title">기기 및 앱 정보</string>
     <string name="info_copy_clipboard">클립보드에 복사</string>
     <string name="info_copied">클립보드에 복사됨</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">원본 삭제</string>
-    <string name="whats_new_1_desc">압축 후 원본 비디오를 삭제해 저장 공간을 더 절약하세요 (Android 13+)</string>
-    <string name="whats_new_2_title">피커 선택</string>
-    <string name="whats_new_2_desc">압축할 비디오를 선택할 때 선호하는 앱이 있나요? 이제 설정에서 선택할 수 있습니다.</string>
-    <string name="whats_new_3_title">Compressor 번역에 참여해보세요!</string>
-    <string name="whats_new_3_desc">원하는 언어로 Compressor를 보고 싶거나 번역 오류를 찾으셨나요? Crowdin에서 번역에 참여해보세요</string>
-    <string name="whats_new_4_title">지속적인 개선</string>
-    <string name="whats_new_4_desc">여러 버그를 수정하고 압축 품질과 사용성을 개선했습니다</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">추가 크기 여유 공간</string>
-    <string name="extra_size_cushion_desc">비디오가 목표 크기로 압축되지 않을 때 더 작은 크기로 압축합니다. 켜면 화질이 낮아집니다.</string>
-    <string name="delete_action">삭제</string>
-    <string name="deleting_original">원본 삭제 중…</string>
-    <string name="original_deleted">원본 삭제됨</string>
-    <string name="delete_original_confirm_message">원본 동영상을 영구적으로 삭제하시겠습니까? 이 작업은 되돌릴 수 없습니다.</string>
-    <string name="delete_original_confirm_unsaved_message">아직 압축된 동영상을 저장하거나 공유하지 않았습니다. 원본 동영상을 영구적으로 삭제하시겠습니까?</string>
     <string name="next">다음</string>
     <string name="permission_screen_title">Compressor는 권한을 사용하여 더 많은 기능을 제공합니다</string>
     <string name="permission_screen_subtitle">이 릴리스에는 원본 동영상 삭제 및 원본 파일 이름 유지와 같은 새 기능이 포함되어 있으며, 작동하려면 권한이 필요합니다.</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">원하지 않으시면 권한을 부여하지 않아도 됩니다. 부여하지 않기로 선택하더라도 Compressor는 이전과 동일하게 작동합니다. 언제든지 설정에서 변경할 수 있습니다.</string>
     <string name="grant_permission">권한 부여</string>
     <string name="decline_permission">거부</string>
+    <string name="whats_new_1_title">원본 삭제</string>
+    <string name="whats_new_1_desc">압축 후 원본 비디오를 삭제해 저장 공간을 더 절약하세요 (Android 13+)</string>
+    <string name="whats_new_2_title">피커 선택</string>
+    <string name="whats_new_2_desc">압축할 비디오를 선택할 때 선호하는 앱이 있나요? 이제 설정에서 선택할 수 있습니다.</string>
+    <string name="whats_new_3_title">Compressor 번역에 참여해보세요!</string>
+    <string name="whats_new_3_desc">원하는 언어로 Compressor를 보고 싶거나 번역 오류를 찾으셨나요? Crowdin에서 번역에 참여해보세요</string>
+    <string name="whats_new_4_title">지속적인 개선</string>
+    <string name="whats_new_4_desc">여러 버그를 수정하고 압축 품질과 사용성을 개선했습니다</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">추가 크기 여유 공간</string>
+    <string name="extra_size_cushion_desc">비디오가 목표 크기로 압축되지 않을 때 더 작은 크기로 압축합니다. 켜면 화질이 낮아집니다.</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">동영상 선택기</string>
     <string name="video_picker_setting_subtitle">동영상 선택 방법 선택</string>
     <string name="video_picker_dialog_title">동영상 선택기 선택</string>

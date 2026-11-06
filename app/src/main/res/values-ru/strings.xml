@@ -33,6 +33,11 @@
     <string name="delete_original_success">Видео успешно удалено</string>
     <string name="delete_original_failed">Не удалось удалить видео</string>
     <string name="delete_confirm_title">Удалить оригинал?</string>
+    <string name="delete_action">Удалить</string>
+    <string name="deleting_original">Удаление оригинала…</string>
+    <string name="original_deleted">Оригинал удалён</string>
+    <string name="delete_original_confirm_message">Вы уверены, что хотите навсегда удалить оригинальное видео? Это действие нельзя отменить.</string>
+    <string name="delete_original_confirm_unsaved_message">Вы ещё не сохранили и не поделились сжатым видео. Вы уверены, что хотите навсегда удалить оригинальное видео?</string>
     <string name="info_title">О устройстве и приложении</string>
     <string name="info_copy_clipboard">Скопировать в буфер обмена</string>
     <string name="info_copied">Скопировано в буфер обмена</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Что нового в Compressor</string>
     <string name="whats_new_version">Версия %1$s</string>
     <string name="whats_new_button">Понятно</string>
-    <string name="whats_new_1_title">Удалить оригинал</string>
-    <string name="whats_new_1_desc">Освободите ещё больше места, удалив исходное видео после сжатия (Android 13+)</string>
-    <string name="whats_new_2_title">Выберите средство выбора</string>
-    <string name="whats_new_2_desc">Есть любимое приложение для выбора видео для сжатия? Теперь его можно выбрать в настройках.</string>
-    <string name="whats_new_3_title">Помогите перевести Compressor!</string>
-    <string name="whats_new_3_desc">Хотите видеть Compressor на своём языке? Нашли ошибку в переводе? Помогите с переводом на Crowdin</string>
-    <string name="whats_new_4_title">Постоянные улучшения</string>
-    <string name="whats_new_4_desc">Этот выпуск исправляет множество ошибок, улучшает качество сжатия и удобство использования</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">Дополнительный запас размера</string>
-    <string name="extra_size_cushion_desc">Сжимает до ещё меньшего размера, если видео не укладывается в целевой размер. Включение снижает качество.</string>
-    <string name="delete_action">Удалить</string>
-    <string name="deleting_original">Удаление оригинала…</string>
-    <string name="original_deleted">Оригинал удалён</string>
-    <string name="delete_original_confirm_message">Вы уверены, что хотите навсегда удалить оригинальное видео? Это действие нельзя отменить.</string>
-    <string name="delete_original_confirm_unsaved_message">Вы ещё не сохранили и не поделились сжатым видео. Вы уверены, что хотите навсегда удалить оригинальное видео?</string>
     <string name="next">Далее</string>
     <string name="permission_screen_title">Compressor использует разрешения, чтобы делать больше</string>
     <string name="permission_screen_subtitle">В этом выпуске появились новые функции, такие как удаление оригинального видео и сохранение исходного имени файла, для которых требуется ваше разрешение.</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">Вы не обязаны предоставлять разрешение, если не хотите. Если вы решите не предоставлять его, Compressor будет работать как раньше. Вы всегда можете изменить это в настройках.</string>
     <string name="grant_permission">Предоставить разрешение</string>
     <string name="decline_permission">Отклонить</string>
+    <string name="whats_new_1_title">Удалить оригинал</string>
+    <string name="whats_new_1_desc">Освободите ещё больше места, удалив исходное видео после сжатия (Android 13+)</string>
+    <string name="whats_new_2_title">Выберите средство выбора</string>
+    <string name="whats_new_2_desc">Есть любимое приложение для выбора видео для сжатия? Теперь его можно выбрать в настройках.</string>
+    <string name="whats_new_3_title">Помогите перевести Compressor!</string>
+    <string name="whats_new_3_desc">Хотите видеть Compressor на своём языке? Нашли ошибку в переводе? Помогите с переводом на Crowdin</string>
+    <string name="whats_new_4_title">Постоянные улучшения</string>
+    <string name="whats_new_4_desc">Этот выпуск исправляет множество ошибок, улучшает качество сжатия и удобство использования</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">Дополнительный запас размера</string>
+    <string name="extra_size_cushion_desc">Сжимает до ещё меньшего размера, если видео не укладывается в целевой размер. Включение снижает качество.</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">Выбор видео</string>
     <string name="video_picker_setting_subtitle">Выберите способ выбора видео</string>
     <string name="video_picker_dialog_title">Выбрать способ выбора видео</string>

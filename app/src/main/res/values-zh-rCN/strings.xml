@@ -33,6 +33,11 @@
     <string name="delete_original_success">原视频已成功删除</string>
     <string name="delete_original_failed">删除视频失败</string>
     <string name="delete_confirm_title">确认删除原视频？</string>
+    <string name="delete_action">删除</string>
+    <string name="deleting_original">正在删除原始视频…</string>
+    <string name="original_deleted">原始视频已删除</string>
+    <string name="delete_original_confirm_message">您确定要永久删除原始视频吗？此操作无法撤消。</string>
+    <string name="delete_original_confirm_unsaved_message">您还没有保存或分享压缩后的视频。您确定要永久删除原始视频吗？</string>
     <string name="info_title">设备与应用信息</string>
     <string name="info_copy_clipboard">复制到剪贴板</string>
     <string name="info_copied">已复制到剪贴板</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">删除原视频</string>
-    <string name="whats_new_1_desc">压缩后删除原始视频，节省更多存储空间 (Android 13+)</string>
-    <string name="whats_new_2_title">选择你的选择器</string>
-    <string name="whats_new_2_desc">有偏好的应用来挑选要压缩的视频？现在可以在设置中选择它。</string>
-    <string name="whats_new_3_title">帮助翻译 Compressor！</string>
-    <string name="whats_new_3_desc">想看到您的语言版本？发现了翻译错误？欢迎前往 Crowdin 参与翻译</string>
-    <string name="whats_new_4_title">持续改进</string>
-    <string name="whats_new_4_desc">修复了多处错误，进一步提升了压缩质量与使用体验</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">额外大小缓冲</string>
-    <string name="extra_size_cushion_desc">如果视频未压缩到目标大小，则压缩到更小的目标大小。启用此设置会降低画质。</string>
-    <string name="delete_action">删除</string>
-    <string name="deleting_original">正在删除原始视频…</string>
-    <string name="original_deleted">原始视频已删除</string>
-    <string name="delete_original_confirm_message">您确定要永久删除原始视频吗？此操作无法撤消。</string>
-    <string name="delete_original_confirm_unsaved_message">您还没有保存或分享压缩后的视频。您确定要永久删除原始视频吗？</string>
     <string name="next">下一步</string>
     <string name="permission_screen_title">Compressor 使用权限来实现更多功能</string>
     <string name="permission_screen_subtitle">此版本包含删除原始视频和保留原始文件名等新功能，这些功能需要您的授权才能正常工作。</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">如果您不愿意，无需授予权限。如果您选择不授予，Compressor 将继续像以前一样工作。您可以随时在设置中更改。</string>
     <string name="grant_permission">授予权限</string>
     <string name="decline_permission">拒绝</string>
+    <string name="whats_new_1_title">删除原视频</string>
+    <string name="whats_new_1_desc">压缩后删除原始视频，节省更多存储空间 (Android 13+)</string>
+    <string name="whats_new_2_title">选择你的选择器</string>
+    <string name="whats_new_2_desc">有偏好的应用来挑选要压缩的视频？现在可以在设置中选择它。</string>
+    <string name="whats_new_3_title">帮助翻译 Compressor！</string>
+    <string name="whats_new_3_desc">想看到您的语言版本？发现了翻译错误？欢迎前往 Crowdin 参与翻译</string>
+    <string name="whats_new_4_title">持续改进</string>
+    <string name="whats_new_4_desc">修复了多处错误，进一步提升了压缩质量与使用体验</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">额外大小缓冲</string>
+    <string name="extra_size_cushion_desc">如果视频未压缩到目标大小，则压缩到更小的目标大小。启用此设置会降低画质。</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">视频选择器</string>
     <string name="video_picker_setting_subtitle">选择选择视频的方式</string>
     <string name="video_picker_dialog_title">选择视频选择器</string>
