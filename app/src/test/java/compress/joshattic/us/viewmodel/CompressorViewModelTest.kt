@@ -118,6 +118,32 @@ class CompressorViewModelTest {
     }
 
     @Test
+    fun testResetKeepsFilenamePattern() {
+        val pattern = listOf(
+            FilenameSegment.Token("original_name"),
+            FilenameSegment.Text("-final"),
+            FilenameSegment.Token("date")
+        )
+        viewModel.updateFilenameSegments(pattern)
+        val normalizedPattern = viewModel.uiState.value.filenameSegments
+
+        viewModel.reset()
+
+        assertEquals(normalizedPattern, viewModel.uiState.value.filenameSegments)
+    }
+
+    @Test
+    fun testResetKeepsExtraSizeCushion() {
+        if (!viewModel.uiState.value.extraSizeCushion) {
+            viewModel.toggleExtraSizeCushion()
+        }
+
+        viewModel.reset()
+
+        assertTrue(viewModel.uiState.value.extraSizeCushion)
+    }
+
+    @Test
     fun testSetTargetSize() {
         viewModel.setTargetSize(25f)
         assertEquals(25f, viewModel.uiState.value.targetSizeMb, 0.01f)

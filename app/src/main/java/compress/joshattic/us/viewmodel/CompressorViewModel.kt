@@ -1330,6 +1330,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 useMbps = useMbps,
                 showStorageSaved = current.showStorageSaved,
                 showTargetSizePreset = current.showTargetSizePreset,
+                extraSizeCushion = current.extraSizeCushion,
                 autoSaveToPhotos = current.autoSaveToPhotos,
                 customOutputTreeUri = current.customOutputTreeUri,
                 customOutputFolderName = current.customOutputFolderName,
@@ -1342,6 +1343,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
                 defaultVideoConfig = current.defaultVideoConfig,
                 defaultAudioConfig = current.defaultAudioConfig,
                 defaultPreset = current.defaultPreset,
+                filenameSegments = current.filenameSegments,
                 videoCodec = defaultCodec,
                 useH265 = useH265
             )
