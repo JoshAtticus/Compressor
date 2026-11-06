@@ -1,0 +1,6 @@
+Compressor 1.7.0 is a major release, here's what's changed:
+
+- Delete Original: Save even more storage by deleting the original video after compressing it
+- Pick your Picker: Have a preferred app for picking which video to compress? You can now select it in Settings.
+- Help Translate Compressor: Want to see Compressor in your language? See a mistake in the translations? Help translate Compressor on Crowdin
+- Constantly Improving: This release fixes multiple bugs and improves compression quality and UX
