@@ -247,7 +247,7 @@
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
     <string name="whats_new_1_title">元の動画を削除</string>
-    <string name="whats_new_1_desc">圧縮後に元の動画を削除して、さらにストレージを節約できます</string>
+    <string name="whats_new_1_desc">圧縮後に元の動画を削除して、さらにストレージを節約できます (Android 13+)</string>
     <string name="whats_new_2_title">ピッカーを選択</string>
     <string name="whats_new_2_desc">圧縮する動画を選ぶ際に使うアプリを決めていますか？設定で選択できるようになりました。</string>
     <string name="whats_new_3_title">Compressor の翻訳にご協力ください！</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">Android の組み込みシステムフォトピッカーを使用</string>
     <string name="video_picker_mode_gallery_app">ギャラリーアプリ</string>
     <string name="video_picker_mode_gallery_app_desc">動画を選択するために使用するギャラリーアプリを選択</string>
-    <string name="video_picker_mode_unsupported">このデバイスではサポートされていません</string>
     <string name="select_gallery_app">ギャラリーアプリを選択</string>
 </resources>

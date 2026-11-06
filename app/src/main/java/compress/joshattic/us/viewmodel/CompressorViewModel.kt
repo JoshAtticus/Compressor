@@ -18,6 +18,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import androidx.annotation.OptIn
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.edit
 import androidx.documentfile.provider.DocumentFile
 import androidx.lifecycle.AndroidViewModel
@@ -135,7 +136,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             ?: QualityPreset.CUSTOM
         val videoPickerMode = prefs.getString(PREF_VIDEO_PICKER_MODE, null)
             ?.let { stored -> runCatching { VideoPickerMode.valueOf(stored) }.getOrNull() }
-            ?: VideoPickerMode.PHOTO_PICKER
+            ?: if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(getApplication())) {
+                VideoPickerMode.PHOTO_PICKER
+            } else {
+                VideoPickerMode.GALLERY_APP
+            }
         val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
         val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
         val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))

@@ -247,7 +247,7 @@
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
     <string name="whats_new_1_title">刪除原始影片</string>
-    <string name="whats_new_1_desc">壓縮後刪除原始影片，節省更多儲存空間</string>
+    <string name="whats_new_1_desc">壓縮後刪除原始影片，節省更多儲存空間 (Android 13+)</string>
     <string name="whats_new_2_title">選擇你的選擇器</string>
     <string name="whats_new_2_desc">有偏好的應用程式來挑選要壓縮的影片？現在可以在設定中選擇它。</string>
     <string name="whats_new_3_title">協助翻譯 Compressor！</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">使用 Android 內建的系統相片選擇器</string>
     <string name="video_picker_mode_gallery_app">媒體庫應用程式</string>
     <string name="video_picker_mode_gallery_app_desc">選擇使用哪個媒體庫應用程式來選擇影片</string>
-    <string name="video_picker_mode_unsupported">此裝置不支援</string>
     <string name="select_gallery_app">選擇媒體庫應用程式</string>
 </resources>

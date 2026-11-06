@@ -289,7 +289,7 @@
     <string name="grant_permission">Grant permission</string>
     <string name="decline_permission">Decline</string>
     <string name="whats_new_1_title">Delete Original</string>
-    <string name="whats_new_1_desc">Save even more storage by deleting the original video after compressing it</string>
+    <string name="whats_new_1_desc">Save even more storage by deleting the original video after compressing it (Android 13+)</string>
     <string name="whats_new_2_title">Pick your Picker</string>
     <string name="whats_new_2_desc">Have a preferred app for picking which video to compress? You can now select it in Settings.</string>
     <string name="whats_new_3_title">Help Translate Compressor!</string>
@@ -308,6 +308,5 @@
     <string name="video_picker_mode_photo_picker_desc">Use Android\'s built-in system photo picker</string>
     <string name="video_picker_mode_gallery_app">Gallery apps</string>
     <string name="video_picker_mode_gallery_app_desc">Pick what gallery app to use to choose videos</string>
-    <string name="video_picker_mode_unsupported">Not supported on this device</string>
     <string name="select_gallery_app">Select gallery app</string>
 </resources>

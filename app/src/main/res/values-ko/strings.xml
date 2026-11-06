@@ -247,7 +247,7 @@
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
     <string name="whats_new_1_title">원본 삭제</string>
-    <string name="whats_new_1_desc">압축 후 원본 비디오를 삭제해 저장 공간을 더 절약하세요</string>
+    <string name="whats_new_1_desc">압축 후 원본 비디오를 삭제해 저장 공간을 더 절약하세요 (Android 13+)</string>
     <string name="whats_new_2_title">피커 선택</string>
     <string name="whats_new_2_desc">압축할 비디오를 선택할 때 선호하는 앱이 있나요? 이제 설정에서 선택할 수 있습니다.</string>
     <string name="whats_new_3_title">Compressor 번역에 참여해보세요!</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">Android 기본 시스템 사진 선택기 사용</string>
     <string name="video_picker_mode_gallery_app">갤러리 앱</string>
     <string name="video_picker_mode_gallery_app_desc">동영상을 선택하는 데 사용할 갤러리 앱 선택</string>
-    <string name="video_picker_mode_unsupported">이 기기에서 지원되지 않음</string>
     <string name="select_gallery_app">갤러리 앱 선택</string>
 </resources>

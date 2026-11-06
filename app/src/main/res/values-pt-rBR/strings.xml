@@ -247,7 +247,7 @@
     <string name="whats_new_version">Versão %1$s</string>
     <string name="whats_new_button">Entendi</string>
     <string name="whats_new_1_title">Excluir original</string>
-    <string name="whats_new_1_desc">Economize ainda mais espaço excluindo o vídeo original após compactá-lo</string>
+    <string name="whats_new_1_desc">Economize ainda mais espaço excluindo o vídeo original após compactá-lo (Android 13+)</string>
     <string name="whats_new_2_title">Escolha seu seletor</string>
     <string name="whats_new_2_desc">Tem um app preferido para escolher qual vídeo compactar? Agora você pode selecioná-lo nas Configurações.</string>
     <string name="whats_new_3_title">Ajude a traduzir o Compressor!</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">Usar o seletor de fotos integrado do sistema Android</string>
     <string name="video_picker_mode_gallery_app">Aplicativos de galeria</string>
     <string name="video_picker_mode_gallery_app_desc">Escolha qual aplicativo de galeria usar para selecionar vídeos</string>
-    <string name="video_picker_mode_unsupported">Não suportado neste dispositivo</string>
     <string name="select_gallery_app">Selecionar aplicativo de galeria</string>
 </resources>

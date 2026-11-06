@@ -27,7 +27,6 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -47,7 +46,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -114,7 +112,6 @@ fun DisplaySettingsScreen(
     previewFileName: String = ""
 ) {
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
-    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
     var showPickerModeDialog by remember { mutableStateOf(false) }
@@ -126,7 +123,6 @@ fun DisplaySettingsScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         if (showPickerModeDialog) {
-            val photoPickerSupported = ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)
             AlertDialog(
                 onDismissRequest = {
                     haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
@@ -147,7 +143,7 @@ fun DisplaySettingsScreen(
                         Surface(
                             modifier = Modifier
                                 .fillMaxWidth()
-                                .clickable(enabled = photoPickerSupported) {
+                                .clickable {
                                     haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
                                     onSetVideoPickerMode(VideoPickerMode.PHOTO_PICKER)
                                     showPickerModeDialog = false
@@ -168,13 +164,10 @@ fun DisplaySettingsScreen(
                                 RadioButton(
                                     selected = state.videoPickerMode == VideoPickerMode.PHOTO_PICKER,
                                     onClick = {
-                                        if (photoPickerSupported) {
-                                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
-                                            onSetVideoPickerMode(VideoPickerMode.PHOTO_PICKER)
-                                            showPickerModeDialog = false
-                                        }
-                                    },
-                                    enabled = photoPickerSupported
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        onSetVideoPickerMode(VideoPickerMode.PHOTO_PICKER)
+                                        showPickerModeDialog = false
+                                    }
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column(modifier = Modifier.weight(1f)) {
@@ -182,15 +175,11 @@ fun DisplaySettingsScreen(
                                         text = stringResource(R.string.video_picker_mode_photo_picker),
                                         style = MaterialTheme.typography.bodyLarge,
                                         fontWeight = FontWeight.Bold,
-                                        color = if (photoPickerSupported) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                        color = MaterialTheme.colorScheme.onSurface
                                     )
                                     Spacer(modifier = Modifier.height(2.dp))
                                     Text(
-                                        text = if (photoPickerSupported) {
-                                            stringResource(R.string.video_picker_mode_photo_picker_desc)
-                                        } else {
-                                            stringResource(R.string.video_picker_mode_unsupported)
-                                        },
+                                        text = stringResource(R.string.video_picker_mode_photo_picker_desc),
                                         style = MaterialTheme.typography.bodySmall,
                                         color = MaterialTheme.colorScheme.onSurfaceVariant
                                     )

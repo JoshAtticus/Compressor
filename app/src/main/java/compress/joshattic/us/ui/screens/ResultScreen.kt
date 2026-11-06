@@ -60,6 +60,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
+import compress.joshattic.us.utils.hasVideoPermission
 import compress.joshattic.us.utils.scaleOnPress
 
 @Composable
@@ -269,7 +270,9 @@ fun ResultScreen(
             }
         }
         
-        val canShowDelete = (state.saveSuccess || state.hasShared || state.isOriginalDeleted) && state.selectedUri != null
+        val canShowDelete = (state.saveSuccess || state.hasShared || state.isOriginalDeleted) &&
+                state.selectedUri != null &&
+                hasVideoPermission(context)
         var showDeleteConfirmDialog by remember { mutableStateOf(false) }
 
         AnimatedVisibility(

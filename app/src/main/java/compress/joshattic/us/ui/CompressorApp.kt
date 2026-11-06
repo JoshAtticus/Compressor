@@ -391,26 +391,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                         onPick = {
                                             when (state.videoPickerMode) {
                                                 VideoPickerMode.PHOTO_PICKER -> {
-                                                    if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
-                                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
-                                                            !hasVideoPermission(context)
-                                                        ) {
-                                                            videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
-                                                        } else {
-                                                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                                                        }
+                                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                                                        !hasVideoPermission(context)
+                                                    ) {
+                                                        videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
                                                     } else {
-                                                        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
-                                                            type = "video/*"
-                                                        }
-                                                        try {
-                                                            galleryPickLauncher.launch(galleryIntent)
-                                                        } catch (_: Exception) {
-                                                            val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
-                                                                type = "video/*"
-                                                            }
-                                                            galleryPickLauncher.launch(fallbackIntent)
-                                                        }
+                                                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
                                                     }
                                                 }
                                                 VideoPickerMode.GALLERY_APP -> {

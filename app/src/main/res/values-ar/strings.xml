@@ -247,7 +247,7 @@
     <string name="whats_new_version">الإصدار %1$s</string>
     <string name="whats_new_button">فهمت</string>
     <string name="whats_new_1_title">حذف الأصلي</string>
-    <string name="whats_new_1_desc">وفّر مساحة تخزين أكبر عن طريق حذف الفيديو الأصلي بعد ضغطه</string>
+    <string name="whats_new_1_desc">وفّر مساحة تخزين أكبر عن طريق حذف الفيديو الأصلي بعد ضغطه (Android 13+)</string>
     <string name="whats_new_2_title">اختر أداة الاختيار</string>
     <string name="whats_new_2_desc">هل لديك تطبيق مفضل لاختيار الفيديو الذي تريد ضغطه؟ يمكنك الآن تحديده في الإعدادات.</string>
     <string name="whats_new_3_title">ساعد في ترجمة Compressor!</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">استخدام منتقي الصور المدمج في نظام Android</string>
     <string name="video_picker_mode_gallery_app">تطبيقات المعرض</string>
     <string name="video_picker_mode_gallery_app_desc">اختر تطبيق المعرض المراد استخدامه لتحديد الفيديوهات</string>
-    <string name="video_picker_mode_unsupported">غير مدعوم على هذا الجهاز</string>
     <string name="select_gallery_app">تحديد تطبيق المعرض</string>
 </resources>

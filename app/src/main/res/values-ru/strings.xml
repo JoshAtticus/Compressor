@@ -247,7 +247,7 @@
     <string name="whats_new_version">Версия %1$s</string>
     <string name="whats_new_button">Понятно</string>
     <string name="whats_new_1_title">Удалить оригинал</string>
-    <string name="whats_new_1_desc">Освободите ещё больше места, удалив исходное видео после сжатия</string>
+    <string name="whats_new_1_desc">Освободите ещё больше места, удалив исходное видео после сжатия (Android 13+)</string>
     <string name="whats_new_2_title">Выберите средство выбора</string>
     <string name="whats_new_2_desc">Есть любимое приложение для выбора видео для сжатия? Теперь его можно выбрать в настройках.</string>
     <string name="whats_new_3_title">Помогите перевести Compressor!</string>
@@ -281,6 +281,5 @@
     <string name="video_picker_mode_photo_picker_desc">Использовать встроенное системное средство выбора фото Android</string>
     <string name="video_picker_mode_gallery_app">Приложения галереи</string>
     <string name="video_picker_mode_gallery_app_desc">Выберите, какое приложение галереи использовать для выбора видео</string>
-    <string name="video_picker_mode_unsupported">Не поддерживается на этом устройстве</string>
     <string name="select_gallery_app">Выбрать приложение галереи</string>
 </resources>
