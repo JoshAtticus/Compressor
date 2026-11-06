@@ -288,12 +288,12 @@
     <string name="permission_screen_footer">You don\'t have to grant permission if you don\'t want to. If you choose not to, Compressor will continue working like it did before. You can always change this in Settings.</string>
     <string name="grant_permission">Grant permission</string>
     <string name="decline_permission">Decline</string>
-    <string name="whats_new_1_title">Help Translate Compressor!</string>
-    <string name="whats_new_1_desc">Want to see Compressor in your language? See a mistake in the translations? Help translate Compressor on Crowdin</string>
-    <string name="whats_new_2_title">Compatible as ever</string>
-    <string name="whats_new_2_desc">Compressor works with even more sources, now including Dolby Vision videos</string>
-    <string name="whats_new_3_title">Pick your defaults</string>
-    <string name="whats_new_3_desc">You can now select a default preset in video settings</string>
+    <string name="whats_new_1_title">Delete Original</string>
+    <string name="whats_new_1_desc">Save even more storage by deleting the original video after compressing it</string>
+    <string name="whats_new_2_title">Pick your Picker</string>
+    <string name="whats_new_2_desc">Have a preferred app for picking which video to compress? You can now select it in Settings.</string>
+    <string name="whats_new_3_title">Help Translate Compressor!</string>
+    <string name="whats_new_3_desc">Want to see Compressor in your language? See a mistake in the translations? Help translate Compressor on Crowdin</string>
     <string name="whats_new_4_title">Constantly Improving</string>
     <string name="whats_new_4_desc">This release fixes multiple bugs and improves compression quality and UX</string>
     <!-- Extra Size Cushion -->

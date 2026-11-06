@@ -246,12 +246,12 @@
     <string name="whats_new_title">ما الجديد في Compressor</string>
     <string name="whats_new_version">الإصدار %1$s</string>
     <string name="whats_new_button">فهمت</string>
-    <string name="whats_new_1_title">ساعد في ترجمة Compressor!</string>
-    <string name="whats_new_1_desc">هل تريد رؤية Compressor بلغتك؟ هل لاحظت خطأ في الترجمة؟ ساعد في ترجمة Compressor على Crowdin</string>
-    <string name="whats_new_2_title">متوافق كما هو دائمًا</string>
-    <string name="whats_new_2_desc">يعمل Compressor مع المزيد من المصادر، بما في ذلك الآن مقاطع فيديو Dolby Vision</string>
-    <string name="whats_new_3_title">اختر إعداداتك الافتراضية</string>
-    <string name="whats_new_3_desc">يمكنك الآن تحديد إعداد مسبق افتراضي في إعدادات الفيديو</string>
+    <string name="whats_new_1_title">حذف الأصلي</string>
+    <string name="whats_new_1_desc">وفّر مساحة تخزين أكبر عن طريق حذف الفيديو الأصلي بعد ضغطه</string>
+    <string name="whats_new_2_title">اختر أداة الاختيار</string>
+    <string name="whats_new_2_desc">هل لديك تطبيق مفضل لاختيار الفيديو الذي تريد ضغطه؟ يمكنك الآن تحديده في الإعدادات.</string>
+    <string name="whats_new_3_title">ساعد في ترجمة Compressor!</string>
+    <string name="whats_new_3_desc">هل تريد رؤية Compressor بلغتك؟ هل لاحظت خطأ في الترجمة؟ ساعد في ترجمة Compressor على Crowdin</string>
     <string name="whats_new_4_title">تحسينات مستمرة</string>
     <string name="whats_new_4_desc">يعالج هذا الإصدار العديد من الأخطاء ويحسن جودة الضغط وتجربة المستخدم</string>
     <!-- Extra Size Cushion -->

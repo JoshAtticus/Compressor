@@ -32,12 +32,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.OpenInNew
 import androidx.compose.material.icons.filled.AutoAwesome
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FolderOff
 import androidx.compose.material.icons.filled.Movie
+import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Security
 import androidx.compose.material.icons.filled.Translate
-import androidx.compose.material.icons.filled.Tune
 import androidx.compose.material.icons.filled.WifiOff
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -180,16 +181,15 @@ fun WhatsNewDialog(
                                     verticalArrangement = Arrangement.spacedBy(12.dp)
                                 ) {
                                     WhatsNewItem(
-                                        icon = Icons.Default.Translate,
+                                        icon = Icons.Default.Delete,
                                         bgColor = if (isDark) Color(0xFF1E3A5F) else Color(0xFFE3F2FD),
                                         iconTint = if (isDark) Color(0xFF90CAF9) else Color(0xFF1976D2),
                                         title = stringResource(R.string.whats_new_1_title),
-                                        description = stringResource(R.string.whats_new_1_desc),
-                                        onClick = { uriHandler.openUri("https://l.joshattic.us/rHkokL") }
+                                        description = stringResource(R.string.whats_new_1_desc)
                                     )
 
                                     WhatsNewItem(
-                                        icon = Icons.Default.Movie,
+                                        icon = Icons.Default.PhotoLibrary,
                                         bgColor = if (isDark) Color(0xFF1B4D2E) else Color(0xFFE8F5E9),
                                         iconTint = if (isDark) Color(0xFFA5D6A7) else Color(0xFF388E3C),
                                         title = stringResource(R.string.whats_new_2_title),
@@ -197,11 +197,12 @@ fun WhatsNewDialog(
                                     )
 
                                     WhatsNewItem(
-                                        icon = Icons.Default.Tune,
+                                        icon = Icons.Default.Translate,
                                         bgColor = if (isDark) Color(0xFF4A2B00) else Color(0xFFFFF3E0),
                                         iconTint = if (isDark) Color(0xFFFFCC80) else Color(0xFFF57C00),
                                         title = stringResource(R.string.whats_new_3_title),
-                                        description = stringResource(R.string.whats_new_3_desc)
+                                        description = stringResource(R.string.whats_new_3_desc),
+                                        onClick = { uriHandler.openUri("https://l.joshattic.us/rHkokL") }
                                     )
 
                                     WhatsNewItem(

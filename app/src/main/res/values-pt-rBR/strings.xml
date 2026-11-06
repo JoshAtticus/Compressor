@@ -246,12 +246,12 @@
     <string name="whats_new_title">Novidades no Compressor</string>
     <string name="whats_new_version">Versão %1$s</string>
     <string name="whats_new_button">Entendi</string>
-    <string name="whats_new_1_title">Ajude a traduzir o Compressor!</string>
-    <string name="whats_new_1_desc">Quer ver o Compressor no seu idioma? Viu algum erro nas traduções? Ajude a traduzir o Compressor no Crowdin</string>
-    <string name="whats_new_2_title">Mais compatível do que nunca</string>
-    <string name="whats_new_2_desc">O Compressor funciona com ainda mais formatos, agora incluindo vídeos em Dolby Vision</string>
-    <string name="whats_new_3_title">Escolha seus padrões</string>
-    <string name="whats_new_3_desc">Agora você pode selecionar uma predefinição padrão nas configurações de vídeo</string>
+    <string name="whats_new_1_title">Excluir original</string>
+    <string name="whats_new_1_desc">Economize ainda mais espaço excluindo o vídeo original após compactá-lo</string>
+    <string name="whats_new_2_title">Escolha seu seletor</string>
+    <string name="whats_new_2_desc">Tem um app preferido para escolher qual vídeo compactar? Agora você pode selecioná-lo nas Configurações.</string>
+    <string name="whats_new_3_title">Ajude a traduzir o Compressor!</string>
+    <string name="whats_new_3_desc">Quer ver o Compressor no seu idioma? Viu algum erro nas traduções? Ajude a traduzir o Compressor no Crowdin</string>
     <string name="whats_new_4_title">Evoluindo constantemente</string>
     <string name="whats_new_4_desc">Esta versão corrige vários bugs e melhora a qualidade da compressão e a usabilidade</string>
     <!-- Extra Size Cushion -->

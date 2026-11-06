@@ -246,12 +246,12 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_1_title">Compressor の翻訳にご協力ください！</string>
-    <string name="whats_new_1_desc">あなたの言語で Compressor を使いたい、または誤訳を見つけましたか？Crowdin での翻訳にご協力ください</string>
-    <string name="whats_new_2_title">さらに高い互換性</string>
-    <string name="whats_new_2_desc">Dolby Vision 動画を含む、さらに多くの動画ソースに対応しました</string>
-    <string name="whats_new_3_title">デフォルト設定の選択</string>
-    <string name="whats_new_3_desc">動画設定でデフォルトのプリセットを選択できるようになりました</string>
+    <string name="whats_new_1_title">元の動画を削除</string>
+    <string name="whats_new_1_desc">圧縮後に元の動画を削除して、さらにストレージを節約できます</string>
+    <string name="whats_new_2_title">ピッカーを選択</string>
+    <string name="whats_new_2_desc">圧縮する動画を選ぶ際に使うアプリを決めていますか？設定で選択できるようになりました。</string>
+    <string name="whats_new_3_title">Compressor の翻訳にご協力ください！</string>
+    <string name="whats_new_3_desc">あなたの言語で Compressor を使いたい、または誤訳を見つけましたか？Crowdin での翻訳にご協力ください</string>
     <string name="whats_new_4_title">継続的な改善</string>
     <string name="whats_new_4_desc">複数の不具合を修正し、圧縮品質とユーザー体験を向上させました</string>
     <!-- Extra Size Cushion -->

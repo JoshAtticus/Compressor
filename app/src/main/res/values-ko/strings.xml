@@ -246,12 +246,12 @@
     <string name="whats_new_title">Compressor 새로운 기능</string>
     <string name="whats_new_version">버전 %1$s</string>
     <string name="whats_new_button">확인</string>
-    <string name="whats_new_1_title">Compressor 번역에 참여해보세요!</string>
-    <string name="whats_new_1_desc">원하는 언어로 Compressor를 보고 싶거나 번역 오류를 찾으셨나요? Crowdin에서 번역에 참여해보세요</string>
-    <string name="whats_new_2_title">더 폭넓은 호환성</string>
-    <string name="whats_new_2_desc">이제 Dolby Vision 비디오를 포함해 더 다양한 소스를 지원합니다</string>
-    <string name="whats_new_3_title">기본 설정 선택</string>
-    <string name="whats_new_3_desc">이제 비디오 설정에서 기본 프리셋을 선택할 수 있습니다</string>
+    <string name="whats_new_1_title">원본 삭제</string>
+    <string name="whats_new_1_desc">압축 후 원본 비디오를 삭제해 저장 공간을 더 절약하세요</string>
+    <string name="whats_new_2_title">피커 선택</string>
+    <string name="whats_new_2_desc">압축할 비디오를 선택할 때 선호하는 앱이 있나요? 이제 설정에서 선택할 수 있습니다.</string>
+    <string name="whats_new_3_title">Compressor 번역에 참여해보세요!</string>
+    <string name="whats_new_3_desc">원하는 언어로 Compressor를 보고 싶거나 번역 오류를 찾으셨나요? Crowdin에서 번역에 참여해보세요</string>
     <string name="whats_new_4_title">지속적인 개선</string>
     <string name="whats_new_4_desc">여러 버그를 수정하고 압축 품질과 사용성을 개선했습니다</string>
     <!-- Extra Size Cushion -->

@@ -246,12 +246,12 @@
     <string name="whats_new_title">Compressor 新功能</string>
     <string name="whats_new_version">版本 %1$s</string>
     <string name="whats_new_button">知道了</string>
-    <string name="whats_new_1_title">協助翻譯 Compressor！</string>
-    <string name="whats_new_1_desc">想看到您的語言版本？發現了翻譯錯誤？歡迎前往 Crowdin 協助翻譯</string>
-    <string name="whats_new_2_title">相容性一如既往</string>
-    <string name="whats_new_2_desc">Compressor 支援更多影片來源，現已包含杜比視界 (Dolby Vision) 影片</string>
-    <string name="whats_new_3_title">選擇預設設定</string>
-    <string name="whats_new_3_desc">現在可以在影片設定中選取預設畫質設定</string>
+    <string name="whats_new_1_title">刪除原始影片</string>
+    <string name="whats_new_1_desc">壓縮後刪除原始影片，節省更多儲存空間</string>
+    <string name="whats_new_2_title">選擇你的選擇器</string>
+    <string name="whats_new_2_desc">有偏好的應用程式來挑選要壓縮的影片？現在可以在設定中選擇它。</string>
+    <string name="whats_new_3_title">協助翻譯 Compressor！</string>
+    <string name="whats_new_3_desc">想看到您的語言版本？發現了翻譯錯誤？歡迎前往 Crowdin 協助翻譯</string>
     <string name="whats_new_4_title">持續改進</string>
     <string name="whats_new_4_desc">修正了多處錯誤，進一步提升了壓縮品質與使用體驗</string>
     <!-- Extra Size Cushion -->
