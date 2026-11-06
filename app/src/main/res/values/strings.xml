@@ -299,4 +299,15 @@
     <!-- Extra Size Cushion -->
     <string name="extra_size_cushion_title">Extra size cushion</string>
     <string name="extra_size_cushion_desc">Compresses to an even smaller target size if videos are not compressing to your target size. Enabling this setting reduces quality.</string>
+
+    <!-- Video Picker Settings -->
+    <string name="video_picker_setting_title">Video picker</string>
+    <string name="video_picker_setting_subtitle">Choose how to select videos</string>
+    <string name="video_picker_dialog_title">Select video picker</string>
+    <string name="video_picker_mode_photo_picker">Android Photo Picker</string>
+    <string name="video_picker_mode_photo_picker_desc">Use Android\'s built-in system photo picker</string>
+    <string name="video_picker_mode_gallery_app">Gallery apps</string>
+    <string name="video_picker_mode_gallery_app_desc">Pick what gallery app to use to choose videos</string>
+    <string name="video_picker_mode_unsupported">Not supported on this device</string>
+    <string name="select_gallery_app">Select gallery app</string>
 </resources>

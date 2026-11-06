@@ -27,7 +27,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowLeft
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
@@ -35,14 +37,17 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.LargeTopAppBar
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBarDefaults
 import android.os.Build
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.input.nestedscroll.nestedScroll
@@ -69,6 +74,7 @@ import androidx.compose.ui.unit.dp
 import compress.joshattic.us.R
 import compress.joshattic.us.model.CompressorUiState
 import compress.joshattic.us.model.FilenameSegment
+import compress.joshattic.us.model.VideoPickerMode
 
 private data class TokenChipItem(val key: String, val labelRes: Int)
 
@@ -99,6 +105,7 @@ fun DisplaySettingsScreen(
     onToggleBitrateUnit: () -> Unit,
     onToggleShowStorageSaved: () -> Unit,
     onToggleShowTargetSizePreset: () -> Unit,
+    onSetVideoPickerMode: (VideoPickerMode) -> Unit = {},
     onUpdateFilenameSegments: (List<FilenameSegment>) -> Unit = {},
     onInsertFilenameTokenAt: (Int, String) -> Unit = { _, _ -> },
     onRemoveFilenameSegmentAt: (Int) -> Unit = {},
@@ -107,8 +114,10 @@ fun DisplaySettingsScreen(
     previewFileName: String = ""
 ) {
     val haptics = androidx.compose.ui.platform.LocalHapticFeedback.current
+    val context = LocalContext.current
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior()
 
+    var showPickerModeDialog by remember { mutableStateOf(false) }
     var draggingSourceIndex by remember { mutableStateOf<Int?>(null) }
     var draggingTokenKey by remember { mutableStateOf<String?>(null) }
     var draggingOffset by remember { mutableStateOf(Offset.Zero) }
@@ -116,6 +125,142 @@ fun DisplaySettingsScreen(
     val segmentRects = remember { mutableMapOf<Int, Rect>() }
 
     Box(modifier = Modifier.fillMaxSize()) {
+        if (showPickerModeDialog) {
+            val photoPickerSupported = ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)
+            AlertDialog(
+                onDismissRequest = {
+                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                    showPickerModeDialog = false
+                },
+                title = {
+                    Text(
+                        text = stringResource(R.string.video_picker_dialog_title),
+                        fontWeight = FontWeight.Bold
+                    )
+                },
+                text = {
+                    Column(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        // Option 1: Android Photo Picker
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable(enabled = photoPickerSupported) {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    onSetVideoPickerMode(VideoPickerMode.PHOTO_PICKER)
+                                    showPickerModeDialog = false
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (state.videoPickerMode == VideoPickerMode.PHOTO_PICKER) {
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = state.videoPickerMode == VideoPickerMode.PHOTO_PICKER,
+                                    onClick = {
+                                        if (photoPickerSupported) {
+                                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                            onSetVideoPickerMode(VideoPickerMode.PHOTO_PICKER)
+                                            showPickerModeDialog = false
+                                        }
+                                    },
+                                    enabled = photoPickerSupported
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.video_picker_mode_photo_picker),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = if (photoPickerSupported) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.38f)
+                                    )
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Text(
+                                        text = if (photoPickerSupported) {
+                                            stringResource(R.string.video_picker_mode_photo_picker_desc)
+                                        } else {
+                                            stringResource(R.string.video_picker_mode_unsupported)
+                                        },
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+
+                        // Option 2: Gallery apps
+                        Surface(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    onSetVideoPickerMode(VideoPickerMode.GALLERY_APP)
+                                    showPickerModeDialog = false
+                                },
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (state.videoPickerMode == VideoPickerMode.GALLERY_APP) {
+                                MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.5f)
+                            } else {
+                                MaterialTheme.colorScheme.surface
+                            }
+                        ) {
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(horizontal = 16.dp, vertical = 12.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                RadioButton(
+                                    selected = state.videoPickerMode == VideoPickerMode.GALLERY_APP,
+                                    onClick = {
+                                        haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                        onSetVideoPickerMode(VideoPickerMode.GALLERY_APP)
+                                        showPickerModeDialog = false
+                                    }
+                                )
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column(modifier = Modifier.weight(1f)) {
+                                    Text(
+                                        text = stringResource(R.string.video_picker_mode_gallery_app),
+                                        style = MaterialTheme.typography.bodyLarge,
+                                        fontWeight = FontWeight.Bold,
+                                        color = MaterialTheme.colorScheme.onSurface
+                                    )
+                                    Spacer(modifier = Modifier.height(2.dp))
+                                    Text(
+                                        text = stringResource(R.string.video_picker_mode_gallery_app_desc),
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                }
+                            }
+                        }
+                    }
+                },
+                confirmButton = {},
+                dismissButton = {
+                    TextButton(
+                        onClick = {
+                            haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                            showPickerModeDialog = false
+                        }
+                    ) {
+                        Text(stringResource(R.string.cancel), fontWeight = FontWeight.Bold)
+                    }
+                }
+            )
+        }
+
         Scaffold(
             modifier = Modifier.nestedScroll(scrollBehavior.nestedScrollConnection),
             containerColor = MaterialTheme.colorScheme.background,
@@ -298,6 +443,52 @@ fun DisplaySettingsScreen(
                                         )
                                     }
                                 }
+                            }
+                        }
+
+                        HorizontalDivider(
+                            modifier = Modifier.padding(horizontal = 20.dp),
+                            color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f)
+                        )
+
+                        // Video Picker Mode
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    haptics.performHapticFeedback(androidx.compose.ui.hapticfeedback.HapticFeedbackType.LongPress)
+                                    showPickerModeDialog = true
+                                }
+                                .padding(horizontal = 20.dp, vertical = 18.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = stringResource(R.string.video_picker_setting_title),
+                                    style = MaterialTheme.typography.titleMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = when (state.videoPickerMode) {
+                                        VideoPickerMode.PHOTO_PICKER -> stringResource(R.string.video_picker_mode_photo_picker)
+                                        VideoPickerMode.GALLERY_APP -> stringResource(R.string.video_picker_mode_gallery_app)
+                                    },
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.primary
+                                )
+                                Spacer(modifier = Modifier.height(2.dp))
+                                Text(
+                                    text = when (state.videoPickerMode) {
+                                        VideoPickerMode.PHOTO_PICKER -> stringResource(R.string.video_picker_mode_photo_picker_desc)
+                                        VideoPickerMode.GALLERY_APP -> stringResource(R.string.video_picker_mode_gallery_app_desc)
+                                    },
+                                    style = MaterialTheme.typography.bodySmall,
+                                    fontWeight = FontWeight.SemiBold,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.8f)
+                                )
                             }
                         }
 

@@ -47,6 +47,7 @@ import compress.joshattic.us.model.DefaultVideoConfig
 import compress.joshattic.us.model.QualityPreset
 import compress.joshattic.us.model.QualityPresetConfig
 import compress.joshattic.us.model.TargetSizePreset
+import compress.joshattic.us.model.VideoPickerMode
 import compress.joshattic.us.utils.DeleteMediaResult
 import compress.joshattic.us.utils.VolumeAudioProcessor
 import compress.joshattic.us.utils.deleteMediaUri
@@ -110,6 +111,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         private const val PREF_CUSTOM_OUTPUT_FOLDER_NAME = "custom_output_folder_name"
         private const val PREF_DEFAULT_PRESET = "default_quality_preset"
         private const val PREF_SAVED_VERSION_CODE = "saved_app_version_code"
+        private const val PREF_VIDEO_PICKER_MODE = "video_picker_mode"
         private const val PREF_FILENAME_SEGMENTS = "filename_segments_v2"
         private const val DEFAULT_FILENAME_SEGMENTS = "token:original_name|token:compressed"
         private val CURRENT_VERSION_CODE = BuildConfig.VERSION_CODE
@@ -131,6 +133,9 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
         val defaultPreset = prefs.getString(PREF_DEFAULT_PRESET, null)
             ?.let { stored -> runCatching { QualityPreset.valueOf(stored) }.getOrNull() }
             ?: QualityPreset.CUSTOM
+        val videoPickerMode = prefs.getString(PREF_VIDEO_PICKER_MODE, null)
+            ?.let { stored -> runCatching { VideoPickerMode.valueOf(stored) }.getOrNull() }
+            ?: VideoPickerMode.PHOTO_PICKER
         val highConfig = loadQualityPresetConfig("preset_high", QualityPresetConfig(resolutionShortSide = 0, targetFps = 0, sizeRatio = 0.7f, audioBitrate = 320_000))
         val mediumConfig = loadQualityPresetConfig("preset_medium", QualityPresetConfig(resolutionShortSide = 1080, targetFps = 30, sizeRatio = 0.4f, audioBitrate = 192_000))
         val lowConfig = loadQualityPresetConfig("preset_low", QualityPresetConfig(resolutionShortSide = 720, targetFps = 30, sizeRatio = 0.2f, audioBitrate = 128_000))
@@ -150,6 +155,7 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             useMbps = useMbps,
             showStorageSaved = showStorageSaved,
             showTargetSizePreset = showTargetSizePreset,
+            videoPickerMode = videoPickerMode,
             extraSizeCushion = extraSizeCushion,
             autoSaveToPhotos = autoSaveToPhotos,
             customOutputTreeUri = customOutputTreeUri,
@@ -1102,6 +1108,11 @@ class CompressorViewModel(application: Application) : AndroidViewModel(applicati
             prefs.edit { putBoolean("show_target_size_preset", newValue) }
             it.copy(showTargetSizePreset = newValue)
         }
+    }
+
+    fun setVideoPickerMode(mode: VideoPickerMode) {
+        prefs.edit { putString(PREF_VIDEO_PICKER_MODE, mode.name) }
+        _uiState.update { it.copy(videoPickerMode = mode) }
     }
 
     fun toggleAutoSaveToPhotos() {

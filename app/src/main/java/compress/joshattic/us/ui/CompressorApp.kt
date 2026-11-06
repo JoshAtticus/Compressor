@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui
 
 import compress.joshattic.us.ui.components.WhatsNewDialog
+import compress.joshattic.us.model.VideoPickerMode
 import android.app.Activity
 import android.content.Intent
 import android.net.Uri
@@ -300,6 +301,7 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                 onToggleBitrateUnit = { viewModel.toggleBitrateUnit() },
                                 onToggleShowStorageSaved = { viewModel.toggleShowStorageSaved() },
                                 onToggleShowTargetSizePreset = { viewModel.toggleShowTargetSizePreset() },
+                                onSetVideoPickerMode = { viewModel.setVideoPickerMode(it) },
                                 onUpdateFilenameSegments = { viewModel.updateFilenameSegments(it) },
                                 onInsertFilenameTokenAt = { index, key -> viewModel.insertFilenameTokenAt(index, key) },
                                 onRemoveFilenameSegmentAt = { viewModel.removeFilenameSegmentAt(it) },
@@ -387,27 +389,50 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                         totalSaved = state.formattedTotalSaved,
                                         showStorageSaved = state.showStorageSaved,
                                         onPick = {
-                                            if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
-                                                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
-                                                    !hasVideoPermission(context)
-                                                ) {
-                                                    videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
-                                                } else {
-                                                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                                            when (state.videoPickerMode) {
+                                                VideoPickerMode.PHOTO_PICKER -> {
+                                                    if (ActivityResultContracts.PickVisualMedia.isPhotoPickerAvailable(context)) {
+                                                        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                                                            !hasVideoPermission(context)
+                                                        ) {
+                                                            videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
+                                                        } else {
+                                                            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                                                        }
+                                                    } else {
+                                                        val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
+                                                            type = "video/*"
+                                                        }
+                                                        try {
+                                                            galleryPickLauncher.launch(galleryIntent)
+                                                        } catch (_: Exception) {
+                                                            val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                                type = "video/*"
+                                                            }
+                                                            galleryPickLauncher.launch(fallbackIntent)
+                                                        }
+                                                    }
                                                 }
-                                            } else {
-                                                // When the system photo picker isn't available (e.g. Android 12 or earlier),
-                                                // launch the device's native Gallery app directly instead of the system Documents UI
-                                                val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
-                                                    type = "video/*"
-                                                }
-                                                try {
-                                                    galleryPickLauncher.launch(galleryIntent)
-                                                } catch (_: Exception) {
-                                                    val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                VideoPickerMode.GALLERY_APP -> {
+                                                    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
                                                         type = "video/*"
                                                     }
-                                                    galleryPickLauncher.launch(fallbackIntent)
+                                                    val chooserIntent = Intent.createChooser(
+                                                        galleryIntent,
+                                                        context.getString(R.string.select_gallery_app)
+                                                    )
+                                                    try {
+                                                        galleryPickLauncher.launch(chooserIntent)
+                                                    } catch (_: Exception) {
+                                                        try {
+                                                            galleryPickLauncher.launch(galleryIntent)
+                                                        } catch (_: Exception) {
+                                                            val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                                type = "video/*"
+                                                            }
+                                                            galleryPickLauncher.launch(fallbackIntent)
+                                                        }
+                                                    }
                                                 }
                                             }
                                         }

@@ -59,6 +59,8 @@ fun rememberSearchableSettings(
     val showStorageSavedSubtitle = stringResource(R.string.show_storage_saved_subtitle)
     val showTargetSizePresetTitle = stringResource(R.string.show_target_size_preset_title)
     val showTargetSizePresetSubtitle = stringResource(R.string.show_target_size_preset_subtitle)
+    val videoPickerTitle = stringResource(R.string.video_picker_setting_title)
+    val videoPickerSubtitle = stringResource(R.string.video_picker_setting_subtitle)
 
     val defaultVideoCodec = stringResource(R.string.default_video_codec)
     val defaultVideoCodecDesc = stringResource(R.string.default_video_codec_desc)
@@ -162,6 +164,7 @@ fun rememberSearchableSettings(
         settings.add(SearchableSetting(bitrateUnitMbps, bitrateUnitSubtitle, displayTitle, "display", Icons.Default.Tune, onNavigateToDisplay))
         settings.add(SearchableSetting(showStorageSavedTitle, showStorageSavedSubtitle, displayTitle, "display", Icons.Default.Tune, onNavigateToDisplay))
         settings.add(SearchableSetting(showTargetSizePresetTitle, showTargetSizePresetSubtitle, displayTitle, "display", Icons.Default.Tune, onNavigateToDisplay))
+        settings.add(SearchableSetting(videoPickerTitle, videoPickerSubtitle, displayTitle, "display", Icons.Default.Tune, onNavigateToDisplay))
 
         // 3. Video
         settings.add(SearchableSetting(defaultVideoCodec, defaultVideoCodecDesc, videoTitle, "video", Icons.Default.Movie, onNavigateToVideo))

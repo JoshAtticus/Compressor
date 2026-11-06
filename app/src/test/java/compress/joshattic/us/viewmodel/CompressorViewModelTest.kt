@@ -408,4 +408,18 @@ class CompressorViewModelTest {
         assertFalse(viewModel.uiState.value.isDeletingOriginal)
         assertNull(viewModel.uiState.value.deleteOriginalError)
     }
+
+    @Test
+    fun testVideoPickerMode() {
+        assertEquals(compress.joshattic.us.model.VideoPickerMode.PHOTO_PICKER, viewModel.uiState.value.videoPickerMode)
+        viewModel.setVideoPickerMode(compress.joshattic.us.model.VideoPickerMode.GALLERY_APP)
+        assertEquals(compress.joshattic.us.model.VideoPickerMode.GALLERY_APP, viewModel.uiState.value.videoPickerMode)
+
+        val prefs = application.getSharedPreferences("compressor_prefs", android.content.Context.MODE_PRIVATE)
+        assertEquals("GALLERY_APP", prefs.getString("video_picker_mode", null))
+
+        // Create new ViewModel instance to test loading from preferences
+        val newViewModel = CompressorViewModel(application)
+        assertEquals(compress.joshattic.us.model.VideoPickerMode.GALLERY_APP, newViewModel.uiState.value.videoPickerMode)
+    }
 }
