@@ -33,6 +33,11 @@
     <string name="delete_original_success">Video eliminado con éxito</string>
     <string name="delete_original_failed">Error al eliminar el video</string>
     <string name="delete_confirm_title">¿Eliminar original?</string>
+    <string name="delete_action">Eliminar</string>
+    <string name="deleting_original">Eliminando original…</string>
+    <string name="original_deleted">Original eliminado</string>
+    <string name="delete_original_confirm_message">¿Seguro que quieres eliminar permanentemente el vídeo original? Esta acción no se puede deshacer.</string>
+    <string name="delete_original_confirm_unsaved_message">Aún no has guardado ni compartido tu vídeo comprimido. ¿Seguro que quieres eliminar permanentemente el vídeo original?</string>
     <string name="info_title">Info de Dispositivo y App</string>
     <string name="info_copy_clipboard">Copiar al portapapeles</string>
     <string name="info_copied">Copiado al portapapeles</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Novedades en Compressor</string>
     <string name="whats_new_version">Versión %1$s</string>
     <string name="whats_new_button">Entendido</string>
-    <string name="whats_new_1_title">Eliminar original</string>
-    <string name="whats_new_1_desc">Ahorra aún más espacio eliminando el video original después de comprimirlo (Android 13+)</string>
-    <string name="whats_new_2_title">Elige tu selector</string>
-    <string name="whats_new_2_desc">¿Tienes una app preferida para elegir qué video comprimir? Ahora puedes seleccionarla en Ajustes.</string>
-    <string name="whats_new_3_title">¡Ayuda a traducir Compressor!</string>
-    <string name="whats_new_3_desc">¿Quieres ver Compressor en tu idioma? ¿Ves algún error de traducción? Ayuda a traducir Compressor en Crowdin</string>
-    <string name="whats_new_4_title">Mejorando constantemente</string>
-    <string name="whats_new_4_desc">Esta versión corrige varios errores y mejora la calidad de compresión y la experiencia de usuario</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">Margen de tamaño adicional</string>
-    <string name="extra_size_cushion_desc">Comprime a un tamaño aún menor si los videos no alcanzan el tamaño objetivo. Activar esta opción reduce la calidad.</string>
-    <string name="delete_action">Eliminar</string>
-    <string name="deleting_original">Eliminando original…</string>
-    <string name="original_deleted">Original eliminado</string>
-    <string name="delete_original_confirm_message">¿Seguro que quieres eliminar permanentemente el vídeo original? Esta acción no se puede deshacer.</string>
-    <string name="delete_original_confirm_unsaved_message">Aún no has guardado ni compartido tu vídeo comprimido. ¿Seguro que quieres eliminar permanentemente el vídeo original?</string>
     <string name="next">Siguiente</string>
     <string name="permission_screen_title">Compressor usa permisos para hacer más</string>
     <string name="permission_screen_subtitle">Esta versión incluye nuevas funciones como eliminar el vídeo original y conservar el nombre de archivo original, que necesitan tu permiso para funcionar.</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">No tienes que conceder permiso si no quieres. Si decides no hacerlo, Compressor seguirá funcionando como antes. Puedes cambiarlo en cualquier momento en Ajustes.</string>
     <string name="grant_permission">Conceder permiso</string>
     <string name="decline_permission">Rechazar</string>
+    <string name="whats_new_1_title">Eliminar original</string>
+    <string name="whats_new_1_desc">Ahorra aún más espacio eliminando el video original después de comprimirlo (Android 13+)</string>
+    <string name="whats_new_2_title">Elige tu selector</string>
+    <string name="whats_new_2_desc">¿Tienes una app preferida para elegir qué video comprimir? Ahora puedes seleccionarla en Ajustes.</string>
+    <string name="whats_new_3_title">¡Ayuda a traducir Compressor!</string>
+    <string name="whats_new_3_desc">¿Quieres ver Compressor en tu idioma? ¿Ves algún error de traducción? Ayuda a traducir Compressor en Crowdin</string>
+    <string name="whats_new_4_title">Mejorando constantemente</string>
+    <string name="whats_new_4_desc">Esta versión corrige varios errores y mejora la calidad de compresión y la experiencia de usuario</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">Margen de tamaño adicional</string>
+    <string name="extra_size_cushion_desc">Comprime a un tamaño aún menor si los videos no alcanzan el tamaño objetivo. Activar esta opción reduce la calidad.</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">Selector de vídeo</string>
     <string name="video_picker_setting_subtitle">Elige cómo seleccionar los vídeos</string>
     <string name="video_picker_dialog_title">Seleccionar selector de vídeo</string>

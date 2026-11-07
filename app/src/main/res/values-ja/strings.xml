@@ -33,6 +33,11 @@
     <string name="delete_original_success">動画を正常に削除しました</string>
     <string name="delete_original_failed">動画の削除に失敗しました</string>
     <string name="delete_confirm_title">元の動画を削除しますか？</string>
+    <string name="delete_action">削除</string>
+    <string name="deleting_original">元の動画を削除中…</string>
+    <string name="original_deleted">元の動画を削除しました</string>
+    <string name="delete_original_confirm_message">元の動画を完全に削除してもよろしいですか？この操作は元に戻せません。</string>
+    <string name="delete_original_confirm_unsaved_message">圧縮した動画をまだ保存または共有していません。元の動画を完全に削除してもよろしいですか？</string>
     <string name="info_title">端末およびアプリ情報</string>
     <string name="info_copy_clipboard">クリップボードにコピー</string>
     <string name="info_copied">クリップボードにコピーしました</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Compressor の新機能</string>
     <string name="whats_new_version">バージョン %1$s</string>
     <string name="whats_new_button">了解</string>
-    <string name="whats_new_1_title">元の動画を削除</string>
-    <string name="whats_new_1_desc">圧縮後に元の動画を削除して、さらにストレージを節約できます (Android 13+)</string>
-    <string name="whats_new_2_title">ピッカーを選択</string>
-    <string name="whats_new_2_desc">圧縮する動画を選ぶ際に使うアプリを決めていますか？設定で選択できるようになりました。</string>
-    <string name="whats_new_3_title">Compressor の翻訳にご協力ください！</string>
-    <string name="whats_new_3_desc">あなたの言語で Compressor を使いたい、または誤訳を見つけましたか？Crowdin での翻訳にご協力ください</string>
-    <string name="whats_new_4_title">継続的な改善</string>
-    <string name="whats_new_4_desc">複数の不具合を修正し、圧縮品質とユーザー体験を向上させました</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">追加のサイズ余白</string>
-    <string name="extra_size_cushion_desc">動画が目標サイズに収まらない場合にさらに小さなサイズに圧縮します。有効にすると画質が低下します。</string>
-    <string name="delete_action">削除</string>
-    <string name="deleting_original">元の動画を削除中…</string>
-    <string name="original_deleted">元の動画を削除しました</string>
-    <string name="delete_original_confirm_message">元の動画を完全に削除してもよろしいですか？この操作は元に戻せません。</string>
-    <string name="delete_original_confirm_unsaved_message">圧縮した動画をまだ保存または共有していません。元の動画を完全に削除してもよろしいですか？</string>
     <string name="next">次へ</string>
     <string name="permission_screen_title">Compressor は権限を使ってさらに多くのことを実現します</string>
     <string name="permission_screen_subtitle">このリリースには、元の動画の削除や元のファイル名の保持など、権限が必要な新機能が含まれています。</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">権限を許可したくない場合は許可する必要はありません。許可しない場合でも、Compressor はこれまで通り動作します。設定でいつでも変更できます。</string>
     <string name="grant_permission">権限を許可</string>
     <string name="decline_permission">拒否</string>
+    <string name="whats_new_1_title">元の動画を削除</string>
+    <string name="whats_new_1_desc">圧縮後に元の動画を削除して、さらにストレージを節約できます (Android 13+)</string>
+    <string name="whats_new_2_title">ピッカーを選択</string>
+    <string name="whats_new_2_desc">圧縮する動画を選ぶ際に使うアプリを決めていますか？設定で選択できるようになりました。</string>
+    <string name="whats_new_3_title">Compressor の翻訳にご協力ください！</string>
+    <string name="whats_new_3_desc">あなたの言語で Compressor を使いたい、または誤訳を見つけましたか？Crowdin での翻訳にご協力ください</string>
+    <string name="whats_new_4_title">継続的な改善</string>
+    <string name="whats_new_4_desc">複数の不具合を修正し、圧縮品質とユーザー体験を向上させました</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">追加のサイズ余白</string>
+    <string name="extra_size_cushion_desc">動画が目標サイズに収まらない場合にさらに小さなサイズに圧縮します。有効にすると画質が低下します。</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">動画ピッカー</string>
     <string name="video_picker_setting_subtitle">動画の選択方法を選択</string>
     <string name="video_picker_dialog_title">動画ピッカーを選択</string>

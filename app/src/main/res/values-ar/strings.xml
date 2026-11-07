@@ -33,6 +33,11 @@
     <string name="delete_original_success">تم حذف الفيديو بنجاح</string>
     <string name="delete_original_failed">فشل حذف الفيديو</string>
     <string name="delete_confirm_title">حذف الأصلي؟</string>
+    <string name="delete_action">حذف</string>
+    <string name="deleting_original">جارٍ حذف الأصل…</string>
+    <string name="original_deleted">تم حذف الأصل</string>
+    <string name="delete_original_confirm_message">هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.</string>
+    <string name="delete_original_confirm_unsaved_message">لم تقم بحفظ أو مشاركة الفيديو المضغوط بعد. هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟</string>
     <string name="info_title">معلومات الجهاز والتطبيق</string>
     <string name="info_copy_clipboard">نسخ إلى الحافظة</string>
     <string name="info_copied">تم النسخ إلى الحافظة</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">ما الجديد في Compressor</string>
     <string name="whats_new_version">الإصدار %1$s</string>
     <string name="whats_new_button">فهمت</string>
-    <string name="whats_new_1_title">حذف الأصلي</string>
-    <string name="whats_new_1_desc">وفّر مساحة تخزين أكبر عن طريق حذف الفيديو الأصلي بعد ضغطه (Android 13+)</string>
-    <string name="whats_new_2_title">اختر أداة الاختيار</string>
-    <string name="whats_new_2_desc">هل لديك تطبيق مفضل لاختيار الفيديو الذي تريد ضغطه؟ يمكنك الآن تحديده في الإعدادات.</string>
-    <string name="whats_new_3_title">ساعد في ترجمة Compressor!</string>
-    <string name="whats_new_3_desc">هل تريد رؤية Compressor بلغتك؟ هل لاحظت خطأ في الترجمة؟ ساعد في ترجمة Compressor على Crowdin</string>
-    <string name="whats_new_4_title">تحسينات مستمرة</string>
-    <string name="whats_new_4_desc">يعالج هذا الإصدار العديد من الأخطاء ويحسن جودة الضغط وتجربة المستخدم</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">هامش حجم إضافي</string>
-    <string name="extra_size_cushion_desc">يضغط إلى حجم أصغر إذا لم تكن مقاطع الفيديو تنضغط إلى الحجم المستهدف. تفعيل هذا الخيار يقلل من الجودة.</string>
-    <string name="delete_action">حذف</string>
-    <string name="deleting_original">جارٍ حذف الأصل…</string>
-    <string name="original_deleted">تم حذف الأصل</string>
-    <string name="delete_original_confirm_message">هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟ لا يمكن التراجع عن هذا الإجراء.</string>
-    <string name="delete_original_confirm_unsaved_message">لم تقم بحفظ أو مشاركة الفيديو المضغوط بعد. هل أنت متأكد من أنك تريد حذف الفيديو الأصلي نهائيًا؟</string>
     <string name="next">التالي</string>
     <string name="permission_screen_title">يستخدم Compressor الأذونات لفعل المزيد</string>
     <string name="permission_screen_subtitle">يتضمن هذا الإصدار ميزات جديدة مثل حذف الفيديو الأصلي والاحتفاظ باسم الملف الأصلي، والتي تحتاج إلى إذنك لكي تعمل.</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">لست مضطرًا لمنح الإذن إذا لم ترغب في ذلك. إذا اخترت عدم منحه، فسيستمر Compressor في العمل كما كان من قبل. يمكنك دائمًا تغيير ذلك في الإعدادات.</string>
     <string name="grant_permission">منح الإذن</string>
     <string name="decline_permission">رفض</string>
+    <string name="whats_new_1_title">حذف الأصلي</string>
+    <string name="whats_new_1_desc">وفّر مساحة تخزين أكبر عن طريق حذف الفيديو الأصلي بعد ضغطه (Android 13+)</string>
+    <string name="whats_new_2_title">اختر أداة الاختيار</string>
+    <string name="whats_new_2_desc">هل لديك تطبيق مفضل لاختيار الفيديو الذي تريد ضغطه؟ يمكنك الآن تحديده في الإعدادات.</string>
+    <string name="whats_new_3_title">ساعد في ترجمة Compressor!</string>
+    <string name="whats_new_3_desc">هل تريد رؤية Compressor بلغتك؟ هل لاحظت خطأ في الترجمة؟ ساعد في ترجمة Compressor على Crowdin</string>
+    <string name="whats_new_4_title">تحسينات مستمرة</string>
+    <string name="whats_new_4_desc">يعالج هذا الإصدار العديد من الأخطاء ويحسن جودة الضغط وتجربة المستخدم</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">هامش حجم إضافي</string>
+    <string name="extra_size_cushion_desc">يضغط إلى حجم أصغر إذا لم تكن مقاطع الفيديو تنضغط إلى الحجم المستهدف. تفعيل هذا الخيار يقلل من الجودة.</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">منتقي الفيديو</string>
     <string name="video_picker_setting_subtitle">اختر كيفية تحديد الفيديوهات</string>
     <string name="video_picker_dialog_title">تحديد منتقي الفيديو</string>

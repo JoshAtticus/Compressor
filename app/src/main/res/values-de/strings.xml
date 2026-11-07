@@ -33,6 +33,11 @@
     <string name="delete_original_success">Video erfolgreich gelöscht</string>
     <string name="delete_original_failed">Löschen des Videos fehlgeschlagen</string>
     <string name="delete_confirm_title">Original löschen?</string>
+    <string name="delete_action">Löschen</string>
+    <string name="deleting_original">Original wird gelöscht…</string>
+    <string name="original_deleted">Original gelöscht</string>
+    <string name="delete_original_confirm_message">Möchtest du das Originalvideo wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
+    <string name="delete_original_confirm_unsaved_message">Du hast dein komprimiertes Video noch nicht gespeichert oder geteilt. Möchtest du das Originalvideo wirklich dauerhaft löschen?</string>
     <string name="info_title">Geräte- &amp; App-Info</string>
     <string name="info_copy_clipboard">In die Zwischenablage kopieren</string>
     <string name="info_copied">In die Zwischenablage kopiert</string>
@@ -246,22 +251,6 @@
     <string name="whats_new_title">Was gibt\'s Neues in Compressor</string>
     <string name="whats_new_version">Version %1$s</string>
     <string name="whats_new_button">Verstanden</string>
-    <string name="whats_new_1_title">Original löschen</string>
-    <string name="whats_new_1_desc">Spare noch mehr Speicherplatz, indem du das Originalvideo nach dem Komprimieren löschst (Android 13+)</string>
-    <string name="whats_new_2_title">Wähle deinen Picker</string>
-    <string name="whats_new_2_desc">Hast du eine bevorzugte App zum Auswählen des Videos? Du kannst sie jetzt in den Einstellungen festlegen.</string>
-    <string name="whats_new_3_title">Hilf beim Übersetzen von Compressor!</string>
-    <string name="whats_new_3_desc">Möchtest du Compressor in deiner Sprache sehen? Übersetzungsfehler gefunden? Hilf mit auf Crowdin</string>
-    <string name="whats_new_4_title">Stetig verbessert</string>
-    <string name="whats_new_4_desc">Dieses Update behebt mehrere Fehler und verbessert Komprimierungsqualität und Benutzererlebnis</string>
-    <!-- Extra Size Cushion -->
-    <string name="extra_size_cushion_title">Zusätzlicher Größenpuffer</string>
-    <string name="extra_size_cushion_desc">Komprimiert auf eine noch kleinere Zielgröße, wenn Videos die gewünschte Größe nicht erreichen. Aktivieren verringert die Qualität.</string>
-    <string name="delete_action">Löschen</string>
-    <string name="deleting_original">Original wird gelöscht…</string>
-    <string name="original_deleted">Original gelöscht</string>
-    <string name="delete_original_confirm_message">Möchtest du das Originalvideo wirklich dauerhaft löschen? Diese Aktion kann nicht rückgängig gemacht werden.</string>
-    <string name="delete_original_confirm_unsaved_message">Du hast dein komprimiertes Video noch nicht gespeichert oder geteilt. Möchtest du das Originalvideo wirklich dauerhaft löschen?</string>
     <string name="next">Weiter</string>
     <string name="permission_screen_title">Compressor nutzt Berechtigungen, um mehr zu bieten</string>
     <string name="permission_screen_subtitle">Diese Version enthält neue Funktionen wie das Löschen des Originalvideos und das Beibehalten des ursprünglichen Dateinamens, die deine Berechtigung benötigen.</string>
@@ -274,6 +263,18 @@
     <string name="permission_screen_footer">Du musst keine Berechtigung erteilen, wenn du nicht möchtest. Ohne Berechtigung funktioniert Compressor wie zuvor. Du kannst dies jederzeit in den Einstellungen ändern.</string>
     <string name="grant_permission">Berechtigung erteilen</string>
     <string name="decline_permission">Ablehnen</string>
+    <string name="whats_new_1_title">Original löschen</string>
+    <string name="whats_new_1_desc">Spare noch mehr Speicherplatz, indem du das Originalvideo nach dem Komprimieren löschst (Android 13+)</string>
+    <string name="whats_new_2_title">Wähle deinen Picker</string>
+    <string name="whats_new_2_desc">Hast du eine bevorzugte App zum Auswählen des Videos? Du kannst sie jetzt in den Einstellungen festlegen.</string>
+    <string name="whats_new_3_title">Hilf beim Übersetzen von Compressor!</string>
+    <string name="whats_new_3_desc">Möchtest du Compressor in deiner Sprache sehen? Übersetzungsfehler gefunden? Hilf mit auf Crowdin</string>
+    <string name="whats_new_4_title">Stetig verbessert</string>
+    <string name="whats_new_4_desc">Dieses Update behebt mehrere Fehler und verbessert Komprimierungsqualität und Benutzererlebnis</string>
+    <!-- Extra Size Cushion -->
+    <string name="extra_size_cushion_title">Zusätzlicher Größenpuffer</string>
+    <string name="extra_size_cushion_desc">Komprimiert auf eine noch kleinere Zielgröße, wenn Videos die gewünschte Größe nicht erreichen. Aktivieren verringert die Qualität.</string>
+    <!-- Video Picker Settings -->
     <string name="video_picker_setting_title">Videoauswahl</string>
     <string name="video_picker_setting_subtitle">Wähle, wie Videos ausgewählt werden</string>
     <string name="video_picker_dialog_title">Videoauswahl festlegen</string>
