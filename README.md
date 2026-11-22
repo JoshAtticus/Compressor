@@ -47,9 +47,9 @@ You can also donate with crypto:
 - Uses native Media3 library, not another slow, bulky FFMpeg wrapper
 - H.265 and AV1 support for compatible devices
 - Share Sheet Support
-- No third party libraries
-- No invasive permissions (no storage, no internet etc)
-- Ad free
+- Dual mode: **Compress** (single video via system picker) and optional **Free space** (opt-in media scan, multi-select photos/videos, batch queue)
+- No third party tracking or ads; no internet permission
+- Compress tab stays picker-only; Free space only scans after you grant media access
 - Completely native Kotlin (no React Native slop here)
 - Simple, clean UI
 - Works on Android 7.0 and up

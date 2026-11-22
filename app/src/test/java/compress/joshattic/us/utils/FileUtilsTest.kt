@@ -33,9 +33,17 @@ class FileUtilsTest {
 
     @Test
     fun testFormatFileSize_gb() {
-        // The code uses 1000 MB as the threshold for GB display
-        assertEquals("1.0 GB", formatFileSize(1024 * 1024 * 1024L))
-        assertEquals("2.5 GB", formatFileSize((2.5 * 1024 * 1024 * 1024).toLong()))
+        assertEquals("1.00 GB", formatFileSize(1024 * 1024 * 1024L))
+        assertEquals("2.50 GB", formatFileSize((2.5 * 1024 * 1024 * 1024).toLong()))
+    }
+
+    @Test
+    fun testFormatFileSize_matchesDeviceCompressionSample() {
+        val original = 972560400L
+        val compressed = 823543576L
+        assertEquals("927.5 MB", formatFileSize(original))
+        assertEquals("785.4 MB", formatFileSize(compressed))
+        assertEquals("142.1 MB", formatFileSize(original - compressed))
     }
 
     @Test

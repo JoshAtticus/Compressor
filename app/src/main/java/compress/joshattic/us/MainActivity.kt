@@ -15,9 +15,11 @@ import androidx.compose.ui.Modifier
 import compress.joshattic.us.ui.CompressorApp
 import compress.joshattic.us.ui.theme.CompressorTheme
 import compress.joshattic.us.viewmodel.CompressorViewModel
+import compress.joshattic.us.viewmodel.OptimizerViewModel
 
 class MainActivity : ComponentActivity() {
     private val viewModel by viewModels<CompressorViewModel>()
+    private val optimizerViewModel by viewModels<OptimizerViewModel>()
 
     private fun handleIncomingIntent(intent: Intent?) {
         if (intent == null) return
@@ -63,7 +65,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    CompressorApp(viewModel)
+                    CompressorApp(viewModel, optimizerViewModel)
                 }
             }
         }

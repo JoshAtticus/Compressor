@@ -24,11 +24,15 @@ sealed class DeleteMediaResult {
 
 fun formatFileSize(size: Long): String {
     if (size <= 0) return "0 MB"
-    val mb = size / (1024.0 * 1024.0)
-    if (mb >= 1000) {
-        return String.format(Locale.US, "%.1f GB", mb / 1024)
+    val kb = size / 1024.0
+    if (kb < 1024.0) {
+        return String.format(Locale.US, "%.1f KB", kb)
     }
-    return String.format(Locale.US, "%.1f MB", mb)
+    val mb = kb / 1024.0
+    if (mb < 1024.0) {
+        return String.format(Locale.US, "%.1f MB", mb)
+    }
+    return String.format(Locale.US, "%.2f GB", mb / 1024.0)
 }
 
 fun getVideoPermission(): String? {

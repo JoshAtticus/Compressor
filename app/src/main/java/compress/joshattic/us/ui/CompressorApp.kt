@@ -1,6 +1,7 @@
 package compress.joshattic.us.ui
 
 import compress.joshattic.us.ui.components.WhatsNewDialog
+import compress.joshattic.us.model.MainDestination
 import compress.joshattic.us.model.VideoPickerMode
 import android.app.Activity
 import android.content.Intent
@@ -16,6 +17,7 @@ import androidx.activity.result.IntentSenderRequest
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import compress.joshattic.us.utils.hasVideoPermission
+import compress.joshattic.us.utils.mediaReadPermissions
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.snap
@@ -31,12 +33,16 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Compress
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -63,12 +69,16 @@ import compress.joshattic.us.ui.screens.CompressingScreen
 import compress.joshattic.us.ui.screens.ConfigScreen
 import compress.joshattic.us.ui.screens.EmptyScreen
 import compress.joshattic.us.ui.screens.ResultScreen
+import compress.joshattic.us.ui.screens.optimizer.FreeSpaceScreen
+import compress.joshattic.us.ui.screens.optimizer.OptimizerQueueScreen
+import compress.joshattic.us.ui.screens.optimizer.OptimizerReviewScreen
 import compress.joshattic.us.ui.screens.settings.AboutScreen
 import compress.joshattic.us.ui.screens.settings.DisplaySettingsScreen
 import compress.joshattic.us.ui.screens.settings.LicensesScreen
 import compress.joshattic.us.ui.screens.settings.SettingsScreen
 import compress.joshattic.us.utils.ExpressiveSpatialSpring
 import compress.joshattic.us.viewmodel.CompressorViewModel
+import compress.joshattic.us.viewmodel.OptimizerViewModel
 import java.io.File
 import kotlinx.coroutines.CancellationException
 
@@ -76,15 +86,25 @@ enum class SettingsDestination {
     MAIN, ABOUT, DISPLAY, PRESETS, VIDEO, AUDIO, LICENSES
 }
 
+private enum class FreeSpacePane {
+    LIBRARY, QUEUE, REVIEW
+}
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CompressorApp(viewModel: CompressorViewModel) {
+fun CompressorApp(
+    viewModel: CompressorViewModel,
+    optimizerViewModel: OptimizerViewModel
+) {
     val state by viewModel.uiState.collectAsState()
+    val optimizerState by optimizerViewModel.uiState.collectAsState()
     val context = LocalContext.current
     val window = (context as? ComponentActivity)?.window
 
     var forceShowResult by remember { mutableStateOf(false) }
     var currentSettingsDestination by remember { mutableStateOf<SettingsDestination?>(null) }
+    var mainDestination by remember { mutableStateOf(MainDestination.COMPRESS) }
+    var freeSpacePane by remember { mutableStateOf(FreeSpacePane.LIBRARY) }
     
     // Reset forceShowResult when we leave the result screen
     LaunchedEffect(state.compressedUri) {
@@ -104,7 +124,12 @@ fun CompressorApp(viewModel: CompressorViewModel) {
     }
 
     val isSettingsOpen = currentSettingsDestination != null
-    val canHandleBack = isSettingsOpen || state.selectedUri != null
+    val freeSpaceNested = mainDestination == MainDestination.FREE_SPACE &&
+        freeSpacePane != FreeSpacePane.LIBRARY
+    val canHandleBack = isSettingsOpen ||
+        state.selectedUri != null ||
+        freeSpaceNested ||
+        (mainDestination == MainDestination.FREE_SPACE && optimizerState.isProcessingQueue)
 
     // Predictive back gesture progress (0f..1f) for in-app navigation previews.
     var backGestureProgress by remember { mutableFloatStateOf(0f) }
@@ -127,6 +152,16 @@ fun CompressorApp(viewModel: CompressorViewModel) {
             }
         } else if (state.isCompressing) {
             viewModel.cancelCompression()
+        } else if (mainDestination == MainDestination.FREE_SPACE) {
+            when (freeSpacePane) {
+                FreeSpacePane.REVIEW -> freeSpacePane = FreeSpacePane.QUEUE
+                FreeSpacePane.QUEUE -> freeSpacePane = FreeSpacePane.LIBRARY
+                FreeSpacePane.LIBRARY -> {
+                    if (optimizerState.isProcessingQueue) {
+                        optimizerViewModel.cancelQueue()
+                    }
+                }
+            }
         } else {
             viewModel.reset()
         }
@@ -163,10 +198,39 @@ fun CompressorApp(viewModel: CompressorViewModel) {
         pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
     }
 
+    val freeSpacePermissionLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.RequestMultiplePermissions()
+    ) { _ ->
+        optimizerViewModel.onPermissionResult()
+    }
+
+    val optimizerDeleteLauncher = rememberLauncherForActivityResult(
+        ActivityResultContracts.StartIntentSenderForResult()
+    ) { result ->
+        if (result.resultCode == Activity.RESULT_OK) {
+            optimizerViewModel.onOriginalDeletedForReview()
+        } else {
+            optimizerViewModel.cancelPendingOriginalReplace()
+        }
+    }
+
     val whatsNewPermissionLauncher = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { _ ->
         // Permission request from What's New dialog finished
+    }
+
+    LaunchedEffect(mainDestination) {
+        if (mainDestination == MainDestination.FREE_SPACE) {
+            optimizerViewModel.refreshPermissionStatus()
+        }
+    }
+
+    // Share / open-with should land on the Compress flow.
+    LaunchedEffect(state.selectedUri) {
+        if (state.selectedUri != null) {
+            mainDestination = MainDestination.COMPRESS
+        }
     }
 
     val galleryPickLauncher = rememberLauncherForActivityResult(
@@ -340,12 +404,25 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                     }
                 }
                 else -> {
+                    val compressFlowIndex = when {
+                        state.selectedUri == null -> 0
+                        state.compressedUri != null || state.error != null -> 2
+                        else -> 1
+                    }
+                    val showBottomBar = mainDestination == MainDestination.FREE_SPACE ||
+                        (mainDestination == MainDestination.COMPRESS && compressFlowIndex == 0)
                     Scaffold(
                         topBar = {
                             CenterAlignedTopAppBar(
                                 title = {
                                     Text(
-                                        stringResource(R.string.title_compressor),
+                                        stringResource(
+                                            if (mainDestination == MainDestination.FREE_SPACE) {
+                                                R.string.title_free_space
+                                            } else {
+                                                R.string.title_compressor
+                                            }
+                                        ),
                                         style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
                                     )
                                 },
@@ -366,108 +443,212 @@ fun CompressorApp(viewModel: CompressorViewModel) {
                                     }
                                 }
                             )
+                        },
+                        bottomBar = {
+                            if (showBottomBar && freeSpacePane == FreeSpacePane.LIBRARY) {
+                                NavigationBar {
+                                    NavigationBarItem(
+                                        selected = mainDestination == MainDestination.COMPRESS,
+                                        onClick = { mainDestination = MainDestination.COMPRESS },
+                                        icon = {
+                                            Icon(
+                                                Icons.Outlined.Compress,
+                                                contentDescription = stringResource(R.string.nav_compress)
+                                            )
+                                        },
+                                        label = { Text(stringResource(R.string.nav_compress)) }
+                                    )
+                                    NavigationBarItem(
+                                        selected = mainDestination == MainDestination.FREE_SPACE,
+                                        onClick = {
+                                            mainDestination = MainDestination.FREE_SPACE
+                                            freeSpacePane = FreeSpacePane.LIBRARY
+                                        },
+                                        icon = {
+                                            Icon(
+                                                Icons.Outlined.Storage,
+                                                contentDescription = stringResource(R.string.nav_free_space)
+                                            )
+                                        },
+                                        label = { Text(stringResource(R.string.nav_free_space)) }
+                                    )
+                                }
+                            }
                         }
                     ) { innerPadding ->
                         Box(modifier = Modifier.padding(innerPadding)) {
-                            AnimatedContent(
-                                targetState = when {
-                                    state.selectedUri == null -> 0
-                                    state.compressedUri != null || state.error != null -> 2
-                                    else -> 1
-                                },
-                                transitionSpec = {
-                                    if (targetState > initialState) {
-                                        slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
-                                    } else {
-                                        slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
-                                    }
-                                },
-                                label = "FlowContent"
-                            ) { index ->
-                                when (index) {
-                                    0 -> EmptyScreen(
-                                        totalSaved = state.formattedTotalSaved,
-                                        showStorageSaved = state.showStorageSaved,
-                                        onPick = {
-                                            when (state.videoPickerMode) {
-                                                VideoPickerMode.PHOTO_PICKER -> {
-                                                    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
-                                                        !hasVideoPermission(context)
-                                                    ) {
-                                                        videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
-                                                    } else {
-                                                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
-                                                    }
+                            when (mainDestination) {
+                                MainDestination.FREE_SPACE -> {
+                                    when (freeSpacePane) {
+                                        FreeSpacePane.LIBRARY -> FreeSpaceScreen(
+                                            state = optimizerState,
+                                            onRequestPermission = {
+                                                val perms = mediaReadPermissions()
+                                                if (perms.isEmpty()) {
+                                                    optimizerViewModel.onPermissionResult()
+                                                } else {
+                                                    freeSpacePermissionLauncher.launch(perms)
                                                 }
-                                                VideoPickerMode.GALLERY_APP -> {
-                                                    val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
-                                                        type = "video/*"
+                                            },
+                                            onRefresh = { optimizerViewModel.scanLibrary() },
+                                            onToggle = { optimizerViewModel.toggleSelection(it) },
+                                            onSelectAll = { optimizerViewModel.selectAllVisible() },
+                                            onClearSelection = { optimizerViewModel.clearSelection() },
+                                            onQualityModeSelected = { optimizerViewModel.applyQualityMode(it) },
+                                            onCompressSelected = {
+                                                optimizerViewModel.enqueueSelected()
+                                                freeSpacePane = FreeSpacePane.QUEUE
+                                            },
+                                            onOpenQueue = { freeSpacePane = FreeSpacePane.QUEUE },
+                                            onExcludeFile = { optimizerViewModel.excludeFile(it) },
+                                            onExcludeFolder = { optimizerViewModel.excludeFolder(it) },
+                                            onClearExclusions = { optimizerViewModel.clearExclusions() }
+                                        )
+                                        FreeSpacePane.QUEUE -> OptimizerQueueScreen(
+                                            state = optimizerState,
+                                            onBack = { freeSpacePane = FreeSpacePane.LIBRARY },
+                                            onCancel = { optimizerViewModel.cancelQueue() },
+                                            onClear = {
+                                                optimizerViewModel.clearQueue()
+                                                freeSpacePane = FreeSpacePane.LIBRARY
+                                            },
+                                            onReview = { id ->
+                                                optimizerViewModel.openReview(id)
+                                                freeSpacePane = FreeSpacePane.REVIEW
+                                            },
+                                            onRetry = { id ->
+                                                optimizerViewModel.retryFailed(id)
+                                            }
+                                        )
+                                        FreeSpacePane.REVIEW -> {
+                                            val reviewItem = optimizerState.reviewingItem
+                                            if (reviewItem != null) {
+                                                OptimizerReviewScreen(
+                                                    item = reviewItem,
+                                                    onBack = {
+                                                        optimizerViewModel.closeReview()
+                                                        freeSpacePane = FreeSpacePane.QUEUE
+                                                    },
+                                                    onKeepBoth = {
+                                                        optimizerViewModel.keepBothForReview()
+                                                        freeSpacePane = FreeSpacePane.QUEUE
+                                                    },
+                                                    onDeleteOriginal = {
+                                                        optimizerViewModel.deleteOriginalForReview(context) { sender ->
+                                                            optimizerDeleteLauncher.launch(
+                                                                IntentSenderRequest.Builder(sender).build()
+                                                            )
+                                                        }
+                                                    },
+                                                    onDeleteCompressed = {
+                                                        optimizerViewModel.deleteCompressedForReview()
+                                                        freeSpacePane = FreeSpacePane.QUEUE
                                                     }
-                                                    val chooserIntent = Intent.createChooser(
-                                                        galleryIntent,
-                                                        context.getString(R.string.select_gallery_app)
-                                                    )
-                                                    try {
-                                                        galleryPickLauncher.launch(chooserIntent)
-                                                    } catch (_: Exception) {
-                                                        try {
-                                                            galleryPickLauncher.launch(galleryIntent)
-                                                        } catch (_: Exception) {
-                                                            val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                )
+                                            } else {
+                                                freeSpacePane = FreeSpacePane.QUEUE
+                                            }
+                                        }
+                                    }
+                                }
+                                MainDestination.COMPRESS -> {
+                                    AnimatedContent(
+                                        targetState = compressFlowIndex,
+                                        transitionSpec = {
+                                            if (targetState > initialState) {
+                                                slideInHorizontally { w -> w } + fadeIn() togetherWith slideOutHorizontally { w -> -w } + fadeOut()
+                                            } else {
+                                                slideInHorizontally { w -> -w } + fadeIn() togetherWith slideOutHorizontally { w -> w } + fadeOut()
+                                            }
+                                        },
+                                        label = "FlowContent"
+                                    ) { index ->
+                                        when (index) {
+                                            0 -> EmptyScreen(
+                                                totalSaved = state.formattedTotalSaved,
+                                                showStorageSaved = state.showStorageSaved,
+                                                onPick = {
+                                                    when (state.videoPickerMode) {
+                                                        VideoPickerMode.PHOTO_PICKER -> {
+                                                            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.TIRAMISU &&
+                                                                !hasVideoPermission(context)
+                                                            ) {
+                                                                videoPermissionLauncher.launch(android.Manifest.permission.READ_MEDIA_VIDEO)
+                                                            } else {
+                                                                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.VideoOnly))
+                                                            }
+                                                        }
+                                                        VideoPickerMode.GALLERY_APP -> {
+                                                            val galleryIntent = Intent(Intent.ACTION_PICK, MediaStore.Video.Media.EXTERNAL_CONTENT_URI).apply {
                                                                 type = "video/*"
                                                             }
-                                                            galleryPickLauncher.launch(fallbackIntent)
+                                                            val chooserIntent = Intent.createChooser(
+                                                                galleryIntent,
+                                                                context.getString(R.string.select_gallery_app)
+                                                            )
+                                                            try {
+                                                                galleryPickLauncher.launch(chooserIntent)
+                                                            } catch (_: Exception) {
+                                                                try {
+                                                                    galleryPickLauncher.launch(galleryIntent)
+                                                                } catch (_: Exception) {
+                                                                    val fallbackIntent = Intent(Intent.ACTION_GET_CONTENT).apply {
+                                                                        type = "video/*"
+                                                                    }
+                                                                    galleryPickLauncher.launch(fallbackIntent)
+                                                                }
+                                                            }
                                                         }
                                                     }
                                                 }
+                                            )
+                                            2 -> {
+                                                if (state.error != null) {
+                                                    CompressionFailedScreen(
+                                                        state = state,
+                                                        onBack = { viewModel.reset() },
+                                                        onSaveAnyway = { /* No-op for actual errors */ }
+                                                    )
+                                                } else if (state.compressedSize > state.originalSize && !forceShowResult) {
+                                                    CompressionFailedScreen(
+                                                        state = state,
+                                                        onBack = { viewModel.reset() },
+                                                        onSaveAnyway = { forceShowResult = true }
+                                                    )
+                                                } else {
+                                                    ResultScreen(
+                                                        state = state,
+                                                        onShare = {
+                                                            shareVideo(state.compressedUri)
+                                                            viewModel.markAsShared()
+                                                        },
+                                                        onSave = {
+                                                            val hasCustomLocation = !state.customOutputTreeUri.isNullOrBlank()
+                                                            if (hasCustomLocation ||
+                                                                android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
+                                                            ) {
+                                                                viewModel.saveCompressedOutput(context)
+                                                            } else {
+                                                                val fileName = state.compressedUri?.lastPathSegment
+                                                                    ?: "CompressedVideo.mp4"
+                                                                createDocumentLauncher.launch(fileName)
+                                                            }
+                                                        },
+                                                        onDeleteOriginal = {
+                                                            viewModel.deleteOriginalVideo(context) { intentSender ->
+                                                                deleteIntentSenderLauncher.launch(
+                                                                    IntentSenderRequest.Builder(intentSender).build()
+                                                                )
+                                                            }
+                                                        },
+                                                        onCompressAnother = { viewModel.reset() },
+                                                        onBack = { viewModel.reset() }
+                                                    )
+                                                }
                                             }
-                                        }
-                                    )
-                                    2 -> {
-                                        if (state.error != null) {
-                                            CompressionFailedScreen(
-                                                state = state,
-                                                onBack = { viewModel.reset() },
-                                                onSaveAnyway = { /* No-op for actual errors */ }
-                                            )
-                                        } else if (state.compressedSize > state.originalSize && !forceShowResult) {
-                                            CompressionFailedScreen(
-                                                state = state,
-                                                onBack = { viewModel.reset() },
-                                                onSaveAnyway = { forceShowResult = true }
-                                            )
-                                        } else {
-                                            ResultScreen(
-                                                state = state,
-                                                onShare = {
-                                                    shareVideo(state.compressedUri)
-                                                    viewModel.markAsShared()
-                                                },
-                                                onSave = {
-                                                    val hasCustomLocation = !state.customOutputTreeUri.isNullOrBlank()
-                                                    if (hasCustomLocation ||
-                                                        android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q
-                                                    ) {
-                                                        viewModel.saveCompressedOutput(context)
-                                                    } else {
-                                                        val fileName = state.compressedUri?.lastPathSegment
-                                                            ?: "CompressedVideo.mp4"
-                                                        createDocumentLauncher.launch(fileName)
-                                                    }
-                                                },
-                                                onDeleteOriginal = {
-                                                    viewModel.deleteOriginalVideo(context) { intentSender ->
-                                                        deleteIntentSenderLauncher.launch(
-                                                            IntentSenderRequest.Builder(intentSender).build()
-                                                        )
-                                                    }
-                                                },
-                                                onCompressAnother = { viewModel.reset() },
-                                                onBack = { viewModel.reset() }
-                                            )
+                                            else -> ConfigScreen(state, viewModel, context)
                                         }
                                     }
-                                    else -> ConfigScreen(state, viewModel, context)
                                 }
                             }
                         }
